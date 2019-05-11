@@ -36,10 +36,10 @@ async function bingo(req, res, next) {
             "this_period_rate": `70%`,
             "last_invest_rate": `50%`,
             "this_period_bonus": bingoPoolAmount.toFixed(4),
-            "last_invest_account": currentAmount.mul(50 / 100).toFixed(4),
+            "last_invest_account": bingoAccountList[0].account_name,
             "last_invest_bonus": currentAmount.mul(50 / 100).toFixed(4),
             "other_invest_bonus": currentAmount.mul(50 / 100 / 29).toFixed(4),
-            "bonus_account": bingoAccountList,
+            "bonus_account": bingoAccountList.map(item => item.account_name),
             "bingo_countdown": df.format(dayEnd, "x"),
         };
         res.send(resData);
