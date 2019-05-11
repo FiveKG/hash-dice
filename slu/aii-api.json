@@ -730,10 +730,15 @@
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "current_amount": { "type": "decimal",  "is_require": true,  "desc": "当前股东分红池余额" },
-                    "issue": { "type": "decimal",  "is_require": true,  "desc": "累计已经发放股东分红" },
-                    "total": { "type": "decimal",  "is_require": true,  "desc": "股东分红池累计收入" },
-                    "account_level": { "type": "number",  "is_require": true,  "desc": "会员等级" }
+                    "total": { "type": "decimal",  "is_require": true,  "desc": "Bingo 奖池" },
+                    "this_period_rate": { "type": "decimal",  "is_require": true,  "desc": "本期奖金占总奖池百分比" },
+                    "last_invest_rate": { "type": "decimal",  "is_require": true,  "desc": "当前最后一名投资者占本期奖金百分比" },
+                    "this_period_bonus": { "type": "decimal",  "is_require": true,  "desc": "本期奖金" },
+                    "last_invest_account": { "type": "number",  "is_require": true,  "desc": "当前最后一名投资者帐号" },
+                    "last_invest_bonus": { "type": "decimal",  "is_require": true,  "desc": "当前最后一名投资者奖金额度" },
+                    "other_invest_bonus": { "type": "decimal",  "is_require": true,  "desc": "当前最后2-30名投资者奖金每人可得奖金额度" },
+                    "bonus_account": { "type": "decimal",  "is_require": true,  "desc": "当前最后三十名投资主账户" },
+                    "bingo_countdown": { "type": "number",  "is_require": true,  "desc": "Bingo 奖池派奖倒计时" }
                 }
             }
         },
