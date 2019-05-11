@@ -1,7 +1,7 @@
 // @ts-check
 const { readFileSync, writeFileSync, existsSync } = require("fs");
 const path = require("path");
-const { redis } = require("./src/common");
+const { redis } = require("../../common");
 let invitationCode = null;
 
 /**
@@ -24,14 +24,17 @@ async function genInvitationCode(min, max) {
     //     genCode[m] = tmp;
     // }
 
-    // 如果没有初始化推荐码，初始化一堆
-    let isEmpty = await redis.scard("inviteCode");
-    if (!isEmpty) {
-        for (let i = 0; i <= genCode.length; i++) {
-           await redis.sadd("inviteCode", genCode[i]);
+    try {
+        // 如果没有初始化推荐码，初始化一堆
+        let isEmpty = await redis.scard("inviteCode");
+        if (!isEmpty) {
+            for (let i = 0; i <= genCode.length; i++) {
+            await redis.sadd("inviteCode", genCode[i]);
+            }
         }
+    } catch (err) {
+        throw err;
     }
-
     return genCode;
 }
 
@@ -83,18 +86,7 @@ function getAllCode() {
 }
 
 /**
- * 取出一个号码
- */
-function getOneCode() {
-    if (!invitationCode) {
-        throw Error("invitationCode not init");
-    }
-
-    return invitationCode.pop();
-}
-
-/**
- * 初始化推荐码并写入到文件中
+ * 初始化推荐码
  */
 async function initCode() {
     // await writeCodeToFile(100000, 999999);
@@ -103,8 +95,16 @@ async function initCode() {
     await genInvitationCode(100001, 999999);
 }
 
+/**
+ * 从 redis 里取出一个推荐码
+ */
+async function getInviteCode() {
+    let code = await redis.spop("inviteCode");
+    return code;
+}
+
 module.exports = {
     initCode,
     // getAllCode,
-    // getOneCode
+    getInviteCode
 }

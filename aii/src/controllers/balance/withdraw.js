@@ -18,12 +18,13 @@ async function withdraw(req, res, next) {
         }
        
         let rows = await getUserBalance(accountName);
+        logger.debug(`user balance is: ${ JSON.stringify(rows) }`);
         if (!rows) {
             return res.send(get_status(1001, "this account does not exists"));
         }
 
-        if (!amount.lessThan(rows.amount)) {
-            return res.send(get_status(1005, "insufficient balance"));
+        if (!amount.lessThan(rows.withdraw_enable)) {
+            return res.send(get_status(1011, "insufficient balance"));
         }
 
         // 目前 代币 只有 EOS, 并且一次性提取完

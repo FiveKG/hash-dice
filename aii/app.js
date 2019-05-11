@@ -1,7 +1,6 @@
 // @ts-check
 const express = require("express");
 const logger = require("./src/common/logger.js");
-const { initCode } = require("./genInvitationCode.js")
 
 const app = express();
 const nginx_host = `127.0.0.1`;
@@ -40,7 +39,7 @@ const port = 9527
 const hostname = "0.0.0.0"
 const server = module.exports = app.listen(port, hostname);
 server.on('listening', async () => {
-  await initCode();
+  // require("./src/build/initServer.js");
   logger.info(`**** server of pools running at http://localhost:${port}/  ****`)
 });
 

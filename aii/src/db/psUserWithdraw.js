@@ -17,6 +17,7 @@ async function subscribe(callback) {
     try {
         let channel = await getAmqpChannel(USER_WITHDRAW);
         channel.consume(USER_WITHDRAW, msg => {
+            logger.debug("subscribe userWithdraw message: ", msg);
             if (msg !== null) {
                 callback(msg.content.toString());
                 channel.ack(msg);

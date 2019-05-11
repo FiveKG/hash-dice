@@ -35,7 +35,8 @@ async function handlerWithdraw(accountName, symbol, amount) {
             return;
         }
 
-        let userAmount = new Decimal(rows.amount)
+        let userAmount = new Decimal(rows.amount);
+        logger.debug("user balance is ", userAmount);
         if (userAmount.lessThan(amount)) {
             logger.debug("insufficient balance");
             return;

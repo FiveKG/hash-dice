@@ -1,12 +1,21 @@
 // @ts-check
 const amqplib = require("amqplib");
 const logger = require("../common/logger.js").child({"@":"amqplib"});
+const { rabbitmq} = require("../../config.js");
+// const amqpOption = {
+//     protocol : "amqp",
+//     hostname : process.env.TBG_RABBIT_HOST,
+//     port     : Number(process.env.TBG_RABBIT_PORT),
+//     username : process.env.TBG_RABBIT_USER,
+//     password : process.env.TBG_RABBIT_PASS,
+//     heartbeat: 300
+// };
 const amqpOption = {
     protocol : "amqp",
-    hostname : process.env.TBG_RABBIT_HOST,
-    port     : Number(process.env.TBG_RABBIT_PORT),
-    username : process.env.TBG_RABBIT_USER,
-    password : process.env.TBG_RABBIT_PASS,
+    hostname : rabbitmq.host,
+    port     : Number(rabbitmq.port),
+    username : rabbitmq.user,
+    password : rabbitmq.pwd,
     heartbeat: 300
 };
 // logger.debug(`amqp option:%j`, amqpOption);

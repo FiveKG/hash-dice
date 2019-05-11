@@ -1,10 +1,10 @@
 // @ts-check
-const { redis } = require("../../common/index.js");
 const { pool } = require("../../db/index.js");
 const logger = require("../../common/logger.js").child({ "@src/test/test.js": "test" });
 const uuidv4 = require("uuid/v4");
 const { Decimal } = require("decimal.js");
-const acountConstant = require("../../common/constant/accountConstant.js");
+const { getRandEOSAccount } = require("./genRandEosAccount.js");
+const { getInviteCode } = require("./getInviteCode.js");
 
 // 插入测试账户
 async function insertAccount() {
@@ -27,7 +27,7 @@ async function insertAccount() {
             ),(
                 '${ uuidv4() }', '${ account["account4"] }', 0, 1, ${ code["code5"] }, now()
             ),(
-                '${ uuidv4() }', '${ account["account5"] }', 0, 1, ${ await getOneCode() }, now()
+                '${ uuidv4() }', '${ account["account5"] }', 0, 1, ${ await getInviteCode() }, now()
             )
             on conflict(account_name) do nothing;
 
@@ -99,11 +99,15 @@ async function insertAccount() {
             on conflict(account_name) do nothing;
 
             update account set refer_count = 2 where account_name = 'yujinsheng11';
-            update account set refer_count = 1 where account_name = '${ account["account1"] }';
-            update account set refer_count = 1 where account_name = '${ account["account2"] }';
-            update account set refer_count = 1 where account_name = '${ account["account3"] }';
-            update account set refer_count = 1 where account_name = '${ account["account4"] }';
-            update account set refer_count = 1 where account_name = '${ account["account5"] }';
+            update account set refer_count = 1 
+                where account_name in 
+                (
+                    '${ account["account1"] }', 
+                    '${ account["account2"] }', 
+                    '${ account["account3"] }', 
+                    '${ account["account4"] }', 
+                    '${ account["account5"] }', 
+                );
         `
         logger.info("insert test data to account table");
         await pool.query(querySql);
@@ -188,7 +192,7 @@ async function generateData(num) {
     let code = new Map();
     let account = new Map();
     for (let i = 0; i < num; i++) {
-        code[`code${i}`] = await getOneCode();
+        code[`code${i}`] = await getInviteCode();
         account[`account${i}`] = getRandEOSAccount();
     }
 
@@ -204,43 +208,9 @@ async function generateData(num) {
  * @property { Map } account
  */
 
-/**
- * 从 redis 里取出一个推荐码
- */
-async function getOneCode() {
-    let code = await redis.spop("inviteCode");
-    return code;
-}
-
-/**
- * 生成 12 位的 eos 帐号
- */
-function getRandEOSAccount() {
-    let result = [];
-    while(result.length < 12) {
-        let tmpIdx = Math.floor(Math.random() * 31 + 1);
-        if (result.includes(".") && tmpIdx === 5) {
-            continue;
-        }
-
-        if (result[0] === ".") {
-            result.pop();
-            continue;
-        }
-
-        result.push(accountConstant.EOS_NAME_CONVENTIONS_CHAR[tmpIdx]);
-    }
-    // console.log("result: ", result, result.length)
-    let rand = result.join("");
-
-    return rand;
-}
-
 module.exports = {
     "insertAccount": insertAccount,
     "insertSystemPool": insertSystemPool,
     "dropAllTable": dropAllTable,
     "generateData": generateData,
-    "getOneCode": getOneCode,
-    "getRandEOSAccount": getRandEOSAccount
 }
