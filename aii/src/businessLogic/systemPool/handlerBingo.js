@@ -26,15 +26,15 @@ async function handlerPk() {
         let pkPoolAmount = new Decimal(rows.pool_amount);
         // 本次分配的金额
         let distrEnable = pkPoolAmount.mul(70 / 100);
-        let pkAccountList = await getBingoAccountList();
-        console.log("pkAccountList: ", pkAccountList)
-        for (let i = 0; i< pkAccountList.length; i++){
-            let item = pkAccountList[i]
+        let bingoAccountList = await getBingoAccountList();
+        console.log("bingoAccountList: ", bingoAccountList)
+        for (let i = 0; i< bingoAccountList.length; i++){
+            let item = bingoAccountList[i]
             let rate = 0;
             if (i === 0) {
                 rate = 50 / 100;
             } else {
-                rate = 50 / 100 / (pkAccountList.length - 1);
+                rate = 50 / 100 / (bingoAccountList.length - 1);
             }
             let opType = `bingo income`;
             let remark = `account ${ item.account_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
