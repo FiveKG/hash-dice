@@ -27,7 +27,6 @@ async function withdraw(req, res, next) {
             return res.send(get_status(1011, "insufficient balance"));
         }
 
-        // 目前 代币 只有 EOS, 并且一次性提取完
         const withdrawData = {
             "account_name": accountName,
             "amount": amount.toNumber(),

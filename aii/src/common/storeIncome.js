@@ -9,7 +9,7 @@ const redis = require("./redis.js");
  */
 async function storeIncome(accountName, hType, data) {
     try {
-        let key = `income:${ accountName }`;
+        let key = `tbg:income:${ accountName }`;
         let isExist = await redis.hget(key, hType);
         let tmp = [];
         // 如果之前未收取，则一直积累

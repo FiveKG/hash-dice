@@ -23,7 +23,7 @@ async function incomeGain(req, res, next) {
 
         let detailArr = []
         let resDate = get_status(1);
-        let incomeMap = await redis.hgetall(`income:${ accountName }`);
+        let incomeMap = await redis.hgetall(`tbg:income:${ accountName }`);
         // console.log("incomeMap: ", incomeMap);
         if (incomeType === "all") {
             for (let key in incomeMap) {

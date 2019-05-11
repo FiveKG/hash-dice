@@ -10,7 +10,7 @@ async function incomeDetail(req, res, next) {
         let reqData = await inspect_req_data(req);
         logger.debug(`the param is: ${ reqData }`);
         let accountName = reqData.account_name;
-        let incomeMap = await redis.hgetall(`income:${ accountName }`);
+        let incomeMap = await redis.hgetall(`tbg:income:${ accountName }`);
         let detailArr = await startParse(incomeMap);
         let resDate = get_status(1);
         resDate["data"] = detailArr

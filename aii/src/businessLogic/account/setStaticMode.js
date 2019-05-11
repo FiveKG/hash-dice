@@ -38,7 +38,7 @@ async function setStaticMode(client, accountName, subAccount) {
                 subAccount: subAccount,
                 accountName: accountName
             }
-            await redis.sadd("subAccount:root", mainId.rows[0].main_id);
+            await redis.sadd("tbg:subAccount:root", mainId.rows[0].main_id);
             await redis.set(`tbg:level:${ mainId.rows[0].main_id }`, 0);
             await insertSubAccount(client, obj, "初始化三三公排");
         } else {
@@ -74,7 +74,7 @@ async function setStaticMode(client, accountName, subAccount) {
  * @returns { Promise<CreateSubId> }
  */
 async function createSubId(mainId) {
-    let members = await redis.scard("subAccount:position");
+    let members = await redis.scard("tbg:subAccount:position");
     let currentMaxLevel = await redis.get(`tbg:level:${ mainId }`);
     let level = parseInt(currentMaxLevel);
     logger.debug(`members: ${ members }`);
@@ -84,7 +84,7 @@ async function createSubId(mainId) {
         await redis.set(`tbg:level:${ mainId }`, level);
         await genPositionList(level);
     } 
-    let position = await redis.spop("subAccount:position");
+    let position = await redis.spop("tgb:subAccount:position");
     logger.debug(`position: ${ position }`);
     let id = mainId.toString() + level.toString() + position;
     let pid;
@@ -107,7 +107,7 @@ async function createSubId(mainId) {
  */
 async function genPositionList(level) {
     for (let i = 1; i <= Math.pow(3, level); i++) {
-        await redis.sadd("subAccount:position", i);
+        await redis.sadd("tgb:subAccount:position", i);
     }
 }
 

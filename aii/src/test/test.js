@@ -5,7 +5,7 @@ const { pool, createTable } = require("../db/index.js");
 const { redis } = require("../common/index.js");
 const storeIncome = require("../common/storeIncome.js");
 const logger = require("../common/logger.js").child({ "@src/test/test.js": "test" });
-const { initCode } = require("../../genInvitationCode.js");
+const { initCode } = require("../build/inviteCode/genInviteCode.js");
 const uuidv4 = require("uuid/v4");
 const df = require("date-fns");
 const { Decimal } = require("decimal.js");
@@ -39,8 +39,6 @@ const handlerTransfer = require("../job/handlerTransfer.js");
     // await handlerPk();
     // await handlerSafe();
     // await testStaticMode("yujinsheng11");
-    let result = await handlerTransfer("eosio.token", "yujinsheng11", "eoskeyplayer", "0.0001 HGB", "to hwj");
-    console.log("result: ", result);
     process.exit(0);
 })();
 

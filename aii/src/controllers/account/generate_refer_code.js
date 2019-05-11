@@ -18,7 +18,7 @@ async function genReferCode(req, res, next) {
             return res.send(get_status(1012, "this user had invest code"));
         }
         
-        let code =  await redis.spop("inviteCode");
+        let code =  await redis.spop("tbg:inviteCode");
         logger.debug(`code: ${ code }`);
         await pool.query("BEGIN");
         let insertAccountSql = `

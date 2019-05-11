@@ -26,10 +26,10 @@ async function genInvitationCode(min, max) {
 
     try {
         // 如果没有初始化推荐码，初始化一堆
-        let isEmpty = await redis.scard("inviteCode");
+        let isEmpty = await redis.scard("tbg:inviteCode");
         if (!isEmpty) {
             for (let i = 0; i <= genCode.length; i++) {
-            await redis.sadd("inviteCode", genCode[i]);
+            await redis.sadd("tbg:inviteCode", genCode[i]);
             }
         }
     } catch (err) {
@@ -99,7 +99,7 @@ async function initCode() {
  * 从 redis 里取出一个推荐码
  */
 async function getInviteCode() {
-    let code = await redis.spop("inviteCode");
+    let code = await redis.spop("tbg:inviteCode");
     return code;
 }
 
