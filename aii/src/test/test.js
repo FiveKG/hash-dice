@@ -24,6 +24,7 @@ const accountConstant = require("../common/constant/accountConstant.js");
 const { getBingoAmount } = require("../models/systemPool");
 const { handlerBingo, handlerHolder, handlerPk, handlerSafe } = require("../businessLogic/systemPool");
 const handlerTransfer = require("../job/handlerTransfer.js");
+const { scheduleJob } = require("node-schedule");
 
 ;(async () => {
     // await initCode();
@@ -39,8 +40,15 @@ const handlerTransfer = require("../job/handlerTransfer.js");
     // await handlerPk();
     // await handlerSafe();
     // await testStaticMode("yujinsheng11");
-    process.exit(0);
+    scheduleJob("0 * * * * 6", printHaha);
+    // process.exit(0);
 })();
+
+async function printHaha() {
+    let now = new Date();
+    console.log(now);
+    console.log("haha");
+}
 
 async function clearRedisKeyBeforeInit() {
     await redis.del("subAccount:position");
