@@ -1,0 +1,16 @@
+
+{
+    "remark" : "用户自定义的模板",
+    "tpls" : [
+        {
+            "code" : "代码，注意，不要与系统模板以及其他模板重复",
+            "name" : "名字，注意，不要与系统模板以及其他模板重复",
+            "language" : "语言: 可以为: c#|javascript|go|c|c++|php",
+            "summary" : ["简短描述模板的功能、用途  "],
+            "applyTo" : "模板可应用的工程类型。例如: dataStruct|api|ui",
+            "targetDir" : "代码生成之后，存储到的目标路径，例如： ./src/model/",
+            "targetFileName" : "{tableName}.js",
+            "tplFile" : "模板文件在本文件夹下的 相对地址，例如 ./sequelizeModel/model.hbs"
+        }
+    ]
+}

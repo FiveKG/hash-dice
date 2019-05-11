@@ -1,0 +1,17 @@
+{
+    "name" : "eos 钱包投资收益项目",
+    "summary" : [ "eos wallet， invest" ],
+    "dataStructPath": "./dataStruct.json",
+    "projects" : [
+        {
+            "code": "do1htjlc0wza9erwmvj",
+            "name" : "eos 钱包投资收益项目",
+            "type" : "aii" ,
+            "repo" : "http://git.isecsp.com/fj-wallet/aii.git",
+            "dir" : "../aii",
+            "lang":"javascript",
+            "tags": [ "eos" , "wallet" , "javascript" ],
+            "designFiles": [ "aii-api.json" ]
+        }
+    ]
+}

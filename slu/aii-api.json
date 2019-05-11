@@ -1,0 +1,825 @@
+{
+    "name" : "eos 钱包投资收益项目的接口",
+    "summary" : [
+
+    ],
+    "api" : [
+        {
+            "name" : "获取配置信息",
+            "summary": "",
+            "remark": [
+                "获取配置信息"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/config/get_config",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
+        },
+        {
+            "name" : "设置推荐码",
+            "summary": "",
+            "remark": [
+                "注册时给用户指定一个六位数推荐码"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/set_invitation",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "wallet_receiver": { "type": "text",  "is_require": true,  "desc": "获取收款帐号名称" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "根据填写的邀请码显示出帐号名称",
+            "summary": "",
+            "remark": [
+                "根据填写的邀请码显示出帐号名称"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/show_account_name_by_code",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "refer_code": { "type": "string",  "is_require": true,  "desc": "推荐号" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "account_name": { "type": "text",  "is_require": true,  "desc": "获取到的帐号名称" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "获取用户的邀请码",
+            "summary": "",
+            "remark": [
+                "获取用户的邀请码"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/invest_code",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "invest_code": { "type": "number",  "is_require": true,  "desc": "用户的邀请码" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "帐号是否激活",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/is_activated",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "is_activated": { "type": "number",  "is_require": true,  "desc": "用户等级 未激活（1） 黄金（2） 钻石（3）" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "帐号是否已经绑定",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/is_bind",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "is_bind": { "type": "boolean",  "is_require": true,  "desc": "帐号是否已经绑定" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "邀请绑定",
+            "summary": "",
+            "remark": [
+                "设置推荐码，不指定的话 默认 000000, 系统自动分配一个存在的邀请号码设置关系"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/bind_referrer",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "refer_code": { "type": "string",  "is_require": true,  "desc": "推荐号", "default": "000000" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
+        },
+        {
+            "name" : "投资 EOS",
+            "summary": "",
+            "remark": [
+                "投资必须有上级，没有要先添加",
+                "从 token 中获取账户名",
+                "投资 -> 转帐给合约帐号"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/self_invest",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "amount": { "type": "decimal",  "is_require": true,  "desc": "投资的 EOS 金额" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
+        },
+        {
+            "name" : "帮朋友投资 EOS",
+            "summary": "",
+            "remark": [
+
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/friend_invest",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "friendAccountName": { "type": "text",  "is_require": true,  "desc": "帮助投资的 EOS 帐号" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
+        },
+        {
+            "name" : "提现信息",
+            "summary": "",
+            "remark": [
+                ""
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/balance/balance_info",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": { 
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "withdraw_enable": { "type": "decimal",  "is_require": true,  "desc": "可提现的 EOS 金额" },
+                        "total_amount": { "type": "decimal",  "is_require": true,  "desc": "钱包总的 EOS 金额" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "提现",
+            "summary": "",
+            "remark": [
+                ""
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/balance/withdraw",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "amount": { "type": "decimal",  "is_require": true,  "desc": "要提现的金额" },
+                "symbol": { "type": "text",  "is_require": true,  "desc": "货币符号"  }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
+        },
+        {
+            "name" : "提现历史",
+            "summary": "",
+            "remark": [
+                ""
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/balance/withdraw_history",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "objectArr", "desc": "",
+                    "properties": {
+                        "create_time": { "type": "number",  "is_require": true,  "desc": "提现时间" },
+                        "withdraw_amount": { "type": "number",  "is_require": false,  "desc": "提现金额" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "会员等级",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/level",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "invest_code": { "type": "number",  "is_require": true,  "desc": "我的邀请码" },
+                        "invest_count": { "type": "number",  "is_require": false,  "desc": "直接推荐帐号数" },
+                        "level": { "type": "number",  "is_require": false,  "desc": "当前会员等级" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "显示投资收益",
+            "summary": "",
+            "remark": [
+                "点击可以收取收益"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/income/income_detail",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "objectArr", "desc": "",
+                    "properties": {
+                        "income_type": { "type": "decimal",  "is_require": true,  "desc": "收益类型" },
+                        "income_detail": { "type": "decimal",  "is_require": true,  "desc": "收益数量" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "点击收取收益",
+            "summary": "",
+            "remark": [
+                "点击可以收取收益",
+                { 
+                    "all": "收取全部",
+                    "invite": "直接推荐",
+                    "bingo": "Bingo奖金", 
+                    "pk": "直接推荐PK奖金", 
+                    "safe": "五倍收益保障金",
+                    "holder": "股东池分红",
+                    "game": "游戏推荐奖金",
+                    "sort": "一条静态",
+                    "mode": "三三静态"
+                }
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/income/income_gain",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "income_type": { "type": "text",  "is_require": true,  "desc": "收益的 type" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                    "desc": { "type": "string" ,"desc": "" },
+                    "data": {
+                        "total_income": { "type": "decimal",  "is_require": true,  "desc": "投资总收益" },
+                        "detail": {
+                            "type": "object", "desc": "",
+                            "properties": {
+                                "income_type": { "type": "decimal",  "is_require": true,  "desc": "收益类型" },
+                                "income_detail": { "type": "decimal",  "is_require": true,  "desc": "收益数量" }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "投资首页",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/investment_index",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                        "sub_account_count": { "type": "number",  "is_require": true,  "desc": "所有子帐号个数" },
+                        "total_income": { "type": "decimal",  "is_require": true,  "desc": "投资总收益" },
+                        "last_invest": { "type": "decimal",  "is_require": true,  "desc": "最后一位投资者可得的 EOS 额度" },
+                        "other_invest": { "type": "decimal",  "is_require": true,  "desc": "最后 2-30 位投资者可得的 EOS 额度" },
+                        "bingo_countdown": { "type": "Time",  "is_require": false,  "desc": "bingo 池奖金发放到计时" },
+                        "withdraw_enable": { "type": "decimal",  "is_require": true,  "desc": "可提现资产" },
+                        "repeat_currency": { "type": "decimal",  "is_require": true,  "desc": "复投资产" },
+                        "bingo_currency": { "type": "decimal",  "is_require": true,  "desc": "全球彩彩码" },
+                        "game_currency": { "type": "decimal",  "is_require": true,  "desc": "game 彩码" },
+                        "shareholders_bonus": { "type": "decimal",  "is_require": true,  "desc": "股东分红池奖金" },
+                        "safe_bonus": { "type": "decimal",  "is_require": false,  "desc": "五倍收益保障池奖金" },
+                        "pk_bonus": { "type": "decimal",  "is_require": false,  "desc": "pk 池奖金" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "子帐号",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/sub_account",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "total_sub_account": { "type": "number",  "is_require": true,  "desc": "所有子帐号个数" },
+                    "repeat_currency": { "type": "text",  "is_require": true,  "desc": "当前复投余额" },
+                    "repeat_quantity": { "type": "text",  "is_require": true,  "desc": "复投产生的子帐号数量" },
+                    "detail": {
+                        "type": "objectArray", "desc": "",
+                        "properties": {
+                            "sub_account_num": { "type": "number",  "is_require": true,  "desc": "子帐号编号" },
+                            "detail": { "type": "text",  "is_require": true,  "desc": "子帐号产生方式" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "我的团队 直接推荐",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/team/invite",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "referrer_account": { "type": "number",  "is_require": true,  "desc": "我的邀请人帐号" },
+                        "referrer_code": { "type": "number",  "is_require": true,  "desc": "我的邀请人的邀请码" },
+                        "activated": { "type": "array",  "is_require": true,  "desc": "已激活帐号" },
+                        "inactivated": { "type": "array",  "is_require": true,  "desc": "未已激活帐号" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "我的团队 三三排位",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/team/mode",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "objectArray", "desc": "",
+                    "properties": {
+                        "level": { "type": "number",  "is_require": true,  "desc": "层级" },
+                        "has_account": { "type": "number",  "is_require": true,  "desc": "已有帐号个数" },
+                        "invite_account": { "type": "number",  "is_require": true,  "desc": "直接推荐帐号个数" },
+                        "repeat_account": { "type": "number",  "is_require": true,  "desc": "复投帐号个数" },
+                        "last_account": { "type": "number",  "is_require": true,  "desc": "尚余空账号" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "我的团队 一条公排",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/team/sort",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "objectArray", "desc": "",
+                    "properties": {
+                        "sub_account": { "type": "number",  "is_require": true,  "desc": "子帐号编号" },
+                        "sort": { "type": "number",  "is_require": true,  "desc": "一条公排位置" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "查看推荐收益",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/income/referrer",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
+                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "total_income": { "type": "decimal",  "is_require": true,  "desc": "投资总收益" },
+                    "refer_income": { "type": "decimal",  "is_require": true,  "desc": "推荐收益" },
+                    "mode_income": { "type": "decimal",  "is_require": true,  "desc": "三三收益" },
+                    "sort_income": { "type": "decimal",  "is_require": true,  "desc": "公排收益" },
+                    "other_income": { "type": "decimal",  "is_require": true,  "desc": "其他总收益" },
+                    "detail" : {
+                        "type": "objectArray", "desc": "",
+                        "properties": {
+                            "create_time": { "type": "decimal",  "is_require": true,  "desc": "时间" },
+                            "invite_account": { "type": "decimal",  "is_require": true,  "desc": "推荐帐号" },
+                            "income": { "type": "decimal",  "is_require": true,  "desc": "收益" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "查看三三收益",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/income/mode",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
+                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "total_income": { "type": "decimal",  "is_require": true,  "desc": "投资总收益" },
+                    "refer_income": { "type": "decimal",  "is_require": true,  "desc": "推荐收益" },
+                    "mode_income": { "type": "decimal",  "is_require": true,  "desc": "三三收益" },
+                    "sort_income": { "type": "decimal",  "is_require": true,  "desc": "公排收益" },
+                    "other_income": { "type": "decimal",  "is_require": true,  "desc": "其他总收益" },
+                    "detail": {
+                        "type": "objectArray", "desc": "",
+                        "properties": {
+                            "create_time": { "type": "dateTime",  "is_require": true,  "desc": "时间" },
+                            "sub_account": { "type": "number",  "is_require": true,  "desc": "子帐号" },
+                            "sub_level": { "type": "number",  "is_require": true,  "desc": "收益向下层级数" },
+                            "income": { "type": "decimal",  "is_require": true,  "desc": "收益" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "查看一行公排收益",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/income/sort",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
+                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "total_income": { "type": "decimal",  "is_require": true,  "desc": "投资总收益" },
+                    "refer_income": { "type": "decimal",  "is_require": true,  "desc": "推荐收益" },
+                    "mode_income": { "type": "decimal",  "is_require": true,  "desc": "三三收益" },
+                    "sort_income": { "type": "decimal",  "is_require": true,  "desc": "公排收益" },
+                    "other_income": { "type": "decimal",  "is_require": true,  "desc": "其他总收益" },
+                    "detail": {
+                        "type": "objectArray", "desc": "",
+                        "properties": {
+                            "create_time": { "type": "dateTime",  "is_require": true,  "desc": "时间" },
+                            "sub_account": { "type": "number",  "is_require": true,  "desc": "子帐号" },
+                            "income": { "type": "decimal",  "is_require": true,  "desc": "收益" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "查看我的分红收益",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/income/dividend",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
+                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "create_time": { "type": "dateTime",  "is_require": true,  "desc": "时间" },
+                        "dividend": { "type": "decimal",  "is_require": true,  "desc": "分红收益" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "查看我的保障收益",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/income/safe",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
+                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "create_time": { "type": "dateTime",  "is_require": true,  "desc": "时间" },
+                        "dividend": { "type": "decimal",  "is_require": true,  "desc": "分红收益" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "查看其他收益",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/income/other",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
+                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "total_income": { "type": "decimal",  "is_require": true,  "desc": "投资总收益" },
+                    "refer_income": { "type": "decimal",  "is_require": true,  "desc": "推荐收益" },
+                    "mode_income": { "type": "decimal",  "is_require": true,  "desc": "三三收益" },
+                    "sort_income": { "type": "decimal",  "is_require": true,  "desc": "公排收益" },
+                    "other_income": { "type": "decimal",  "is_require": true,  "desc": "其他总收益" },
+                    "detail": {
+                        "type": "objectArray", "desc": "",
+                        "properties": {
+                            "create_time": { "type": "dateTime",  "is_require": true,  "desc": "时间" },
+                            "info": { "type": "text",  "is_require": true,  "desc": "详情" },
+                            "income": { "type": "decimal",  "is_require": true,  "desc": "收益" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "bingo 奖金池",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/pools/bingo",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "current_amount": { "type": "decimal",  "is_require": true,  "desc": "当前股东分红池余额" },
+                    "issue": { "type": "decimal",  "is_require": true,  "desc": "累计已经发放股东分红" },
+                    "total": { "type": "decimal",  "is_require": true,  "desc": "股东分红池累计收入" },
+                    "account_level": { "type": "number",  "is_require": true,  "desc": "会员等级" }
+                }
+            }
+        },
+        {
+            "name" : "股东分红池",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/pools/shareholders",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "current_amount": { "type": "decimal",  "is_require": true,  "desc": "当前股东分红池余额" },
+                    "issue": { "type": "decimal",  "is_require": true,  "desc": "累计已经发放股东分红" },
+                    "total": { "type": "decimal",  "is_require": true,  "desc": "股东分红池累计收入" },
+                    "account_level": { "type": "number",  "is_require": true,  "desc": "会员等级" }
+                }
+            }
+        },
+        {
+            "name" : "五倍收益保障池",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/pools/safe",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
+                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "current_amount": { "type": "decimal",  "is_require": true,  "desc": "当前五倍收益保障池余额" },
+                    "issue": { "type": "decimal",  "is_require": true,  "desc": "累计已经发放的五倍收益保障" },
+                    "total": { "type": "decimal",  "is_require": true,  "desc": "五倍收益保障池累计收入" },
+                    "account_income": { "type": "decimal", "is_require": true, "desc": "我的主帐户收益" }
+                }
+            }
+        },
+        {
+            "name" : "直接推荐 pk 池",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/pools/pk",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
+                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "current_amount": { "type": "decimal",  "is_require": true,  "desc": "当前直接推荐 pk 池余额" },
+                    "issue": { "type": "decimal",  "is_require": true,  "desc": "累计已经发放的 pk 奖池" },
+                    "total": { "type": "decimal",  "is_require": true,  "desc": " pk 池累计收入" },
+                    "detail": {
+                        "type": "objectArray", "desc": "股东分红收入明细",
+                        "properties": {
+                            "account_name": { "type": "text",  "is_require": true,  "desc": "主帐号名称" },
+                            "sub_account": { "type": "number",  "is_require": true,  "desc": "推荐的子帐号数量" },
+                            "percentage": { "type": "decimal",  "is_require": true,  "desc": "可获得的奖金百分比" },
+                            "bonus": { "type": "decimal",  "is_require": true,  "desc": "实时奖金额度" }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
