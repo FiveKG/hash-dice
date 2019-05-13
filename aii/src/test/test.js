@@ -40,7 +40,6 @@ const { scheduleJob } = require("node-schedule");
     // await handlerPk();
     // await handlerSafe();
     // await testStaticMode("yujinsheng11");
-    scheduleJob("0 * * * * 6", printHaha);
     // process.exit(0);
 })();
 

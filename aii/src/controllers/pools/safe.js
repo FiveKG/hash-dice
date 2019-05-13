@@ -1,7 +1,7 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@controllers/pools/safe.js": "safe pool" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
-const { getAccountMemberLevel } = require("../../models/account");
+const { getUserBalance } = require("../../models/balance");
 const { getSafeAmount, getSafeHistory } = require("../../models/systemPool");
 const { Decimal } = require("decimal.js");
 
@@ -10,8 +10,9 @@ async function safe(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
         let resData = get_status(1);
-        let userMemberLevel = await getAccountMemberLevel(reqData.account_name);
-        if (!userMemberLevel) {
+        let accountName = reqData.account_name
+        let rows = await getUserBalance(accountName);
+        if (!rows) {
             return res.send(get_status(1001, "this account does not exists"));
         }
         let safePool = await getSafeAmount();
@@ -30,7 +31,7 @@ async function safe(req, res, next) {
             current_amount: amount.toFixed(4),
             issue: issue,
             total: amount.add(issue).toFixed(4),
-            account_level: userMemberLevel.member_level,
+            account_income: rows.amount,
         };
         res.send(resData);
     } catch (err) {
