@@ -2,10 +2,10 @@
 require("./setEnv.js")();
 const express = require("express");
 const logger = require("./src/common/logger.js");
-const sb = require("@yz/yue-svc-base");
-const service_name = sb.service_define.service_name;
+// var sb = require("@yz/yue-svc-base");
+// const service_name = sb.service_define.service_name;
 
-logger.info(`init ${service_name} .`);
+// logger.info(`init ${service_name} .`);
 
 const app = express();
 const nginx_host = `127.0.0.1`;
@@ -40,12 +40,12 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 
 app.use(require("./src/router/router"));
 
-let port = sb.get_config("service_port", `${service_name}`);
+let port // = sb.get_config("service_port", `${service_name}`);
 if (process.env.NODE_ENV === 'production') {
     port = require("@yz/yue-generate-port")();
 }
 
-const server = module.exports = app.listen(port); //选择一个随机端口
+const server = module.exports = app.listen(9527, "0.0.0.0"); //选择一个随机端口
 server.on('listening', async () => {
   // 初始化系统服务数据
   // require("./src/build/initServer.js");

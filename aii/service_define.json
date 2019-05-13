@@ -1,11 +1,11 @@
 {
-    "service_name" : "tbg_service",
+    "name" : "tbg_service",
     "service_type" : "service",
     "port":13015,
     "summary" : [
 
     ],
-    "api" : [
+    "apis" : [
         {
             "name" : "获取配置信息",
             "summary": "",
