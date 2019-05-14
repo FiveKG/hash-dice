@@ -22,7 +22,7 @@ function get_data(req, service_define) {
   }
 
   const req_url = req.path.toLowerCase();
-  const api_info = service_define.api.find((api) => { return api.url === req_url; });
+  const api_info = service_define.apis.find((api) => { return api.url === req_url; });
   if (api_info === undefined) {
     var error = new Error(`current request url : ${req_url} is not exist in api. pls check.`);
     pino.error(error.message, error.stack);

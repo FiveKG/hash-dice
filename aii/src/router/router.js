@@ -8,6 +8,8 @@ const income = require("../controllers/income");
 const team = require("../controllers/team");
 const config = require("../controllers/config");
 
+// 获取服务运行状态
+router.get("/common/health", require("../common/health.js"));
 router.get("/config/get_config", config.getConfig);
 
 router.get("/account/show_account_name_by_code", account.show_account_name_by_code);

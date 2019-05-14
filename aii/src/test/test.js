@@ -40,6 +40,7 @@ const { scheduleJob } = require("node-schedule");
     // await handlerPk();
     // await handlerSafe();
     // await testStaticMode("yujinsheng11");
+    await firstAccount("yujinsheng11");
     // process.exit(0);
 })();
 
@@ -47,6 +48,16 @@ async function printHaha() {
     let now = new Date();
     console.log(now);
     console.log("haha");
+}
+
+async function firstAccount(accountName) {
+    try {
+        let selectAccountNameSql = `select account_name from account where account_name not in ('${ accountName }') order by random() limit 1;`
+        let { rows } = await pool.query(selectAccountNameSql);
+        console.log(rows);
+    } catch (err) {
+        throw err;
+    }
 }
 
 async function clearRedisKeyBeforeInit() {

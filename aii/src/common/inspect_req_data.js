@@ -7,7 +7,7 @@ const server_define_location = path.join(__dirname, "../../service_define.json")
 assert(fs.existsSync(server_define_location), `file [${server_define_location}] is not exists.`);
 
 const server_define_info = require(server_define_location);
-// console.log(server_define_info)
+// console.log(server_define_info);
 /**
  * 检查请求对象中的数据
  * @param {Object} req 请求对象

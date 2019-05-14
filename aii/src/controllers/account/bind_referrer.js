@@ -10,11 +10,12 @@ async function bindReferrer(req, res, next) {
         let reqData = await inspect_req_data(req);
         logger.debug(`the param of bind referrer is: ${ JSON.stringify(reqData) }`);
         logger.info(`transaction begin`);
+        let accountName = reqData.account_name;
         let inviteCode = reqData.refer_code;
         let selectAccountNameSql = ``;
         // 如果邀请码是 "000000", 随机分配一个存在的帐号作为邀请人
         if (inviteCode === "000000") {
-            selectAccountNameSql = `select account_name from account order by random() limit 1;`
+            selectAccountNameSql = `select account_name from account where account_name not in ('${ accountName }') order by random() limit 1;`
         } else {
             inviteCode = parseInt(inviteCode)
             selectAccountNameSql = `
@@ -25,8 +26,14 @@ async function bindReferrer(req, res, next) {
         if (!rows.length) {
             return res.send(get_status(1001, "this account does not exists"));
         }
-        let remark = `user ${ rows[0].account_name } invites ${ reqData.account_name }`;
-        await setReferrer(pool, rows[0].account_name, reqData.account_name, remark, false);
+        let referrerName = ``;
+        if (!rows[0].length) {
+            referrerName = null;
+        } else {
+            referrerName = rows[0].account_name;
+        }
+        let remark = `user ${ referrerName } invites ${ accountName }`;
+        await setReferrer(pool, referrerName, accountName, remark, false);
         res.send(get_status(1));
     } catch (err) {
         throw err
