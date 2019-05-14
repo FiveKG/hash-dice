@@ -40,7 +40,7 @@ const { scheduleJob } = require("node-schedule");
     // await handlerPk();
     // await handlerSafe();
     // await testStaticMode("yujinsheng11");
-    await firstAccount("yujinsheng11");
+    await firstAccount("yujinsheng11", "000000");
     // process.exit(0);
 })();
 
@@ -50,11 +50,28 @@ async function printHaha() {
     console.log("haha");
 }
 
-async function firstAccount(accountName) {
+async function firstAccount(accountName, inviteCode) {
     try {
-        let selectAccountNameSql = `select account_name from account where account_name not in ('${ accountName }') order by random() limit 1;`
+        let selectAccountNameSql = ``;
+        // 如果邀请码是 "000000", 随机分配一个存在的帐号作为邀请人
+        if (inviteCode === "000000") {
+            selectAccountNameSql = `select account_name from account where account_name not in ('${ accountName }') order by random() limit 1;`
+        } else {
+            inviteCode = parseInt(inviteCode)
+            selectAccountNameSql = `
+                select account_name from account where refer_code = ${ inviteCode };
+            `
+        }
         let { rows } = await pool.query(selectAccountNameSql);
-        console.log(rows);
+        let referrerName = ``;
+        if (!rows.length) {
+            referrerName = null;
+        } else {
+            referrerName = rows[0].account_name;
+        }
+        let remark = `user ${ referrerName } invites ${ accountName }`;
+        console.log(remark);
+        // await setReferrer(pool, referrerName, accountName, remark, false);
     } catch (err) {
         throw err;
     }
