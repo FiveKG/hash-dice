@@ -14,6 +14,7 @@ const storeIncome = require("../../common/storeIncome.js");
  */
 async function handlerHolder() {
     let client = await pool.connect();
+    logger.debug(`begin handler ${ SHAREHOLDERS_POOL } pool, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     await client.query("BEGIN");
     try {
         let rows = await getOneAccount(SHAREHOLDERS_POOL);
@@ -52,7 +53,8 @@ async function handlerHolder() {
         let opType = `allocating ${ SHAREHOLDERS_POOL }`;
         let remark = `allocating ${ SHAREHOLDERS_POOL }, minus ${ distrEnable }`;
         await systemAssetChange(client, SHAREHOLDERS_POOL, changeAmount, rows.pool_amount, opType, remark);
-        await client.query("COMMIT")
+        await client.query("COMMIT");
+        logger.debug(`handler ${ SHAREHOLDERS_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {
         await client.query("ROLLBACK")
         throw err;

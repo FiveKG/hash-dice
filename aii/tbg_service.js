@@ -2,10 +2,10 @@
 require("./setEnv.js")();
 const express = require("express");
 const logger = require("./src/common/logger.js");
-// var sb = require("@yz/yue-svc-base");
-// const service_name = sb.service_define.service_name;
+const sb = require("@yz/yue-svc-base");
+const service_name = sb.service_define.name;
 
-// logger.info(`init ${service_name} .`);
+logger.info(`init ${service_name} .`);
 
 const app = express();
 const nginx_host = `127.0.0.1`;

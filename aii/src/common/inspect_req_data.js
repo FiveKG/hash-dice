@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const assert = require("assert");
 const { get_data, check_data } = require("./check_data");
-const server_define_location = path.join(__dirname, "../../../slu/aii-api.json");
+const server_define_location = path.join(__dirname, "../../service_define.json");
 assert(fs.existsSync(server_define_location), `file [${server_define_location}] is not exists.`);
 
 const server_define_info = require(server_define_location);

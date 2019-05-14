@@ -127,7 +127,7 @@ async function getLastPos(){
     let lastPosStr = await redis.get("tbg:account_action_seq");
     let lastPos = parseInt(lastPosStr);
     if(isNaN(lastPos)){
-        await redis.set("tbg:account_action_seq", 3000);
+        await redis.set("tbg:account_action_seq", 1300);
         return 1300;
     }
     return lastPos + 1;

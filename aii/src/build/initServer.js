@@ -21,7 +21,7 @@ const { redis } = require("../common");
     // await dropAllTable();
     await createTable();
     await insertSystemAccount(systemAccount); 
-    process.exit(0);
+    // process.exit(0);
 })();
 
 // async function clearRedisKeyBeforeInit() {

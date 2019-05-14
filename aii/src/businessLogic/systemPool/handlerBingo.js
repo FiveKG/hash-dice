@@ -15,6 +15,7 @@ const df = require("date-fns");
  */
 async function handlerPk() {
     let client = await pool.connect();
+    logger.debug(`begin handler ${ BINGO_POOL } pool, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     await client.query("BEGIN");
     try {
         let rows = await getOneAccount(BINGO_POOL);
@@ -56,7 +57,8 @@ async function handlerPk() {
         let opType = `allocating ${ BINGO_POOL }`;
         let remark = `allocating ${ BINGO_POOL }, minus ${ distrEnable }`;
         await systemAssetChange(client, BINGO_POOL, changeAmount, rows.pool_amount, opType, remark);
-        await client.query("COMMIT")
+        await client.query("COMMIT");
+        logger.debug(`handler ${ BINGO_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {
         await client.query("ROLLBACK")
         throw err;

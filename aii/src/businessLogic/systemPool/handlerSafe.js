@@ -15,6 +15,7 @@ const storeIncome = require("../../common/storeIncome.js");
 async function handlerSafe() {
     let client = await pool.connect();
     await client.query("BEGIN");
+    logger.debug(`begin handler ${ SAFE_POOL } pool, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     try {
         let rows = await getOneAccount(SAFE_POOL);
         if (!rows) {
@@ -49,7 +50,8 @@ async function handlerSafe() {
         let opType = `allocating ${ SAFE_POOL }`;
         let remark = `allocating ${ SAFE_POOL }, minus ${ distrEnable }`;
         await systemAssetChange(client, SAFE_POOL, changeAmount, rows.pool_amount, opType, remark);
-        await client.query("COMMIT")
+        await client.query("COMMIT");
+        logger.debug(`handler ${ SAFE_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {
         await client.query("ROLLBACK")
         throw err;
