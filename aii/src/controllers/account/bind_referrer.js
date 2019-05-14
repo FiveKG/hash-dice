@@ -23,11 +23,8 @@ async function bindReferrer(req, res, next) {
             `
         }
         let { rows } = await pool.query(selectAccountNameSql);
-        if (!rows.length) {
-            return res.send(get_status(1001, "this account does not exists"));
-        }
         let referrerName = ``;
-        if (!rows[0].length) {
+        if (!rows.length) {
             referrerName = null;
         } else {
             referrerName = rows[0].account_name;
