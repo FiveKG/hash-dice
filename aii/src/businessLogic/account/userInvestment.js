@@ -26,13 +26,15 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
         return 1004;
     }
     let member = await getAccountMemberLevel(accountName);
-    logger.debug(`the account member level is ${ member }`);
+    logger.debug(`the account member level is %j`, member);
     // 帐号不存在
     if (!member) {
+        logger.debug(`the account does not exist`);
         return 1001;
     }
     // 已激活
     if (member.member_level !== 1) {
+        logger.debug(`the account had activated`);
         return 1013
     }
     let investAmount = new Decimal(amount);
@@ -50,11 +52,13 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
         let accountMember = await getAccountMemberLevel(accountName);
         if (systemAccount.length < 8) {
             await client.query("ROLLBACK");
+            logger.debug(`lack of system account`);
             return  1003;
         }
 
         if (!investAccount) {
             await client.query("ROLLBACK");
+            logger.debug(`the account does not exist`);
             return 1001;
         }
 

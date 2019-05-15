@@ -1,15 +1,20 @@
 // @ts-check
 const handlerTransferActions = require("./src/job/listenTransfer.js");
+const { scheduleJob } = require("node-schedule");
+const logger = require("./src/common/logger.js");
 
-;(async ()=> {
-    try {
-        // await handlerTransferActions();
-        await beginListenAction(1000);
-        process.exit(0);
-    } catch (err) {
-        throw err;
-    }
-})();
+logger.debug(`beginListenAction running...`);
+scheduleJob("*/1 * * * * *", handlerTransferActions);
+
+// ;(async ()=> {
+//     try {
+//         // await handlerTransferActions();
+//         await beginListenAction(1000);
+//         process.exit(0);
+//     } catch (err) {
+//         throw err;
+//     }
+// })();
 
 async function beginListenAction(ms) {
     try {

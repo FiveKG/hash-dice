@@ -22,7 +22,7 @@ async function getAllParentLevel(accountName) {
             select user_level from etc where user_level[array_length(user_level, 1)] = '${ accountName }';
         `
         let { rows } = await pool.query(selectAllParentLevelSql);
-        return rows[0].user_level;
+        return rows[0];
     } catch (err) {
         throw err
     }

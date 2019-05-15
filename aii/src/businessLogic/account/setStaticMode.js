@@ -14,10 +14,11 @@ const { redis } = require("../../common/index.js");
 async function setStaticMode(client, accountName, subAccount) {
     try {
         logger.debug("set user static mode");
-        let allParentLevel = await getAllParentLevel(accountName);
-        if (!allParentLevel.length) {
+        let rows = await getAllParentLevel(accountName);
+        if (!rows) {
             throw Error("没有推荐关系，请先设置推荐关系，检查数据是否正确");
         }
+        let allParentLevel = rows.user_level;
         // 判断最上端的用户是否存在
         let mainId = await pool.query(`select main_id from account where account_name = '${ allParentLevel[1] }'`);
         if (!mainId.rows.length) {

@@ -8,7 +8,7 @@ async function handlerTransferActions() {
     try {
         let actionSeq = await getLastPos();
         let actions = await getTrxAction(actionSeq);
-        // console.log("actions: ", actions);
+        console.log("actionSeq: ", actionSeq);
         for (let action of actions) {
             // console.log(action);
             let result = await parseEosAccountAction(action);
@@ -73,6 +73,7 @@ async function parseEosAccountAction(action) {
         result["trx_id"] = actionTrace.trx_id;
         console.log(`trx_id: ${ actionTrace.trx_id } -- account_action_seq: ${ action.account_action_seq }`);
         let { receipt, act } = actionTrace;
+        console.log("act: ", act);
         let isTransfer = (act.account === EOS_TOKEN || act.account === TBG_TOKEN) && act.name === "transfer"
         if (!isTransfer) {
             // todo
@@ -84,14 +85,14 @@ async function parseEosAccountAction(action) {
         if (to !== WALLET_RECEIVER) {
             // todo
             // 收款帐号不符
-            console.log("receipt receiver does not match");
+            console.log(`receipt receiver does not match, ${ to } !== ${ WALLET_RECEIVER }`);
             return result;
         }
         let [ invest, user ] = memo.split(":");
         if (invest !== "tbg_invest") {
             // todo
             // memo 格式不符
-            console.log("invalid memo");
+            console.log(`invalid memo, ${ invest } !== "tbg_invest"`);
             return result;
         }
         let [ amount, symbol ] = quantity.split(" ");
@@ -99,7 +100,7 @@ async function parseEosAccountAction(action) {
             if (amount !== BASE_AMOUNT) {
                 // todo
                 // 转帐额度不符
-                console.log("invalid quantity");
+                console.log(`invalid quantity, amount must be ${ BASE_AMOUNT }, but get ${ amount }`);
                 return result;
             }
 
@@ -111,11 +112,12 @@ async function parseEosAccountAction(action) {
 
             result["from"] = from;
             result["amount"] = amount;
+            result["symbol"] = symbol;
             return result;
         } else {
             // todo
             // 代币符号不符
-            console.log("invalid asset symbol");
+            console.log("invalid asset symbol, symbol must be EOS or TBG");
             return result;
         }
     } catch (err) {
