@@ -1,23 +1,20 @@
 // @ts-check
-const { pool } = require("../../db");
 
 /**
  * 插入子帐号
  * @param { any } client
  * @param { SubAccount } obj 根节点用户
  */
-async function insertSubAccount(client, obj, remark) {
+async function insertSubAccount(client, obj) {
     try {
-        let insertSubAccountSql = `
-            insert into sub_account values (
-                '${ obj.id }', '${ obj.pid }', '${ obj.rootAccount }', '${ obj.accountName }', '${ obj.subAccount }', ${ obj.level }, ${ obj.position }, now()
+        const insertSubAccountSql = `
+            INSERT INTO sub_account(id, pid, root_account, main_account, sub_account_name, level, position, create_time)
+            VALUES (
+                $1, $2, $3, $4, $5, $6, $7, now()
             ) returning position;
-            insert into account_op (account_name, op_type, remark, create_time)
-            values (
-                '${ obj.accountName }', 'setStaticMode', '${ remark }', now()
-            );
         `
-        await client.query(insertSubAccountSql);
+        const opts = [ obj.id, obj.pid, obj.rootAccount, obj.accountName, obj.subAccount, obj.level, obj.position ]
+        await client.query(insertSubAccountSql, opts);
     } catch (err) {
         throw err
     }

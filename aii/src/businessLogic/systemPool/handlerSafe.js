@@ -2,6 +2,7 @@
 const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { SAFE_POOL } = require("../../common/constant/accountConstant.js");
+const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const { personalAssetChange, systemAssetChange } = require("../../models/asset");
 const { getSafeAccountList } = require("../../models/systemPool");
 const { Decimal } = require("decimal.js");
@@ -20,12 +21,12 @@ async function handlerSafe() {
         let rows = await getOneAccount(SAFE_POOL);
         if (!rows) {
             logger.debug(`system account ${ SAFE_POOL } not found`);
-            return;
+            throw Error(`system account ${ SAFE_POOL } not found`);
         }
 
         let safePoolAmount = new Decimal(rows.pool_amount);
         // 本次分配的金额
-        let distrEnable = safePoolAmount.mul(30 / 100);
+        let distrEnable = safePoolAmount.mul(INCOME_CONSTANT.SAFE_ALLOCATE_RATE / INCOME_CONSTANT.SAFE_ALLOCATE_RATE);
         let safeAccountList = await getSafeAccountList();
         console.log("safeAccountList: ", safeAccountList);
         for (let item of safeAccountList) {

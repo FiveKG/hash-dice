@@ -4,6 +4,7 @@ const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getUserSubAccount } = require("../../models/account");
 const { getSafeAmount, getShareholdersAmount, getOneAccount } = require("../../models/systemPool");
 const { PK_POOL, BINGO_POOL } = require("../../common/constant/accountConstant.js");
+const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
 const { getUserBalance } = require("../../models/balance");
 const { Decimal } = require("decimal.js");
 const df = require("date-fns");
@@ -48,12 +49,14 @@ async function investmentIndex(req, res, next) {
         let resDate = get_status(1);
         let now = new Date();
         let dayEnd = df.endOfDay(now);
+        const bingoLastInvest = bingoPoolAmount.mul(INCOME_CONSTANT.BINGO_ALLOCATE_RATE / INCOME_CONSTANT.BASE_RATE).mul(INCOME_CONSTANT.BINGO_INCOME_OTHER / INCOME_CONSTANT.BASE_RATE).toFixed(4);
+        const bingoOtherInvest = bingoPoolAmount.mul(INCOME_CONSTANT.BINGO_ALLOCATE_RATE / INCOME_CONSTANT.BASE_RATE).mul(INCOME_CONSTANT.BINGO_INCOME_OTHER / INCOME_CONSTANT.BASE_RATE / 29).toFixed(4)
         resDate["data"] = {
             "account_name": reqData.account_name,
             "sub_account_count": subAccountList.length,
             "total_income": userBalance.toFixed(4),
-            "last_invest": bingoPoolAmount.mul(70 / 100).mul(50 / 100).toFixed(4),
-            "other_invest": bingoPoolAmount.mul(70 / 100).mul(50 / 100 / 29).toFixed(4),
+            "last_invest": bingoLastInvest,
+            "other_invest": bingoOtherInvest,
             "bingo_countdown": df.format(dayEnd, "x"),
             "withdraw_enable": withdraw_enable.toFixed(4),
             "repeat_currency": repeatCurrency.toFixed(4),

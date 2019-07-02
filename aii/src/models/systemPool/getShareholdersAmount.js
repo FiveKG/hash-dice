@@ -9,9 +9,9 @@ const { SHAREHOLDERS_POOL } = require("../../common/constant/accountConstant.js"
 async function getShareholdersAmount() {
     try {
         let selectSql = `
-            select pool_amount from system_pools where pool_type = '${ SHAREHOLDERS_POOL }';
+            select pool_amount from system_pools where pool_type = $1;
         `
-        let selectResult = await pool.query(selectSql);
+        let selectResult = await pool.query(selectSql, [ SHAREHOLDERS_POOL ]);
         return  selectResult.rows[0];
     } catch (err) {
         throw err;

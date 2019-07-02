@@ -16,8 +16,8 @@ async function incomeGain(req, res, next) {
         logger.debug(`the param of gain income is: ${ JSON.stringify(reqData) }`);
         let accountName = reqData.account_name;
         let incomeType = reqData.income_type;
-        let flag = incomeType === "all" || incomeType === "invite" || incomeType === "bingo" || incomeType === "pk" || incomeType === "safe" || incomeType === "holder" || incomeType === "game" || incomeType === "sort" || incomeType === "mode"
-        if (!flag) {
+        const incomeTypeList = [ "all", "invite", "bingo", "pk", "safe", "holder", "game", "sort", "mode" ];
+        if (!incomeTypeList.includes(incomeType)) {
             return res.send(get_status(2002, "request params value is invalid"));
         }
 
@@ -64,7 +64,8 @@ async function startGain(incomeMap, incomeType) {
     for (let item of incomeArr) {
         let changeAmount = new Decimal(item.change_amount);
         console.log("item: ", item);
-        await personalAssetChange(pool, item.account_name, changeAmount, item.op_type, item.remark, df.format(item.create_time, "YYYY-MM-DD HH:mm:ssZ"));
+        const createTime = df.format(item.create_time, "YYYY-MM-DD HH:mm:ssZ");
+        await personalAssetChange(pool, item.account_name, changeAmount, item.op_type, item.remark, createTime);
     }
 }
 

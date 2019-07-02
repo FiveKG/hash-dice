@@ -10,10 +10,9 @@ async function getUserSubAccount(accountName) {
     try {
         //  order by create_time asc
         let selectSubLevelSql = `
-            select sub_account_name from sub_account where main_account = '${ accountName }';
+            select sub_account_name from sub_account where main_account = $1;
         `
-        // let { rows } = await pool.query(selectSubLevelSql, [accountName]);
-        let { rows } = await pool.query(selectSubLevelSql);
+        let { rows } = await pool.query(selectSubLevelSql, [ accountName ]);
         return rows;
     } catch (err) {
         throw err

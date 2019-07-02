@@ -2,9 +2,10 @@
 const { pool } = require("../../db");
 const { getStaticMode } = require("../../models/account");
 const { Decimal } = require("decimal.js");
-const { BASE_RATE, MODE_INCOME_RATE} = require("../../common/constant/rateConstant.js");
+const { BASE_RATE, MODE_INCOME_RATE} = require("../../common/constant/investConstant.js");
+const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
 const { DEV_OP_POOL, COMMUNITY_POOL } = require("../../common/constant/accountConstant.js");
-const modeConstants = require("../../common/constant/staticModeConstants.js");
+const MODE_CONSTANT = require("../../common/constant/staticModeConstants.js");
 const { personalAssetChange, systemAssetChange } = require("../../models/asset");
 const { getOneAccount } = require("../../models/systemPool");
 const logger = require("../../common/logger.js");
@@ -52,11 +53,11 @@ async function staticMode(client, amount, subAccount) {
             }
             // 减去已经发放的
             let last = modeEnable.minus(distributed);
-            let devRemark = `distribution sort income, add ${ DEV_OP_POOL } ${ last.mul(40 / 100) } amount`;
-            let communityRemark = `distribution sort income, add ${ COMMUNITY_POOL } ${ last.mul(60 / 100) } amount`;
+            let devRemark = `distribution sort income, add ${ DEV_OP_POOL } ${ last.mul(INCOME_CONSTANT.DEV_INCOME / INCOME_CONSTANT.BASE_RATE) } amount`;
+            let communityRemark = `distribution sort income, add ${ COMMUNITY_POOL } ${ last.mul(INCOME_CONSTANT.COMMUNITY_INCOME / INCOME_CONSTANT.BASE_RATE) } amount`;
             logger.debug(`distributed: ${ distributed }, last: ${ last }`);
-            await systemAssetChange(client, DEV_OP_POOL, last.mul(40 / 100), devAccount.pool_amount, 'sort last', devRemark);
-            await systemAssetChange(client, COMMUNITY_POOL, last.mul(60 / 100), communityAccount.pool_amount, 'sort last', communityRemark);
+            await systemAssetChange(client, DEV_OP_POOL, last.mul(INCOME_CONSTANT.DEV_INCOME / INCOME_CONSTANT.BASE_RATE), devAccount.pool_amount, 'sort last', devRemark);
+            await systemAssetChange(client, COMMUNITY_POOL, last.mul(INCOME_CONSTANT.COMMUNITY_INCOME / INCOME_CONSTANT.BASE_RATE), communityAccount.pool_amount, 'sort last', communityRemark);
         }
     } catch (err) {
         throw err
@@ -69,29 +70,29 @@ async function staticMode(client, amount, subAccount) {
  */
 function setRate(position) {
     if (position === 1) {
-        return modeConstants.FIRST / modeConstants.STATIC_MODE_BASE;
+        return MODE_CONSTANT.FIRST / MODE_CONSTANT.STATIC_MODE_BASE;
     } else if (position === 2) {
-        return modeConstants.SECOND / modeConstants.STATIC_MODE_BASE;
+        return MODE_CONSTANT.SECOND / MODE_CONSTANT.STATIC_MODE_BASE;
     } else if (position === 3) {
-        return modeConstants.THIRD / modeConstants.STATIC_MODE_BASE;
+        return MODE_CONSTANT.THIRD / MODE_CONSTANT.STATIC_MODE_BASE;
     } else if (position === 4) {
-        return modeConstants.FOURTH / modeConstants.STATIC_MODE_BASE;
+        return MODE_CONSTANT.FOURTH / MODE_CONSTANT.STATIC_MODE_BASE;
     } else if (position === 5) {
-        return modeConstants.FIFTH / modeConstants.STATIC_MODE_BASE;
+        return MODE_CONSTANT.FIFTH / MODE_CONSTANT.STATIC_MODE_BASE;
     } else if (position === 6) {
-        return modeConstants.SIXTH / modeConstants.STATIC_MODE_BASE;
+        return MODE_CONSTANT.SIXTH / MODE_CONSTANT.STATIC_MODE_BASE;
     } else if (position === 7) {
-        return modeConstants.SEVENTH / modeConstants.STATIC_MODE_BASE;
+        return MODE_CONSTANT.SEVENTH / MODE_CONSTANT.STATIC_MODE_BASE;
     } else if (position === 8) {
-        return modeConstants.EIGHTH / modeConstants.STATIC_MODE_BASE;
+        return MODE_CONSTANT.EIGHTH / MODE_CONSTANT.STATIC_MODE_BASE;
     } else if (position === 9) {
-        return modeConstants.NINTH / modeConstants.STATIC_MODE_BASE;
+        return MODE_CONSTANT.NINTH / MODE_CONSTANT.STATIC_MODE_BASE;
     } else if (position === 10) {
-        return modeConstants.TENTH / modeConstants.STATIC_MODE_BASE;
+        return MODE_CONSTANT.TENTH / MODE_CONSTANT.STATIC_MODE_BASE;
     } else if (position <= 30) {
-        return modeConstants.NEXT_TWENTY / modeConstants.STATIC_MODE_BASE / (position - 10);
+        return MODE_CONSTANT.NEXT_TWENTY / MODE_CONSTANT.STATIC_MODE_BASE / (position - 10);
     } else {
-        return modeConstants.LAST_TWENTY / modeConstants.STATIC_MODE_BASE / (position - 30);
+        return MODE_CONSTANT.LAST_TWENTY / MODE_CONSTANT.STATIC_MODE_BASE / (position - 30);
     }
 }
 

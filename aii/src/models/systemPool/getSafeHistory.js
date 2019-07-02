@@ -9,9 +9,9 @@ const { SAFE_POOL } = require("../../common/constant/accountConstant.js");
 async function getSafeHistory() {
     try {
         let selectSql = `
-            select sum(change_amount) as issue from system_op_log where op_type = 'allocating ${ SAFE_POOL }';
+            select sum(change_amount) as issue from system_op_log where op_type = $1;
         `
-        let selectResult = await pool.query(selectSql);
+        let selectResult = await pool.query(selectSql, [ `allocating ${ SAFE_POOL }` ]);
         return  selectResult.rows[0];
     } catch (err) {
         throw err;

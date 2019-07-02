@@ -3,5 +3,6 @@
 module.exports = {
     "getCurrentMaxLevel": require("./getCurrentMaxLevel.js"),
     "getMemberOneLevel": require("./getMemberOneLevel.js"),
-    "insertSubAccount": require("./insertSubAccount.js")
+    "addSubAccount": require("./addSubAccount.js"),
+    "insertSubAccount": require("./insertSubAccount.js"),
 }

@@ -1,6 +1,8 @@
 // @ts-check
 
+// 按规则每段可分配的收益占比
 const STATIC_MODE_BASE = 1000
+// 前十的比例
 const FIRST = 300
 const SECOND = 200
 const THIRD = 150
@@ -11,9 +13,10 @@ const SEVENTH = 25
 const EIGHTH = 15
 const NINTH = 10
 const TENTH = 5
+// 后二十个的用户可分配比例
 const NEXT_TWENTY = 60
+// 最后可分配的二十个的用户可分配比例
 const LAST_TWENTY = 50
-
 
 /**
  * @type { Constant }

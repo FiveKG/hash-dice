@@ -1,6 +1,7 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@controllers/pools/bingo.js": "bingo pool" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
+const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
 const { PK_POOL } = require("../../common/constant/accountConstant.js");
 const { getPkAccountList, getOneAccount, getPkHistory } = require("../../models/systemPool");
 const { Decimal } = require("decimal.js");
@@ -27,7 +28,7 @@ async function pk(req, res, next) {
         let pkPoolAmount = new Decimal(rows.pool_amount);
         let issue = new Decimal(pkHistory.issue).abs();
         // 本次分配的金额
-        let distrEnable = pkPoolAmount.mul(50 / 100);
+        let distrEnable = pkPoolAmount.mul(INCOME_CONSTANT.REFER_PK_ALLOCATE_RATE / INCOME_CONSTANT.BASE_RATE);
         let pkAccountList = await getPkAccountList();
         let detail = pkAccountList.map((item, idx) => {
             let rate = setRate(idx);
@@ -54,17 +55,15 @@ async function pk(req, res, next) {
 function setRate(rank) {
     let rate = 0;
     if (rank === 0) {
-        rate = 40 / 100;
+        rate = INCOME_CONSTANT.PK_INCOME_FIRST / INCOME_CONSTANT.BASE_RATE;
     } else if (rank === 1) {
-        rate = 30 / 100;
+        rate = INCOME_CONSTANT.PK_INCOME_SECOND / INCOME_CONSTANT.BASE_RATE;
     } else if (rank === 2) {
-        rate = 15 / 100;
+        rate = INCOME_CONSTANT.PK_INCOME_THIRD / INCOME_CONSTANT.BASE_RATE;
     } else if (rank === 3) {
-        rate = 10 / 100;
-    } else if (rank === 4) {
-        rate = 5 / 100;
+        rate = INCOME_CONSTANT.PK_INCOME_FOURTH / INCOME_CONSTANT.BASE_RATE;
     } else {
-        rate = 0
+        rate = INCOME_CONSTANT.PK_INCOME_FIFTH / INCOME_CONSTANT.BASE_RATE;
     }
 
     return rate;

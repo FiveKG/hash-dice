@@ -9,9 +9,9 @@ const { BINGO_POOL } = require("../../common/constant/accountConstant.js");
 async function getBingoAmount() {
     try {
         let selectSql = `
-            select pool_amount from system_pools where pool_type = '${ BINGO_POOL }';
+            select pool_amount from system_pools where pool_type = $1;
         `
-        let selectResult = await pool.query(selectSql);
+        let selectResult = await pool.query(selectSql, [ BINGO_POOL ]);
         return  selectResult.rows[0];
     } catch (err) {
         throw err;

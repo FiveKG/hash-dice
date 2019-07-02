@@ -40,7 +40,8 @@ const { scheduleJob } = require("node-schedule");
     // await handlerPk();
     // await handlerSafe();
     // await testStaticMode("yujinsheng11");
-    await firstAccount("yujinsheng11", "000000");
+    // await firstAccount("yujinsheng11", "000000");
+    await getInfoBulk();
     // process.exit(0);
 })();
 
@@ -48,6 +49,22 @@ async function printHaha() {
     let now = new Date();
     console.log(now);
     console.log("haha");
+}
+
+async function getInfoBulk() {
+    try {
+        const sql = `
+            SELECT 1 as one;
+            SELECT 2 as two;
+            SELECT 3 as three;
+        `
+        const rows = await pool.query(sql);
+        for (const i in rows) {
+            console.debug("row: ", rows[i].rows);
+        }
+    } catch (err) {
+        throw err;
+    }
 }
 
 async function firstAccount(accountName, inviteCode) {

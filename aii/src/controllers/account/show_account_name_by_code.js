@@ -21,22 +21,20 @@ async function showAccountNameByCode(req, res, next) {
             return res.send(resDate);
         }
 
-        await pool.query("BEGIN");
         let selectAccountNameSql = `
             select account_name from account where refer_code = ${ investCode };
         `
         logger.debug(`find the account_name by invitation code`);
-        let { rows } = await pool.query(selectAccountNameSql);
-        if (!rows.length) {
+        let { rows: [ accountName ] } = await pool.query(selectAccountNameSql);
+        if (!accountName) {
             return res.send(get_status(1001, "this account does not exists"));    
         }
         
         resDate["data"] = {
-            account_name: rows[0].account_name
+            account_name: accountName.account_name
         }
         res.send(resDate);
     } catch (err) {
-        await pool.query("ROLLBACK");
         throw err
     }
 }

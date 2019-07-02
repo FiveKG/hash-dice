@@ -11,9 +11,9 @@ const { pool } = require("../../db");
 async function updateSubLevel(client, accountName, subAccount) {
     try {
         let selectSubParentLevelSql = `
-            update sub_account set sub_level = array_cat(sub_level, $1) where account_name = '${ accountName }' returning sub_level;
+            update sub_account set sub_level = array_cat(sub_level, $1) where account_name = $2 returning sub_level;
         `
-        let { rows } = await client.query(selectSubParentLevelSql, [subAccount]);
+        let { rows } = await client.query(selectSubParentLevelSql, [ subAccount, accountName ]);
         return rows[0].sub_level;
     } catch (err) {
         throw err

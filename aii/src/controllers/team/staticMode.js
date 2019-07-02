@@ -11,21 +11,21 @@ async function staticMode(req, res, next) {
         logger.debug(`the param is: ${ JSON.stringify(reqData) }`);
         let accountName = reqData.account_name;
         // 查找当前三三静态最大的层
-        let selectMaxLevel = await pool.query(`select max(level) as max_level from sub_account;`);
+        let { rows: [ selectMaxLevel ] } = await pool.query(`select max(level) as max_level from sub_account;`);
         // console.log("selectMaxLevel: ", selectMaxLevel);
-        if (!selectMaxLevel.rows[0]) {
+        if (!selectMaxLevel) {
             // todo
             return
         }
         // 查找当前三三静态最大的层的子帐号数
-        let selectMaxLevelSubAccountCount = await pool.query(`select count(1) from sub_account where level = (select max(level) from sub_account);`);
+        let { rows: [ selectMaxLevelSubAccountCount ] } = await pool.query(`select count(1) from sub_account where level = (select max(level) from sub_account);`);
         // console.log("selectMaxLevelSubAccountCount: ", selectMaxLevelSubAccountCount);
-        if (!selectMaxLevelSubAccountCount.rows[0]) {
+        if (!selectMaxLevelSubAccountCount) {
             // todo
             return 
         }
-        let maxLevelSubAccountCount = selectMaxLevelSubAccountCount.rows[0].count;
-        let maxLevel = selectMaxLevel.rows[0].max_level
+        let maxLevelSubAccountCount = selectMaxLevelSubAccountCount.count;
+        let maxLevel = selectMaxLevel.max_level
         let teamLevelArr = []
         for (let i = 1; i <= maxLevel; i++) {
             let count = 0;
@@ -33,9 +33,9 @@ async function staticMode(req, res, next) {
                 count = Math.pow(3, i) - maxLevelSubAccountCount;
             }
             // 查找当前用户在三三静态每层的子帐号数
-            let selectRepeatAccountCount = await pool.query(`select count(1) from sub_account where main_account = '${ accountName }' and level = ${ i }`);
+            let { rows: [ selectRepeatAccountCount ] } = await pool.query(`select count(1) from sub_account where main_account = '${ accountName }' and level = ${ i }`);
             // console.log("selectRepeatAccountCount: ", selectRepeatAccountCount);
-            if (!selectRepeatAccountCount.rows[0]) {
+            if (!selectRepeatAccountCount) {
                 // todo
                 return;
             }
@@ -56,7 +56,7 @@ async function staticMode(req, res, next) {
                 "level": i,
                 "has_account": Math.pow(3, i),
                 "invite_account": selectInviteAccountCount.rowCount,
-                "repeat_account": selectRepeatAccountCount.rows[0].count,
+                "repeat_account": selectRepeatAccountCount.count,
                 "last_account": count
             }
             teamLevelArr.push(detail);

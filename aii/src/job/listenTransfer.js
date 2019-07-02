@@ -12,10 +12,10 @@ async function handlerTransferActions() {
         for (let action of actions) {
             // console.log(action);
             let result = await parseEosAccountAction(action);
-            let actionSeq = await redis.get(`tbg:invest:trx:${ result.account_action_seq }`);
-            console.log("result: ", result, "actionSeq: ", actionSeq);
+            let trxSeq = await redis.get(`tbg:invest:trx:${ result.account_action_seq }`);
+            console.log("result: ", result, "trxSeq: ", trxSeq);
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
-            if (actionSeq || !result.invest_type) {
+            if (trxSeq || !result.invest_type) {
                 await setLastPos(result.account_action_seq);
                 await redis.set("tbg:account_action_seq", result.account_action_seq);
                 continue;

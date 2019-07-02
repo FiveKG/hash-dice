@@ -2,7 +2,7 @@
 const logger = require("../../common/logger.js");
 const { Decimal } = require("decimal.js");
 const { getUserBalance } = require("../balance");
-const { WITHDRAW_ENABLE, REPEAT_CURRENCY, LOTTO_CURRENCY, GAME_CURRENCY} = require("../../common/constant/balanceConstants.js")
+const { WITHDRAW_ENABLE, REPEAT_CURRENCY, LOTTO_CURRENCY, GAME_CURRENCY } = require("../../common/constant/balanceConstants.js")
 /**
  * 系统资产变动
  * @param { any } client 指定的数据库实例

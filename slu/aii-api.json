@@ -1,5 +1,5 @@
 {
-    "name" : "eos 钱包投资收益项目的接口",
+    "name" : "UE 钱包投资收益项目的接口",
     "summary" : [
 
     ],
@@ -165,7 +165,7 @@
             }
         },
         {
-            "name" : "投资 EOS",
+            "name" : "投资 UE",
             "summary": "",
             "remark": [
                 "投资必须有上级，没有要先添加",
@@ -178,7 +178,7 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "amount": { "type": "decimal",  "is_require": true,  "desc": "投资的 EOS 金额" }
+                "amount": { "type": "decimal",  "is_require": true,  "desc": "投资的 UE 金额" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -187,7 +187,7 @@
             }
         },
         {
-            "name" : "帮朋友投资 EOS",
+            "name" : "帮朋友投资 UE",
             "summary": "",
             "remark": [
 
@@ -198,7 +198,7 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "friendAccountName": { "type": "text",  "is_require": true,  "desc": "帮助投资的 EOS 帐号" }
+                "friendAccountName": { "type": "text",  "is_require": true,  "desc": "帮助投资的 UE 帐号" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -225,8 +225,8 @@
                 "data": { 
                     "type": "object", "desc": "",
                     "properties": {
-                        "withdraw_enable": { "type": "decimal",  "is_require": true,  "desc": "可提现的 EOS 金额" },
-                        "total_amount": { "type": "decimal",  "is_require": true,  "desc": "钱包总的 EOS 金额" }
+                        "withdraw_enable": { "type": "decimal",  "is_require": true,  "desc": "可提现的 UE 金额" },
+                        "total_amount": { "type": "decimal",  "is_require": true,  "desc": "钱包总的 UE 金额" }
                     }
                 }
             }
@@ -394,8 +394,8 @@
                         "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
                         "sub_account_count": { "type": "number",  "is_require": true,  "desc": "所有子帐号个数" },
                         "total_income": { "type": "decimal",  "is_require": true,  "desc": "投资总收益" },
-                        "last_invest": { "type": "decimal",  "is_require": true,  "desc": "最后一位投资者可得的 EOS 额度" },
-                        "other_invest": { "type": "decimal",  "is_require": true,  "desc": "最后 2-30 位投资者可得的 EOS 额度" },
+                        "last_invest": { "type": "decimal",  "is_require": true,  "desc": "最后一位投资者可得的 UE 额度" },
+                        "other_invest": { "type": "decimal",  "is_require": true,  "desc": "最后 2-30 位投资者可得的 UE 额度" },
                         "bingo_countdown": { "type": "Time",  "is_require": false,  "desc": "bingo 池奖金发放到计时" },
                         "withdraw_enable": { "type": "decimal",  "is_require": true,  "desc": "可提现资产" },
                         "repeat_currency": { "type": "decimal",  "is_require": true,  "desc": "复投资产" },

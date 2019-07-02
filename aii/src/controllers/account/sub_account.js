@@ -1,10 +1,9 @@
 // @ts-check
-const { pool } = require("../../db");
 const logger = require("../../common/logger.js").child({ "@controllers/account/sub_account.js": "用户子帐号" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getUserSubAccount } = require("../../models/account");
 const { getUserBalance } = require("../../models/balance");
-const { REPEAT_CURRENCY } = require("../../common/constant/balanceConstants");
+const { REPEAT_CURRENCY, BASE_RATE } = require("../../common/constant/balanceConstants");
 const { Decimal } = require("decimal.js");
 
 // 用户子帐号
@@ -43,7 +42,7 @@ async function subAccount(req, res, next) {
         let resDate = get_status(1);
         resDate["data"] = {
             total_sub_account: len,
-            repeat_currency: userBalance.mul(REPEAT_CURRENCY / 100).toFixed(4),
+            repeat_currency: userBalance.mul(REPEAT_CURRENCY / BASE_RATE).toFixed(4),
             repeat_quantity: quantity,
             detail: data
         }

@@ -1,6 +1,6 @@
 // @ts-check
 const accountConstant = require("./accountConstant.js");
-const rateConstant = require("./rateConstant.js");
+const rateConstant = require("./investConstant.js");
 
 /**
  * 系统帐号对应的收益率

@@ -9,10 +9,10 @@ const { pool } = require("../../db");
 async function getCurrentMaxLevel(rootAccount) {
     try {
         let currentMaxLevel = `
-            select max(level) as max_level from sub_account where root_node = '${ rootAccount }';
+            select max(level) as max_level from sub_account where root_node = $1;
         `
 
-        let { rows } = await pool.query(currentMaxLevel);
+        let { rows } = await pool.query(currentMaxLevel, [ rootAccount ]);
         return rows[0].max_level;
     } catch (err) {
         throw err

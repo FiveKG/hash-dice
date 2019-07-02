@@ -11,9 +11,9 @@ async function getAllInviteAccount(accountName) {
         let selectSubParentLevelSql = `
             select r.account_name, a.member_level from account a 
                 join referrer r on r.referrer_name = a.account_name 
-                where length(r.account_name) = 12 and r.referrer_name = '${ accountName }';
+                where length(r.account_name) = 12 and r.referrer_name = $1;
         `
-        let { rows } = await pool.query(selectSubParentLevelSql);
+        let { rows } = await pool.query(selectSubParentLevelSql, [ accountName ]);
         return rows;
     } catch (err) {
         throw err

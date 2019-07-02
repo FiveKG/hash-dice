@@ -1,7 +1,8 @@
 // @ts-check
 const { pool } = require("../../db");
 const getAllParentLevel = require("../../models/account/getAllParentLevel.js");
-const { getCurrentMaxLevel, getMemberOneLevel, insertSubAccount } = require("../../models/subAccount");
+const { getCurrentMaxLevel, getMemberOneLevel, addSubAccount, insertSubAccount } = require("../../models/subAccount");
+const { insertAccountOp } = require("../../models/accountOp")
 const logger = require("../../common/logger.js");
 const { redis } = require("../../common/index.js");
 
@@ -41,16 +42,10 @@ async function setStaticMode(client, accountName, subAccount) {
             }
             await redis.sadd("tbg:subAccount:root", mainId.rows[0].main_id);
             await redis.set(`tbg:level:${ mainId.rows[0].main_id }`, 0);
-            await insertSubAccount(client, obj, "初始化三三公排");
+            // await addSubAccount(client, obj, "初始化三三公排");
+            await insertSubAccount(client, obj);
+            await insertAccountOp(client, accountName, "setStaticMode", "初始化三三公排")
         } else {
-            // let currentMaxLevel = await getCurrentMaxLevel(allParentLevel[1]);
-            // 最大一层已经排列的位置
-            // let memberOneLevel = await getMemberOneLevel(allParentLevel[1]);
-            // let positionList = [];
-            // for (let i = 0; i < memberOneLevel.length; i++) {
-            //     await redis.sadd("subAccount:id", memberOneLevel[i].position);
-            //     // positionList.push(memberOneLevel[i].position);
-            // }
             let result = await createSubId(mainId.rows[0].main_id);
             let obj = {
                 id: result.id,
@@ -61,8 +56,10 @@ async function setStaticMode(client, accountName, subAccount) {
                 subAccount: subAccount,
                 accountName: accountName
             }
-            console.log("obj: ", obj);
-            await insertSubAccount(client, obj, "随机设置三三公排排位");
+            console.debug("obj: ", obj);
+            // await addSubAccount(client, obj, "随机设置三三公排排位");
+            await insertSubAccount(client, obj);
+            await insertAccountOp(client, accountName, "setStaticMode", "随机设置三三公排排位")
         }
     } catch (err) {
         throw err

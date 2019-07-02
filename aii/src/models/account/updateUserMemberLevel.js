@@ -10,9 +10,9 @@
 async function updateUserMemberLevel(client, accountName, memberLevel) {
     try {
         let selectSubParentLevelSql = `
-            update account set member_level = ${ memberLevel } where account_name = '${ accountName }';
+            update account set member_level = $1 where account_name = $2;
         `
-        await client.query(selectSubParentLevelSql);
+        await client.query(selectSubParentLevelSql, [ memberLevel, accountName ]);
     } catch (err) {
         throw err
     }

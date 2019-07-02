@@ -11,4 +11,5 @@ module.exports = {
     "getReferrer": require("./getReferrer.js"),
     "getStaticMode": require("./getStaticMode.js"),
     "getInviteCode": require("./getInviteCode.js"),
+    "updateReferCount": require("./updateReferCount.js"),
 }

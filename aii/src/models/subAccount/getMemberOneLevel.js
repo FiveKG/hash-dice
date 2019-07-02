@@ -8,9 +8,9 @@ const { pool } = require("../../db");
 async function getMemberOneLevel(rootAccount) {
     try {
         let memberOneLevel = `
-            select position from sub_account where level = (select max(level) from sub_account) and root_node = '${ rootAccount }';
+            select position from sub_account where level = (select max(level) from sub_account) and root_node = $1;
         `
-        let { rows } = await pool.query(memberOneLevel);
+        let { rows } = await pool.query(memberOneLevel, [ rootAccount ]);
         return rows;
     } catch (err) {
         throw err

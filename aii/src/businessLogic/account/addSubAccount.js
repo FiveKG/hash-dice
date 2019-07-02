@@ -1,19 +1,20 @@
 // @ts-check
-const { getUserSubAccount, setReferrer, getStaticSort } = require("../../models/account");
+const { getUserSubAccount, getStaticSort, updateReferCount } = require("../../models/account");
+const { insertReferrer } = require("../../models/referrer");
+const { insertAccountOp } = require("../../models/accountOp")
 const setStaticMode = require("./setStaticMode.js");
 const staticModeIncome = require("./staticModeIncome.js");
 const staticSortIncome = require("./staticSortIncome.js");
 
 /**
  * 添加子帐号
- * 投资每满 30 EOS 就生成一个子帐号, 投 300 EOS 生成 10 个子帐号
- * 收益满 30 EOS，自动激活（未激活时），同时生成一个子帐号
- *  @param { any } client 
+ * 投资每满 30 UE 就生成一个子帐号
+ * 收益满 30 UE，自动激活（未激活时），同时生成一个子帐号
+ * @param { any } client 
  * @param { String } accountName 用户的帐号
- * @param { Number } count 子帐号个数
  * @param { Number } amount 投资金额
  */
-async function addSubAccount(client, accountName, count, amount) {
+async function addSubAccount(client, accountName, amount) {
     try {
         let subAccount = await getUserSubAccount(accountName);
         let lower = 0;
@@ -23,7 +24,7 @@ async function addSubAccount(client, accountName, count, amount) {
         } else {
             lower = subAccount.length + 1;
         }
-        let upper = lower + count;
+        let upper = lower + 1;
         let subAccountList = await createSubAccount(accountName, lower, upper);
         // 三三排位
         for (let i = 0; i < subAccountList.length; i++) {
@@ -45,7 +46,10 @@ async function addSubAccount(client, accountName, count, amount) {
         // 一行公排
         for (let i = 0; i < afterSetRelation.length; i ++) {
             let remark = `generate subAccount, set the inviter of ${ afterSetRelation[i].account } to ${ afterSetRelation[i].referrer }`
-            await setReferrer(client, afterSetRelation[i].referrer, afterSetRelation[i].account, remark, true);
+            // await setReferrer(client, afterSetRelation[i].referrer, afterSetRelation[i].account, remark, true);
+            await insertReferrer(client, afterSetRelation[i].referrer, afterSetRelation[i].account);
+            await updateReferCount(client, afterSetRelation[i].referrer);
+            await insertAccountOp(client, afterSetRelation[i].account, "bind referrer", remark)
             await staticSortIncome(client, amount);
         }
     } catch (err) {

@@ -2,6 +2,7 @@
 const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { BINGO_POOL } = require("../../common/constant/accountConstant.js");
+const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const { personalAssetChange, systemAssetChange } = require("../../models/asset");
 const { getBingoAccountList } = require("../../models/systemPool");
 const { Decimal } = require("decimal.js");
@@ -20,22 +21,23 @@ async function handlerPk() {
     try {
         let rows = await getOneAccount(BINGO_POOL);
         if (!rows) {
-            logger.debug(`system account ${ BINGO_POOL } not found`);
-            return;
+            logger.warn(`system account ${ BINGO_POOL } not found`);
+            throw Error(`system account ${ BINGO_POOL } not found`);
         }
 
-        let pkPoolAmount = new Decimal(rows.pool_amount);
+        let bingoPoolAmount = new Decimal(rows.pool_amount);
         // 本次分配的金额
-        let distrEnable = pkPoolAmount.mul(70 / 100);
+        let distrEnable = bingoPoolAmount.mul(INCOME_CONSTANT.BINGO_ALLOCATE_RATE / INCOME_CONSTANT.BASE_RATE);
         let bingoAccountList = await getBingoAccountList();
         console.log("bingoAccountList: ", bingoAccountList)
         for (let i = 0; i< bingoAccountList.length; i++){
             let item = bingoAccountList[i]
             let rate = 0;
+            // 最后一名投资者
             if (i === 0) {
-                rate = 50 / 100;
+                rate = INCOME_CONSTANT.BINGO_INCOME_FIRST / INCOME_CONSTANT.BASE_RATE;
             } else {
-                rate = 50 / 100 / (bingoAccountList.length - 1);
+                rate = INCOME_CONSTANT.BINGO_INCOME_OTHER / INCOME_CONSTANT.BASE_RATE / (bingoAccountList.length - 1);
             }
             let opType = `bingo income`;
             let remark = `account ${ item.account_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
@@ -49,8 +51,6 @@ async function handlerPk() {
                 "remark": remark
             }
             await storeIncome(item.account_name, "bingo", data);
-            // await redis.hset(`${ item.account_name }`, "bingo:opType", opType);
-            // await redis.hset(`${ item.account_name }`, "bingo:remark", remark);
         };
 
         let changeAmount = new Decimal(-distrEnable);
@@ -62,6 +62,8 @@ async function handlerPk() {
     } catch (err) {
         await client.query("ROLLBACK")
         throw err;
+    } finally {
+        await client.release();
     }
 }
 

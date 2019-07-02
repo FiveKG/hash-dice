@@ -1,7 +1,7 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@controllers/pools/bingo.js": "bingo pool" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
-const { getAccountMemberLevel } = require("../../models/account");
+const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
 const { getBingoAmount, getBingoHistory } = require("../../models/systemPool");
 const { Decimal } = require("decimal.js");
 const { getBingoAccountList } = require("../../models/systemPool");
@@ -12,10 +12,6 @@ async function bingo(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
         let resData = get_status(1);
-        // let userMemberLevel = await getAccountMemberLevel(reqData.account_name);
-        // if (!userMemberLevel) {
-        //     return res.send(get_status(1001, "this account does not exists"));
-        // }
         let bingoPool = await getBingoAmount();
         let bingoHistory = await getBingoHistory();
         let bingoAccountList = await getBingoAccountList();
@@ -28,7 +24,7 @@ async function bingo(req, res, next) {
         }
 
         let bingoPoolAmount = new Decimal(bingoPool.pool_amount);
-        let currentAmount = bingoPoolAmount.mul(70 / 100);
+        let currentAmount = bingoPoolAmount.mul(INCOME_CONSTANT.BINGO_ALLOCATE_RATE / INCOME_CONSTANT.BASE_RATE);
         let now = new Date();
         let dayEnd = df.endOfDay(now);
         resData["data"] = {
@@ -37,8 +33,8 @@ async function bingo(req, res, next) {
             "last_invest_rate": `50%`,
             "this_period_bonus": bingoPoolAmount.toFixed(4),
             "last_invest_account": bingoAccountList[0].account_name,
-            "last_invest_bonus": currentAmount.mul(50 / 100).toFixed(4),
-            "other_invest_bonus": currentAmount.mul(50 / 100 / 29).toFixed(4),
+            "last_invest_bonus": currentAmount.mul(INCOME_CONSTANT.BINGO_INCOME_FIRST / INCOME_CONSTANT.BASE_RATE).toFixed(4),
+            "other_invest_bonus": currentAmount.mul(INCOME_CONSTANT.BINGO_INCOME_OTHER / INCOME_CONSTANT.BASE_RATE / 29).toFixed(4),
             "bonus_account": bingoAccountList.map(item => item.account_name),
             "bingo_countdown": df.format(dayEnd, "x"),
         };

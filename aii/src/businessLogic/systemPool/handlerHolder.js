@@ -2,6 +2,7 @@
 const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { SHAREHOLDERS_POOL } = require("../../common/constant/accountConstant.js");
+const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const { personalAssetChange, systemAssetChange } = require("../../models/asset");
 const { getHolderAccountList } = require("../../models/systemPool");
 const { Decimal } = require("decimal.js");
@@ -19,13 +20,13 @@ async function handlerHolder() {
     try {
         let rows = await getOneAccount(SHAREHOLDERS_POOL);
         if (!rows) {
-            logger.debug(`system account ${ SHAREHOLDERS_POOL } not found`);
-            return;
+            logger.warn(`system account ${ SHAREHOLDERS_POOL } not found`);
+            throw Error(`system account ${ SHAREHOLDERS_POOL } not found`);
         }
 
         let holderPoolAmount = new Decimal(rows.pool_amount);
         // 本次分配的金额
-        let distrEnable = holderPoolAmount.mul(30 / 100);
+        let distrEnable = holderPoolAmount.mul(INCOME_CONSTANT.SHAREHOLDERS_ALLOCATE_RATE / INCOME_CONSTANT.BASE_RATE);
         let holderAccountList = await getHolderAccountList();
         console.log("holderAccountList: ", holderAccountList);
         for (let item of holderAccountList) {
@@ -44,9 +45,6 @@ async function handlerHolder() {
                 "remark": remark
             }
             await storeIncome(item.referrer_name, "holder", data);
-            // await storeIncome(item.referrer_name, distrEnable, "holder", rate.toNumber());
-            // await redis.hset(`${ item.referrer_name }`, "holder:opType", opType);
-            // await redis.hset(`${ item.referrer_name }`, "holder:remark", remark);
         };
 
         let changeAmount = new Decimal(-distrEnable);

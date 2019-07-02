@@ -19,9 +19,9 @@ async function getAllParentLevel(accountName) {
                 )
                 select referrer_name, account_name, array_append(account, account_name) as user_level, depth from all_level
             )
-            select user_level from etc where user_level[array_length(user_level, 1)] = '${ accountName }';
+            select user_level from etc where user_level[array_length(user_level, 1)] = $1;
         `
-        let { rows } = await pool.query(selectAllParentLevelSql);
+        let { rows } = await pool.query(selectAllParentLevelSql, [ accountName ]);
         return rows[0];
     } catch (err) {
         throw err

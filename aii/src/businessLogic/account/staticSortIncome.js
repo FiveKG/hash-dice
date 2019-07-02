@@ -2,8 +2,9 @@
 const { pool } = require("../../db");
 const { getStaticSort } = require("../../models/account");
 const { Decimal } = require("decimal.js");
-const rateConstant = require("../../common/constant/rateConstant.js");
+const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const { DEV_OP_POOL, COMMUNITY_POOL } = require("../../common/constant/accountConstant");
+const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
 const { personalAssetChange, systemAssetChange } = require("../../models/asset");
 const { getOneAccount } = require("../../models/systemPool");
 const logger = require("../../common/logger.js");
@@ -18,7 +19,7 @@ const df = require("date-fns");
 async function staticSort(client, amount) {
     try {
         // 用户投资时， 一行公排可分配额度
-        let sortEnable = new Decimal(amount).mul(rateConstant.SORT_INCOME_RATE / rateConstant.BASE_RATE);
+        let sortEnable = new Decimal(amount).mul(INVEST_CONSTANT.SORT_INCOME_RATE / INVEST_CONSTANT.BASE_RATE);
         // 一行公排的所有帐号
         let rows = await getStaticSort();
         // 该用户的子帐号
@@ -32,7 +33,7 @@ async function staticSort(client, amount) {
         console.log("sortList: ", sortList);
         // 前期账号不足分配多出余额
         // 40% 开发 60% 社区
-        // 分配须不包含收益大于 150 EOS 的帐号
+        // 分配收益小于 150UE 的帐号
         if (len <= 5) {
             // todo: 最后五个帐号可均分 amount 的 25%， 其余分给社区，开发
             await handleStaticSort(client, sortEnable, sortList, true);
@@ -75,14 +76,15 @@ async function staticSort(client, amount) {
  * @param { Boolean } flag 
  */
 async function handleStaticSort(client, sortEnable, sortList,flag) {
-    let avg = sortEnable.mul(25 / 100).div(sortList.length);
+    let avg = sortEnable.mul(INCOME_CONSTANT.SORT_INCOME / INCOME_CONSTANT.BASE_RATE).div(sortList.length);
     for (let i = 0; i < sortList.length; i++) {
         let account = await getStaticSortMainAccount(sortList[i]);
         console.log("handleStaticSort: ", account, sortList[i]);
         let opType = `sort income`;
         let remark = `subAccount ${ sortList[i] }, income ${ avg.toFixed(8) }`;
         let amount = new Decimal(account.amount);
-        if (amount.lessThan(45)) {
+        // 低于出线额度的用户可分配奖金
+        if (amount.lessThan(INCOME_CONSTANT.SORT_OUT_LINE)) {
             let now = new Date();
             let data = {
                 "account_name": account.account_name,
@@ -108,10 +110,10 @@ async function handleStaticSort(client, sortEnable, sortList,flag) {
             return
         }
         let last = sortEnable.minus(avg);
-        let devRemark = `distribution sort income, add ${ DEV_OP_POOL } ${ last.mul(40 / 100) } amount`;
-        let communityRemark = `distribution sort income, add ${ COMMUNITY_POOL } ${ last.mul(60 / 100) } amount`;
-        await systemAssetChange(client, DEV_OP_POOL, last.mul(40 / 100), devAccount.pool_amount, 'sort last', devRemark);
-        await systemAssetChange(client, COMMUNITY_POOL, last.mul(60 / 100), communityAccount.pool_amount, 'sort last', communityRemark);
+        let devRemark = `distribution sort income, add ${ DEV_OP_POOL } ${ last.mul(INCOME_CONSTANT.DEV_INCOME / INCOME_CONSTANT.BASE_RATE) } amount`;
+        let communityRemark = `distribution sort income, add ${ COMMUNITY_POOL } ${ last.mul(INVEST_CONSTANT.COMMUNITY_INCOME_RATE / INCOME_CONSTANT.BASE_RATE) } amount`;
+        await systemAssetChange(client, DEV_OP_POOL, last.mul(INCOME_CONSTANT.DEV_INCOME / INCOME_CONSTANT.BASE_RATE), devAccount.pool_amount, 'sort last', devRemark);
+        await systemAssetChange(client, COMMUNITY_POOL, last.mul(INVEST_CONSTANT.COMMUNITY_INCOME_RATE / INCOME_CONSTANT.BASE_RATE), communityAccount.pool_amount, 'sort last', communityRemark);
     }
 }
 
@@ -124,7 +126,7 @@ async function getStaticSortMainAccount(subAccount) {
         let sql = `
             select b.op_type, b.account_name, sum(change_amount) as amount
                 from balance_log b join (
-                        select distinct main_account from sub_account 
+                        select distinct main_account, sub_account_name from sub_account 
                         where sub_account_name = '${ subAccount }'
                     ) s on s.main_account = b.account_name 
                     where b.op_type = 'sort income' group by b.op_type, b.account_name;

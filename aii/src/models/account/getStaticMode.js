@@ -14,11 +14,11 @@ async function getStaticMode(subAccount) {
                 select s.id, s.pid, m.account || s.sub_account_name  from sub_account s inner join mode m on m.id = s.pid
                 )
                 select account from mode 
-                where account[array_length(account, 1)] = '${ subAccount }'
+                where account[array_length(account, 1)] = $1
                 order by array_length(account, 1) desc limit 1;
         `
         
-        let { rows } = await pool.query(selectSql);
+        let { rows } = await pool.query(selectSql, [ subAccount ]);
         return rows[0];
     } catch (err) {
         throw err

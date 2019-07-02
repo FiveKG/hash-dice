@@ -43,11 +43,11 @@ async function handlerWithdraw(accountName, symbol, amount) {
         }
         let changeAmount = new Decimal(-amount);
         let remark = `user ${ accountName } withdraw ${ amount } ${ symbol }`;
-        await pool.query(`
+        await client.query(`
                 insert into account_op (account_name, op_type, remark, create_time)
                 values('${ accountName }', 'withdraw', '${ remark }', now());`
             )
-        await userWithdraw(pool, accountName, changeAmount, 'withdraw', remark);
+        await userWithdraw(client, accountName, changeAmount, 'withdraw', remark);
         try {
             if (symbol === "EOS" || symbol === "TBG") {
                 let quantity = `${ amount } ${ symbol }`;

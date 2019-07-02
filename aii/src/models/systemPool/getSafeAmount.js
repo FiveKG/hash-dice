@@ -9,9 +9,9 @@ const { SAFE_POOL } = require("../../common/constant/accountConstant.js");
 async function getSafeAmount() {
     try {
         let selectSql = `
-            select pool_amount from system_pools where pool_type = '${ SAFE_POOL }';
+            select pool_amount from system_pools where pool_type = $1;
         `
-        let selectResult = await pool.query(selectSql);
+        let selectResult = await pool.query(selectSql, [ SAFE_POOL ]);
         return  selectResult.rows[0];
     } catch (err) {
         throw err;

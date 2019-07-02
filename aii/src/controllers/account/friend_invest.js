@@ -7,7 +7,7 @@ const { getUserBalance } = require("../../models/balance");
 const { userWithdraw } = require("../../models/asset");
 const { Decimal } = require("decimal.js");
 const { getAccountMemberLevel } = require("../../models/account");
-const { BASE_AMOUNT } = require("../../common/constant/eosConstants.js");
+const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 
 // 帮朋友投资
 async function friendInvest(req, res, next) {
@@ -30,16 +30,16 @@ async function friendInvest(req, res, next) {
         
         let userBalance = new Decimal(rows.withdraw_enable);
         // 检查余额是否足够
-        if (userBalance.lessThan(BASE_AMOUNT)) {
+        if (userBalance.lessThan(INVEST_CONSTANT.INVEST_AMOUNT)) {
             return res.send(get_status(1011, "insufficient balance"));
         }
-        let remark = `user ${ reqData.account_name } help user ${ friendAccount } invest ${ BASE_AMOUNT } EOS`
-        let changeAmount = new Decimal(-BASE_AMOUNT);
+        let remark = `user ${ reqData.account_name } help user ${ friendAccount } invest ${ INVEST_CONSTANT.INVEST_AMOUNT } UE`
+        let changeAmount = new Decimal(-INVEST_CONSTANT.INVEST_AMOUNT);
         // 修改帮投资的余额
         await userWithdraw(pool, reqData.account_name, changeAmount, 'invest income',remark);
         // 投资
-        let statusCode = await userInvestment(reqData.amount, friendAccount, remark);
-        res.send(get_status(statusCode));
+        await userInvestment(reqData.amount, friendAccount, remark);
+        res.send(get_status(1));
     } catch (err) {
         throw err
     }

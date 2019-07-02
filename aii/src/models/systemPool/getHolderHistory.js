@@ -9,9 +9,9 @@ const { SHAREHOLDERS_POOL } = require("../../common/constant/accountConstant.js"
 async function getHolderHistory() {
     try {
         let selectSql = `
-            select sum(change_amount) as issue from system_op_log where op_type = 'allocating ${ SHAREHOLDERS_POOL }';
+            select sum(change_amount) as issue from system_op_log where op_type = $1;
         `
-        let selectResult = await pool.query(selectSql);
+        let selectResult = await pool.query(selectSql, [ `allocating ${ SHAREHOLDERS_POOL }` ]);
         return  selectResult.rows[0];
     } catch (err) {
         throw err;

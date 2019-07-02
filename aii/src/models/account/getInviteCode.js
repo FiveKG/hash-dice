@@ -8,10 +8,10 @@ const { pool } = require("../../db");
 async function getInviteCode(accountName) {
     try {
         let selectSql = `
-            select refer_code from account where account_name = '${ accountName }'
+            select refer_code from account where account_name = $1
         `
-        let { rows } = await pool.query(selectSql);
-        return rows[0];
+        let { rows: [ inviteCode ] } = await pool.query(selectSql, [ accountName ]);
+        return inviteCode;
     } catch (err) {
         throw err
     }

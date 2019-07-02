@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
-
+const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js")
 
 /**
  * 查找收益小于 150 的一行公排对应的主帐号
@@ -16,11 +16,11 @@ async function getSafeAccount() {
                     ) as total
                     from balance
             )
-            select account_name, cast(150 - total as numeric(12, 8)) as last, 
+            select account_name, cast($1 - total as numeric(12, 8)) as last, 
                 (select sum(total) from etc) as all
-                from etc where total < 150;
+                from etc where total < $1;
         `
-        let { rows } = await pool.query(sql);
+        let { rows } = await pool.query(sql, [ INCOME_CONSTANT.SAFE_OUT_LINE ]);
         return rows;
     } catch (err) {
         throw err;

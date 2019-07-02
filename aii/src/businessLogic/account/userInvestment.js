@@ -2,9 +2,8 @@
 const { pool } = require("../../db/index.js");
 const logger = require("../../common/logger.js").child({ "@src/models/account/userInvestment.js": "user investment EOS" });
 const { Decimal } = require("decimal.js");
-const rateConstant = require("../../common/constant/rateConstant.js");
-const eosConstants = require("../../common/constant/eosConstants");
-const { accountRate } = require("../../common/constant/accountRate.js");
+const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
+const ACCOUNT_RATE = require("../../common/constant/accountRate.js");
 const { systemAssetChange, personalAssetChange } = require("../../models/asset");
 const { getUserBalance } = require("../../models/balance");
 const { getSystemAccountInfo } = require("../../models/systemPool");
@@ -18,30 +17,11 @@ const df = require("date-fns");
  * @param { Number } amount 投资额度， decimal 类型
  * @param { String } accountName 用户的帐号
  * @param { String } userInvestmentRemark remark
- * @returns { Promise<Number> }
  */
 async function userInvestment(amount, accountName, userInvestmentRemark) {
-    // 投资额为 30, 否则不符
-    if (amount !== Number(eosConstants.BASE_AMOUNT)) {
-        return 1004;
-    }
-    let member = await getAccountMemberLevel(accountName);
-    logger.debug(`the account member level is %j`, member);
-    // 帐号不存在
-    if (!member) {
-        logger.debug(`the account does not exist`);
-        return 1001;
-    }
-    // 已激活
-    if (member.member_level !== 1) {
-        logger.debug(`the account had activated`);
-        return 1013
-    }
     let investAmount = new Decimal(amount);
-    // 投资大于三十时， 每 30 EOS 生成一个子帐号
-    let count = Math.floor(investAmount.div(eosConstants.BASE_AMOUNT).toNumber());
     // 直接推荐奖励
-    let referIncome = investAmount.mul(rateConstant.REFER_INCOME_RATE / rateConstant.BASE_RATE);
+    let referIncome = investAmount.mul(INVEST_CONSTANT.REFER_INCOME_RATE / INVEST_CONSTANT.BASE_RATE);
     let client = await pool.connect();
     await client.query("BEGIN");
     try {
@@ -53,15 +33,16 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
         if (systemAccount.length < 8) {
             await client.query("ROLLBACK");
             logger.debug(`lack of system account`);
-            return  1003;
+            throw Error(`lack of system account`);
         }
 
         if (!investAccount) {
             await client.query("ROLLBACK");
             logger.debug(`the account does not exist`);
-            return 1001;
+            throw Error(`the account does not exist`);
         }
 
+        // 更新用户等级
         if (accountMember && accountMember.member_level === 1) {
             if (accountMember.refer_count >= 50) {
                 await updateUserMemberLevel(client, accountName, 3);
@@ -70,6 +51,7 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
             }
         }
 
+        // 记录用户操作日志
         await client.query(`
             insert into 
                 account_op (account_name, op_type, remark, create_time)
@@ -78,12 +60,12 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
         // 用户投资，修改投资后的 amount
         // let investAccountBalance = new Decimal(investAccount.amount);
         // await personalAssetChange(client, accountName, investAccountBalance, amount, userInvestmentRemark);
-        let { rows } = await pool.query(`select referrer_name from referrer where account_name = '${ accountName }'`);
-        if (rows[0].referrer_name !== null) {
+        let { rows: [ { referrerName } ] } = await client.query(`select referrer_name from referrer where account_name = '${ accountName }'`);
+        if (!!referrerName) {
             // 当前投资帐号的推荐人帐号
             let referrerAccount = await getReferrer(accountName);
             // 增加推荐人的 amount
-            let referIncomeRemark = `${ userInvestmentRemark }, referrer ${ referrerAccount[0].account_name } add ${ referIncome } EOS currency`
+            let referIncomeRemark = `${ userInvestmentRemark }, referrer ${ referrerAccount[0].account_name } add ${ referIncome } UE currency`
             // await personalAssetChange(client, referrerAccount[0].account_name, referIncome, 'invite income', referIncomeRemark, "now()");
             let now = new Date();
             let data = {
@@ -93,22 +75,26 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
                 "op_type": "invite income",
                 "remark": referIncomeRemark
             }
+            // 存入 redis，待用户点击的时候再收取
             await storeIncome(referrerAccount[0].account_name, "invite", data);
         }
+        // 更新系统池的额度
         for (let item of systemAccount) {
-            let income = investAmount.mul(accountRate[item.pool_type] / rateConstant.BASE_RATE);
+            let income = investAmount.mul(ACCOUNT_RATE[item.pool_type] / INVEST_CONSTANT.BASE_RATE);
             let opType = `user investment`;
             let remark = `user investment, add ${ item.pool_type } amount`
             await systemAssetChange(client, item.pool_type, income, item.pool_amount, opType, remark);
             // console.log(investAmount, item, income.toFixed(8));
         }
         await client.query("COMMIT");
-        await addSubAccount(client, accountName, count, amount);
+        // 生成子账号
+        await addSubAccount(client, accountName, amount);
         logger.info("insert ok");
-        return 1;
     } catch (err) {
         await client.query("ROLLBACK");
         throw err;
+    } finally {
+        await client.release();
     }
 }
 

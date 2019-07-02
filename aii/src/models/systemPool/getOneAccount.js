@@ -8,9 +8,9 @@ const { pool } = require("../../db/index.js");
 async function getOneAccount(changeType) {
     try {
         let selectSystemAccountSql = `
-            select pool_amount from system_pools where pool_type = '${ changeType }';
+            select pool_amount from system_pools where pool_type = $1;
         `
-        let selectResult = await pool.query(selectSystemAccountSql);
+        let selectResult = await pool.query(selectSystemAccountSql, [ changeType ]);
         return  selectResult.rows[0];
     } catch (err) {
         throw err;
