@@ -11,9 +11,7 @@
                 { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "用户的 eos 帐号" , "isPrimary": false } ,
                 { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "账户创建时间", "remark": "", "isPrimary": false },
                 { "name": "refer_count", "type": "number", "dblength": "0", "dftValue": "0", "summary": "用户推荐的人数", "remark": "", "isPrimary": false },
-                { "name": "member_level", "type": "number", "dblength": "0", "dftValue": "0", "summary": "会员等级", "remark": "未激活（1） 黄金（2） 钻石（3）", "isPrimary": false },
-                { "name": "refer_code", "type": "number", "dblength": "0", "dftValue": "0", "summary": "用户的推荐号", "remark": "推荐用户时填写这个帐号", "isPrimary": false },
-                { "name": "main_id", "type": "number", "dblength": "0", "dftValue": "0", "summary": "每个帐号分配一个 id（自增）", "remark": "用于设置子帐号表 level = 0 的 id", "isPrimary": false }
+                { "name": "refer_code", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户的推荐号", "remark": "推荐用户时填写这个帐号", "isPrimary": false }
             ]
         },
         {
@@ -79,7 +77,7 @@
         {
             "tableName": "system_op_log", "tableDesc": "系统总账变动日志表", "group": "system", 
             "fields": [
-                { "name": "id", "type": "nubmer", "dblength": "32", "dftValue": "0", "summary": "奖池变动表的 id(自增)", "remark": "" , "isPrimary": true } ,
+                { "name": "id", "type": "number", "dblength": "32", "dftValue": "0", "summary": "奖池变动表的 id(自增)", "remark": "" , "isPrimary": true } ,
                 { "name": "change_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动的额度", "remark": "要更改的 eos 数量", "isPrimary": false },
                 { "name": "current_balance", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动后的额度", "remark": "更改后奖池的 eos 数量" , "isPrimary": false } ,
                 { "name": "op_type", "type": "text", "dblength": "20", "dftValue": "''", "summary": "操作类型", "remark": "系统奖池变动情况" , "isPrimary": false } ,
@@ -90,7 +88,7 @@
         {
             "tableName": "account_op", "tableDesc": "用户操作记录", "group": "account", 
             "fields": [
-                { "name": "id", "type": "nubmer", "dblength": "32", "dftValue": "0", "summary": "奖池变动表的 id(自增)", "remark": "" , "isPrimary": true } ,
+                { "name": "id", "type": "number", "dblength": "32", "dftValue": "0", "summary": "奖池变动表的 id(自增)", "remark": "" , "isPrimary": true } ,
                 { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "" , "isPrimary": false } ,
                 { "name": "op_type", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户的操作记录", "remark": "投资|提现|登陆|其他" , "isPrimary": false },
                 { "name": "remark", "type": "text", "dblength": "500", "dftValue": "''", "summary": "备注", "remark": "", "isPrimary": false } ,
