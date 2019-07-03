@@ -1,11 +1,12 @@
 {
-  "name": "aii",
+  "name": "tbg",
   "version": "1.0.0",
   "description": "aii-Agency investment income 代理投资收益",
-  "main": "app.js",
+  "main": "tbg_service.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "export CONSUL_URL=http://localhost:8500&& node tbg_service.js"
+    "start": "export CONSUL_URL=http://localhost:8500&& node tbg_service.js",
+    "pro": "node tbg_service.js"
   },
   "repository": {
     "type": "git",

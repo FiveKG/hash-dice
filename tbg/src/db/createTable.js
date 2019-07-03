@@ -8,8 +8,9 @@ async function createTable() {
             id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
             account_name TEXT UNIQUE NOT NULL DEFAULT '',
             refer_count INTEGER NOT NULL DEFAULT 0,
-            refer_code TEXT NOT NULL DEFAULT 0,
-            create_time TIMESTAMP WITH ZONE NOT NULL DEFAULT now()
+            refer_code TEXT NOT NULL DEFAULT '',
+            state INTEGER NOT NULL DEFAULT 0,
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         CREATE TABLE IF NOT EXISTS sub_account (
             id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
@@ -18,28 +19,24 @@ async function createTable() {
             main_account TEXT NOT NULL DEFAULT '',
             sub_account_name TEXT NOT NULL DEFAULT '',
             level INTEGER NOT NULL DEFAULT 0,
-            position INTEGER NOT NULL DEFAULT '',
-            create_time TIMESTAMP WITH ZONE NOT NULL DEFAULT now()
+            position INTEGER NOT NULL DEFAULT 0,
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         CREATE TABLE IF NOT EXISTS balance(
             id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
             account_name TEXT UNIQUE NOT NULL DEFAULT '',
             amount NUMERIC (12, 8) NOT NULL DEFAULT 0,
-            mode_income  NUMERIC (12, 8) NOT NULL DEFAULT 0,
-            refer_income NUMERIC (12, 8) NOT NULL DEFAULT 0,
-            sort_income NUMERIC (12, 8) NOT NULL DEFAULT 0,
-            other_income  NUMERIC (12, 8) NOT NULL DEFAULT 0,
             withdraw_enable NUMERIC (12, 8) NOT NULL DEFAULT 0,
             repeat_currency NUMERIC (12, 8) NOT NULL DEFAULT 0,
             lotto_currency  NUMERIC (12, 8) NOT NULL DEFAULT 0,
             game_currency  NUMERIC (12, 8) NOT NULL DEFAULT 0,
-            create_time TIMESTAMP WITH ZONE NOT NULL DEFAULT now()
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         CREATE TABLE IF NOT EXISTS referrer(
             id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
             referrer_name TEXT,
             account_name TEXT UNIQUE NOT NULL DEFAULT '',
-            create_time TIMESTAMP WITH ZONE NOT NULL DEFAULT now()
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         CREATE TABLE IF NOT EXISTS balance_log(
             id serial PRIMARY KEY UNIQUE NOT NULL,
@@ -48,7 +45,7 @@ async function createTable() {
             current_balance NUMERIC (12, 8) NOT NULL DEFAULT 0,
             op_type TEXT NOT NULL DEFAULT '',
             remark TEXT NOT NULL DEFAULT '',
-            create_time TIMESTAMP WITH ZONE NOT NULL DEFAULT now()
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         CREATE TABLE IF NOT EXISTS system_pools(
             id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
@@ -61,14 +58,14 @@ async function createTable() {
             current_balance NUMERIC (12, 8) NOT NULL DEFAULT 0,
             op_type TEXT NOT NULL DEFAULT '',
             remark TEXT NOT NULL DEFAULT '',
-            create_time TIMESTAMP WITH ZONE NOT NULL DEFAULT now()
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         CREATE TABLE IF NOT EXISTS account_op(
             id serial PRIMARY KEY UNIQUE NOT NULL,
             account_name TEXT NOT NULL DEFAULT '',
             op_type TEXT NOT NULL DEFAULT '',
             remark TEXT NOT NULL DEFAULT '',
-            create_time TIMESTAMP WITH ZONE NOT NULL DEFAULT now()
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
     `
 

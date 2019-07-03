@@ -1,4 +1,4 @@
-const sb = require("@yz/yue-svc-base");
+// const sb = require("@yz/yue-svc-base");
 const request = require("request");
 
 //@ts-check
@@ -11,7 +11,7 @@ module.exports = async function (req, res, next) {
         //     console.log("111", data.toString())
         // })
 
-        return res.send(sb.status(1, true));
+        return res.send(1, { "now": new Date() });
     } catch (err) {
         next(err);
     }

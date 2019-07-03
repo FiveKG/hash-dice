@@ -12,7 +12,7 @@ async function getAllParentLevel(accountName) {
             with etc as (
                 with recursive all_level as (
                     select referrer_name, account_name, array[referrer_name] as account, 1 as depth from referrer 
-                    where referrer_name is null and length(account_name) = 12
+                    where referrer_name = '' and length(account_name) = 12
                     union
                     select r.referrer_name, r.account_name, l.account || l.account_name, l.depth + 1 as depth 
                     from referrer r inner join all_level l on r.referrer_name = l.account_name
@@ -21,8 +21,8 @@ async function getAllParentLevel(accountName) {
             )
             select user_level from etc where user_level[array_length(user_level, 1)] = $1;
         `
-        let { rows } = await pool.query(selectAllParentLevelSql, [ accountName ]);
-        return rows[0];
+        let { rows: [ { user_level } ] } = await pool.query(selectAllParentLevelSql, [ accountName ]);
+        return user_level;
     } catch (err) {
         throw err
     }

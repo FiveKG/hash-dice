@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../../db");
-const getAllParentLevel = require("../../models/account/getAllParentLevel.js");
+const { getAllParentLevel, getAccountInfo } = require("../../models/account");
 const { insertSubAccount } = require("../../models/subAccount");
 const { insertAccountOp } = require("../../models/accountOp")
 const logger = require("../../common/logger.js");
@@ -15,24 +15,23 @@ const { redis } = require("../../common/index.js");
 async function setStaticMode(client, accountName, subAccount) {
     try {
         logger.debug("set user static mode");
-        let rows = await getAllParentLevel(accountName);
-        if (!rows) {
+        let allParentLevel = await getAllParentLevel(accountName);
+        if (!allParentLevel) {
             throw Error("没有推荐关系，请先设置推荐关系，检查数据是否正确");
         }
-        let allParentLevel = rows.user_level;
         // 判断最上端的用户是否存在
-        let mainId = await pool.query(`select main_id from account where account_name = '${ allParentLevel[1] }'`);
-        if (!mainId.rows.length) {
+        const accountInfo = await getAccountInfo(allParentLevel[1]);
+        if (!accountInfo.account_name) {
             throw Error("account not found")
         }
         // 查找该用户是否在某个树中，如果不再，重新生成一棵树，用该用户做树的根节点，如果在则继续往原来的树上添加
         let isExists = await pool.query(`select id from sub_account where root_node = '${ allParentLevel[1] }' limit 1`);
-        let flag = await redis.sismember("subAccount:root", mainId.rows[0].main_id.toString());
-        logger.debug(`mainId: ${ JSON.stringify(mainId) }, isExists: ${ JSON.stringify(isExists) }, flag: ${ flag }`);
+        let flag = await redis.sismember("tbg:subAccount:root", accountInfo.id);
+        logger.debug(`isExists: ${ JSON.stringify(isExists) }, flag: ${ flag }`);
         if (!isExists.rows.length && !flag) {
             // 生成新的树
             let obj = {
-                id: mainId.rows[0].main_id,
+                id: accountInfo.id,
                 pid: '0',
                 position: 0,
                 rootAccount: allParentLevel[1],
@@ -40,12 +39,12 @@ async function setStaticMode(client, accountName, subAccount) {
                 subAccount: subAccount,
                 accountName: accountName
             }
-            await redis.sadd("tbg:subAccount:root", mainId.rows[0].main_id);
-            await redis.set(`tbg:level:${ mainId.rows[0].main_id }`, 0);
+            await redis.sadd("tbg:subAccount:root", accountInfo.id);
+            await redis.set(`tbg:level:${ accountInfo.id }`, 0);
             await insertSubAccount(client, obj);
             await insertAccountOp(client, accountName, "setStaticMode", "初始化三三公排")
         } else {
-            let result = await createSubId(mainId.rows[0].main_id);
+            let result = await createSubId(accountInfo.id);
             let obj = {
                 id: result.id,
                 pid: result.pid,
@@ -66,7 +65,7 @@ async function setStaticMode(client, accountName, subAccount) {
 
 /**
  * 获取生成的子帐号表 id, pid, position
- * @param { Number } mainId 
+ * @param { String } mainId 
  * @returns { Promise<CreateSubId> }
  */
 async function createSubId(mainId) {

@@ -6,7 +6,7 @@ async function testUserInvestment() {
         let accountName = 'systemwallet';
         accountName = "eosjobserver"
         let investAmount = 30;
-        let statusCode = await userInvestment(investAmount, accountName);
+        let statusCode = await userInvestment(investAmount, accountName, "");
         console.log("statusCode: ", statusCode); 
     } catch (err) {
         throw err;

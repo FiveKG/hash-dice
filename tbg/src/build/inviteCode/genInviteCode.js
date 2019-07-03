@@ -102,15 +102,24 @@ async function initCode() {
 }
 
 /**
- * 从 redis 里取出一个推荐码
+ * 从 redis 里取出一个普通推荐码
  */
-async function getInviteCode() {
-    let code = await redis.spop("tbg:inviteCode");
+async function getGeneralInviteCode() {
+    let code = await redis.spop("tbg:generalInviteCode");
+    return code;
+}
+
+/**
+ * 从 redis 里取出一个合伙人推荐码
+ */
+async function getGlobalInviteCode() {
+    let code = await redis.spop("tbg:globalInviteCode");
     return code;
 }
 
 module.exports = {
     initCode,
     // getAllCode,
-    getInviteCode
+    getGeneralInviteCode,
+    getGlobalInviteCode
 }

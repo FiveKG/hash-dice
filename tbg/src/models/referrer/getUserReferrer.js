@@ -6,7 +6,7 @@ const { pool } = require("../../db");
  * @param { String } accountName 用户 EOS 帐号
  * @returns { Promise<any> }
  */
-async function getReferrer(accountName) {
+async function getUserReferrer(accountName) {
     try {
         let selectSql = `
             select a.refer_code, a.account_name from account a 
@@ -20,4 +20,4 @@ async function getReferrer(accountName) {
     }
 }
 
-module.exports = getReferrer;
+module.exports = getUserReferrer;

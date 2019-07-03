@@ -20,10 +20,9 @@ async function getHolderAccount() {
                 from etc e join sub_account s on s.main_account = e.account_name 
                 group by e.account_name, e.referrer_name
             )
-            select referrer_name, sum(count) as total,
-            (select sum(count) from share) as all
-            from share 
-            group by referrer_name;
+            select referrer_name, sum(count) as total, (select sum(count) from share) as all
+                from share 
+                group by referrer_name;
         `
         let { rows } = await pool.query(sql);
         return rows;

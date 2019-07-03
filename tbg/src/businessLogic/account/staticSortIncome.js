@@ -3,11 +3,9 @@ const { pool } = require("../../db");
 const { getStaticSort } = require("../../models/account");
 const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
-const { DEV_OP_POOL, COMMUNITY_POOL } = require("../../common/constant/accountConstant");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
-const { personalAssetChange, systemAssetChange } = require("../../models/asset");
-const { getOneAccount } = require("../../models/systemPool");
-const logger = require("../../common/logger.js");
+const { allocateSurplusAssets } = require("../systemPool");
+const { getSystemAccountInfo } = require("../../models/systemPool");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
 
@@ -94,26 +92,14 @@ async function handleStaticSort(client, sortEnable, sortList,flag) {
                 "remark": remark
             }
             await storeIncome(account.account_name, "sort", data);
-            // await personalAssetChange(client, account.account_name, avg, opType, remark);
         }
     }
     
     if (flag) {
-        let devAccount = await getOneAccount(DEV_OP_POOL);
-        let communityAccount = await getOneAccount(COMMUNITY_POOL);
-        if (!devAccount) {
-            logger.debug(`system account ${ DEV_OP_POOL } not found`);
-            return;
-        }
-        if (!communityAccount) {
-            logger.debug(`system account ${ COMMUNITY_POOL } not found`);
-            return
-        }
+        // 系统账户
+        let systemAccount = await getSystemAccountInfo();
         let last = sortEnable.minus(avg);
-        let devRemark = `distribution sort income, add ${ DEV_OP_POOL } ${ last.mul(INCOME_CONSTANT.DEV_INCOME / INCOME_CONSTANT.BASE_RATE) } amount`;
-        let communityRemark = `distribution sort income, add ${ COMMUNITY_POOL } ${ last.mul(INVEST_CONSTANT.COMMUNITY_INCOME_RATE / INCOME_CONSTANT.BASE_RATE) } amount`;
-        await systemAssetChange(client, DEV_OP_POOL, last.mul(INCOME_CONSTANT.DEV_INCOME / INCOME_CONSTANT.BASE_RATE), devAccount.pool_amount, 'sort last', devRemark);
-        await systemAssetChange(client, COMMUNITY_POOL, last.mul(INVEST_CONSTANT.COMMUNITY_INCOME_RATE / INCOME_CONSTANT.BASE_RATE), communityAccount.pool_amount, 'sort last', communityRemark);
+        await allocateSurplusAssets(client, systemAccount, sortEnable, last, "sort");
     }
 }
 

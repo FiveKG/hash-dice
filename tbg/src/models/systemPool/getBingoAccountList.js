@@ -9,7 +9,8 @@ async function getBingoAccount() {
     try {
         let sql = `
             select account_name 
-                from account_op where op_type = 'investment' 
+                from account_op 
+                where op_type = 'investment' 
                 order by create_time desc 
                 limit 30;
         `

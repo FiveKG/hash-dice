@@ -11,7 +11,8 @@ const { pool } = require("../../db/index.js");
 async function getOtherIncome(accountName, limit, page) {
     try {
         let selectSql = `
-            SELECT create_time, change_amount, remark, op_type from balance_log 
+            SELECT create_time, change_amount, remark, op_type 
+                FROM balance_log 
                 WHERE account_name = $1
                 AND op_type != 'mode income' 
                 AND op_type != 'sort income'

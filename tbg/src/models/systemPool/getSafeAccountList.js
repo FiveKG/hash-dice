@@ -16,8 +16,7 @@ async function getSafeAccount() {
                     ) as total
                     from balance
             )
-            select account_name, cast($1 - total as numeric(12, 8)) as last, 
-                (select sum(total) from etc) as all
+            select account_name, cast($1 - total as numeric(12, 8)) as last, (select sum(total) from etc) as all
                 from etc where total < $1;
         `
         let { rows } = await pool.query(sql, [ INCOME_CONSTANT.SAFE_OUT_LINE ]);

@@ -10,6 +10,8 @@ const uuidv4 = require("uuid/v4");
 const df = require("date-fns");
 const { Decimal } = require("decimal.js");
 const { dropAllTable, insertAccount, insertSystemPool } = require("./account/initAccount.js");
+const { getGeneralInviteCode, getGlobalInviteCode } = require("../build/inviteCode/genInviteCode");
+const { getRandEOSAccount } = require("../build/account/genRandEosAccount");
 const { 
     getAccountMemberLevel, getUserSubAccount, 
     updateSubLevel, getReferrer, getAllParentLevel, getStaticSort, getStaticMode, getInvestCode 
@@ -26,83 +28,53 @@ const handlerTransfer = require("../job/handlerTransfer.js");
 const { scheduleJob } = require("node-schedule");
 
 ;(async () => {
+    await clearRedisKeyBeforeInit();
     await initCode();
-    // await clearRedisKeyBeforeInit();
     // await dropAllTable();
     // await createTable();
     // await insertAccount();
     // await insertSystemPool(); 
-    // await testUserInvestment();
-    // await testStaticSort();
+    await testUserInvestment();
     // await handlerBingo();
     // await handlerHolder();
     // await handlerPk();
     // await handlerSafe();
-    // await testStaticMode("yujinsheng11");
-    // await firstAccount("yujinsheng11", "000000");
-    // await getInfoBulk();
-    // process.exit(0);
 })();
 
-
-
-async function getInfoBulk() {
+async function genAccountAndCode(n) {
     try {
-        const sql = `
-            SELECT 1 as one;
-            SELECT 2 as two;
-            SELECT 3 as three;
-        `
-        const rows = await pool.query(sql);
-        for (const i in rows) {
-            console.debug("row: ", rows[i].rows);
+        let code = [];
+        let account = [];
+        for (let i = 0; i < n; i++) {
+            const partnerCode = await getGlobalInviteCode();
+            code[i] = `W${ partnerCode }`;
+            account[i] = getRandEOSAccount();
+        }
+
+        return {
+            code: code,
+            account: account
         }
     } catch (err) {
-        throw err;
-    }
-}
-
-async function firstAccount(accountName, inviteCode) {
-    try {
-        let selectAccountNameSql = ``;
-        // 如果邀请码是 "000000", 随机分配一个存在的帐号作为邀请人
-        if (inviteCode === "000000") {
-            selectAccountNameSql = `select account_name from account where account_name not in ('${ accountName }') order by random() limit 1;`
-        } else {
-            inviteCode = parseInt(inviteCode)
-            selectAccountNameSql = `
-                select account_name from account where refer_code = ${ inviteCode };
-            `
-        }
-        let { rows } = await pool.query(selectAccountNameSql);
-        let referrerName = ``;
-        if (!rows.length) {
-            referrerName = null;
-        } else {
-            referrerName = rows[0].account_name;
-        }
-        let remark = `user ${ referrerName } invites ${ accountName }`;
-        console.log(remark);
-        // await setReferrer(pool, referrerName, accountName, remark, false);
-    } catch (err) {
+        console.error("err: ", err);
         throw err;
     }
 }
 
 async function clearRedisKeyBeforeInit() {
-    await redis.del("subAccount:position");
-    await redis.del("subAccount:root");
+    await redis.del("tbg:subAccount:position");
+    await redis.del("tbg:subAccount:root");
     await redis.del("tbg:level:1");
 }
 
-// async function testUserInvestment() {
-//     try {
-//         let accountName = 'systemwallet';
-//         accountName = "ymnwinta42oz"
-//         let investAmount = 30;
-//         let statusCode = await userInvestment(investAmount, accountName);
-//         console.log("statusCode: ", statusCode); 
-//     } catch (err) {
-//         throw err;
-//     }
-// }
+async function testUserInvestment() {
+    try {
+        let accountName = 'systemwallet';
+        let investAmount = 100;
+        const remark = `user ${ accountName } invest ${ investAmount } UE`
+        let statusCode = await userInvestment(investAmount, accountName, remark);
+        console.log("statusCode: ", statusCode); 
+    } catch (err) {
+        throw err;
+    }
+}

@@ -2,5 +2,6 @@
 
 module.exports = {
     "insertReferrer": require("./insertReferrer.js"),
-    "getReferrer": require("./getReferrer.js"),
+    "getUserReferrer": require("./getUserReferrer.js"),
+    "getReferrerInfo": require("./getReferrerInfo.js")
 }

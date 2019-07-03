@@ -11,7 +11,8 @@ const { pool } = require("../../db/index.js");
 async function getSafeIncome(accountName, limit, page) {
     try {
         let selectSql = `
-            SELECT create_time, change_amount, remark from balance_log 
+            SELECT create_time, change_amount, remark 
+                FROM balance_log 
                 WHERE account_name = $1
                 AND op_type = 'safe income'
                 ORDER BY create_time DESC

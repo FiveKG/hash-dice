@@ -6,7 +6,7 @@ async function testUserInvestment() {
         for (let i = 1; i < 10; i ++) {
             let accountName = 'systemwallet';
             accountName = "aispvkz5natu"
-            let investAmount = 30;
+            let investAmount = 100;
             let statusCode = await userInvestment(investAmount, accountName, "");
             console.log("statusCode: ", statusCode); 
         }

@@ -14,4 +14,5 @@ module.exports = {
     "getSafeAccountList": require("./getSafeAccountList.js"),
     "getBingoAccountList": require("./getBingoAccountList.js"),
     "getPkHistory": require("./getPkHistory.js"),
+    "updateSystemAmount": require("./updateSystemAmount.js")
 }

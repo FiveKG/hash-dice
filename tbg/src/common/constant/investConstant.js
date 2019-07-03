@@ -4,29 +4,29 @@
 const INVEST_AMOUNT = 100;
 
 // 百分率
-const BASE_RATE = 1000;
+const BASE_RATE = 100;
 // 直接推荐奖励的百分比
-const REFER_INCOME_RATE = 100;
+const REFER_INCOME_RATE = 10;
 // 分配给五倍收益保障池的额度的百分比
-const SAFE_INCOME_RATE = 250;
+const SAFE_INCOME_RATE = 25;
 // 三三静态的百分比
-const MODE_INCOME_RATE = 150;
+const MODE_INCOME_RATE = 15;
 // 一行公排的百分比
-const SORT_INCOME_RATE = 150;
+const SORT_INCOME_RATE = 15;
 // 分配给 bingo 奖金池的百分比
-const BINGO_INCOME_RATE = 100;
+const BINGO_INCOME_RATE = 10;
 // 分配给股东分红奖金池的百分比
-const SHAREHOLDERS_INCOME_RATE = 150;
+const SHAREHOLDERS_INCOME_RATE = 15;
 // 分配给 pk 奖金池的百分比
-const PK_INCOME_RATE = 50;
+const PK_INCOME_RATE = 5;
 // 分配给全球合伙人额度的百分比
-const GLOBAL_PARTNER = 10;
+const GLOBAL_PARTNER = 1;
 // 分配给全球合伙人的推荐人额度的百分比
-const GLOBAL_PARTNER_REFERRER = 5;
+const GLOBAL_PARTNER_REFERRER = 0.5;
 // 分配给社区额度的百分比
-const COMMUNITY_INCOME_RATE = 21;
+const COMMUNITY_INCOME_RATE = 2.1;
 // 分配给开发维护的额度的百分比
-const DEV_OP_INCOME_RATE = 14;
+const DEV_OP_INCOME_RATE = 1.4;
 
 
 /**

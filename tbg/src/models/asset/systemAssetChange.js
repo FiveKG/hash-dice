@@ -20,6 +20,7 @@ async function systemAssetChange(client, changeType, changeAmount, preAmount, op
                 system_op_log(change_amount, current_balance, op_type, remark, create_time)
                 values($3, $1, $4, $5, $6);
         `
+        
         logger.info("update system_pools amount");
         const opts = [ currentBalance, changeType, changeAmount.toFixed(8), opType, remark, "now()" ]
         await client.query(updateAmountSql, opts);

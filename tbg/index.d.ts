@@ -4,78 +4,78 @@ namespace API {
 
 namespace DB {
     interface Account {
-         "id": String,
-         "account_name": String,
+         "id": string,
+         "account_name": string,
          "create_time": Date,
-         "refer_count": Number,
-         "refer_code": String,
-         "main_id": String,
+         "refer_count": number,
+         "refer_code": string,
+         "main_id": string,
     }
 
     interface SubAccount {
-         "id": String,
-         "pid": String,
-         "root_node": String,
-         "main_account": String,
-         "sub_account_name": String,
-         "level": String,
-         "position": String,
+         "id": string,
+         "pid": string,
+         "root_node": string,
+         "main_account": string,
+         "sub_account_name": string,
+         "level": string,
+         "position": string,
          "create_time": Date,
     }
 
     interface Balance {
-         "id": String,
-         "account_name": String,
-         "amount": Number,
-         "refer_income": Number,
-         "mode_income": Number,
-         "sort_income": Number,
-         "other_income": Number,
-         "withdraw_enable": Number,
-         "repeat_currency": Number,
-         "lotto_currency": Number,
-         "game_currency": Number,
+         "id": string,
+         "account_name": string,
+         "amount": number,
+         "refer_income": number,
+         "mode_income": number,
+         "sort_income": number,
+         "other_income": number,
+         "withdraw_enable": number,
+         "repeat_currency": number,
+         "lotto_currency": number,
+         "game_currency": number,
          "create_time": Date,
     
     }
 
     interface Referrer {
-        "id": String,
-        "referrer_name": String,
-        "account_name": String,
+        "id": string,
+        "referrer_name": string,
+        "account_name": string,
         "create_time": Date,
     }
 
     interface AccountBalanceLog {
-        "id": String,
-        "account_name": String,
-        "change_amount": Number,
-        "current_balance": Number,
-        "op_type": String,
-        "remark": String,
+        "id": string,
+        "account_name": string,
+        "change_amount": number,
+        "current_balance": number,
+        "op_type": string,
+        "remark": string,
         "create_time": Date,
     }
 
     interface SystemPools {
-         "id": String,
-         "pools_type": String,
-         "pools_amount": Number,
+         "id": string,
+         "pool_type": string,
+         "pool_amount": number,
     }
 
     interface SystemOpLog {
-        "id": String,
-        "change_amount": Number,
-        "current_balance": Number,
-        "op_type": String,
-        "remark": String,
+        "id": string,
+        "change_amount": number,
+        "current_balance": number,
+        "op_type": string,
+        "remark": string,
         "create_time": Date,
     }
 
     interface AccountOp {
-        "id": String,
-        "account_name": String,
-        "op_type": String,
-        "remark": String,
+        "id": string,
+        "account_name": string,
+        "op_type": string,
+        "remark": string,
         "create_time": Date,
     }
 }

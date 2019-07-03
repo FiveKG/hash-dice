@@ -24,6 +24,32 @@ const SORT_OUT_LINE = 20;
 // 三倍收益保障池可获奖的出线额度
 const SAFE_OUT_LINE = 300;
 
+/**
+ * 向上层级 分配比例 可分配
+ * 1 50.00% 5.0000 UE
+ * 2 25.00% 2.5000 UE
+ * 3 10.00% 1.0000 UE
+ * 4 5.00% 0.5000 UE
+ * 5 3.00% 0.3000 UE
+ * 6 2.50% 0.2500 UE
+ * 7 2.00% 0.2000 UE
+ * 8 1.50% 0.1500 UE
+ * 9 1.00% 0.1000 UE
+ * 合计 100.00% 10.0000
+ */
+
+const REFER_FIRST_LEVEL = 50;
+const REFER_SECOND_LEVEL = 25;
+const REFER_THIRD_LEVEL = 10;
+const REFER_FOURTH_LEVEL = 5;
+const REFER_FIFTH_LEVEL = 3;
+const REFER_SIXTH_LEVEL = 2.5;
+const REFER_SEVENTH_LEVEL = 2;
+const REFER_EIGHTH_LEVEL = 1.5;
+const REFER_NINTH_LEVEL = 1;
+
+
+
 
 // 百分率, 奖池每次可分配的额度比例
 // 直接推荐 PK 奖池每周分配占比
@@ -55,7 +81,16 @@ const CONSTANT = {
     "SHAREHOLDERS_ALLOCATE_RATE": SHAREHOLDERS_ALLOCATE_RATE,
     "SORT_INCOME": SORT_INCOME,
     "SORT_OUT_LINE": SORT_OUT_LINE,
-    "SAFE_OUT_LINE": SAFE_OUT_LINE
+    "SAFE_OUT_LINE": SAFE_OUT_LINE,
+    "REFER_FIRST_LEVEL": REFER_FIRST_LEVEL,
+    "REFER_SECOND_LEVEL": REFER_SECOND_LEVEL,
+    "REFER_THIRD_LEVEL": REFER_THIRD_LEVEL,
+    "REFER_FOURTH_LEVEL": REFER_FOURTH_LEVEL,
+    "REFER_FIFTH_LEVEL": REFER_FIFTH_LEVEL,
+    "REFER_SIXTH_LEVEL": REFER_SIXTH_LEVEL,
+    "REFER_SEVENTH_LEVEL": REFER_SEVENTH_LEVEL,
+    "REFER_EIGHTH_LEVEL": REFER_EIGHTH_LEVEL,
+    "REFER_NINTH_LEVEL": REFER_NINTH_LEVEL
 }
 
 module.exports = CONSTANT
@@ -80,4 +115,13 @@ module.exports = CONSTANT
  * @property { Number } SORT_INCOME 一行公排获取奖励的用户可得比例
  * @property { Number } SORT_OUT_LINE 一行公排可获奖的出线额度
  * @property { Number } SAFE_OUT_LINE 三倍收益保障池可获奖的出线额度
+ * @property { Number } REFER_FIRST_LEVEL 
+ * @property { Number } REFER_SECOND_LEVEL 
+ * @property { Number } REFER_THIRD_LEVEL 
+ * @property { Number } REFER_FOURTH_LEVEL
+ * @property { Number } REFER_FIFTH_LEVEL
+ * @property { Number } REFER_SIXTH_LEVEL
+ * @property { Number } REFER_SEVENTH_LEVEL
+ * @property { Number } REFER_EIGHTH_LEVEL
+ * @property { Number } REFER_NINTH_LEVEL
  */

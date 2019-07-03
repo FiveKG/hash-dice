@@ -3,13 +3,11 @@ const { pool } = require("../../db");
 const { getStaticMode } = require("../../models/account");
 const { Decimal } = require("decimal.js");
 const { BASE_RATE, MODE_INCOME_RATE} = require("../../common/constant/investConstant.js");
-const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
-const { DEV_OP_POOL, COMMUNITY_POOL } = require("../../common/constant/accountConstant.js");
 const MODE_CONSTANT = require("../../common/constant/staticModeConstants.js");
-const { personalAssetChange, systemAssetChange } = require("../../models/asset");
-const { getOneAccount } = require("../../models/systemPool");
 const logger = require("../../common/logger.js");
 const storeIncome = require("../../common/storeIncome.js");
+const { getSystemAccountInfo } = require("../../models/systemPool");
+const { allocateSurplusAssets } = require("../systemPool");
 const df = require("date-fns");
 
 /**
@@ -41,25 +39,14 @@ async function staticMode(client, amount, subAccount) {
         }
 
         if (modeList.length < 51) {
-            let devAccount = await getOneAccount(DEV_OP_POOL);
-            let communityAccount = await getOneAccount(COMMUNITY_POOL);
-            if (!devAccount) {
-                logger.debug(`system account ${ DEV_OP_POOL } not found`);
-                return;
-            }
-            if (!communityAccount) {
-                logger.debug(`system account ${ COMMUNITY_POOL } not found`);
-                return
-            }
+            // 系统账户
+            const systemAccount = await getSystemAccountInfo();
             // 减去已经发放的
-            let last = modeEnable.minus(distributed);
-            let devRemark = `distribution sort income, add ${ DEV_OP_POOL } ${ last.mul(INCOME_CONSTANT.DEV_INCOME / INCOME_CONSTANT.BASE_RATE) } amount`;
-            let communityRemark = `distribution sort income, add ${ COMMUNITY_POOL } ${ last.mul(INCOME_CONSTANT.COMMUNITY_INCOME / INCOME_CONSTANT.BASE_RATE) } amount`;
-            logger.debug(`distributed: ${ distributed }, last: ${ last }`);
-            await systemAssetChange(client, DEV_OP_POOL, last.mul(INCOME_CONSTANT.DEV_INCOME / INCOME_CONSTANT.BASE_RATE), devAccount.pool_amount, 'sort last', devRemark);
-            await systemAssetChange(client, COMMUNITY_POOL, last.mul(INCOME_CONSTANT.COMMUNITY_INCOME / INCOME_CONSTANT.BASE_RATE), communityAccount.pool_amount, 'sort last', communityRemark);
+            const last = modeEnable.minus(distributed);
+            await allocateSurplusAssets(client, systemAccount, modeEnable, last, "mode")
         }
     } catch (err) {
+        console.error("allocating static mode income error, the error stock is %O", err);
         throw err
     }
 }

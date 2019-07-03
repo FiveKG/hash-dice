@@ -9,7 +9,7 @@ const { pool } = require("../../db");
 async function getAllInviteAccount(accountName) {
     try {
         let selectSubParentLevelSql = `
-            select r.account_name, a.member_level from account a 
+            select r.account_name from account a 
                 join referrer r on r.referrer_name = a.account_name 
                 where length(r.account_name) = 12 and r.referrer_name = $1;
         `

@@ -11,10 +11,10 @@ async function insertAccount(client, accountName, referCode) {
     try {
         let sql = `
             INSERT INTO 
-                account(id, account_name, refer_count, refer_code, create_time)
+                account(id, account_name, refer_count, refer_code, state, create_time)
                 VALUES($1, $2, $3, $4, $5);
         `
-        const opts = [ generate_primary_key(), accountName, 0, referCode, "now()" ]
+        const opts = [ generate_primary_key(), accountName, 0, referCode, 0, "now()" ]
         console.debug("the sql is %s, the values is %O", sql, opts);
         await client.query(sql, opts);
     } catch (err) {
