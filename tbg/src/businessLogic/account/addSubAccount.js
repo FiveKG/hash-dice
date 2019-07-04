@@ -1,5 +1,6 @@
 // @ts-check
 const { getUserSubAccount, getStaticSort, updateReferCount } = require("../../models/account");
+const logger = require("../../common/logger");
 const { insertReferrer } = require("../../models/referrer");
 const { insertAccountOp } = require("../../models/accountOp")
 const setStaticMode = require("./setStaticMode.js");
@@ -29,24 +30,29 @@ async function addSubAccount(client, accountName, amount) {
         await setStaticMode(client, accountName, newSubAccount);
         await staticModeIncome(client, amount, newSubAccount)
 
-        // 查出所有子帐号， 在最后一个后面继续设置推荐关系
-        let allSubLevel = await getStaticSort();
-        let flag = allSubLevel.user_level && allSubLevel.user_level.length === 0;
+        // 一行公排的所有帐号, 查出所有子帐号， 在最后一个后面继续设置推荐关系
+        let staticSort = await getStaticSort();
+        logger.debug("staticSort: ", staticSort, !staticSort);
         let referrer = ``;
-        if (!flag) {
+        if (!staticSort) {
             referrer = accountName;
         } else {
-            let len = allSubLevel.user_level.length;
-            referrer = allSubLevel.user_level[len - 1];
+            let len = staticSort.user_level.length;
+            referrer = staticSort.user_level[len - 1];
         }
         // 一行公排
         let remark = `generate sub-account, set the inviter of ${ newSubAccount } to ${ referrer }`
         await insertReferrer(client, referrer, newSubAccount);
-        await updateReferCount(client, referrer);
+        // 生成子账号，不需要更新推荐的人数
+        // await updateReferCount(client, referrer);
         await insertAccountOp(client, newSubAccount, "generate sub-account", remark)
-        await staticSortIncome(client, amount);
+        const flag = !staticSort || !staticSort.user_level || staticSort.user_level.length < 2;
+        if (flag) {
+            return;
+        }
+        await staticSortIncome(client, amount, staticSort.user_level);
     } catch (err) {
-        console.error("add sub-account error, the error stock is %O", err);
+        logger.error("add sub-account error, the error stock is %O", err);
         throw err;
     }
 }

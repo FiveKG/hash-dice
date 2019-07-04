@@ -8,6 +8,7 @@ const logger = require("../../common/logger.js");
 const storeIncome = require("../../common/storeIncome.js");
 const { getSystemAccountInfo } = require("../../models/systemPool");
 const { allocateSurplusAssets } = require("../systemPool");
+const { getMainAccountBySub } = require("../../models/subAccount/index.js");
 const df = require("date-fns");
 
 /**
@@ -33,8 +34,24 @@ async function staticMode(client, amount, subAccount) {
         }
 
         let distributed = new Decimal(0);
-        for (let i = 1; i < modeList.length; i++) {
-            let  availableIncome = await beginDistr(client, modeEnable, modeList[i], i);
+        const subAccountInfo = await getMainAccountBySub(modeList);
+        // 三三静态收益分配
+        for (let i = 1; i < subAccountInfo.length; i++) {
+            const rate = setRate(1);
+            const availableIncome = modeEnable.mul(rate);
+            const mainAccount = subAccountInfo[i].main_account;
+            const opType = `mode income`;
+            const remark = `subAccount ${ subAccount }, income ${ availableIncome }, level ${ i }`;
+            const now = new Date();
+            const data = {
+                "account_name": mainAccount,
+                "change_amount": availableIncome,
+                "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
+                "op_type": opType,
+                "remark": remark
+            }
+            // 将收益暂存，等待用户收取
+            await storeIncome(mainAccount, "mode", data);
             distributed = distributed.add(availableIncome);
         }
 
@@ -80,50 +97,6 @@ function setRate(position) {
         return MODE_CONSTANT.NEXT_TWENTY / MODE_CONSTANT.STATIC_MODE_BASE / (position - 10);
     } else {
         return MODE_CONSTANT.LAST_TWENTY / MODE_CONSTANT.STATIC_MODE_BASE / (position - 30);
-    }
-}
-
-/**
- * 
- * @param { any } client 
- * @param { Decimal } modeEnable 
- * @param { String } subAccount 
- * @param { Number } position 
- */
-async function beginDistr(client, modeEnable, subAccount, position) {
-    let rate = setRate(position);
-    let availableIncome = modeEnable.mul(rate);
-    let mainAccount = await getStaticModeMainAccount(subAccount);
-    let opType = `mode income`;
-    let remark = `subAccount ${ subAccount }, income ${ availableIncome }, level ${ position }`;
-    let now = new Date();
-    let data = {
-        "account_name": mainAccount.main_account,
-        "change_amount": availableIncome,
-        "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-        "op_type": opType,
-        "remark": remark
-    }
-    await storeIncome(mainAccount.main_account, "mode", data);
-    // await personalAssetChange(client, mainAccount.main_account, availableIncome, opType, remark);
-    return availableIncome;
-}
-
-/**
- * 查找三三排位子帐号对应的主帐号
- * @param { String } subAccount 子帐号
- */
-async function getStaticModeMainAccount(subAccount) {
-    try {
-        let sql = `
-            select s.main_account, b.amount from sub_account s 
-                join balance b on s.main_account = b.account_name 
-                where s.sub_account_name = '${ subAccount }';`
-        let { rows } = await pool.query(sql);
-        // console.log("rows: ", rows[0]);
-        return rows[0];
-    } catch (err) {
-        throw err;
     }
 }
 

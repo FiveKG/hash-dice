@@ -9,7 +9,7 @@ namespace DB {
          "create_time": Date,
          "refer_count": number,
          "refer_code": string,
-         "main_id": string,
+         "state": number,
     }
 
     interface SubAccount {
@@ -27,10 +27,6 @@ namespace DB {
          "id": string,
          "account_name": string,
          "amount": number,
-         "refer_income": number,
-         "mode_income": number,
-         "sort_income": number,
-         "other_income": number,
          "withdraw_enable": number,
          "repeat_currency": number,
          "lotto_currency": number,

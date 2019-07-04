@@ -1,0 +1,8 @@
+### 收取收益
+POST  http://localhost:9527/income/income_gain
+Content-Type: application/json
+
+{
+    "account_name": "systemwallet",
+    "income_type": "all"
+}

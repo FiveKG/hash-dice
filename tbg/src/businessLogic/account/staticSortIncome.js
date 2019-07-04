@@ -1,11 +1,12 @@
 // @ts-check
-const { pool } = require("../../db");
-const { getStaticSort } = require("../../models/account");
+const logger = require("../../common/logger");
 const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
 const { allocateSurplusAssets } = require("../systemPool");
 const { getSystemAccountInfo } = require("../../models/systemPool");
+const { getMainAccountBySub } = require("../../models/subAccount/index.js");
+const { getStaticSortIncomeByMain } = require("../../models/balanceLog/index.js");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
 
@@ -13,25 +14,18 @@ const df = require("date-fns");
  * 一行公排收益分配
  * @param { any } client
  * @param { Number } amount 一行公排收益
+ * @param { String[] } staticSortList
  */
-async function staticSort(client, amount) {
+async function staticSort(client, amount, staticSortList) {
     try {
         // 用户投资时， 一行公排可分配额度
-        let sortEnable = new Decimal(amount).mul(INVEST_CONSTANT.SORT_INCOME_RATE / INVEST_CONSTANT.BASE_RATE);
-        // 一行公排的所有帐号
-        let rows = await getStaticSort();
-        // 该用户的子帐号
-        let sortList = rows.user_level;
-        let len = sortList.length;
-        if (!len) {
-            return
-        }
-
-        sortList.shift();
-        console.log("sortList: ", sortList);
+        const sortEnable = new Decimal(amount).mul(INVEST_CONSTANT.SORT_INCOME_RATE / INVEST_CONSTANT.BASE_RATE);
+        const sortList = staticSortList.splice(2);
+        const len = sortList.length;
+        logger.debug("sortList: ", sortList);
         // 前期账号不足分配多出余额
         // 40% 开发 60% 社区
-        // 分配收益小于 150UE 的帐号
+        // 分配收益小于 20UE 的帐号
         if (len <= 5) {
             // todo: 最后五个帐号可均分 amount 的 25%， 其余分给社区，开发
             await handleStaticSort(client, sortEnable, sortList, true);
@@ -69,29 +63,50 @@ async function staticSort(client, amount) {
 /**
  * 分配一行公排的收益
  * @param { any } client 
- * @param { Decimal } sortEnable 
+ * @param { any } sortEnable 
  * @param { String[] } sortList 
  * @param { Boolean } flag 
  */
-async function handleStaticSort(client, sortEnable, sortList,flag) {
-    let avg = sortEnable.mul(INCOME_CONSTANT.SORT_INCOME / INCOME_CONSTANT.BASE_RATE).div(sortList.length);
-    for (let i = 0; i < sortList.length; i++) {
-        let account = await getStaticSortMainAccount(sortList[i]);
-        console.log("handleStaticSort: ", account, sortList[i]);
-        let opType = `sort income`;
-        let remark = `subAccount ${ sortList[i] }, income ${ avg.toFixed(8) }`;
-        let amount = new Decimal(account.amount);
-        // 低于出线额度的用户可分配奖金
-        if (amount.lessThan(INCOME_CONSTANT.SORT_OUT_LINE)) {
-            let now = new Date();
-            let data = {
-                "account_name": account.account_name,
+async function handleStaticSort(client, sortEnable, sortList, flag) {
+    const avg = sortEnable.mul(INCOME_CONSTANT.SORT_INCOME / INCOME_CONSTANT.BASE_RATE).div(sortList.length);
+    const mainAccountList = await getMainAccountBySub(sortList);
+    const accountNameList = Array.from(new Set(mainAccountList.map(item => item.main_account)));
+    logger.debug("mainAccountList: %O, accountNameList: %O", mainAccountList, accountNameList);
+    // 查找主帐户的收益信息
+    const mainAccountIncomeInfo = await getStaticSortIncomeByMain(accountNameList);
+    logger.debug("mainAccountIncomeInfo: %O", mainAccountIncomeInfo);
+    for (let i = 0; i < mainAccountList.length; i++) {
+        const mainAccount = mainAccountList[i];
+        const mainAccountName = mainAccount.main_account;
+        logger.debug("handleStaticSort: ", mainAccount);
+        const opType = `sort income`;
+        const remark = `subAccount ${ mainAccount.sub_account_name }, income ${ avg.toFixed(8) }`;
+        // 还没有收益，直接分配，否则要判断是否超过出线额度
+        if (!mainAccountIncomeInfo) {
+            const now = new Date();
+            const data = {
+                "account_name": mainAccountName,
                 "change_amount": avg,
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
                 "op_type": opType,
                 "remark": remark
             }
-            await storeIncome(account.account_name, "sort", data);
+            await storeIncome(mainAccountName, "sort", data);
+        } else {
+            const balanceInfo = mainAccountIncomeInfo.find(item => item.account_name === mainAccountName);
+            const amount = new Decimal(balanceInfo.amount);
+            // 低于出线额度的用户可分配奖金
+            if (amount.lessThan(INCOME_CONSTANT.SORT_OUT_LINE)) {
+                const now = new Date();
+                const data = {
+                    "account_name": mainAccountName,
+                    "change_amount": avg,
+                    "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
+                    "op_type": opType,
+                    "remark": remark
+                }
+                await storeIncome(mainAccountName, "sort", data);
+            }
         }
     }
     
@@ -100,28 +115,6 @@ async function handleStaticSort(client, sortEnable, sortList,flag) {
         let systemAccount = await getSystemAccountInfo();
         let last = sortEnable.minus(avg);
         await allocateSurplusAssets(client, systemAccount, sortEnable, last, "sort");
-    }
-}
-
-/**
- * 查找收益小于 150 的一行公排对应的主帐号
- * @param { String } subAccount 子帐号
- */
-async function getStaticSortMainAccount(subAccount) {
-    try {
-        let sql = `
-            select b.op_type, b.account_name, sum(change_amount) as amount
-                from balance_log b join (
-                        select distinct main_account, sub_account_name from sub_account 
-                        where sub_account_name = '${ subAccount }'
-                    ) s on s.main_account = b.account_name 
-                    where b.op_type = 'sort income' group by b.op_type, b.account_name;
-        `
-
-        let { rows } = await pool.query(sql);
-        return rows[0];
-    } catch (err) {
-        throw err;
     }
 }
 

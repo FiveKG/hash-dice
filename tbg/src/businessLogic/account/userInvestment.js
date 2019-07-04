@@ -87,9 +87,10 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
         await allocateSurplusAssets(client, systemAccount, referIncome, distributed, "referrer");
         // 更新系统池的额度
         for (const item of systemAccount) {
-            const income = investAmount.mul(ACCOUNT_RATE[item.pool_type] / INVEST_CONSTANT.BASE_RATE);
+            const income = investAmount.mul(ACCOUNT_RATE.accountRate[item.pool_type] / INVEST_CONSTANT.BASE_RATE);
             const opType = `user investment`;
             const remark = `user investment, add ${ item.pool_type } amount`
+            logger.debug("income: %O, item: %O", income, item, ACCOUNT_RATE.accountRate[item.pool_type], INVEST_CONSTANT.BASE_RATE);
             await insertSystemOpLog(client, income, item.pool_amount, opType, remark);
             await updateSystemAmount(client, item.pool_type, income, item.pool_amount);
         }

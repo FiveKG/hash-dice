@@ -13,7 +13,7 @@ async function storeIncome(accountName, hType, data) {
         let isExist = await redis.hget(key, hType);
         let tmp = [];
         // 如果之前未收取，则一直积累
-        console.log("isExist: ", typeof isExist, isExist);
+        // console.log("isExist: ", typeof isExist, isExist);
         if (isExist) {
             tmp = JSON.parse(isExist);
             tmp.push(data);

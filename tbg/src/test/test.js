@@ -28,8 +28,8 @@ const handlerTransfer = require("../job/handlerTransfer.js");
 const { scheduleJob } = require("node-schedule");
 
 ;(async () => {
-    await clearRedisKeyBeforeInit();
-    await initCode();
+    // await clearRedisKeyBeforeInit();
+    // await initCode();
     // await dropAllTable();
     // await createTable();
     // await insertAccount();
@@ -72,8 +72,7 @@ async function testUserInvestment() {
         let accountName = 'systemwallet';
         let investAmount = 100;
         const remark = `user ${ accountName } invest ${ investAmount } UE`
-        let statusCode = await userInvestment(investAmount, accountName, remark);
-        console.log("statusCode: ", statusCode); 
+        await userInvestment(investAmount, accountName, remark);
     } catch (err) {
         throw err;
     }

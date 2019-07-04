@@ -1,5 +1,6 @@
 // @ts-check
 const { pool } = require("../../db");
+const logger = require("../../common/logger");
 
 /**
  * 递归查所有生成的子帐号 一行公排
@@ -7,20 +8,27 @@ const { pool } = require("../../db");
  */
 async function getStaticSort() {
     try {
-        let selectSql = `
-            with recursive all_level as (
-                select referrer_name, account_name, array[referrer_name] as account, 1 as depth from referrer 
-                where referrer_name is not null and length(account_name) > 12 or length(referrer_name) > 12
-                union
-                select r.referrer_name, r.account_name, l.account || l.account_name, l.depth + 1 as depth 
-                from referrer r inner join all_level l on r.referrer_name = l.account_name
+        const sql = `
+            WITH res AS (
+                WITH RECURSIVE all_level AS (
+                    SELECT referrer_name, account_name, ARRAY[referrer_name] AS account, 1 AS depth 
+                        FROM referrer 
+                        WHERE referrer_name = ''
+                    UNION
+                    SELECT r.referrer_name, r.account_name, l.account || l.account_name, l.depth + 1 AS depth 
+                        FROM referrer r 
+                        INNER JOIN all_level l ON r.referrer_name = l.account_name
+                )
+                SELECT referrer_name, account_name, array_append(account, account_name) AS user_level, depth 
+                    FROM all_level 
+                    WHERE length(account_name) > 12
             )
-            select array_append(account, account_name) as user_level
-            from all_level where depth = (select max(depth) from all_level);
+            SELECT * FROM res WHERE depth = (select max(depth) from res);
         `
-        let { rows } = await pool.query(selectSql);
-        return rows[0];
+        const { rows: [ staticSort ] } = await pool.query(sql);
+        return staticSort;
     } catch (err) {
+        logger.error("query static mode account error, the error stock is %O", err);
         throw err
     }
 }

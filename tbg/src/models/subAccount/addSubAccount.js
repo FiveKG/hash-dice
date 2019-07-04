@@ -1,4 +1,5 @@
 // @ts-check
+const logger = require("../../common/logger.js");
 
 /**
  * 插入子帐号

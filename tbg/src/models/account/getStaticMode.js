@@ -15,7 +15,8 @@ async function getStaticMode(subAccount) {
                 )
                 select account from mode 
                 where account[array_length(account, 1)] = $1
-                order by array_length(account, 1) desc limit 1;
+                order by array_length(account, 1) desc 
+                limit 1;
         `
         
         let { rows } = await pool.query(selectSql, [ subAccount ]);

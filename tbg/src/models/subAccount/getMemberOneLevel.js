@@ -1,5 +1,5 @@
 // @ts-check
-const { pool } = require("../../db");
+const { pool } = require("../../db/index.js");
 
 /**
  * 获取某层的所有帐号数

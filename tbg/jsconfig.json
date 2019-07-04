@@ -2,12 +2,8 @@
   "compilerOptions": {
     "target": "es6",
     "allowSyntheticDefaultImports": true,
-    "checkJs": true,
     "baseUrl": ".",
   },
-  "exclude": [
-    "node_modules"
-  ],
   "include": [
     "**/*"
   ]

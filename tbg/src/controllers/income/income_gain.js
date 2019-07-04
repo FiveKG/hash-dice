@@ -2,8 +2,7 @@
 const { pool } = require("../../db");
 const logger = require("../../common/logger.js").child({ "@controllers/income/income_gain.js": "收取收益" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
-const { personalAssetChange } = require("../../models/asset");
-const { getUserBalance } = require("../../models/balance");
+const { getUserBalance, updateBalance, insertBalanceLog } = require("../../models/balance/index");
 const { Decimal } = require("decimal.js");
 const { redis } = require("../../common");
 const { startParse } = require("../../common/parseIncomeData");
@@ -66,13 +65,23 @@ async function startGain(incomeMap, incomeType) {
     if (!incomeJsonIfy) {
         return;
     }
-    console.log("incomeJsonIfy: ", incomeJsonIfy);
-    let incomeArr = JSON.parse(incomeJsonIfy);
-    for (let item of incomeArr) {
-        let changeAmount = new Decimal(item.change_amount);
-        console.log("item: ", item);
-        const createTime = df.format(item.create_time, "YYYY-MM-DD HH:mm:ssZ");
-        await personalAssetChange(pool, item.account_name, changeAmount, item.op_type, item.remark, createTime);
+    const client = await pool.connect();
+    try {
+        console.log("incomeJsonIfy: ", incomeJsonIfy);
+        let incomeArr = JSON.parse(incomeJsonIfy);
+        for (let item of incomeArr) {
+            const accountName = item.account_name;
+            let changeAmount = new Decimal(item.change_amount);
+            let rows = await getUserBalance(accountName);
+            console.log("item: ", item);
+            const createTime = df.format(item.create_time, "YYYY-MM-DD HH:mm:ssZ");
+            await client.query("BEGIN");
+            await updateBalance(client, accountName, changeAmount);
+            await insertBalanceLog(client, accountName, changeAmount.toFixed(8), rows.amount, item.op_type, item.remark, createTime)
+            await client.query("COMMIT");
+        }
+    } catch (err) {
+        throw err;
     }
 }
 
