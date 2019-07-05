@@ -3,7 +3,8 @@ const logger = require("../../common/logger.js").child({ "@controllers/account/s
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const userInvestment = require("../../businessLogic/account/userInvestment.js");
-const { getAccountMemberLevel } = require("../../models/account");
+const { getAccountInfo } = require("../../models/account");
+const { ACCOUNT_ACTIVATED } = require("../../common/constant/accountConstant.js")
 
 // 自己投资
 async function investBySelf(req, res, next) {
@@ -13,12 +14,11 @@ async function investBySelf(req, res, next) {
         if (reqData.amount !== INVEST_CONSTANT.INVEST_AMOUNT) {
             return res.send(get_status(1004, `investment must be ${ INVEST_CONSTANT.INVEST_AMOUNT } UE`));
         }
-        let rows = await getAccountMemberLevel(reqData.account_name);
-        logger.debug(`the account member level is ${ JSON.stringify(rows) }`);
-        if (!rows) {
+        let accountInfo = await getAccountInfo(reqData.account_name);
+        if (!accountInfo) {
             return res.send(get_status(1001, "this account does not exists"));
         }
-        if (rows.member_level !== 1) {
+        if (accountInfo.state === ACCOUNT_ACTIVATED) {
             return res.send(get_status(1013, "this account had activated"));
         }
         const remark = `user ${ reqData.account_name } investment ${ reqData.amount } UE`

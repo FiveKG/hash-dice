@@ -54,9 +54,9 @@ async function staticSort(client, amount, staticSortList) {
             await handleStaticSort(client, sortEnable, frontList, false);
             await handleStaticSort(client, sortEnable, other, false);
         }
-
     } catch (err) {
-        throw err
+        logger.error("allocating sort income error, the error stock is %O", err);
+        throw err;
     }
 }
 

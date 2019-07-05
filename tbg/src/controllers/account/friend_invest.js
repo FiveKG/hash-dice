@@ -6,7 +6,8 @@ const userInvestment = require("../../businessLogic/account/userInvestment.js");
 const { getUserBalance } = require("../../models/balance");
 const { userWithdraw } = require("../../models/asset");
 const { Decimal } = require("decimal.js");
-const { getAccountMemberLevel } = require("../../models/account");
+const { getAccountInfo } = require("../../models/account");
+const { ACCOUNT_ACTIVATED } = require("../../common/constant/accountConstant.js")
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 
 // 帮朋友投资
@@ -19,12 +20,11 @@ async function friendInvest(req, res, next) {
         if (!rows) {
             return res.send(get_status(1001, "this account does not exists"));
         }
-        let member = await getAccountMemberLevel(reqData.account_name);
-        logger.debug(`the account member level is ${ member }`);
-        if (!member) {
+        let accountInfo = await getAccountInfo(reqData.account_name);
+        if (!accountInfo) {
             return res.send(get_status(1001, "this account does not exists"));
         }
-        if (member.member_level !== 1) {
+        if (accountInfo.state === ACCOUNT_ACTIVATED) {
             return res.send(get_status(1013, "this account had activated"));
         }
         

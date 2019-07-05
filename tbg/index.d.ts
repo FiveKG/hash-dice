@@ -1,8 +1,8 @@
-namespace API {
+declare namespace API {
     
 }
 
-namespace DB {
+declare namespace DB {
     interface Account {
          "id": string,
          "account_name": string,

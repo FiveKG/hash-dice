@@ -14,7 +14,7 @@ async function getAccountMember(req, res, next) {
             return res.send(get_status(1001, "this account does not exists"));
         }
         let resData = get_status(1);
-        resData["data"] = userMemberLevel.member_level;
+        resData["data"] = userMemberLevel;
         res.send(resData);
     } catch (err) {
         throw err

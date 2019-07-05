@@ -1,60 +1,123 @@
 // @ts-check
-const { getUserSubAccount, getStaticSort, updateReferCount } = require("../../models/account");
-const logger = require("../../common/logger");
-const { insertReferrer } = require("../../models/referrer");
-const { insertAccountOp } = require("../../models/accountOp")
-const setStaticMode = require("./setStaticMode.js");
-const staticModeIncome = require("./staticModeIncome.js");
-const staticSortIncome = require("./staticSortIncome.js");
+const { getAllParentLevel, getAccountInfo } = require("../../models/account");
+const { insertSubAccount, getSubAccountInfoByRootNode } = require("../../models/subAccount");
+const logger = require("../../common/logger.js")
+const { redis } = require("../../common/index.js");
 
 /**
  * 添加子帐号
- * 投资每满 100 UE 就生成一个子帐号
- * 收益满 100 UE，自动激活（未激活时），同时生成一个子帐号
- * @param { any } client 
- * @param { String } accountName 用户的帐号
- * @param { Number } amount 投资金额
+ * @param { any } client
+ * @param { String } accountName 用户 EOS 帐号
+ * @param { String } subAccount 用户子帐号
  */
-async function addSubAccount(client, accountName, amount) {
+async function addSubAccount(client, accountName, subAccount) {
     try {
-        let subAccount = await getUserSubAccount(accountName);
-        let lower = 0;
-        if (subAccount.length === 0) {
-            // todo 没有子帐号
-            lower = 1;
+        logger.debug("set user static mode");
+        const allParentLevel = await getAllParentLevel(accountName);
+        if (!allParentLevel) {
+            throw Error("没有推荐关系，请先设置推荐关系，检查数据是否正确");
+        }
+        // 判断最上端的用户是否存在
+        const accountInfo = await getAccountInfo(allParentLevel[1]);
+        if (!accountInfo.account_name) {
+            throw Error("account not found");
+        }
+        // 查找该用户是否在某个树中，如果不在，重新生成一棵树，用该用户做树的根节点，如果在则继续往原来的树上添加
+        const subAccountInfo = await getSubAccountInfoByRootNode(allParentLevel[1]);
+        const flag = await redis.sismember("tbg:subAccount:root", accountInfo.id);
+        logger.debug("allParentLevel: %O, accountInfo: %O", allParentLevel, accountInfo);
+        logger.debug("subAccountInfo: %O, flag: %O", subAccountInfo, flag, !subAccountInfo, !flag);
+        if (!subAccountInfo && !flag) {
+            const level = 1;
+            const position = 1;
+            const id = accountInfo.id + "-" + level + position;
+            // 生成新的树
+            const obj = {
+                id: id,
+                pid: '0',
+                position: position,
+                rootAccount: allParentLevel[1],
+                level: level,
+                subAccount: subAccount,
+                accountName: accountName
+            }
+            // 在 redis 中记录当前这个伞的根节点和层级
+            await redis.sadd("tbg:subAccount:root", accountInfo.id);
+            await redis.set(`tbg:level:${ accountInfo.id }`, 1);
+            // 插入子账号
+            await insertSubAccount(client, obj);
         } else {
-            lower = subAccount.length + 1;
+            // 创建子账号信息
+            const result = await createSubId(accountInfo.id);
+            const obj = {
+                id: result.id,
+                pid: result.pid,
+                position: result.position,
+                rootAccount: allParentLevel[1],
+                level: result.level,
+                subAccount: subAccount,
+                accountName: accountName
+            }
+            logger.debug("obj: ", obj);
+            await insertSubAccount(client, obj);
         }
-        const newSubAccount = `${ accountName }-${ lower }`
-        // 三三排位
-        await setStaticMode(client, accountName, newSubAccount);
-        await staticModeIncome(client, amount, newSubAccount)
-
-        // 一行公排的所有帐号, 查出所有子帐号， 在最后一个后面继续设置推荐关系
-        let staticSort = await getStaticSort();
-        logger.debug("staticSort: ", staticSort, !staticSort);
-        let referrer = ``;
-        if (!staticSort) {
-            referrer = accountName;
-        } else {
-            let len = staticSort.user_level.length;
-            referrer = staticSort.user_level[len - 1];
-        }
-        // 一行公排
-        let remark = `generate sub-account, set the inviter of ${ newSubAccount } to ${ referrer }`
-        await insertReferrer(client, referrer, newSubAccount);
-        // 生成子账号，不需要更新推荐的人数
-        // await updateReferCount(client, referrer);
-        await insertAccountOp(client, newSubAccount, "generate sub-account", remark)
-        const flag = !staticSort || !staticSort.user_level || staticSort.user_level.length < 2;
-        if (flag) {
-            return;
-        }
-        await staticSortIncome(client, amount, staticSort.user_level);
     } catch (err) {
-        logger.error("add sub-account error, the error stock is %O", err);
-        throw err;
+        throw err
     }
 }
 
-module.exports = addSubAccount
+/**
+ * 生成的子帐号表 id, pid, position
+ * @param { String } mainId 当前这个伞的根节点账号 id
+ * @returns { Promise<CreateSubId> }
+ */
+async function createSubId(mainId) {
+    // 获取到剩余位置的数量
+    const members = await redis.scard("tbg:subAccount:position");
+    // 获取当前层级
+    const currentMaxLevel = await redis.get(`tbg:level:${ mainId }`);
+    let level = parseInt(currentMaxLevel);
+    logger.debug("members: %d, level: %d", members, level);
+    // 如果排满了，下层随机一个位置，否则在当前层没有排满的位置中随机
+    if (!members) {
+        level = level + 1;
+        await redis.set(`tbg:level:${ mainId }`, level);
+        await genPositionList(level);
+    } 
+    const position = await redis.spop("tbg:subAccount:position");
+    logger.debug("position: %d", position);
+    // 子账号表的主键 id， 由根节点账号 id + 中横线 + 层级 + 位置组成
+    const id = mainId + "-" + level + position;
+    // 子账号表的父 id， 由根节点账号 id + 中横线 + 层级 + 位置
+    const pid = mainId + "-" + (level - 1) + Math.ceil(parseInt(position) / 3);
+    
+    return {
+        id: id,
+        pid: pid,
+        position: position,
+        level: level
+    }
+}
+
+/**
+ * 生成位置, 存入 redis，分配位置时, 随机取一个
+ * @param { Number } level 
+ */
+async function genPositionList(level) {
+    const pos = []
+    for (let i = 1; i <= Math.pow(3, level - 1); i++) {
+        pos.push(i);
+    }
+    await redis.sadd("tbg:subAccount:position", pos);
+}
+
+module.exports = addSubAccount;
+
+/**
+ * @description
+ * @typedef { Object } CreateSubId
+ * @property { String } id
+ * @property { String } pid
+ * @property { Number } position
+ * @property { Number } level
+ */

@@ -1,5 +1,4 @@
 // @ts-check
-const { pool } = require("../../db");
 const { getStaticMode } = require("../../models/account");
 const { Decimal } = require("decimal.js");
 const { BASE_RATE, MODE_INCOME_RATE} = require("../../common/constant/investConstant.js");
@@ -20,16 +19,16 @@ async function staticMode(client, amount, subAccount) {
     try {
         // 用户投资时， 三三静态可分配额度
         let modeEnable = new Decimal(amount).mul(MODE_INCOME_RATE / BASE_RATE);
-        let rows = await getStaticMode(subAccount);
-        let modeList = rows.account;
-        let len = modeList.length;
-        if (!len) {
+        let modeList = await getStaticMode(subAccount);
+        if (!modeList) {
             return
         }
 
+        // 收益从当前子账号往上算
         modeList.reverse();
         logger.debug(`modeEnable: ${ modeEnable }, modeList: ${ modeList }`);
-        if (len > 50) {
+        const len = modeList.length;
+        if (len > 51) {
             modeList = modeList.splice(0, 51);
         }
 
@@ -55,7 +54,8 @@ async function staticMode(client, amount, subAccount) {
             distributed = distributed.add(availableIncome);
         }
 
-        if (modeList.length < 51) {
+        // 低于 51 层，剩余的部分分配给社区、开发
+        if (len < 51) {
             // 系统账户
             const systemAccount = await getSystemAccountInfo();
             // 减去已经发放的
@@ -63,7 +63,7 @@ async function staticMode(client, amount, subAccount) {
             await allocateSurplusAssets(client, systemAccount, modeEnable, last, "mode")
         }
     } catch (err) {
-        console.error("allocating static mode income error, the error stock is %O", err);
+        logger.error("allocating static mode income error, the error stock is %O", err);
         throw err
     }
 }

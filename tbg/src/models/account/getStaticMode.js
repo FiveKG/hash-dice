@@ -8,19 +8,19 @@ const { pool } = require("../../db");
 async function getStaticMode(subAccount) {
     try {
         let selectSql = `
-            with recursive mode as (
-                select a.id, a.pid, array[a.sub_account_name] as account from sub_account a
-                union all
-                select s.id, s.pid, m.account || s.sub_account_name  from sub_account s inner join mode m on m.id = s.pid
-                )
-                select account from mode 
-                where account[array_length(account, 1)] = $1
-                order by array_length(account, 1) desc 
-                limit 1;
+            WITH RECURSIVE mode AS (
+                SELECT a.id, a.pid, array[a.sub_account_name] AS account FROM sub_account a
+                UNION ALL
+                SELECT s.id, s.pid, m.account || s.sub_account_name  FROM sub_account s INNER JOIN mode m ON m.id = s.pid
+            )
+            SELECT account FROM mode 
+            WHERE account[array_length(account, 1)] = $1
+            ORDER BY array_length(account, 1) DESC
+            LIMIT 1;
         `
         
-        let { rows } = await pool.query(selectSql, [ subAccount ]);
-        return rows[0];
+        let { rows: [ { account } ] } = await pool.query(selectSql, [ subAccount ]);
+        return account;
     } catch (err) {
         throw err
     }

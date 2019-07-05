@@ -11,4 +11,5 @@ module.exports = {
     "invest_code": require("./invest_code.js"),
     "investment_index": require("./investment_index.js"),
     "is_bind": require("./is_bind.js"),
+    
 }

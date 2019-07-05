@@ -7,14 +7,15 @@ const { getStaticSort, getUserSubAccount } = require("../../models/account");
 async function staticSort(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        // 一行公排
-        let rows = await getStaticSort();
-        // 该用户的子帐号
-        let subAccountList = await getUserSubAccount(reqData.account_name);
-        let sort = rows.user_level;
-        if (!sort.length) {
+        // 一行公排的查出所有子帐号
+        const rows = await getStaticSort();
+        let resData = get_status(1);
+        if (rows.length === 0) {
             return res.send(get_status(1006, "static sort is empty"));
         }
+        const staticSort = rows.map(item => item.sub_account_name);
+        // 该用户的子帐号
+        let subAccountList = await getUserSubAccount(reqData.account_name);
 
         let len = subAccountList.length;
         if (!len) {
@@ -22,14 +23,13 @@ async function staticSort(req, res, next) {
         }
 
         let result = subAccountList.map(item => {
-            let account = item.sub_account_name;
+            let subAccount = item.sub_account_name;
             return {
-                sub_account: account.split("-")[1],
-                sort: sort.indexOf(account)
+                sub_account: subAccount.split("-")[1],
+                sort: staticSort.indexOf(subAccount)
             }
         });
 
-        let resData = get_status(1);
         resData["data"] = result;
         res.send(resData);
     } catch (err) {

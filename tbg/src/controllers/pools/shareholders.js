@@ -30,7 +30,7 @@ async function shareholdersAmount(req, res, next) {
             current_amount: amount.toFixed(4),
             issue: issue,
             total: amount.add(issue).toFixed(4),
-            account_level: userMemberLevel.member_level,
+            account_level: userMemberLevel,
         };
         res.send(resData);
     } catch (err) {

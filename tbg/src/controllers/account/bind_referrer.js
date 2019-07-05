@@ -41,7 +41,7 @@ async function bindReferrer(req, res, next) {
         await insertBalance(client, accountName);
         // 添加推荐人
         await insertReferrer(client, referrerName, accountName);
-        // 修改推荐人信息
+        // 修改推荐人推荐数量信息
         await updateReferCount(client, referrerName);
         // 记录操作日志
         await insertAccountOp(client, accountName, "bind referrer", remark)
