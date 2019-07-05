@@ -3,12 +3,11 @@ const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { BINGO_POOL } = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
-const { personalAssetChange, systemAssetChange } = require("../../models/asset");
-const { getBingoAccountList } = require("../../models/systemPool");
+const { getBingoAccountList, updateSystemAmount } = require("../../models/systemPool");
+const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { Decimal } = require("decimal.js");
 const logger = require("../../common/logger.js");
 const storeIncome = require("../../common/storeIncome.js");
-const redis = require("../../common/redis.js");
 const df = require("date-fns");
 
 /**
@@ -41,7 +40,6 @@ async function handlerPk() {
             }
             let opType = `bingo income`;
             let remark = `account ${ item.account_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
-            // await personalAssetChange(client, item.account_name, distrEnable.mul(rate), opType, remark);
             let now = new Date();
             let data = {
                 "account_name": item.account_name,
@@ -56,7 +54,8 @@ async function handlerPk() {
         let changeAmount = new Decimal(-distrEnable);
         let opType = `allocating ${ BINGO_POOL }`;
         let remark = `allocating ${ BINGO_POOL }, minus ${ distrEnable }`;
-        await systemAssetChange(client, BINGO_POOL, changeAmount, rows.pool_amount, opType, remark);
+        await updateSystemAmount(client, BINGO_POOL, changeAmount, rows.pool_amount);
+        await insertSystemOpLog(client, changeAmount, rows.pool_amount, opType, remark);
         await client.query("COMMIT");
         logger.debug(`handler ${ BINGO_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {

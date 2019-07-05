@@ -3,8 +3,8 @@ const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { SHAREHOLDERS_POOL } = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
-const { personalAssetChange, systemAssetChange } = require("../../models/asset");
-const { getHolderAccountList } = require("../../models/systemPool");
+const { getHolderAccountList, updateSystemAmount } = require("../../models/systemPool");
+const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { Decimal } = require("decimal.js");
 const df = require("date-fns");
 const logger = require("../../common/logger.js");
@@ -50,7 +50,8 @@ async function handlerHolder() {
         let changeAmount = new Decimal(-distrEnable);
         let opType = `allocating ${ SHAREHOLDERS_POOL }`;
         let remark = `allocating ${ SHAREHOLDERS_POOL }, minus ${ distrEnable }`;
-        await systemAssetChange(client, SHAREHOLDERS_POOL, changeAmount, rows.pool_amount, opType, remark);
+        await updateSystemAmount(client, SHAREHOLDERS_POOL, changeAmount, rows.pool_amount);
+        await insertSystemOpLog(client, changeAmount, rows.pool_amount, opType, remark);
         await client.query("COMMIT");
         logger.debug(`handler ${ SHAREHOLDERS_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {

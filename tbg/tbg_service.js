@@ -49,7 +49,7 @@ const server = module.exports = app.listen(9527, "0.0.0.0"); //选择一个随�
 server.on('listening', async () => {
   // require("@yz/yue-service-register")(`${service_name}`, port);
   // 初始化系统服务数据
-  require("./src/build/initServer.js");
+  require("./src/build/initDate");
   logger.info(`**** server of pools running at http://localhost:${port}/  ****`)
 });
 

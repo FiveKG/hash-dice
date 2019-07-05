@@ -3,8 +3,8 @@ const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { PK_POOL } = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
-const { personalAssetChange, systemAssetChange } = require("../../models/asset");
-const { getPkAccountList } = require("../../models/systemPool");
+const { getPkAccountList, updateSystemAmount } = require("../../models/systemPool");
+const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { Decimal } = require("decimal.js");
 const df = require("date-fns");
 const logger = require("../../common/logger.js");
@@ -34,7 +34,6 @@ async function handlerPk() {
             let rate = setRate(i);
             let opType = `pk income`;
             let remark = `account ${ item.referrer_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
-            // await personalAssetChange(client, item.referrer_name, distrEnable.mul(rate), opType, remark);
             let now = new Date();
             let data = {
                 "account_name": item.referrer_name,
@@ -49,7 +48,8 @@ async function handlerPk() {
         let changeAmount = new Decimal(-distrEnable);
         let opType = `allocating ${ PK_POOL }`;
         let remark = `allocating ${ PK_POOL }, minus ${ distrEnable }`;
-        await systemAssetChange(client, PK_POOL, changeAmount, rows.pool_amount, opType, remark);
+        await updateSystemAmount(client, PK_POOL, changeAmount, rows.pool_amount);
+        await insertSystemOpLog(client, changeAmount, rows.pool_amount, opType, remark);
         await client.query("COMMIT");
         logger.debug(`handler ${ PK_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {

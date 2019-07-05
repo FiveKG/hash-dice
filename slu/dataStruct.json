@@ -11,7 +11,8 @@
                 { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "用户的 eos 帐号" , "isPrimary": false } ,
                 { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "账户创建时间", "remark": "", "isPrimary": false },
                 { "name": "refer_count", "type": "number", "dblength": "0", "dftValue": "0", "summary": "用户推荐的人数", "remark": "", "isPrimary": false },
-                { "name": "refer_code", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户的推荐号", "remark": "推荐用户时填写这个帐号", "isPrimary": false }
+                { "name": "refer_code", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户的推荐号", "remark": "推荐用户时填写这个帐号", "isPrimary": false },
+                { "name": "state", "type": "number", "dblength": "0", "dftValue": "0", "summary": "状态", "remark": "是否激活 0 -> 未激活 1 -> 激活", "isPrimary": false }
             ]
         },
         {
@@ -33,9 +34,6 @@
                 { "name": "id", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户资产表 id", "remark": "", "isPrimary": true },
                 { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "用户的 eos 帐号" , "isPrimary": false } ,
                 { "name": "amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "用户的 TBG 系统额度", "remark": "", "isPrimary": false },
-                { "name": "refer_income", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "推荐收益", "remark": "", "isPrimary": false },
-                { "name": "mode_income", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "三三收益", "remark": "", "isPrimary": false },
-                { "name": "sort_income", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "公排收益", "remark": "", "isPrimary": false },
                 { "name": "other_income", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "其他收益", "remark": "", "isPrimary": false },
                 { "name": "withdraw_enable", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "可提现资产", "remark": "总收益的 45%", "isPrimary": false },
                 { "name": "repeat_currency", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "复投资产", "remark": "总收益的 45%", "isPrimary": false },
@@ -70,8 +68,8 @@
             "tableName": "system_pools", "tableDesc": "系统奖池表", "group": "system", 
             "fields": [
                 { "name": "id", "type": "number", "dblength": "32", "dftValue": "0", "summary": "系统奖池表的 id(自增)", "remark": "记录系统投资信息" , "isPrimary": true } ,
-                { "name": "pools_type", "type": "text", "dblength": "''", "dftValue": "", "summary": "奖池的类型", "remark": "" , "isPrimary": false },
-                { "name": "pools_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "奖池的金额", "remark": "" , "isPrimary": false }
+                { "name": "pool_type", "type": "text", "dblength": "''", "dftValue": "", "summary": "奖池的类型", "remark": "" , "isPrimary": false },
+                { "name": "pool_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "奖池的金额", "remark": "" , "isPrimary": false }
             ]
         },
         {

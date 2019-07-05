@@ -2,7 +2,7 @@
 const { pool } = require("../../db");
 
 /**
- * 递归查所有生成的子帐号 一行公排
+ * 递归查所有生成的子帐号 三三静态排序
  * @returns { Promise<any> }
  */
 async function getStaticMode(subAccount) {
