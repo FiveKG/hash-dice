@@ -1,25 +1,20 @@
 module.exports = {
     "db" : {
-        // "host"    : "192.168.1.102",
-        // "database": "investment",
-        // "user" : "invest_db_user",
-        // "password" :  "pass@2019",
-        // "port"    : 5432,
-        "host"    : "127.0.0.1",
+        "host"    : "172.17.0.4",
         "database": "investment",
         "user" : "invest_db_user",
         "password" :  "pass_2019",
         "port"    : 5432,
     },
     "redis": {
-        "host" : "192.168.1.115",
+        "host" : "172.17.0.3",
         "port" : 6379 ,
-        "auth" : "redis_pass_2018"
+        "auth" : "redis_pass_2019"
     },
     "rabbitmq": {
-        "host": "192.168.1.115",
+        "host": "172.17.0.2",
         "port" : 5672,
         "user" : "mq_user",
-        "pwd" : "pass_2018"
+        "pwd" : "pass_2019"
     }
 }

@@ -12,6 +12,7 @@
     "type": "git",
     "url": "http://git.isecsp.com/fj-wallet/aii.git"
   },
+  "typings": "index.d.ts",
   "dependencies": {
     "@yz/yue-generate-port": "^1.0.0",
     "@yz/yue-svc-base": "^1.0.7",

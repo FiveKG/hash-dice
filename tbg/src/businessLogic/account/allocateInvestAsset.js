@@ -28,7 +28,8 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
     let referIncome = investAmount.mul(INVEST_CONSTANT.REFER_INCOME_RATE / INVEST_CONSTANT.BASE_RATE);
     let client = await pool.connect();
     await client.query("BEGIN");
-    try {        
+    try {
+        // 先检查是否存在推荐关系
         let referrerAccountList = await getAllParentLevel(accountName);
         logger.debug("referrerAccountList: ", referrerAccountList);
         if (referrerAccountList.length === 0) {
@@ -85,9 +86,9 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
             await updateSystemAmount(client, item.pool_type, income, item.pool_amount);
         }
         // 更新用户状态为激活
-        await updateAccountState(client, ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED, accountName);
+        await updateAccountState(client, ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1, accountName);
         // 生成子账号
-        await addSubAccount(client, accountName, newSubAccount);
+        await addSubAccount(client, accountName, newSubAccount, referrerAccountList);
         // 记录用户操作日志
         await insertAccountOp(client, accountName, 'investment', userInvestmentRemark);
         await client.query("COMMIT");

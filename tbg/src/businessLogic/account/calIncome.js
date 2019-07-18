@@ -4,6 +4,7 @@ const logger = require("../../common/logger.js").child({ "@src/models/account/us
 const { getStaticSort } = require("../../models/account");
 const staticModeIncome = require("./staticModeIncome.js");
 const staticSortIncome = require("./staticSortIncome.js");
+const { redis } = require("../../common/index.js");
 
 /**
  * 计算收益
@@ -21,9 +22,15 @@ async function calIncome(amount, newSubAccount) {
         if (rows.length === 0) {
             return;
         }
+        // 查找收益不过线的键
+        const keysList = await redis.keys("tbg:subAccountSort:*");
+        // 从 redis 键中过滤出所有子账号
+        const subAccountList = keysList.map(item => item.split(":")[2]);
+        // 筛选后分配收益
+        const allSubAccountList = rows.map(item => item.sub_account_name);
+        const staticSortList = allSubAccountList.filter(item => subAccountList.includes(item));
         // 分配一行公排静态收益
-        const staticSort = rows.map(item => item.sub_account_name);
-        await staticSortIncome(client, amount, staticSort);
+        await staticSortIncome(client, amount, staticSortList);
         await client.query("COMMIT");
     } catch (err) {
         logger.error("user investment error, the error stock is %O", err);

@@ -12,7 +12,7 @@ async function showAccountNameByCode(req, res, next) {
         let investCode = reqData.refer_code;
         let account_name = "";
         let resDate = get_status(1);
-        if (investCode === "000000") {
+        if (investCode === "000000" || investCode === "W00000") {
             account_name = "系统将随机分配您的邀请人"
             resDate["data"] = {
                 account_name: account_name

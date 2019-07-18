@@ -1,6 +1,5 @@
 // @ts-check
 module.exports = {
-    "generate_refer_code": require("./generate_refer_code.js"),
     "show_account_name_by_code": require("./show_account_name_by_code.js"),
     "bind_referrer": require("./bind_referrer.js"),
     "self_invest": require("./self_invest.js"),

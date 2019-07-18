@@ -22,8 +22,12 @@ const COMMUNITY_POOL = "communityPool";
 // 开发维护的帐号
 const DEV_OP_POOL = "devOpPool";
 
-// 账号已激活
-const ACCOUNT_ACTIVATED = 1;
+// 账号参与 tbg1
+const ACCOUNT_ACTIVATED_TBG_1 = 10;
+
+// 账号参与 tbg2
+const ACCOUNT_ACTIVATED_TBG_2 = 20;
+
 // 账号未激活
 const ACCOUNT_INACTIVATED = 0
 
@@ -52,7 +56,8 @@ const CONSTANT = {
     "DEV_OP_POOL": DEV_OP_POOL,
     "EOS_NAME_CONVENTIONS_CHAR": EOS_NAME_CONVENTIONS_CHAR,
     "TOP_ACCOUNT": TOP_ACCOUNT,
-    "ACCOUNT_ACTIVATED": ACCOUNT_ACTIVATED,
+    "ACCOUNT_ACTIVATED_TBG_1": ACCOUNT_ACTIVATED_TBG_1,
+    "ACCOUNT_ACTIVATED_TBG_2": ACCOUNT_ACTIVATED_TBG_2,
     "ACCOUNT_INACTIVATED": ACCOUNT_INACTIVATED
 }
 
@@ -71,6 +76,7 @@ module.exports = CONSTANT
  * @property { String } DEV_OP_POOL 开发维护的帐号
  * @property { String[] } EOS_NAME_CONVENTIONS_CHAR EOS 帐号约定字符
  * @property { Array<String> } TOP_ACCOUNT 最上层帐号
- * @property { Number } ACCOUNT_ACTIVATED 账号已激活
+ * @property { Number } ACCOUNT_ACTIVATED_TBG_1 账号参与 tbg1
+ * @property { Number } ACCOUNT_ACTIVATED_TBG_2 账号参与 tbg2
  * @property { Number } ACCOUNT_INACTIVATED 账号未激活
  */

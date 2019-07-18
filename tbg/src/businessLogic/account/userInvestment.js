@@ -1,8 +1,9 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@src/models/account/userInvestment.js": "user investment" });
-const { getUserSubAccount } = require("../../models/account");
+const { getUserSubAccount } = require("../../models/subAccount");
 const allocateInvestAsset = require("./allocateInvestAsset.js");
 const calIncome = require("./calIncome.js");
+const { redis } = require("../../common/index.js");
 
 /**
  * 用户投资
@@ -19,7 +20,9 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
         if (subAccount.length !== 0) {
             lower = subAccount.length + 1;
         }
-        const newSubAccount = `${ accountName }-${ lower }`
+        const newSubAccount = `${ accountName }-${ lower }`;
+        // 生成子账号的同时，给定一个收益的初始值
+        await redis.set(`tbg:subAccountSort:${ newSubAccount }`, 0);
         // 分配用户投资额
         await allocateInvestAsset(amount, accountName, newSubAccount, userInvestmentRemark);
         // 开始计算收益

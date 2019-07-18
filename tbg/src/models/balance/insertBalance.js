@@ -13,7 +13,7 @@ async function insertBalance(client, accountName) {
                 balance(id, account_name, create_time)
                 VALUES($1, $2, $3);
         `
-        const opts = [ generate_primary_key(), accountName, 0, "now()" ]
+        const opts = [ generate_primary_key(), accountName, "now()" ]
         console.debug("the sql is %s, the values is %O", sql, opts);
         await client.query(sql, opts);
     } catch (err) {

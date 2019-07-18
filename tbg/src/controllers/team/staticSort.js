@@ -1,7 +1,8 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@controllers/team/staticSort.js": "static sort" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
-const { getStaticSort, getUserSubAccount } = require("../../models/account");
+const { getStaticSort } = require("../../models/account");
+const { getUserSubAccount } = require("../../models/subAccount");
 
 // 一行公排
 async function staticSort(req, res, next) {
@@ -26,7 +27,7 @@ async function staticSort(req, res, next) {
             let subAccount = item.sub_account_name;
             return {
                 sub_account: subAccount.split("-")[1],
-                sort: staticSort.indexOf(subAccount)
+                sort: staticSort.indexOf(subAccount) + 1
             }
         });
 

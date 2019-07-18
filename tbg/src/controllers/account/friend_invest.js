@@ -7,7 +7,7 @@ const { getUserBalance } = require("../../models/balance");
 const { userWithdraw } = require("../../models/asset");
 const { Decimal } = require("decimal.js");
 const { getAccountInfo } = require("../../models/account");
-const { ACCOUNT_ACTIVATED } = require("../../common/constant/accountConstant.js")
+const { ACCOUNT_INACTIVATED } = require("../../common/constant/accountConstant.js")
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 
 // 帮朋友投资
@@ -24,7 +24,7 @@ async function friendInvest(req, res, next) {
         if (!accountInfo) {
             return res.send(get_status(1001, "this account does not exists"));
         }
-        if (accountInfo.state === ACCOUNT_ACTIVATED) {
+        if (accountInfo.state !== ACCOUNT_INACTIVATED) {
             return res.send(get_status(1013, "this account had activated"));
         }
         

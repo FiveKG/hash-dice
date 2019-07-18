@@ -1,13 +1,13 @@
 // @ts-check
 
 // 投资额度
-const BASE_AMOUNT = "0.0001";
-const WALLET_RECEIVER = "yujinsheng11";
-const DISPENSE_ACCOUNT = "yujinsheng11";
+const BASE_AMOUNT = "100";
+const WALLET_RECEIVER = "uegametoken";
+const DISPENSE_ACCOUNT = "uegametoken";
 const EOS_TOKEN = "eosio.token";
-const TBG_TOKEN = "yujinsheng11"
-const SCATTER_NET = "https://nodes.get-scatter.com"
-const PRIVATE_KEY_TEST = "5KVL23nv9LGjChq8zqHv86ETcZ2FV68DHrniSBdXxMwmTF5ZusW"
+const TBG_TOKEN = "tbgametoken"
+const SCATTER_NET = "http://localhost:8888"
+const PRIVATE_KEY_TEST = "5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo"
 
 /**
  * @type { Constant }

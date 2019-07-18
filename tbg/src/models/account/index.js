@@ -2,7 +2,6 @@
 
 module.exports = {
     "getAccountInfo": require("./getAccountInfo.js"),
-    "getUserSubAccount": require("./getUserSubAccount.js"),
     "getAllParentLevel": require("./getAllParentLevel.js"),
     "getStaticSort": require("./getStaticSort.js"),
     "getAllInviteAccount": require("./getAllInviteAccount.js"),

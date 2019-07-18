@@ -4,7 +4,7 @@ const userInvestment = require("../../businessLogic/account/userInvestment.js");
 async function testUserInvestment() {
     try {
         let accountName = 'systemwallet';
-        accountName = "tv.nckev32dd"
+        accountName = "eltwpplxqylc"
         let investAmount = 100;
         let statusCode = await userInvestment(investAmount, accountName, "");
         console.log("statusCode: ", statusCode); 

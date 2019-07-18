@@ -9,25 +9,15 @@ const { redis } = require("../../common/index.js");
  * @param { any } client
  * @param { String } accountName 用户 EOS 帐号
  * @param { String } subAccount 用户子帐号
+ * @param { String[] } referrerAccountList 所有父级账号数组
  */
-async function addSubAccount(client, accountName, subAccount) {
+async function addSubAccount(client, accountName, subAccount, referrerAccountList) {
     try {
         logger.debug("set user static mode");
-        const allParentLevel = await getAllParentLevel(accountName);
-        if (!allParentLevel) {
-            throw Error("没有推荐关系，请先设置推荐关系，检查数据是否正确");
-        }
-        // 判断最上端的用户是否存在
-        const accountInfo = await getAccountInfo(allParentLevel[1]);
-        if (!accountInfo.account_name) {
-            throw Error("account not found");
-        }
-        // 查找该用户是否在某个树中，如果不在，重新生成一棵树，用该用户做树的根节点，如果在则继续往原来的树上添加
-        const subAccountInfo = await getSubAccountInfoByRootNode(allParentLevel[1]);
-        const flag = await redis.sismember("tbg:subAccount:root", accountInfo.id);
-        logger.debug("allParentLevel: %O, accountInfo: %O", allParentLevel, accountInfo);
-        logger.debug("subAccountInfo: %O, flag: %O", subAccountInfo, flag, !subAccountInfo, !flag);
-        if (!subAccountInfo && !flag) {
+        // 直接投资,参与 tbg1, 且所有推荐人都是普通用户,这些账号都在一个三三公排
+        const rootAccount = referrerAccountList[1];
+        const accountInfo = await getAccountInfo(rootAccount);
+        if (referrerAccountList.length === 2) {
             const level = 1;
             const position = 1;
             const id = accountInfo.id + "-" + level + position;
@@ -36,13 +26,12 @@ async function addSubAccount(client, accountName, subAccount) {
                 id: id,
                 pid: '0',
                 position: position,
-                rootAccount: allParentLevel[1],
+                rootAccount: rootAccount,
                 level: level,
                 subAccount: subAccount,
                 accountName: accountName
             }
             // 在 redis 中记录当前这个伞的根节点和层级
-            await redis.sadd("tbg:subAccount:root", accountInfo.id);
             await redis.set(`tbg:level:${ accountInfo.id }`, 1);
             // 插入子账号
             await insertSubAccount(client, obj);
@@ -53,7 +42,7 @@ async function addSubAccount(client, accountName, subAccount) {
                 id: result.id,
                 pid: result.pid,
                 position: result.position,
-                rootAccount: allParentLevel[1],
+                rootAccount: rootAccount,
                 level: result.level,
                 subAccount: subAccount,
                 accountName: accountName

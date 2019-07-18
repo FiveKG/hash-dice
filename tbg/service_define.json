@@ -26,30 +26,6 @@
             }
         },
         {
-            "name" : "设置推荐码",
-            "summary": "",
-            "remark": [
-                "注册时给用户指定一个六位数推荐码"
-            ],
-            "isFunctionPoint" : true,
-            "url" : "/account/set_invitation",
-            "type" : "post",
-            "requireRole" : [ "*" ],
-            "req": {
-                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
-            },
-            "res": {
-                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
-                "desc": { "type": "string" ,"desc": "" },
-                "data": {
-                    "type": "object", "desc": "",
-                    "properties": {
-                        "wallet_receiver": { "type": "text",  "is_require": true,  "desc": "获取收款帐号名称" }
-                    }
-                }
-            }
-        },
-        {
             "name" : "根据填写的邀请码显示出帐号名称",
             "summary": "",
             "remark": [
@@ -150,6 +126,7 @@
             "name" : "邀请绑定",
             "summary": "",
             "remark": [
+                "导入钱包后，绑定推荐人",
                 "设置推荐码，不指定的话 默认 000000, 系统自动分配一个存在的邀请号码设置关系"
             ],
             "isFunctionPoint" : true,
