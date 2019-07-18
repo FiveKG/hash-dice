@@ -84,3 +84,26 @@ SELECT account FROM mode
 WHERE account[array_length(account, 1)] = 'yujinsheng11-11'
 ORDER BY array_length(account, 1) DESC
 LIMIT 1;
+
+-- 
+SELECT * 
+FROM sub_account 
+WHERE level = 1
+AND root_node = (SELECT DISTINCT root_node FROM sub_account WHERE main_account = 'yujinsheng11');
+
+-- 
+SELECT s.main_account, s.level, s.position 
+FROM referrer r 
+JOIN sub_account s ON s.main_account = r.account_name 
+WHERE r.referrer_name = 'yujinsheng11';
+
+-- 
+WITH res AS(
+    SELECT op_type, account_name, sum(current_balance) as amount 
+        FROM balance_log
+        WHERE account_name = any($1)
+        AND op_type = 'sort income'
+        GROUP BY op_type, account_name
+)
+SELECT * FROM res WHERE amount <= $2;
+

@@ -1,16 +1,18 @@
 // @ts-check
-const getTrxAction = require("./getTrxAction.js");
+const { getAccountAction, getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
 const userInvestment = require("../businessLogic/account/userInvestment.js");
 const { WALLET_RECEIVER, EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT } = require("../common/constant/eosConstants.js");
+const { Decimal } = require("decimal.js");
 
 async function handlerTransferActions() {
     try {
         let actionSeq = await getLastPos();
+        // let actions = await getAccountAction(WALLET_RECEIVER, actionSeq);
         let actions = await getTrxAction(actionSeq);
         console.log("actionSeq: ", actionSeq);
         for (let action of actions) {
-            // console.log(action);
+            console.log(action);
             let result = await parseEosAccountAction(action);
             let trxSeq = await redis.get(`tbg:invest:trx:${ result.account_action_seq }`);
             console.log("result: ", result, "trxSeq: ", trxSeq);
@@ -22,14 +24,13 @@ async function handlerTransferActions() {
             }
             let userInvestmentRemark = ``;
             if (result.from === result.invest_type) {
-                userInvestmentRemark = `user ${ result.from } help user ${ result.invest_type } invest ${ result.amount } EOS`;
+                userInvestmentRemark = `user ${ result.from } help user ${ result.invest_type } invest ${ result.amount } UE`;
             } else {
-                userInvestmentRemark = `${ result.from } investment ${ result.amount } EOS`;
+                userInvestmentRemark = `${ result.from } investment ${ result.amount } UE`;
             }
-            let statusCode = await userInvestment(Number(result.amount), result.from, userInvestmentRemark);
+            await userInvestment(Number(result.amount), result.from, userInvestmentRemark);
             await redis.set(`tbg:invest:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
-            console.log("invest statusCode: ", statusCode);
         }
     } catch (err) {
         throw err;
@@ -78,7 +79,7 @@ async function parseEosAccountAction(action) {
         if (!isTransfer) {
             // todo
             // 调用的不是 EOS 或代币的转账方法
-            console.log("The transfer method that is not called EOS or HGB");
+            console.log("The transfer method that is not called UE or HGB");
             return result;
         }
         let { from, to, quantity, memo } = act.data;
@@ -96,8 +97,8 @@ async function parseEosAccountAction(action) {
             return result;
         }
         let [ amount, symbol ] = quantity.split(" ");
-        if (symbol === "EOS" || symbol === "TBG") {
-            if (amount !== BASE_AMOUNT) {
+        if (symbol === "UE" || symbol === "TBG") {
+            if (!new  Decimal(amount).eq(BASE_AMOUNT)) {
                 // todo
                 // 转帐额度不符
                 console.log(`invalid quantity, amount must be ${ BASE_AMOUNT }, but get ${ amount }`);
@@ -117,7 +118,7 @@ async function parseEosAccountAction(action) {
         } else {
             // todo
             // 代币符号不符
-            console.log("invalid asset symbol, symbol must be EOS or TBG");
+            console.log("invalid asset symbol, symbol must be UE or TBG");
             return result;
         }
     } catch (err) {
@@ -129,8 +130,8 @@ async function getLastPos(){
     let lastPosStr = await redis.get("tbg:account_action_seq");
     let lastPos = parseInt(lastPosStr);
     if(isNaN(lastPos)){
-        await redis.set("tbg:account_action_seq", 1300);
-        return 1300;
+        await redis.set("tbg:account_action_seq", 0);
+        return 0;
     }
     return lastPos + 1;
 }

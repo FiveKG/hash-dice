@@ -14,7 +14,7 @@ async function randomGetAccount(accountName) {
                 where account_name != $1
                 order by random() limit 1;
         `
-        let { rows: [ { account_name } ] } = await pool.query(selectSql, [ accountName ]);
+        let { rows: [ account_name ] } = await pool.query(selectSql, [ accountName ]);
         return account_name;
     } catch (err) {
         throw err

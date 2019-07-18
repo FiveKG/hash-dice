@@ -1,7 +1,7 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@controllers/account/investment_index.js": "投资首页" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
-const { getUserSubAccount } = require("../../models/account");
+const { getUserSubAccount } = require("../../models/subAccount");
 const { getSafeAmount, getShareholdersAmount, getOneAccount } = require("../../models/systemPool");
 const { PK_POOL, BINGO_POOL } = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");

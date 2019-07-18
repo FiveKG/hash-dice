@@ -19,7 +19,7 @@ router.get("/account/invest_code", account.invest_code);
 router.get("/account/is_bind", account.is_bind);
 router.get("/account/level", account.get_account_member);
 router.get("/account/investment_index", account.investment_index);
-router.post("/account/set_invitation", account.generate_refer_code);
+// router.post("/account/set_invitation", account.generate_refer_code);
 router.post("/account/bind_referrer", account.bind_referrer);
 router.post("/account/self_invest", account.self_invest);
 router.post("/account/friend_invest", account.friend_invest);

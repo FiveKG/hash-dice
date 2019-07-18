@@ -87,6 +87,7 @@ async function initCode() {
         let isEmptyGeneralCode = await redis.scard("tbg:generalInviteCode");
         console.debug("isEmptyGeneralCode: ", isEmptyGeneralCode);
         if (!isEmptyGeneralCode) {
+            console.debug("add general partner invite code");
             await redis.sadd("tbg:generalInviteCode", generalCode);
         }
 
@@ -94,6 +95,7 @@ async function initCode() {
         const isEmptyGlobalCode = await redis.scard("tbg:globalInviteCode");
         console.debug("isEmptyGlobalCode: ", isEmptyGlobalCode);
         if (!isEmptyGlobalCode) {
+            console.debug("add global partner invite code");
             await redis.sadd("tbg:globalInviteCode", globalCode);
         }
     } catch (err) {

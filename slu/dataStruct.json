@@ -1,7 +1,7 @@
 {
     "dbName" : "investment",
     "dbUser" : "invest_db_user",
-    "dbPwd" :  "pass@2019",
+    "dbPwd" :  "pass_2019",
     "schema": "public",
     "tables":[
         {
@@ -11,8 +11,9 @@
                 { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "用户的 eos 帐号" , "isPrimary": false } ,
                 { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "账户创建时间", "remark": "", "isPrimary": false },
                 { "name": "refer_count", "type": "number", "dblength": "0", "dftValue": "0", "summary": "用户推荐的人数", "remark": "", "isPrimary": false },
-                { "name": "refer_code", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户的推荐号", "remark": "推荐用户时填写这个帐号", "isPrimary": false },
-                { "name": "state", "type": "number", "dblength": "0", "dftValue": "0", "summary": "状态", "remark": "是否激活 0 -> 未激活 1 -> 激活", "isPrimary": false }
+                { "name": "refer_code", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户的推荐号", "remark": "推荐用户时填写这个帐号, 全球合伙人以 W 开头", "isPrimary": false },
+                { "name": "account_type", "type": "text", "dblength": "32", "dftValue": "''", "summary": "账号类型", "remark": "普通用户(general) 全球合伙人(global)", "isPrimary": false },
+                { "name": "state", "type": "number", "dblength": "0", "dftValue": "0", "summary": "状态", "remark": "是否激活 0 -> 未激活 10 -> 参与 tbg1 20 -> 参与 tbg2", "isPrimary": false }
             ]
         },
         {
@@ -33,10 +34,8 @@
             "fields": [
                 { "name": "id", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户资产表 id", "remark": "", "isPrimary": true },
                 { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "用户的 eos 帐号" , "isPrimary": false } ,
-                { "name": "amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "用户的 TBG 系统额度", "remark": "", "isPrimary": false },
-                { "name": "other_income", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "其他收益", "remark": "", "isPrimary": false },
-                { "name": "withdraw_enable", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "可提现资产", "remark": "总收益的 45%", "isPrimary": false },
-                { "name": "repeat_currency", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "复投资产", "remark": "总收益的 45%", "isPrimary": false },
+                { "name": "withdraw_enable", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "可提现资产", "remark": "总收益的 40%", "isPrimary": false },
+                { "name": "repeat_currency", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "复投资产", "remark": "总收益的 40%", "isPrimary": false },
                 { "name": "lotto_currency", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "全球彩彩码", "remark": "总收益的 10%", "isPrimary": false },
                 { "name": "game_currency", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "游戏资产", "remark": "总收益的 10%", "isPrimary": false },
                 { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间", "remark": "", "isPrimary": false }

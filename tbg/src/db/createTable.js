@@ -10,6 +10,7 @@ async function createTable() {
             refer_count INTEGER NOT NULL DEFAULT 0,
             refer_code TEXT NOT NULL DEFAULT '',
             state INTEGER NOT NULL DEFAULT 0,
+            account_type TEXT NOT NULL DEFAULT '',
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         CREATE TABLE IF NOT EXISTS sub_account (
@@ -25,7 +26,6 @@ async function createTable() {
         CREATE TABLE IF NOT EXISTS balance(
             id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
             account_name TEXT UNIQUE NOT NULL DEFAULT '',
-            amount NUMERIC (12, 8) NOT NULL DEFAULT 0,
             withdraw_enable NUMERIC (12, 8) NOT NULL DEFAULT 0,
             repeat_currency NUMERIC (12, 8) NOT NULL DEFAULT 0,
             lotto_currency  NUMERIC (12, 8) NOT NULL DEFAULT 0,

@@ -9,4 +9,6 @@ module.exports = {
     "updateSubLevel": require("./updateSubLevel.js"),
     "getSubAccountInfoByRootNode": require("./getSubAccountInfoByRootNode.js"),
     "getMainAccountBySub": require("./getMainAccountBySub.js"),
+    "getLevelCount": require('./getLevelCount.js'),
+    "getInviteAccountCount": require("./getInviteAccountCount.js")
 }

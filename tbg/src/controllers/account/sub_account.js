@@ -1,7 +1,7 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@controllers/account/sub_account.js": "用户子帐号" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
-const { getUserSubAccount } = require("../../models/account");
+const { getUserSubAccount } = require("../../models/subAccount");
 const { getUserBalance } = require("../../models/balance");
 const { REPEAT_CURRENCY, BASE_RATE } = require("../../common/constant/balanceConstants");
 const { Decimal } = require("decimal.js");

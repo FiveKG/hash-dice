@@ -4,6 +4,7 @@ const { pool } = require("../db/index.js");
 const logger = require("../common/logger.js").child({ "@src/job/handlerWithdraw.js": "user withdraw" });
 const { userWithdraw } = require("../models/asset");
 const { getUserBalance } = require("../models/balance");
+const { insertAccountOp } = require("../models/accountOp");
 const handlerTransfer = require("./handlerTransfer.js");
 const { Decimal } = require("decimal.js");
 const { format } = require("date-fns");
@@ -43,11 +44,8 @@ async function handlerWithdraw(accountName, symbol, amount) {
         }
         let changeAmount = new Decimal(-amount);
         let remark = `user ${ accountName } withdraw ${ amount } ${ symbol }`;
-        await client.query(`
-                insert into account_op (account_name, op_type, remark, create_time)
-                values('${ accountName }', 'withdraw', '${ remark }', now());`
-            )
         await userWithdraw(client, accountName, changeAmount, 'withdraw', remark);
+        await insertAccountOp(client, accountName, 'withdraw', remark);
         try {
             if (symbol === "EOS" || symbol === "TBG") {
                 let quantity = `${ amount } ${ symbol }`;
@@ -61,7 +59,7 @@ async function handlerWithdraw(accountName, symbol, amount) {
                 await handlerTransfer(tokenType, DISPENSE_ACCOUNT, accountName, quantity, memo);
             } else {
                 await client.query("ROLLBACK");
-                //提现出错， 代币符号不符。
+                //提现出错，代币符号不符。
                 logger.error(`用户 ${ accountName } 提现时出错, error: asset symbol invalid`);
             }
         } catch (err) {
@@ -72,7 +70,7 @@ async function handlerWithdraw(accountName, symbol, amount) {
         await redis.set(userWithdrawKey, format(new Date(), "YYYY-MM-DD HH:mm:ss"), "EX", 20);
     } catch (error) {
         await client.query("ROLLBACK");
-        //提现出错， 很大可能是异常用户。
+        //提现出错，很大可能是异常用户。
         logger.error(`用户 ${ accountName } 提现时出错.`, error);
     }
 }

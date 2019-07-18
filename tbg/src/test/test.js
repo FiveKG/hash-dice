@@ -13,8 +13,7 @@ const { dropAllTable, insertAccount, insertSystemPool } = require("./account/ini
 const { getGeneralInviteCode, getGlobalInviteCode } = require("../build/inviteCode/genInviteCode");
 const { getRandEOSAccount } = require("../build/account/genRandEosAccount");
 const { 
-    getAccountMemberLevel, getUserSubAccount, 
-    updateSubLevel, getReferrer, getAllParentLevel, getStaticSort, getStaticMode, getInvestCode 
+    getAccountMemberLevel, updateSubLevel, getReferrer, getAllParentLevel, getStaticSort, getStaticMode, getInvestCode 
 } = require("../models/account");
 const userInvestment = require("../businessLogic/account/userInvestment.js");
 const { 
@@ -29,11 +28,11 @@ const { scheduleJob } = require("node-schedule");
 
 ;(async () => {
     // await clearRedisKeyBeforeInit();
-    // await initCode();
+    await initCode();
     // await dropAllTable();
     // await createTable();
-    // await insertAccount();
-    // await insertSystemPool(); 
+    await insertAccount();
+    await insertSystemPool(); 
     // await testUserInvestment();
     const rows = await getStaticSort();
     console.debug("rows: ", rows.map(item => item.sub_account_name));
@@ -41,6 +40,9 @@ const { scheduleJob } = require("node-schedule");
     // await handlerHolder();
     // await handlerPk();
     // await handlerSafe();
+    // await genAccountAndCode(20);
+    // const result = await redis.keys("tbg:subAccount:*");
+    // console.debug("result: ", result.map(it => it.split(":")[2]));
 })();
 
 async function genAccountAndCode(n) {
@@ -48,9 +50,10 @@ async function genAccountAndCode(n) {
         let code = [];
         let account = [];
         for (let i = 0; i < n; i++) {
-            const partnerCode = await getGlobalInviteCode();
-            code[i] = `W${ partnerCode }`;
-            account[i] = getRandEOSAccount();
+            // const partnerCode = await getGlobalInviteCode();
+            // code[i] = `W${ partnerCode }`;
+            // account[i] = getRandEOSAccount();
+            await redis.set(`tbg:subAccount:${ i }`, 0);
         }
 
         return {
