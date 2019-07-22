@@ -13,7 +13,7 @@
                 { "name": "refer_count", "type": "number", "dblength": "0", "dftValue": "0", "summary": "用户推荐的人数", "remark": "", "isPrimary": false },
                 { "name": "refer_code", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户的推荐号", "remark": "推荐用户时填写这个帐号, 全球合伙人以 W 开头", "isPrimary": false },
                 { "name": "account_type", "type": "text", "dblength": "32", "dftValue": "''", "summary": "账号类型", "remark": "普通用户(general) 全球合伙人(global)", "isPrimary": false },
-                { "name": "state", "type": "number", "dblength": "0", "dftValue": "0", "summary": "状态", "remark": "是否激活 0 -> 未激活 10 -> 参与 tbg1 20 -> 参与 tbg2", "isPrimary": false }
+                { "name": "state", "type": "number", "dblength": "0", "dftValue": "0", "summary": "状态", "remark": "是否激活 0 -> 未激活, 10 -> 参与 tbg1, 20 -> 参与 tbg2, 30 -> tbg1 && tbg2", "isPrimary": false }
             ]
         },
         {
@@ -25,7 +25,7 @@
                 { "name": "main_account", "type": "text", "dblength": "", "dftValue": "''", "summary": "主帐户", "remark": "子帐号对应的 eos 帐号", "isPrimary": false },
                 { "name": "sub_account_name", "type": "text", "dblength": "0", "dftValue": "0", "summary": "子帐号名称", "remark": "", "isPrimary": false },
                 { "name": "level", "type": "number", "dblength": "0", "dftValue": "0", "summary": "层级", "remark": "在三三公排的层级", "isPrimary": false },
-                { "name": "position", "type": "number", "dblength": "0", "dftValue": "0", "summary": "位置", "remark": "子帐号在三三公排对于层级的位置", "isPrimary": false },
+                { "name": "position", "type": "number", "dblength": "0", "dftValue": "0", "summary": "位置", "remark": "子帐号在三三公排对应层级的位置", "isPrimary": false },
                 { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "子帐号创建时间", "remark": "", "isPrimary": false }
             ]
         },
@@ -42,6 +42,17 @@
             ]
         },
         {
+            "tableName": "tbg_balance", "tableDesc": "用户 TBG 资产表", "group": "account", 
+            "fields": [
+                { "name": "id", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户资产表 id", "remark": "", "isPrimary": true },
+                { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "用户的 eos 帐号" , "isPrimary": false } ,
+                { "name": "release_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "释放池资产", "remark": "", "isPrimary": false },
+                { "name": "sell_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "可售额度", "remark": "", "isPrimary": false },
+                { "name": "active_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "可售余额", "remark": "", "isPrimary": false },
+                { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间", "remark": "", "isPrimary": false }
+            ]
+        },
+        {
             "tableName": "referrer", "tableDesc": "推荐表", "group": "account", 
             "fields": [
                 { "name": "id", "type": "text", "dblength": "", "dftValue": "''", "summary": "推荐表 id", "remark": "", "isPrimary": true },
@@ -51,7 +62,7 @@
             ]
         },
         {
-            "tableName": "account_balance_log", "tableDesc": "用户账户余额变动表", "group": "account", 
+            "tableName": "balance_log", "tableDesc": "用户账户余额变动表", "group": "account", 
             "fields": [
                 { "name": "id", "type": "number", "dblength": "32", "dftValue": "0", "summary": "变动表 id(自增)", "remark": "", "isPrimary": true },
                 { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "用户的 eos 帐号" , "isPrimary": false } ,
@@ -85,11 +96,36 @@
         {
             "tableName": "account_op", "tableDesc": "用户操作记录", "group": "account", 
             "fields": [
-                { "name": "id", "type": "number", "dblength": "32", "dftValue": "0", "summary": "奖池变动表的 id(自增)", "remark": "" , "isPrimary": true } ,
+                { "name": "id", "type": "number", "dblength": "32", "dftValue": "0", "summary": "用户的操作记录表的 id(自增)", "remark": "" , "isPrimary": true } ,
                 { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "" , "isPrimary": false } ,
                 { "name": "op_type", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户的操作记录", "remark": "投资|提现|登陆|其他" , "isPrimary": false },
                 { "name": "remark", "type": "text", "dblength": "500", "dftValue": "''", "summary": "备注", "remark": "", "isPrimary": false } ,
                 { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间", "remark": "", "isPrimary": false } 
+            ]
+        },
+        {
+            "tableName": "trade_tbg", "tableDesc": "交易 TBG ", "group": "account", 
+            "fields": [
+                { "name": "id",           "type": "text", "dblength": "64",   "dftValue": "''", "summary": "主键 id", "remark": "", "isPrimary": true },
+                { "name": "account_name", "type": "text", "dblength": "64",   "dftValue": "''", "summary": " " , "remark" : "", "isPrimary": false },
+                { "name": "buy_or_sell",  "type": "text", "dblength": "10",   "dftValue": "''", "summary": " " , "remark": "", "isPrimary": false },
+                { "name": "amount", "type": "decimal",  "dblength": "18,6", "dftValue": "0", "summary": " ", "remark"  : "", "isPrimary": false },
+                { "name": "price",        "type": "decimal",  "dblength": "18,6", "dftValue": "0", "summary": " ", "remark"  : "", "isPrimary": false }, 
+                { "name": "state",        "type": "text",     "dblength": "10",   "dftValue": "0", "summary": " ", "remark"  : "", "isPrimary": false },
+                { "name": "create_time",  "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": " ", "remark": "", "isPrimary": false }
+            ]
+        },
+        {
+            "tableName": "trade_log", "tableDesc": "交易日志", "group": "account", 
+            "fields": [
+                { "name": "id", "type": "text", "dblength": "64",   "dftValue" : "''", "summary": "主键id", "remark"  : "", "isPrimary": true },
+                { "name": "tr_id", "type": "text",     "dblength": "64",   "dftValue" : "''", "summary": "请求id", "remark"  : "", "isPrimary": false },
+                { "name": "buy_or_sell", "type": "text",     "dblength": "10",   "dftValue" : "''", "summary": "买或卖" , "remark"  : "", "isPrimary": false },
+                { "name": "amount", "type": "decimal",  "dblength": "18,6", "dftValue" : "0", "summary": "数量", "remark"    : "", "isPrimary": false },
+                { "name": "memo", "type": "text",  "dblength": "18,6", "dftValue" : "0", "summary": "备注说明", "remark"    : "", "isPrimary": false },
+                { "name": "price", "type": "decimal",  "dblength": "10,6", "dftValue" : "0", "summary": "价格", "remark"    : "", "isPrimary": false }, 
+                { "name": "volume", "type": "decimal",  "dblength": "18,6", "dftValue" : "0", "summary": "成交金额", "remark"  : "价格 * 数量", "isPrimary": false },
+                { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue" : "now()", "summary": "创建时间", "remark"  : "", "isPrimary": false }
             ]
         }
     ]
