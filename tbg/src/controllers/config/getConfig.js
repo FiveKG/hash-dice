@@ -7,7 +7,7 @@ const { WALLET_RECEIVER } = require("../../common/constant/eosConstants.js");
 async function getConfig(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param of is: ${ JSON.stringify(reqData) }`);
+        logger.debug(`the param is: %j`, reqData);
         let resData = get_status(1);
         resData["data"] = {
             wallet_receiver: WALLET_RECEIVER

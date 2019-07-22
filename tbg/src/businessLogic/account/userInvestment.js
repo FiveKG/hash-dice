@@ -15,6 +15,7 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
     try {
         // 生成子账号
         let subAccount = await getUserSubAccount(accountName);
+        logger.debug("subAccount: ", subAccount);
         let lower = 1;
         // 没有子账号，从 1 开始编号
         if (subAccount.length !== 0) {

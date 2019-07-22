@@ -107,3 +107,22 @@ WITH res AS(
 )
 SELECT * FROM res WHERE amount <= $2;
 
+--
+SELECT create_time, change_amount, remark 
+    FROM balance_log 
+    WHERE account_name = 'yujinsheng11'
+    AND op_type = 'invite income'
+    ORDER BY create_time DESC
+
+select distinct account_name, create_time
+    from account_op 
+    where op_type = 'investment' 
+    order by create_time desc 
+    limit 30;
+
+with tmp as (
+    select * from account_op 
+    where op_type = 'investment' 
+    order by create_time desc
+)
+select distinct account_name from tmp limit 30;

@@ -7,7 +7,7 @@ const { getAllInviteAccount, getReferrer } = require("../../models/account");
 async function invite(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param of investment by self is: ${ reqData }`);
+        logger.debug(`the param is: %j`, reqData);
         let rows = await getAllInviteAccount(reqData.account_name);
         let activated = [];
         let inActivated = [];
@@ -23,15 +23,18 @@ async function invite(req, res, next) {
             }
         }
 
-        let result = await getReferrer(reqData.account_name);
-        if (!result.length) {
-            return res.send(get_status(1001, "this account does not exists"));
+        let referrerInfo = await getReferrer(reqData.account_name);
+        let refAccount = '';
+        let refCode = '';
+        if (!!referrerInfo) {
+            refAccount = referrerInfo.account_name;
+            refCode = referrerInfo.refer_code;
         }
-
+        
         let resData = get_status(1);
         resData["data"] = {
-            referrer_account: result[0].account_name,
-            referrer_code: result[0].refer_code,
+            referrer_account: refAccount,
+            referrer_code: refCode,
             activated: activated,
             inActivated: inActivated
         }

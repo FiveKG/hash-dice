@@ -10,7 +10,7 @@ const { Decimal } = require("decimal.js");
 async function subAccount(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param of setting referrer is: ${ reqData }`);
+        logger.debug(`the param of setting referrer is: %j`, reqData);
         let subAccountList = await getUserSubAccount(reqData.account_name);
         let data = []
         for (let i = 0; i < subAccountList.length; i++) {

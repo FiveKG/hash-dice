@@ -12,6 +12,7 @@ const {
  * @param { any } client 指定的数据库实例
  * @param { String } accountName 资产类型
  * @param { any } changeAmount 变动的额度
+ * @returns { Promise<number> }
  */
 async function updateBalance(client, accountName, changeAmount) {
     try {
@@ -21,7 +22,8 @@ async function updateBalance(client, accountName, changeAmount) {
                 repeat_currency = repeat_currency + $2,  
                 lotto_currency = lotto_currency + $3, 
                 game_currency = game_currency + $4 
-            WHERE account_name = $5;
+            WHERE account_name = $5
+            RETURNING repeat_currency;
         `
         logger.info("update personal amount");
         const opts = [ 
@@ -32,8 +34,9 @@ async function updateBalance(client, accountName, changeAmount) {
             accountName
         ]
         console.debug("the sql is %s, the opts is %O", updateAmountSql, opts);
-        await client.query(updateAmountSql, opts);
+        const { rows: [ { repeat_currency } ] } = await client.query(updateAmountSql, opts);
         logger.info(`update '${ accountName }' amount ok`);
+        return repeat_currency;
     } catch (err) {
         logger.error("update %s amount error, the error stock is %O", accountName, err);
         throw err;

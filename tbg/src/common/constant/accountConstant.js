@@ -22,11 +22,16 @@ const COMMUNITY_POOL = "communityPool";
 // 开发维护的帐号
 const DEV_OP_POOL = "devOpPool";
 
+
+
 // 账号参与 tbg1
 const ACCOUNT_ACTIVATED_TBG_1 = 10;
 
 // 账号参与 tbg2
 const ACCOUNT_ACTIVATED_TBG_2 = 20;
+
+// 账号参与 tbg1 和 tbg2
+const ACCOUNT_ACTIVATED_TBG_1_AND_2 = 30;
 
 // 账号未激活
 const ACCOUNT_INACTIVATED = 0
@@ -58,6 +63,7 @@ const CONSTANT = {
     "TOP_ACCOUNT": TOP_ACCOUNT,
     "ACCOUNT_ACTIVATED_TBG_1": ACCOUNT_ACTIVATED_TBG_1,
     "ACCOUNT_ACTIVATED_TBG_2": ACCOUNT_ACTIVATED_TBG_2,
+    "ACCOUNT_ACTIVATED_TBG_1_AND_2": ACCOUNT_ACTIVATED_TBG_1_AND_2,
     "ACCOUNT_INACTIVATED": ACCOUNT_INACTIVATED
 }
 
@@ -78,5 +84,6 @@ module.exports = CONSTANT
  * @property { Array<String> } TOP_ACCOUNT 最上层帐号
  * @property { Number } ACCOUNT_ACTIVATED_TBG_1 账号参与 tbg1
  * @property { Number } ACCOUNT_ACTIVATED_TBG_2 账号参与 tbg2
+ * @property { Number } ACCOUNT_ACTIVATED_TBG_1_AND_2 账号参与 tbg1 和 tbg2
  * @property { Number } ACCOUNT_INACTIVATED 账号未激活
  */

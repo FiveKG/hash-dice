@@ -59,7 +59,7 @@ const SAFE_ALLOCATE_RATE = 10;
 // bingo 奖金池每天分配占比
 const BINGO_ALLOCATE_RATE = 70;
 // 股东分红奖金池每天分配占比
-const SHAREHOLDERS_ALLOCATE_RATE = 10;
+const SHAREHOLDERS_ALLOCATE_RATE = "0.0023 3215";
 
 /**
  * @type { Constant }
@@ -111,7 +111,7 @@ module.exports = CONSTANT
  * @property { Number } REFER_PK_ALLOCATE_RATE  直接推荐 PK 奖池每周分配占比
  * @property { Number } SAFE_ALLOCATE_RATE  三倍收益保障池每天分配占比
  * @property { Number } BINGO_ALLOCATE_RATE  bingo 奖金池每天分配占比
- * @property { Number } SHAREHOLDERS_ALLOCATE_RATE  股东分红奖金池每天分配占比
+ * @property { String } SHAREHOLDERS_ALLOCATE_RATE  股东分红奖金池比例
  * @property { Number } SORT_INCOME 一行公排获取奖励的用户可得比例
  * @property { Number } SORT_OUT_LINE 一行公排可获奖的出线额度
  * @property { Number } SAFE_OUT_LINE 三倍收益保障池可获奖的出线额度

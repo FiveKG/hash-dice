@@ -8,11 +8,12 @@ const { pool } = require("../../db/index.js");
 async function getBingoAccount() {
     try {
         let sql = `
-            select account_name 
-                from account_op 
+            with tmp as (
+                select * from account_op 
                 where op_type = 'investment' 
-                order by create_time desc 
-                limit 30;
+                order by create_time desc
+            )
+            select distinct account_name from tmp limit 30;
         `
         let { rows } = await pool.query(sql);
         return rows;

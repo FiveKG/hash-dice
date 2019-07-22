@@ -32,7 +32,7 @@ async function staticMode(req, res, next) {
             let detail = {
                 "level": i,
                 "has_account": maxLevelSubAccountCount,
-                "invite_account": inviteSubAccountList.filter(item => item.level === i),
+                "invite_account": inviteSubAccountList.filter(item => item.level === i).length,
                 "repeat_account": subAccountList.filter((item, idx) => idx > 0 && item.level === i).length,
                 "last_account": count
             }

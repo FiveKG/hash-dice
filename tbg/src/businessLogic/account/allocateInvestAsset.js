@@ -6,12 +6,14 @@ const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const ACCOUNT_RATE = require("../../common/constant/accountRate.js");
 const ACCOUNT_CONSTANT = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
+const BALANCE_CONSTANT = require("../../common/constant/balanceConstants");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { updateSystemAmount, getSystemAccountInfo } = require("../../models/systemPool");
 const { allocateSurplusAssets } = require("../systemPool")
 const { insertAccountOp } = require("../../models/accountOp");
 const addSubAccount = require("./addSubAccount.js");
-const { getAllParentLevel, updateAccountState } = require("../../models/account");
+const { updateRepeatBalance } = require("../../models/balance");
+const { getAllParentLevel, updateAccountState, getAccountInfo } = require("../../models/account");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
 
@@ -37,6 +39,14 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
             throw Error("没有推荐关系，请先设置推荐关系，检查数据是否正确");
         }
 
+        const accountInfo = await getAccountInfo(accountName);
+        let accountOpType = "investment";
+        // 如果之前参加过,则是复投
+        if (accountInfo.state === 10 || accountInfo.state === 30) {
+            accountOpType = "repeat";
+            userInvestmentRemark = `user ${ accountName } repeat ${ BALANCE_CONSTANT.BASE_RATE } UE`
+            await updateRepeatBalance(client, accountName, BALANCE_CONSTANT.BASE_RATE);
+        }
         // 分配直接推荐奖金
         let count = 1;
         let distributed = new Decimal(0);
@@ -90,7 +100,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         // 生成子账号
         await addSubAccount(client, accountName, newSubAccount, referrerAccountList);
         // 记录用户操作日志
-        await insertAccountOp(client, accountName, 'investment', userInvestmentRemark);
+        await insertAccountOp(client, accountName, accountOpType, userInvestmentRemark);
         await client.query("COMMIT");
     } catch (err) {
         logger.error("allocate user investment assets error, the error stock is %O", err);

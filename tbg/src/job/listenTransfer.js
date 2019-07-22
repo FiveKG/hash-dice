@@ -1,5 +1,5 @@
 // @ts-check
-const { getAccountAction, getTrxAction } = require("./getTrxAction.js");
+const getTrxAction = require("./getTrxAction.js");
 const { redis } = require("../common");
 const userInvestment = require("../businessLogic/account/userInvestment.js");
 const { WALLET_RECEIVER, EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT } = require("../common/constant/eosConstants.js");
@@ -7,15 +7,14 @@ const { Decimal } = require("decimal.js");
 
 async function handlerTransferActions() {
     try {
-        let actionSeq = await getLastPos();
-        // let actions = await getAccountAction(WALLET_RECEIVER, actionSeq);
-        let actions = await getTrxAction(actionSeq);
-        console.log("actionSeq: ", actionSeq);
-        for (let action of actions) {
-            console.log(action);
-            let result = await parseEosAccountAction(action);
-            let trxSeq = await redis.get(`tbg:invest:trx:${ result.account_action_seq }`);
-            console.log("result: ", result, "trxSeq: ", trxSeq);
+        const actionSeq = await getLastPos();
+        const actions = await getTrxAction(actionSeq);
+        console.debug("actionSeq: ", actionSeq);
+        for (const action of actions) {
+            console.debug(action);
+            const result = await parseEosAccountAction(action);
+            const trxSeq = await redis.get(`tbg:invest:trx:${ result.account_action_seq }`);
+            console.debug("result: ", result, "trxSeq: ", trxSeq);
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
             if (trxSeq || !result.invest_type) {
                 await setLastPos(result.account_action_seq);
@@ -23,7 +22,8 @@ async function handlerTransferActions() {
                 continue;
             }
             let userInvestmentRemark = ``;
-            if (result.from === result.invest_type) {
+            console.debug("result.from: ", result.from, typeof result.from, "result.invest_type: ", result.invest_type, typeof result.invest_type, result.from !== result.invest_type);
+            if (result.from !== result.invest_type) {
                 userInvestmentRemark = `user ${ result.from } help user ${ result.invest_type } invest ${ result.amount } UE`;
             } else {
                 userInvestmentRemark = `${ result.from } investment ${ result.amount } UE`;
@@ -37,6 +37,10 @@ async function handlerTransferActions() {
     }
 }
 
+/**
+ * 
+ * @param { any } action 
+ */
 async function parseEosAccountAction(action) {
     try {
         let result = {
@@ -53,47 +57,47 @@ async function parseEosAccountAction(action) {
         let actionTrace = action.action_trace;
         if (!actionTrace) {
             // todo
-            console.log("actionTrace is null");
+            console.debug("actionTrace is null");
             return result;
         }
         if (!actionTrace.receipt) {
             // todo
-            console.log("actionTrace.receipt is null");
+            console.debug("actionTrace.receipt is null");
             return result;
         }
         if (!actionTrace.act) {
             // todo
-            console.log("actionTrace.act is null");
+            console.debug("actionTrace.act is null");
             return result;
         }
         if (!actionTrace.trx_id) {
             // todo
-            console.log("actionTrace.trx_id is null");
+            console.debug("actionTrace.trx_id is null");
             return result;
         }
         result["trx_id"] = actionTrace.trx_id;
-        console.log(`trx_id: ${ actionTrace.trx_id } -- account_action_seq: ${ action.account_action_seq }`);
+        console.debug(`trx_id: ${ actionTrace.trx_id } -- account_action_seq: ${ action.account_action_seq }`);
         let { receipt, act } = actionTrace;
-        console.log("act: ", act);
+        console.debug("act: ", act);
         let isTransfer = (act.account === EOS_TOKEN || act.account === TBG_TOKEN) && act.name === "transfer"
         if (!isTransfer) {
             // todo
             // 调用的不是 EOS 或代币的转账方法
-            console.log("The transfer method that is not called UE or HGB");
+            console.debug("The transfer method that is not called UE or HGB");
             return result;
         }
         let { from, to, quantity, memo } = act.data;
         if (to !== WALLET_RECEIVER) {
             // todo
             // 收款帐号不符
-            console.log(`receipt receiver does not match, ${ to } !== ${ WALLET_RECEIVER }`);
+            console.debug(`receipt receiver does not match, ${ to } !== ${ WALLET_RECEIVER }`);
             return result;
         }
         let [ invest, user ] = memo.split(":");
         if (invest !== "tbg_invest") {
             // todo
             // memo 格式不符
-            console.log(`invalid memo, ${ invest } !== "tbg_invest"`);
+            console.debug(`invalid memo, ${ invest } !== "tbg_invest"`);
             return result;
         }
         let [ amount, symbol ] = quantity.split(" ");
@@ -101,7 +105,7 @@ async function parseEosAccountAction(action) {
             if (!new  Decimal(amount).eq(BASE_AMOUNT)) {
                 // todo
                 // 转帐额度不符
-                console.log(`invalid quantity, amount must be ${ BASE_AMOUNT }, but get ${ amount }`);
+                console.debug(`invalid quantity, amount must be ${ BASE_AMOUNT }, but get ${ amount }`);
                 return result;
             }
 
@@ -118,7 +122,7 @@ async function parseEosAccountAction(action) {
         } else {
             // todo
             // 代币符号不符
-            console.log("invalid asset symbol, symbol must be UE or TBG");
+            console.debug("invalid asset symbol, symbol must be UE or TBG");
             return result;
         }
     } catch (err) {

@@ -78,7 +78,8 @@
             "name" : "帐号是否激活",
             "summary": "",
             "remark": [
-                
+                "未激活状态为 0",
+                "0 -> 未激活 10 -> 参与 tbg1 20 -> 参与 tbg2"
             ],
             "isFunctionPoint" : true,
             "url" : "/account/is_activated",
@@ -102,7 +103,7 @@
             "name" : "帐号是否已经绑定",
             "summary": "",
             "remark": [
-                
+                "绑定后，会生成相应的账号信息和推荐人"
             ],
             "isFunctionPoint" : true,
             "url" : "/account/is_bind",
@@ -275,7 +276,8 @@
                 "data": {
                     "type": "object", "desc": "",
                     "properties": {
-                        "invest_code": { "type": "number",  "is_require": true,  "desc": "我的邀请码" },
+                        "tbg1": { "type": "bool",  "is_require": true,  "desc": "TBG-I：已参与|未参与" },
+                        "tbg2": { "type": "bool",  "is_require": true,  "desc": "TBG-II：已参与|已参与" },
                         "invest_count": { "type": "number",  "is_require": false,  "desc": "直接推荐帐号数" },
                         "level": { "type": "number",  "is_require": false,  "desc": "当前会员等级" }
                     }
@@ -355,7 +357,7 @@
             "name" : "投资首页",
             "summary": "",
             "remark": [
-                
+                "tbg 主页的显示信息"
             ],
             "isFunctionPoint" : true,
             "url" : "/account/investment_index",
@@ -391,7 +393,7 @@
             "name" : "子帐号",
             "summary": "",
             "remark": [
-                
+                "显示子账号的信息"
             ],
             "isFunctionPoint" : true,
             "url" : "/account/sub_account",
@@ -738,15 +740,22 @@
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "current_amount": { "type": "decimal",  "is_require": true,  "desc": "当前股东分红池余额" },
-                    "issue": { "type": "decimal",  "is_require": true,  "desc": "累计已经发放股东分红" },
-                    "total": { "type": "decimal",  "is_require": true,  "desc": "股东分红池累计收入" },
-                    "account_level": { "type": "number",  "is_require": true,  "desc": "会员等级" }
+                    "enable_quantity": { "type": "decimal",  "is_require": true,  "desc": "TBG 可售数量" },
+                    "rate": { "type": "decimal",  "is_require": true,  "desc": "1 TBG 可分红比例" },
+                    "total": { "type": "decimal",  "is_require": true,  "desc": "用户分红累计收入" },
+                    "detail": { 
+                        "type": "array",  "is_require": true,  "desc": "分红明细",
+                        "properties": {
+                            "create_time": { "type": "dateTime",  "is_require": true,  "desc": "时间" },
+                            "issue": { "type": "number",  "is_require": false,  "desc": "分红期数" },
+                            "income": { "type": "decimal",  "is_require": true,  "desc": "收益额度" }
+                        } 
+                    }
                 }
             }
         },
         {
-            "name" : "五倍收益保障池",
+            "name" : "三倍收益保障池",
             "summary": "",
             "remark": [
                 

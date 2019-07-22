@@ -57,6 +57,8 @@ async function handlerHolder() {
     } catch (err) {
         await client.query("ROLLBACK")
         throw err;
+    } finally {
+        await client.release();
     }
 }
 

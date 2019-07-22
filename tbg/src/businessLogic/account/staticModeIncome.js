@@ -14,6 +14,7 @@ const df = require("date-fns");
  * 三三静态收益分配
  * @param { any } client
  * @param { Number } amount 三三静态收益
+ * @param { String } subAccount
  */
 async function staticMode(client, amount, subAccount) {
     try {

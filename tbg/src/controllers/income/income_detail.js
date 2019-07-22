@@ -8,7 +8,7 @@ const { startParse } = require("../../common/parseIncomeData");
 async function incomeDetail(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param is: ${ reqData }`);
+        logger.debug(`the param is: %j`, reqData);
         let accountName = reqData.account_name;
         let incomeMap = await redis.hgetall(`tbg:income:${ accountName }`);
         let detailArr = await startParse(incomeMap);

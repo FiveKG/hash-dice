@@ -1,0 +1,60 @@
+{
+    "apps": [
+        {
+            "name"        : "tbgService",
+            "script"      : "./tbg_service.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg",
+            "error_file"  : "/home/yujinsheng/logs/tbgService-err.log",
+            "out_file"    : "/home/yujinsheng/logs/tbgService-out.log"
+        },
+        {
+            "name"        : "beginListenAction",
+            "script"      : "./beginListenAction.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/beginListenAction-err.log",
+            "out_file"    : "/home/yujinsheng/logs/beginListenAction-out.log"
+        },
+        {
+            "name"        : "mqWithdraw",
+            "script"      : "./mqWithdraw.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/mqWithdraw-err.log",
+            "out_file"    : "/home/yujinsheng/logs/mqWithdraw-out.log"
+        },
+        {
+            "name"        : "bonusBingo",
+            "script"      : "./bonusBingo.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/bonusBingo-err.log",
+            "out_file"    : "/home/yujinsheng/logs/bonusBingo-out.log"
+        },
+        {
+            "name"        : "bonusPK",
+            "script"      : "./bonusPK.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/bonusPK-err.log",
+            "out_file"    : "/home/yujinsheng/logs/bonusPK-out.log"
+        },
+        {
+            "name"        : "bonusSafe",
+            "script"      : "./bonusSafe.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/bonusSafe-err.log",
+            "out_file"    : "/home/yujinsheng/logs/bonusSafe-out.log"
+        },
+        {
+            "name"        : "bonusHolder",
+            "script"      : "./bonusHolder.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/bonusHolder-err.log",
+            "out_file"    : "/home/yujinsheng/logs/bonusHolder-out.log"
+        }
+    ]
+}

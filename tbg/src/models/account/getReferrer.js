@@ -10,11 +10,11 @@ async function getReferrer(accountName) {
     try {
         let selectSql = `
             select a.refer_code, a.account_name from account a 
-                join referrer r on r.referrer_name  = a.account_name 
+                join referrer r on r.referrer_name = a.account_name 
                 where r.account_name = $1;
         `
-        let { rows } = await pool.query(selectSql, [ accountName ]);
-        return rows;
+        let { rows: [ referrerInfo ] } = await pool.query(selectSql, [ accountName ]);
+        return referrerInfo;
     } catch (err) {
         throw err
     }

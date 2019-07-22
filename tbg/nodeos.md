@@ -63,8 +63,6 @@ password: [[
     "EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw",
     "5HrqjhPdGVmiBRDPwNftkjGCr7Ddoz5bXF8rrzdwhmHxmFnALk4"
   ]
-
-
 ]
 ```
 

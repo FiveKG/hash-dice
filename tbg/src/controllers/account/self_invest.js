@@ -10,7 +10,7 @@ const { ACCOUNT_INACTIVATED } = require("../../common/constant/accountConstant.j
 async function investBySelf(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param of investment by self is: ${ reqData }`);
+        logger.debug(`the param of investment by self is: %j`, reqData);
         if (reqData.amount !== INVEST_CONSTANT.INVEST_AMOUNT) {
             return res.send(get_status(1004, `investment must be ${ INVEST_CONSTANT.INVEST_AMOUNT } UE`));
         }

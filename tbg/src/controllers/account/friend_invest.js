@@ -14,7 +14,7 @@ const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 async function friendInvest(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param of investment by self is: ${ reqData }`);
+        logger.debug(`the param of investment by self is: %j`, reqData);
         let friendAccount = reqData.accountName;
         let rows = await getUserBalance(reqData.account_name);
         if (!rows) {

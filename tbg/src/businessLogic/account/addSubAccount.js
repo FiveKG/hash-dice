@@ -17,7 +17,10 @@ async function addSubAccount(client, accountName, subAccount, referrerAccountLis
         // 直接投资,参与 tbg1, 且所有推荐人都是普通用户,这些账号都在一个三三公排
         const rootAccount = referrerAccountList[1];
         const accountInfo = await getAccountInfo(rootAccount);
-        if (referrerAccountList.length === 2) {
+        logger.debug("accountInfo: ", accountInfo);
+        const levelKey = `tbg:level:${ accountInfo.id }`
+        const flag = await redis.get(levelKey);
+        if (!flag) {
             const level = 1;
             const position = 1;
             const id = accountInfo.id + "-" + level + position;
@@ -32,7 +35,7 @@ async function addSubAccount(client, accountName, subAccount, referrerAccountLis
                 accountName: accountName
             }
             // 在 redis 中记录当前这个伞的根节点和层级
-            await redis.set(`tbg:level:${ accountInfo.id }`, 1);
+            await redis.set(levelKey, 1);
             // 插入子账号
             await insertSubAccount(client, obj);
         } else {

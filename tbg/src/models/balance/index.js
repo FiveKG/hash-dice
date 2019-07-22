@@ -12,5 +12,6 @@ module.exports = {
     "getBalanceHistory": require("./getBalanceHistory.js"),
     "insertBalanceLog": require("./insertBalanceLog.js"),
     "insertBalance": require("./insertBalance.js"),
-    "updateBalance": require("./updateBalance")
+    "updateBalance": require("./updateBalance.js"),
+    "updateRepeatBalance": require("./updateRepeatBalance.js")
 }

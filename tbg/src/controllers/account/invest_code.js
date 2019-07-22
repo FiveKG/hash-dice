@@ -7,16 +7,17 @@ const { getInviteCode } = require("../../models/account");
 async function investCode(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param is: ${ reqData }`);
+        logger.debug(`the param is: %j`, reqData);
         let rows = await getInviteCode(reqData.account_name);
-        logger.debug(`the account invest code is ${ rows }`);
+        logger.debug(`the account invest code is %j`, rows);
         if (!rows) {
             return res.send(get_status(1001, "this account does not exists"));
         }
 
         let resDate = get_status(1);
         resDate["data"] = {
-            invest_code: rows.refer_code
+            invest_code: rows.refer_code,
+            account_name: reqData.account_name
         }
 
         res.send(resDate);

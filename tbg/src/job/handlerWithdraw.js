@@ -8,7 +8,7 @@ const { insertAccountOp } = require("../models/accountOp");
 const handlerTransfer = require("./handlerTransfer.js");
 const { Decimal } = require("decimal.js");
 const { format } = require("date-fns");
-const { EOS_TOKEN, TBG_TOKEN, DISPENSE_ACCOUNT } = require("../common/constant/eosConstants.js");
+const { EOS_TOKEN, TBG_TOKEN, DISPENSE_ACCOUNT, PRIVATE_KEY_TEST } = require("../common/constant/eosConstants.js");
 
 /**
  * 处理提现
@@ -47,16 +47,17 @@ async function handlerWithdraw(accountName, symbol, amount) {
         await userWithdraw(client, accountName, changeAmount, 'withdraw', remark);
         await insertAccountOp(client, accountName, 'withdraw', remark);
         try {
-            if (symbol === "EOS" || symbol === "TBG") {
-                let quantity = `${ amount } ${ symbol }`;
+            if (symbol === "UE" || symbol === "TBG") {
+                let quantity = `${ amount.toFixed(4) } ${ symbol }`;
                 let memo = `user withdraw`;
                 let tokenType = ``;
-                if (symbol === "EOS") {
+                if (symbol === "UE") {
                     tokenType = EOS_TOKEN;
                 } else {
                     tokenType = TBG_TOKEN;
                 }
-                await handlerTransfer(tokenType, DISPENSE_ACCOUNT, accountName, quantity, memo);
+                logger.debug(tokenType, DISPENSE_ACCOUNT, accountName, quantity, memo, [PRIVATE_KEY_TEST]);
+                await handlerTransfer(tokenType, DISPENSE_ACCOUNT, accountName, quantity, memo, [PRIVATE_KEY_TEST]);
             } else {
                 await client.query("ROLLBACK");
                 //提现出错，代币符号不符。
@@ -72,6 +73,8 @@ async function handlerWithdraw(accountName, symbol, amount) {
         await client.query("ROLLBACK");
         //提现出错，很大可能是异常用户。
         logger.error(`用户 ${ accountName } 提现时出错.`, error);
+    } finally {
+        await client.release();
     }
 }
 

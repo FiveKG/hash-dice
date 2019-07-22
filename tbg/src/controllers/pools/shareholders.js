@@ -1,6 +1,7 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@controllers/pools/bingo.js": "bingo pool" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
+const { SHAREHOLDERS_ALLOCATE_RATE } = require("../../common/constant/incomeConstant.js");
 const { getAccountMemberLevel } = require("../../models/account");
 const { getShareholdersAmount, getHolderHistory } = require("../../models/systemPool");
 const { Decimal } = require("decimal.js");
@@ -27,10 +28,10 @@ async function shareholdersAmount(req, res, next) {
         let amount = new Decimal(holderAmount.pool_amount);
         let issue = new Decimal(holderHistory.issue).abs();
         resData["data"] = {
-            current_amount: amount.toFixed(4),
-            issue: issue,
+            enable_quantity: amount.toFixed(4),
+            rate: SHAREHOLDERS_ALLOCATE_RATE,
             total: amount.add(issue).toFixed(4),
-            account_level: userMemberLevel,
+            detail: holderHistory,
         };
         res.send(resData);
     } catch (err) {

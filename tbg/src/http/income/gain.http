@@ -3,6 +3,6 @@ POST  http://localhost:9527/income/income_gain
 Content-Type: application/json
 
 {
-    "account_name": "systemwallet",
+    "account_name": "yujinsheng11",
     "income_type": "all"
 }

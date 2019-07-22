@@ -29,6 +29,7 @@ const COMMUNITY_INCOME_RATE = 2.1;
 const DEV_OP_INCOME_RATE = 1.4;
 
 
+
 /**
  * @type { Constant }
  */

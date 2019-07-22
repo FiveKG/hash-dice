@@ -1,0 +1,11 @@
+### bingo 奖金池
+GET http://localhost:9527/pools/bingo?account_name=yujinsheng11
+
+### 股东分红池
+GET http://localhost:9527/pools/shareholders?account_name=yujinsheng11
+
+### 五倍收益保障池
+GET http://localhost:9527/pools/safe?account_name=yujinsheng11
+
+### 直接推荐 pk 池
+GET http://localhost:9527/pools/pk?account_name=yujinsheng11

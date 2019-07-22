@@ -1,0 +1,17 @@
+### invite income
+GET http://localhost:9527/income/referrer?account_name=yujinsheng11&page=1&limit=10
+
+### sort income
+GET http://localhost:9527/income/sort?account_name=yujinsheng11&page=1&limit=10
+
+### mode income
+GET http://localhost:9527/income/mode?account_name=yujinsheng11&page=1&limit=10
+
+### 查看我的分红收益
+GET http://localhost:9527/income/dividend?account_name=yujinsheng11&page=1&limit=10
+
+### 查看我的保障收益
+GET http://localhost:9527/income/safe?account_name=yujinsheng11&page=1&limit=10
+
+### 查看其他收益
+GET http://localhost:9527/income/other?account_name=yujinsheng11&page=1&limit=10

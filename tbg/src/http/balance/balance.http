@@ -1,0 +1,17 @@
+
+### 提现信息
+GET http://localhost:9527/balance/balance_info?account_name=yujinsheng11
+
+
+### bind referrer
+POST http://localhost:9527/balance/withdraw
+Content-Type: application/json
+
+{
+    "account_name": "yujinsheng11",
+    "amount": "100",
+    "symbol": "UE"
+}
+
+### 提现历史
+GET http://localhost:9527/balance/withdraw_history?account_name=yujinsheng11
