@@ -59,7 +59,7 @@ async function bindReferrer(req, res, next) {
         await client.query("COMMIT");
         res.send(get_status(1));
     } catch (err) {
-        console.error("bind referrer error, the error stock is %O", err);
+        logger.error("bind referrer error, the error stock is %O", err);
         await client.query("ROLLBACK");
         throw err
     } finally {

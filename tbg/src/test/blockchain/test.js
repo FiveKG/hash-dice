@@ -175,7 +175,7 @@ async function getLastPos(){
 
 /**
  * 设置收款账户 action 的最新的位置.
- * @param { Number } seq
+ * @param { number } seq
  */
 async function setLastPos(seq){
     await redis.set("tbg:account_action_seq" , seq);

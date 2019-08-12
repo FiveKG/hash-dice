@@ -37,6 +37,6 @@ module.exports = getHolderAccount;
  * @description 查找符合股东分红条件的帐号
  * @typedef { Object } holderAccountList
  * @property { String } referrer_name
- * @property { Number } total
- * @property { Number } all
+ * @property { number } total
+ * @property { number } all
  */

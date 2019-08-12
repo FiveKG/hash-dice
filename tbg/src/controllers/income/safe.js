@@ -29,7 +29,8 @@ async function safe(req, res, next) {
         resData["data"] = detail;
         res.send(resData);
     } catch (err) {
-        throw err
+        logger.error("request income safe error, the error stock is %O", err);
+        throw err;
     }
 }
 

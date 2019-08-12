@@ -6,9 +6,9 @@ let invitationCode = null;
 
 /**
  * 生成固定位数的数字码
- * @param { Number } min 最小下标
- * @param { Number } max 最大上标
- * @returns { Promise<Array<Number>> } 生成的乱序的数字码数组
+ * @param { number } min 最小下标
+ * @param { number } max 最大上标
+ * @returns { Promise<Array<number>> } 生成的乱序的数字码数组
  */
 async function genInvitationCode(min, max) {
     let genCode = [];
@@ -28,8 +28,8 @@ async function genInvitationCode(min, max) {
 
 /**
  * 将生成的乱序数字码写入文件中
- * @param { Number } min 最小下标
- * @param { Number } max 最大上标
+ * @param { number } min 最小下标
+ * @param { number } max 最大上标
  */
 async function writeCodeToFile(min, max) {
     try {

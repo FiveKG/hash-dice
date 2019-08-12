@@ -48,7 +48,8 @@ async function subAccount(req, res, next) {
         }
         res.send(resDate);
     } catch (err) {
-        throw err
+        logger.error("request subAccount error, the error stock is %O", err);
+        throw err;
     }
 }
 

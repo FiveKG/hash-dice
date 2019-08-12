@@ -7,7 +7,7 @@ const { getAccountMemberLevel } = require("../../models/account");
 async function getAccountMember(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param is: %j`, reqData);
+        logger.debug(`the param of getAccountMember is: %j`, reqData);
         let userMemberLevel = await getAccountMemberLevel(reqData.account_name);
         if (!userMemberLevel) {
             return res.send(get_status(1001, "this account does not exists"));
@@ -34,7 +34,8 @@ async function getAccountMember(req, res, next) {
         resData["data"] = data;
         res.send(resData);
     } catch (err) {
-        throw err
+        logger.error("request getAccountMember error, the error stock is %O", err);
+        throw err;
     }
 }
 
@@ -47,7 +48,7 @@ module.exports = getAccountMember;
  * 黄金会员 16 - 30 个会员
  * 红钻会员 31 - 50 个会员
  * 皇冠会员 51 个会员以上
- * @param { Number } count 
+ * @param { number } count 
  * @returns { String }
  */
 function userMember(count) {

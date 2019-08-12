@@ -10,7 +10,7 @@ const { Decimal } = require("decimal.js");
 async function withdraw(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param of withdraw is: ${ JSON.stringify(reqData) }`);
+        logger.debug(`the param of withdraw is %j: `, reqData);
         let accountName = reqData.account_name;
         let amount = new Decimal(reqData.amount);
         if (amount.lessThanOrEqualTo(0)) {
@@ -18,7 +18,7 @@ async function withdraw(req, res, next) {
         }
        
         let rows = await getUserBalance(accountName);
-        logger.debug(`user balance is: ${ JSON.stringify(rows) }`);
+        logger.debug(`user balance is %O: `, rows);
         if (!rows) {
             return res.send(get_status(1001, "this account does not exists"));
         }
@@ -29,7 +29,7 @@ async function withdraw(req, res, next) {
 
         const withdrawData = {
             "account_name": accountName,
-            "amount": amount.toNumber(),
+            "amount": amount.tonumber(),
             "symbol": reqData.symbol
         };
         logger.debug(`发布提现消息, withdrawData: %j`, withdrawData);
@@ -39,6 +39,7 @@ async function withdraw(req, res, next) {
         logger.debug(`发布提现消息, 成功...`);
         res.send(get_status(1, "提现进行中, 请稍后刷新查看"));
     } catch (err) {
+        logger.error("request withdraw error, the error stock is %O", err);
         throw err
     }
 }

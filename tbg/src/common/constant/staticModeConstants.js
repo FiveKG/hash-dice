@@ -42,17 +42,17 @@ module.exports = CONSTANT
 /**
  * @description 常量
  * @typedef { Object } Constant
- * @property { Number } STATIC_MODE_BASE
- * @property { Number } FIRST
- * @property { Number } SECOND
- * @property { Number } THIRD
- * @property { Number } FOURTH
- * @property { Number } FIFTH
- * @property { Number } SIXTH
- * @property { Number } SEVENTH
- * @property { Number } EIGHTH
- * @property { Number } NINTH
- * @property { Number } TENTH
- * @property { Number } NEXT_TWENTY
- * @property { Number } LAST_TWENTY
+ * @property { number } STATIC_MODE_BASE
+ * @property { number } FIRST
+ * @property { number } SECOND
+ * @property { number } THIRD
+ * @property { number } FOURTH
+ * @property { number } FIFTH
+ * @property { number } SIXTH
+ * @property { number } SEVENTH
+ * @property { number } EIGHTH
+ * @property { number } NINTH
+ * @property { number } TENTH
+ * @property { number } NEXT_TWENTY
+ * @property { number } LAST_TWENTY
  */

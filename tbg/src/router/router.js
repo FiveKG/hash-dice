@@ -6,6 +6,8 @@ const account = require("../controllers/account");
 const balance = require("../controllers/balance");
 const income = require("../controllers/income");
 const team = require("../controllers/team");
+const trade = require("../controllers/trade");
+const airDrop = require("../controllers/airDrop");
 const config = require("../controllers/config");
 
 // 获取服务运行状态
@@ -45,5 +47,11 @@ router.get("/pools/bingo", pools.bingo);
 router.get("/pools/shareholders", pools.shareholders);
 router.get("/pools/safe", pools.safe);
 router.get("/pools/pk", pools.pk);
+
+router.get("/airdrop/game", airDrop.gameAirDrop);
+router.get("/airdrop/check_in", airDrop.checkInAirDrop);
+
+router.post("/trade/buy", trade.buy);
+router.post("/trade/sell", trade.sell);
 
 module.exports = router

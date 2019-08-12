@@ -98,30 +98,30 @@ module.exports = CONSTANT
 /**
  * @description 常量
  * @typedef { Object } Constant
- * @property { Number } BASE_RATE 
- * @property { Number } PK_INCOME_FIRST PK 第一名
- * @property { Number } PK_INCOME_SECOND  PK 第二名
- * @property { Number } PK_INCOME_THIRD  PK 第三名
- * @property { Number } PK_INCOME_FOURTH  PK 第四名
- * @property { Number } PK_INCOME_FIFTH  PK 第五名
- * @property { Number } BINGO_INCOME_FIRST  BINGO 第一名
- * @property { Number } BINGO_INCOME_OTHER  BINGO 第二名
- * @property { Number } DEV_INCOME      开发可分配的占比
- * @property { Number } COMMUNITY_INCOME  社区可分配的占比
- * @property { Number } REFER_PK_ALLOCATE_RATE  直接推荐 PK 奖池每周分配占比
- * @property { Number } SAFE_ALLOCATE_RATE  三倍收益保障池每天分配占比
- * @property { Number } BINGO_ALLOCATE_RATE  bingo 奖金池每天分配占比
+ * @property { number } BASE_RATE 
+ * @property { number } PK_INCOME_FIRST PK 第一名
+ * @property { number } PK_INCOME_SECOND  PK 第二名
+ * @property { number } PK_INCOME_THIRD  PK 第三名
+ * @property { number } PK_INCOME_FOURTH  PK 第四名
+ * @property { number } PK_INCOME_FIFTH  PK 第五名
+ * @property { number } BINGO_INCOME_FIRST  BINGO 第一名
+ * @property { number } BINGO_INCOME_OTHER  BINGO 第二名
+ * @property { number } DEV_INCOME      开发可分配的占比
+ * @property { number } COMMUNITY_INCOME  社区可分配的占比
+ * @property { number } REFER_PK_ALLOCATE_RATE  直接推荐 PK 奖池每周分配占比
+ * @property { number } SAFE_ALLOCATE_RATE  三倍收益保障池每天分配占比
+ * @property { number } BINGO_ALLOCATE_RATE  bingo 奖金池每天分配占比
  * @property { String } SHAREHOLDERS_ALLOCATE_RATE  股东分红奖金池比例
- * @property { Number } SORT_INCOME 一行公排获取奖励的用户可得比例
- * @property { Number } SORT_OUT_LINE 一行公排可获奖的出线额度
- * @property { Number } SAFE_OUT_LINE 三倍收益保障池可获奖的出线额度
- * @property { Number } REFER_FIRST_LEVEL 
- * @property { Number } REFER_SECOND_LEVEL 
- * @property { Number } REFER_THIRD_LEVEL 
- * @property { Number } REFER_FOURTH_LEVEL
- * @property { Number } REFER_FIFTH_LEVEL
- * @property { Number } REFER_SIXTH_LEVEL
- * @property { Number } REFER_SEVENTH_LEVEL
- * @property { Number } REFER_EIGHTH_LEVEL
- * @property { Number } REFER_NINTH_LEVEL
+ * @property { number } SORT_INCOME 一行公排获取奖励的用户可得比例
+ * @property { number } SORT_OUT_LINE 一行公排可获奖的出线额度
+ * @property { number } SAFE_OUT_LINE 三倍收益保障池可获奖的出线额度
+ * @property { number } REFER_FIRST_LEVEL 
+ * @property { number } REFER_SECOND_LEVEL 
+ * @property { number } REFER_THIRD_LEVEL 
+ * @property { number } REFER_FOURTH_LEVEL
+ * @property { number } REFER_FIFTH_LEVEL
+ * @property { number } REFER_SIXTH_LEVEL
+ * @property { number } REFER_SEVENTH_LEVEL
+ * @property { number } REFER_EIGHTH_LEVEL
+ * @property { number } REFER_NINTH_LEVEL
  */

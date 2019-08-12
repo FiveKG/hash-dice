@@ -53,7 +53,8 @@ async function incomeGain(req, res, next) {
         resDate["data"] = data;
         res.send(resDate);
     } catch (err) {
-        throw err
+        logger.error("request income incomeGain error, the error stock is %O", err);
+        throw err;
     }
 }
 

@@ -1,11 +1,11 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/income/staticMode.js": "static sort income" });
+const logger = require("../../common/logger.js").child({ "@controllers/income/staticSort.js": "static sort income" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getStaticSortIncome, getGroupIncome, getUserBalance } = require("../../models/balance");
 const { Decimal } = require("decimal.js");
 
 // 一行公排收益详情
-async function staticMode(req, res, next) {
+async function staticSort(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
         let resData = get_status(1);
@@ -64,8 +64,9 @@ async function staticMode(req, res, next) {
         };
         res.send(resData);
     } catch (err) {
-        throw err
+        logger.error("request income staticSort error, the error stock is %O", err);
+        throw err;
     }
 }
 
-module.exports = staticMode;
+module.exports = staticSort;

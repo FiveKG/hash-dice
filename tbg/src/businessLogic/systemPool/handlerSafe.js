@@ -55,7 +55,9 @@ async function handlerSafe() {
         await client.query("COMMIT");
         logger.debug(`handler ${ SAFE_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {
-        await client.query("ROLLBACK")
+        await client.query("ROLLBACK");
+        logger.error(`handler ${ SAFE_POOL } pool error, the error stock is %O`, err);
+        throw err;
         throw err;
     } finally {
         await client.release();

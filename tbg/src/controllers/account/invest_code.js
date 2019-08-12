@@ -7,7 +7,7 @@ const { getInviteCode } = require("../../models/account");
 async function investCode(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param is: %j`, reqData);
+        logger.debug(`the param of investCode is: %j`, reqData);
         let rows = await getInviteCode(reqData.account_name);
         logger.debug(`the account invest code is %j`, rows);
         if (!rows) {
@@ -22,7 +22,8 @@ async function investCode(req, res, next) {
 
         res.send(resDate);
     } catch (err) {
-        throw err
+        logger.error("request investCode error, the error stock is %O", err);
+        throw err;
     }
 }
 

@@ -9,7 +9,7 @@ const { Decimal } = require("decimal.js");
 async function balanceInfo(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param is: ${ JSON.stringify(reqData) }`);
+        logger.debug(`the param is %J: `, reqData);
         let rows = await getUserBalance(reqData.account_name);
         if (!rows) {
             return res.send(get_status(1001, "this account does not exists"));
@@ -23,6 +23,7 @@ async function balanceInfo(req, res, next) {
         }
         res.send(resData);
     } catch (err) {
+        logger.error("request balanceInfo error, the error stock is %O", err);
         throw err
     }
 }

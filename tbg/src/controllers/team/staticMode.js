@@ -43,7 +43,8 @@ async function staticMode(req, res, next) {
         resData["data"] = teamLevelArr;
         res.send(resData);
     } catch (err) {
-        throw err
+        logger.error("request staticMode error, the error stock is %O", err);
+        throw err;
     }
 }
 

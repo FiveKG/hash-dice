@@ -26,7 +26,8 @@ async function investBySelf(req, res, next) {
         await userInvestment(reqData.amount, reqData.account_name, remark);
         res.send(get_status(1));
     } catch (err) {
-        throw err
+        logger.error("request investBySelf error, the error stock is %O", err);
+        throw err;
     }
 }
 

@@ -4,8 +4,8 @@ const { pool } = require("../../db/index.js");
 /**
  * 获取用户的分红收入记录
  * @param { String } accountName
- * @param { Number } limit
- * @param { Number } page
+ * @param { number } limit
+ * @param { number } page
  * @returns { Promise<any[]> }
  */
 async function getStaticSortIncome(accountName, limit, page) {

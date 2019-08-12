@@ -40,6 +40,7 @@ async function invite(req, res, next) {
         }
         res.send(resData);
     } catch (err) {
+        logger.error("request team invite error, the error stock is %O", err);
         throw err
     }
 }

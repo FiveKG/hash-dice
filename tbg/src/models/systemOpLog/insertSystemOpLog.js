@@ -5,7 +5,7 @@ const { Decimal } = require("decimal.js");
  * 添加系统资产变动日志
  * @param { any } client 指定的数据库实例
  * @param { Decimal } changeAmount 变动的额度
- * @param { Number } preAmount  变动前的额度
+ * @param { number } preAmount  变动前的额度
  * @param { String } opType 操作类型
  * @param { String } remark 备注
  */

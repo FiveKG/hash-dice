@@ -26,7 +26,7 @@ async function handlerHolder() {
 
         let holderPoolAmount = new Decimal(rows.pool_amount);
         // 本次分配的金额
-        let distrEnable = holderPoolAmount.mul(INCOME_CONSTANT.SHAREHOLDERS_ALLOCATE_RATE / INCOME_CONSTANT.BASE_RATE);
+        let distrEnable = holderPoolAmount.mul(INCOME_CONSTANT.SHAREHOLDERS_ALLOCATE_RATE).div(INCOME_CONSTANT.BASE_RATE);
         let holderAccountList = await getHolderAccountList();
         console.log("holderAccountList: ", holderAccountList);
         for (let item of holderAccountList) {
@@ -55,7 +55,8 @@ async function handlerHolder() {
         await client.query("COMMIT");
         logger.debug(`handler ${ SHAREHOLDERS_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {
-        await client.query("ROLLBACK")
+        await client.query("ROLLBACK");
+        logger.error(`handler ${ SHAREHOLDERS_POOL } pool error, the error stock is %O`, err);
         throw err;
     } finally {
         await client.release();

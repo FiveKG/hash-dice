@@ -14,7 +14,7 @@ const { EOS_TOKEN, TBG_TOKEN, DISPENSE_ACCOUNT, PRIVATE_KEY_TEST } = require("..
  * 处理提现
  * @param {String} accountName 账号
  * @param {String} symbol 代币符号
- * @param {Number} amount 提现数量
+ * @param {number} amount 提现数量
  */
 async function handlerWithdraw(accountName, symbol, amount) {
     logger.debug(`${ accountName } 请求提现 ${ amount } ${ symbol }`);

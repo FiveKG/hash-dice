@@ -7,7 +7,7 @@ const { redis } = require("../../common/index.js");
 
 /**
  * 用户投资
- * @param { Number } amount 投资额度， decimal 类型
+ * @param { number } amount 投资额度， decimal 类型
  * @param { String } accountName 用户的帐号
  * @param { String } userInvestmentRemark remark
  */

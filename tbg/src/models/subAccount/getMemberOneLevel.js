@@ -4,7 +4,7 @@ const logger = require("../../common/logger")
 
 /**
  * 获取某层的所有帐号数
- * @param { Number } level
+ * @param { number } level
  * @param { String } accountName
  */
 async function getMemberOneLevel(level, accountName) {

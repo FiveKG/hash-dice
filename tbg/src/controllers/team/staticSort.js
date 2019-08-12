@@ -34,6 +34,7 @@ async function staticSort(req, res, next) {
         resData["data"] = result;
         res.send(resData);
     } catch (err) {
+        logger.error("request staticSort error, the error stock is %O", err);
         throw err
     }
 }

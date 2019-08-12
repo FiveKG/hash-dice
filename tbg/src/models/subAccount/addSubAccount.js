@@ -30,9 +30,9 @@ module.exports = insertSubAccount;
  * @typedef { Object } SubAccount
  * @property { String } id
  * @property { String } pid
- * @property { Number } position
+ * @property { number } position
  * @property { String } rootAccount
  * @property { String } accountName
  * @property { String } subAccount
- * @property { Number } level
+ * @property { number } level
  */

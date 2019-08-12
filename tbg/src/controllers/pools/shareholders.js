@@ -35,7 +35,8 @@ async function shareholdersAmount(req, res, next) {
         };
         res.send(resData);
     } catch (err) {
-        throw err
+        logger.error("request shareholdersAmount error, the error stock is %O", err);
+        throw err;
     }
 }
 

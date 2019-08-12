@@ -54,6 +54,7 @@ async function addSubAccount(client, accountName, subAccount, referrerAccountLis
             await insertSubAccount(client, obj);
         }
     } catch (err) {
+        logger.error(`addSubAccount error, the error stock is %O`, err);
         throw err
     }
 }
@@ -93,7 +94,7 @@ async function createSubId(mainId) {
 
 /**
  * 生成位置, 存入 redis，分配位置时, 随机取一个
- * @param { Number } level 
+ * @param { number } level 
  */
 async function genPositionList(level) {
     const pos = []
@@ -110,6 +111,6 @@ module.exports = addSubAccount;
  * @typedef { Object } CreateSubId
  * @property { String } id
  * @property { String } pid
- * @property { Number } position
- * @property { Number } level
+ * @property { number } position
+ * @property { number } level
  */

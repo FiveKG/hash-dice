@@ -82,8 +82,8 @@ module.exports = CONSTANT
  * @property { String } DEV_OP_POOL 开发维护的帐号
  * @property { String[] } EOS_NAME_CONVENTIONS_CHAR EOS 帐号约定字符
  * @property { Array<String> } TOP_ACCOUNT 最上层帐号
- * @property { Number } ACCOUNT_ACTIVATED_TBG_1 账号参与 tbg1
- * @property { Number } ACCOUNT_ACTIVATED_TBG_2 账号参与 tbg2
- * @property { Number } ACCOUNT_ACTIVATED_TBG_1_AND_2 账号参与 tbg1 和 tbg2
- * @property { Number } ACCOUNT_INACTIVATED 账号未激活
+ * @property { number } ACCOUNT_ACTIVATED_TBG_1 账号参与 tbg1
+ * @property { number } ACCOUNT_ACTIVATED_TBG_2 账号参与 tbg2
+ * @property { number } ACCOUNT_ACTIVATED_TBG_1_AND_2 账号参与 tbg1 和 tbg2
+ * @property { number } ACCOUNT_INACTIVATED 账号未激活
  */

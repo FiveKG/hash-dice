@@ -13,7 +13,7 @@ const df = require("date-fns");
 async function investmentIndex(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param is: %j`, reqData);
+        logger.debug(`the param of investmentIndex is: %j`, reqData);
         let subAccountList = await getUserSubAccount(reqData.account_name);
         let rows = await getUserBalance(reqData.account_name);
         let safePool = await getSafeAmount();
@@ -68,7 +68,8 @@ async function investmentIndex(req, res, next) {
         }
         res.send(resDate);
     } catch (err) {
-        throw err
+        logger.error("request investmentIndex error, the error stock is %O", err);
+        throw err;
     }
 }
 

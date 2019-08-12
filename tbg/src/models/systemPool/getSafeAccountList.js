@@ -32,6 +32,6 @@ module.exports = getSafeAccount;
  * @description 查找收益小于 150 的一行公排对应的主帐号
  * @typedef { Object } safeAccountList
  * @property { String } account_name
- * @property { Number } last
- * @property { Number } all
+ * @property { number } last
+ * @property { number } all
  */

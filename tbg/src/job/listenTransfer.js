@@ -28,7 +28,7 @@ async function handlerTransferActions() {
             } else {
                 userInvestmentRemark = `${ result.from } investment ${ result.amount } UE`;
             }
-            await userInvestment(Number(result.amount), result.from, userInvestmentRemark);
+            await userInvestment(number(result.amount), result.from, userInvestmentRemark);
             await redis.set(`tbg:invest:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
         }
@@ -142,7 +142,7 @@ async function getLastPos(){
 
 /**
  * 设置收款账户 action 的最新的位置.
- * @param { Number } seq
+ * @param { number } seq
  */
 async function setLastPos(seq){
     await redis.set("tbg:account_action_seq" , seq);

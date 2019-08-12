@@ -7,7 +7,7 @@ const { get_status, inspect_req_data } = require("../../common/index.js");
 async function isBind(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param of is: %j`, reqData);
+        logger.debug(`the param of isBind is: %j`, reqData);
         logger.info(`get account bind info`);
         let selectSql = `
              select r.referrer_name, r.account_name 
@@ -28,7 +28,8 @@ async function isBind(req, res, next) {
 
         res.send(resDate);
     } catch (err) {
-        throw err
+        logger.error("request isBind error, the error stock is %O", err);
+        throw err;
     }
 }
 

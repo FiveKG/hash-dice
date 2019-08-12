@@ -19,7 +19,7 @@ const df = require("date-fns");
 
 /**
  * 用户投资
- * @param { Number } amount 投资额度， decimal 类型
+ * @param { number } amount 投资额度， decimal 类型
  * @param { String } accountName 用户的帐号
  * @param { String } newSubAccount 子账号
  * @param { String } userInvestmentRemark remark
@@ -113,7 +113,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
 
 /**
  * 设置分配比例
- * @param { Number } position 
+ * @param { number } position 
  */
 function setRate(position) {
     if (position === 1) {

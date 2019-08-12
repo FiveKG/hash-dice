@@ -14,7 +14,7 @@ const { redis } = require("../../common/index.js");
 /**
  * 一行公排收益分配
  * @param { any } client
- * @param { Number } amount 一行公排收益
+ * @param { number } amount 一行公排收益
  * @param { String[] } staticSortList
  */
 async function staticSort(client, amount, staticSortList) {

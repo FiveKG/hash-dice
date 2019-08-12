@@ -23,5 +23,5 @@ module.exports = getHolderHistory;
 /**
  * @description 获取到的系统账户的信息
  * @typedef { Object } SystemPool
- * @property { Number } issue
+ * @property { number } issue
  */

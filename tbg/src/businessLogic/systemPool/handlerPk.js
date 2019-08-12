@@ -53,7 +53,8 @@ async function handlerPk() {
         await client.query("COMMIT");
         logger.debug(`handler ${ PK_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {
-        await client.query("ROLLBACK")
+        await client.query("ROLLBACK");
+        logger.error(`handler ${ PK_POOL } pool error, the error stock is %O`, err);
         throw err;
     } finally {
         await client.release();

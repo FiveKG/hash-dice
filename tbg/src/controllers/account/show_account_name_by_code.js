@@ -7,7 +7,7 @@ const { get_status, inspect_req_data } = require("../../common/index.js");
 async function showAccountNameByCode(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param of setting referrer is: %j`, reqData);
+        logger.debug(`the param of showAccountNameByCode is: %j`, reqData);
         logger.info(`transaction begin`);
         let investCode = reqData.refer_code;
         let account_name = "";
@@ -35,7 +35,8 @@ async function showAccountNameByCode(req, res, next) {
         }
         res.send(resDate);
     } catch (err) {
-        throw err
+        logger.error("request showAccountNameByCode error, the error stock is %O", err);
+        throw err;
     }
 }
 

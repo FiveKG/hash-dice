@@ -78,7 +78,8 @@ async function other(req, res, next) {
         };
         res.send(resData);
     } catch (err) {
-        throw err
+        logger.error("request income other error, the error stock is %O", err);
+        throw err;
     }
 }
 

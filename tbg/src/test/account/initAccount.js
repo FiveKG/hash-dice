@@ -107,7 +107,7 @@ async function dropAllTable() {
 
 /**
  * 构造帐号和推荐码
- * @param { Number } num 要生成的个数
+ * @param { number } num 要生成的个数
  * @returns { Promise<GenData> }
  */
 async function generateData(num) {

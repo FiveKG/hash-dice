@@ -48,7 +48,8 @@ async function pk(req, res, next) {
         };
         res.send(resData);
     } catch (err) {
-        throw err
+        logger.error("request pk error, the error stock is %O", err);
+        throw err;
     }
 }
 

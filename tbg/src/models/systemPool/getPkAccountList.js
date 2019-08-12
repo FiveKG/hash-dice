@@ -27,5 +27,5 @@ module.exports = getPkAccount;
  * @description 查找符合直接推荐PK奖金分红的帐号
  * @typedef { Object } pkAccountList
  * @property { String } referrer_name
- * @property { Number } invite_count
+ * @property { number } invite_count
  */

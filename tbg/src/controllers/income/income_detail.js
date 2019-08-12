@@ -16,7 +16,8 @@ async function incomeDetail(req, res, next) {
         resDate["data"] = detailArr
         res.send(resDate);
     } catch (err) {
-        throw err
+        logger.error("request income incomeDetail error, the error stock is %O", err);
+        throw err;
     }
 }
 

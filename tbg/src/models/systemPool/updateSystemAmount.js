@@ -5,7 +5,7 @@
  * @param { any } client 指定的数据库实例
  * @param { String } changeType 资产类型
  * @param { any } changeAmount 变动的额度
- * @param { Number } preAmount  变动前的额度
+ * @param { number } preAmount  变动前的额度
  */
 async function updateSystemAmount(client, changeType, changeAmount, preAmount) {
     try {

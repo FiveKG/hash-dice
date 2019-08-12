@@ -4,7 +4,7 @@ const logger = require("../common/logger.js").child({"@":"amqplib"});
 const amqpOption = {
     protocol : "amqp",
     hostname : process.env.TBG_RABBIT_HOST,
-    port     : Number(process.env.TBG_RABBIT_PORT),
+    port     : number(process.env.TBG_RABBIT_PORT),
     username : process.env.TBG_RABBIT_USER,
     password : process.env.TBG_RABBIT_PASS,
     heartbeat: 300

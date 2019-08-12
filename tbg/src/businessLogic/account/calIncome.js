@@ -8,7 +8,7 @@ const { redis } = require("../../common/index.js");
 
 /**
  * 计算收益
- * @param { Number } amount 投资额度， decimal 类型
+ * @param { number } amount 投资额度， decimal 类型
  * @param { String } newSubAccount 子账号
  */
 async function calIncome(amount, newSubAccount) {

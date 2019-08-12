@@ -5,7 +5,7 @@ const logger = require("../../common/logger");
 /**
  * 获取当前三三公排某个树的最大层级
  * @param { String } accountName
- * @returns { Promise<Number> }
+ * @returns { Promise<number> }
  */
 async function getCurrentMaxLevel(accountName) {
     try {

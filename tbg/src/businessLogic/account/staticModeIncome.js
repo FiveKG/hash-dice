@@ -13,7 +13,7 @@ const df = require("date-fns");
 /**
  * 三三静态收益分配
  * @param { any } client
- * @param { Number } amount 三三静态收益
+ * @param { number } amount 三三静态收益
  * @param { String } subAccount
  */
 async function staticMode(client, amount, subAccount) {
@@ -71,7 +71,7 @@ async function staticMode(client, amount, subAccount) {
 
 /**
  * 设置分配比例
- * @param { Number } position 
+ * @param { number } position 
  */
 function setRate(position) {
     if (position === 1) {

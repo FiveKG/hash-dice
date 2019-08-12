@@ -23,5 +23,5 @@ module.exports = getBingoAmount;
 /**
  * @description 获取到的系统账户的信息
  * @typedef { Object } SystemPool
- * @property { Number } pool_amount
+ * @property { number } pool_amount
  */

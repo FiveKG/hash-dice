@@ -7,7 +7,7 @@ const { getAccountInfo } = require("../../models/account");
 async function isActivated(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param is: %j`, reqData);
+        logger.debug(`the param of isActivated is: %j`, reqData);
         logger.info(`get account member level`);
         let accountInfo = await getAccountInfo(reqData.account_name);
         if (!accountInfo) {
@@ -21,7 +21,8 @@ async function isActivated(req, res, next) {
 
         res.send(resDate);
     } catch (err) {
-        throw err
+        logger.error("request isActivated error, the error stock is %O", err);
+        throw err;
     }
 }
 

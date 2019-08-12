@@ -29,9 +29,9 @@ module.exports = CONSTANT
 /**
  * @description 用户余额的分配比例常量
  * @typedef { Object } Constant
- * @property { Number } BASE_RATE
- * @property { Number } WITHDRAW_ENABLE // 可提现比率
- * @property { Number } REPEAT_CURRENCY // 复投比率
- * @property { Number } LOTTO_CURRENCY // 全球彩彩码比率
- * @property { Number } GAME_CURRENCY // 游戏筹码比率
+ * @property { number } BASE_RATE
+ * @property { number } WITHDRAW_ENABLE // 可提现比率
+ * @property { number } REPEAT_CURRENCY // 复投比率
+ * @property { number } LOTTO_CURRENCY // 全球彩彩码比率
+ * @property { number } GAME_CURRENCY // 游戏筹码比率
  */
