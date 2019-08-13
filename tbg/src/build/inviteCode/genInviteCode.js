@@ -63,17 +63,6 @@ async function readCodeFromFile() {
 }
 
 /**
- * 获取所有号码
- */
-function getAllCode() {
-    if (!invitationCode) {
-        throw Error("invitationCode not init");
-    }
-    
-    return invitationCode;
-}
-
-/**
  * 初始化推荐码
  */
 async function initCode() {
@@ -121,7 +110,6 @@ async function getGlobalInviteCode() {
 
 module.exports = {
     initCode,
-    // getAllCode,
     getGeneralInviteCode,
     getGlobalInviteCode
 }

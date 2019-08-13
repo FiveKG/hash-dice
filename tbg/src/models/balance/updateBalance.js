@@ -33,7 +33,7 @@ async function updateBalance(client, accountName, changeAmount) {
             changeAmount.mul(GAME_CURRENCY / BASE_RATE).toFixed(8),
             accountName
         ]
-        console.debug("the sql is %s, the opts is %O", updateAmountSql, opts);
+        logger.debug("the sql is %s, the opts is %O", updateAmountSql, opts);
         const { rows: [ { repeat_currency } ] } = await client.query(updateAmountSql, opts);
         logger.info(`update '${ accountName }' amount ok`);
         return repeat_currency;

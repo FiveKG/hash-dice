@@ -3,7 +3,7 @@
 /***
  * 1. 每日产币数量: 资产包购买数量 * 矿池产币倍数 / 预设可产币天数
  * 2. 私募每日产币数量: 全球合伙人私募数量 * 矿池产币倍数 / 预设可产币天数
- * 3. 购买资产包获得的可售额度: 可售额度数量 = ASSETS_PACKAGE_50 * AVAILABLE_SALE_50
+ * 3. 购买资产包获得的可售额度: 可售额度数量 = ASSETS_PACKAGE_50 * SALEABLE_50
  * 4. 资产包进入线性释放池数量: 资产包购买数量 * 资产包进入线性释放池
  * 5. 每日线性释放数量: 线性释放池数量 * 会员每日线性释放比例
  */
@@ -38,9 +38,9 @@ const RELEASE_POOL_MULTIPLE_20K = 5;
 const RELEASE_POOL_MULTIPLE_30K = 5;
 
 // 购买资产包获得的可售额度比例
-const AVAILABLE_SALE_50 = 1.3;
-const AVAILABLE_SALE_100 = 1.4;
-const AVAILABLE_SALE_200 = 1.5;
+const SALEABLE_50 = 1.3;
+const SALEABLE_100 = 1.4;
+const SALEABLE_200 = 1.5;
 
 // 会员每日线性释放比例 会员等级
 // 未参与TBG-I
@@ -80,9 +80,9 @@ const CONSTANT = {
     "RELEASE_POOL_MULTIPLE_10K": RELEASE_POOL_MULTIPLE_10K,
     "RELEASE_POOL_MULTIPLE_20K": RELEASE_POOL_MULTIPLE_20K,
     "RELEASE_POOL_MULTIPLE_30K": RELEASE_POOL_MULTIPLE_30K,
-    "AVAILABLE_SALE_50": AVAILABLE_SALE_50,
-    "AVAILABLE_SALE_100": AVAILABLE_SALE_100,
-    "AVAILABLE_SALE_200": AVAILABLE_SALE_200,
+    "SALEABLE_50": SALEABLE_50,
+    "SALEABLE_100": SALEABLE_100,
+    "SALEABLE_200": SALEABLE_200,
     "INACTIVATED_TBG_1": INACTIVATED_TBG_1,
     "SEA_BLUE": SEA_BLUE,
     "AMETHYST": AMETHYST,
@@ -115,9 +115,9 @@ module.exports = CONSTANT
  * @property { number } RELEASE_POOL_MULTIPLE_10K 资产包进入线性释放池倍数
  * @property { number } RELEASE_POOL_MULTIPLE_20K 资产包进入线性释放池倍数
  * @property { number } RELEASE_POOL_MULTIPLE_30K 资产包进入线性释放池倍数
- * @property { number } AVAILABLE_SALE_50 购买资产包获得的可售额度比例
- * @property { number } AVAILABLE_SALE_100 购买资产包获得的可售额度比例
- * @property { number } AVAILABLE_SALE_200 购买资产包获得的可售额度比例
+ * @property { number } SALEABLE_50 购买资产包获得的可售额度比例
+ * @property { number } SALEABLE_100 购买资产包获得的可售额度比例
+ * @property { number } SALEABLE_200 购买资产包获得的可售额度比例
  * @property { number } INACTIVATED_TBG_1 未参与TBG-I
  * @property { number } SEA_BLUE 海蓝
  * @property { number } AMETHYST 紫晶

@@ -53,6 +53,27 @@
             ]
         },
         {
+            "tableName": "assets_package", "tableDesc": "资产包", "group": "account", 
+            "fields": [
+                { "name": "id", "type": "text", "dblength": "32", "dftValue": "''", "summary": "资产包 id", "remark": "", "isPrimary": true },
+                { "name": "amount", "type": "decimal", "dblength": "32", "dftValue": "''", "summary": "资产包额度", "remark": "", "isPrimary": false },
+                { "name": "saleable_multiple", "type": "number", "dblength": "32", "dftValue": "0", "summary": "购买资产包获得的可售额度比例", "remark": "", "isPrimary": false },
+                { "name": "mining_multiple", "type": "number", "dblength": "32", "dftValue": "0", "summary": "矿池产币倍数", "remark": "", "isPrimary": false },
+                { "name": "release_multiple", "type": "number", "dblength": "32", "dftValue": "0", "summary": "资产包进入线性释放池倍数", "remark": "", "isPrimary": false },
+                { "name": "amount_type", "type": "text", "dblength": "32", "dftValue": "''", "summary": "资产包类型", "remark": "私募(raise)，普通(common)", "isPrimary": false }
+            ]
+        },
+        {
+            "tableName": "user_assets_package", "tableDesc": "用户资产包", "group": "account", 
+            "fields": [
+                { "name": "id", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户资产包 id", "remark": "", "isPrimary": true },
+                { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "用户的 eos 帐号" , "isPrimary": false } ,
+                { "name": "ap_id", "type": "text", "dblength": "32", "dftValue": "''", "summary": "资产包 id", "remark": "", "isPrimary": false },
+                { "name": "state",        "type": "text",     "dblength": "10",   "dftValue": "0", "summary": " ", "remark"  : "", "isPrimary": false },
+                { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间", "remark": "", "isPrimary": false }
+            ]
+        },
+        {
             "tableName": "referrer", "tableDesc": "推荐表", "group": "account", 
             "fields": [
                 { "name": "id", "type": "text", "dblength": "", "dftValue": "''", "summary": "推荐表 id", "remark": "", "isPrimary": true },
@@ -66,12 +87,11 @@
             "fields": [
                 { "name": "id", "type": "number", "dblength": "32", "dftValue": "0", "summary": "变动表 id(自增)", "remark": "", "isPrimary": true },
                 { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "用户的 eos 帐号" , "isPrimary": false } ,
-                { "name": "change_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动额度", "remark": "要更改的 eos 数量", "isPrimary": false },
-                { "name": "current_balance", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动后的余额", "remark": "用户当前的 eos 数量", "isPrimary": false },
-                { "name": "op_type", "type": "text", "dblength": "20", "dftValue": "''", "summary": "操作类型", "remark": "投资|盈利|提现|分红...", "isPrimary": false } ,
+                { "name": "change_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动额度", "remark": "要更改的代币数量", "isPrimary": false },
+                { "name": "current_balance", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动后的余额", "remark": "用户当前的代币数量", "isPrimary": false },
+                { "name": "op_type", "type": "text", "dblength": "20", "dftValue": "''", "summary": "操作类型", "remark": "投资|盈利|提现|分红|绑定|签到|买入|参与TBG-I|推荐收益|挖矿|游戏|分红|释放|卖出销毁|挖矿推荐收益...", "isPrimary": false } ,
                 { "name": "remark", "type": "text", "dblength": "500", "dftValue": "''", "summary": "操作备注", "remark": "余额变动的详细备注", "isPrimary": false } ,
                 { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间", "remark": "", "isPrimary": false }
-                
             ]
         },
         {
@@ -87,7 +107,7 @@
             "fields": [
                 { "name": "id", "type": "number", "dblength": "32", "dftValue": "0", "summary": "奖池变动表的 id(自增)", "remark": "" , "isPrimary": true } ,
                 { "name": "change_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动的额度", "remark": "要更改的 eos 数量", "isPrimary": false },
-                { "name": "current_balance", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动后的额度", "remark": "更改后奖池的 eos 数量" , "isPrimary": false } ,
+                { "name": "current_balance", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动后的额度", "remark": "更改后奖池的代币数量" , "isPrimary": false } ,
                 { "name": "op_type", "type": "text", "dblength": "20", "dftValue": "''", "summary": "操作类型", "remark": "系统奖池变动情况" , "isPrimary": false } ,
                 { "name": "remark", "type": "text", "dblength": "500", "dftValue": "''", "summary": "备注", "remark": "", "isPrimary": false } ,
                 { "name": "create_time", "type": "dateTime", "dblength": "", "dftValue": "now()", "summary": "创建时间", "remark": "", "isPrimary": false } 

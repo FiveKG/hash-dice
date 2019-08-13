@@ -1,6 +1,6 @@
 // @ts-check
-const { getAllParentLevel, getAccountInfo } = require("../../models/account");
-const { insertSubAccount, getSubAccountInfoByRootNode } = require("../../models/subAccount");
+const { getAccountInfo } = require("../../models/account");
+const { insertSubAccount } = require("../../models/subAccount");
 const logger = require("../../common/logger.js")
 const { redis } = require("../../common/index.js");
 

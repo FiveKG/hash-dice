@@ -152,9 +152,9 @@ async function createTable() {
             id serial PRIMARY KEY UNIQUE NOT NULL,
             tr_id TEXT NOT NULL DEFAULT '',
             buy_or_sell TEXT NOT NULL DEFAULT '',
-            amount TEXT NOT NULL DEFAULT '',
-            price NUMERIC (12, 8) NOT NULL DEFAULT '',
-            volume NUMERIC (12, 8) NOT NULL DEFAULT '',
+            amount NUMERIC (12, 8) NOT NULL DEFAULT 0,
+            price NUMERIC (12, 8) NOT NULL DEFAULT 0,
+            volume NUMERIC (12, 8) NOT NULL DEFAULT 0,
             memo TEXT NOT NULL DEFAULT '',
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
@@ -171,6 +171,34 @@ async function createTable() {
             release_amount NUMERIC (12, 8) NOT NULL DEFAULT 0,
             sell_amount NUMERIC (12, 8) NOT NULL DEFAULT 0,
             active_amount  NUMERIC (12, 8) NOT NULL DEFAULT 0,
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+        );
+        comment on table assets_package is '资产包表'
+        comment on column assets_package.id is '资产包主键 id';
+        comment on column assets_package.amount is '资产包额度';
+        comment on column assets_package.saleable_multiple is '购买资产包获得的可售额度比例';
+        comment on column assets_package.mining_multiple is '矿池产币倍数';
+        comment on column assets_package.release_multiple is '资产包进入线性释放池倍数';
+        comment on column assets_package.amount_type is '资产包类型，私募(raise)，普通(common)';
+        CREATE TABLE IF NOT EXISTS assets_package(
+            id serial PRIMARY KEY UNIQUE NOT NULL,
+            amount NUMERIC (12, 8) NOT NULL DEFAULT 0,
+            saleable_multiple INTEGER NOT NULL DEFAULT 0,
+            mining_multiple INTEGER NOT NULL DEFAULT 0,
+            release_multiple INTEGER NOT NULL DEFAULT 0,
+            amount_type TEXT NOT NULL DEFAULT ''
+        );
+        comment on table user_assets_package is '用户资产包表'
+        comment on column user_assets_package.id is '用户资产包 id';
+        comment on column user_assets_package.account_name is '用户帐号名称';
+        comment on column user_assets_package.ap_id is '资产包 id';
+        comment on column user_assets_package.state is '用户资产包状态';
+        comment on column user_assets_package.create_time is '创建时间';
+        CREATE TABLE IF NOT EXISTS user_assets_package(
+            id TEXT PRIMARY KEY UNIQUE NOT NULL,
+            account_name TEXT NOT NULL DEFAULT '',
+            ap_id INTEGER NOT NULL DEFAULT 0,
+            state TEXT NOT NULL DEFAULT '',
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
     `

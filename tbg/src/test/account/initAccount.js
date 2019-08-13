@@ -1,7 +1,8 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
 const logger = require("../../common/logger.js").child({ "@src/test/test.js": "test" });
-const uuidv4 = require("uuid/v4");
+// const uuid = require("uuid/v4");
+const { generate_primary_key } = require("../../common");
 const { getRandEOSAccount } = require("../../build/account/genRandEosAccount");
 const { getGeneralInviteCode, getGlobalInviteCode } = require("../../build/inviteCode/genInviteCode");
 
@@ -11,34 +12,34 @@ async function insertAccount() {
         let { code, account } = await generateData(6);
         let querySql = `
             insert into account(id, account_name, refer_count, state, refer_code, account_type, create_time)
-                values ('${ uuidv4() }', 'systemwallet', 1, 0, '${ code[0] }', 'general', 'now()'),
-                ('${ uuidv4() }', 'yujinsheng11', 0, 0, '${ code[1] }', 'general', 'now()'),
-                ('${ uuidv4() }', '${ account[1] }', 0, 0, '${ code[2] }', 'general', 'now()'),
-                ('${ uuidv4() }', '${ account[2] }', 0, 0, '${ code[3] }', 'general', 'now()'),
-                ('${ uuidv4() }', '${ account[3] }', 0, 0, '${ code[4] }', 'general', 'now()'),
-                ('${ uuidv4() }', '${ account[4] }', 0, 0, '${ code[5] }', 'general', 'now()'),
-                ('${ uuidv4() }', '${ account[5] }', 0, 0, '${ await getGeneralInviteCode() }', 'general', 'now()')
+                values ('${ generate_primary_key() }', 'systemwallet', 1, 0, '${ code[0] }', 'general', 'now()'),
+                ('${ generate_primary_key() }', 'yujinsheng11', 0, 0, '${ code[1] }', 'general', 'now()'),
+                ('${ generate_primary_key() }', '${ account[1] }', 0, 0, '${ code[2] }', 'general', 'now()'),
+                ('${ generate_primary_key() }', '${ account[2] }', 0, 0, '${ code[3] }', 'general', 'now()'),
+                ('${ generate_primary_key() }', '${ account[3] }', 0, 0, '${ code[4] }', 'general', 'now()'),
+                ('${ generate_primary_key() }', '${ account[4] }', 0, 0, '${ code[5] }', 'general', 'now()'),
+                ('${ generate_primary_key() }', '${ account[5] }', 0, 0, '${ await getGeneralInviteCode() }', 'general', 'now()')
                 on conflict(account_name) do nothing;
 
-            insert into referrer values ('${ uuidv4() }', '', 'systemwallet', 'now()'),
-                ('${ uuidv4() }', 'systemwallet', 'yujinsheng11', 'now()'),
-                ('${ uuidv4() }', 'yujinsheng11', '${ account[0] }', 'now()'),
-                ('${ uuidv4() }', 'yujinsheng11', '${ account[1] }', 'now()'),
-                ('${ uuidv4() }', '${ account[1] }', '${ account[2] }', 'now()'),
-                ('${ uuidv4() }', '${ account[2] }', '${ account[3] }', 'now()'),
-                ('${ uuidv4() }', '${ account[3] }', '${ account[4] }', 'now()'),
-                ('${ uuidv4() }', '${ account[4] }', '${ account[5] }', 'now()')
+            insert into referrer values ('${ generate_primary_key() }', '', 'systemwallet', 'now()'),
+                ('${ generate_primary_key() }', 'systemwallet', 'yujinsheng11', 'now()'),
+                ('${ generate_primary_key() }', 'yujinsheng11', '${ account[0] }', 'now()'),
+                ('${ generate_primary_key() }', 'yujinsheng11', '${ account[1] }', 'now()'),
+                ('${ generate_primary_key() }', '${ account[1] }', '${ account[2] }', 'now()'),
+                ('${ generate_primary_key() }', '${ account[2] }', '${ account[3] }', 'now()'),
+                ('${ generate_primary_key() }', '${ account[3] }', '${ account[4] }', 'now()'),
+                ('${ generate_primary_key() }', '${ account[4] }', '${ account[5] }', 'now()')
                 on conflict(account_name) do nothing;
 
             insert into balance(id, account_name, create_time) 
-                values ('${ uuidv4() }', 'systemwallet', 'now()'),
-                ('${ uuidv4() }', 'yujinsheng11', 'now()'),
-                ('${ uuidv4() }', '${ account[0] }', 'now()'),
-                ('${ uuidv4() }', '${ account[1] }', 'now()'),
-                ('${ uuidv4() }', '${ account[2] }', 'now()'),
-                ('${ uuidv4() }', '${ account[3] }', 'now()'),
-                ('${ uuidv4() }', '${ account[4] }', 'now()'),
-                ('${ uuidv4() }', '${ account[5] }', 'now()')
+                values ('${ generate_primary_key() }', 'systemwallet', 'now()'),
+                ('${ generate_primary_key() }', 'yujinsheng11', 'now()'),
+                ('${ generate_primary_key() }', '${ account[0] }', 'now()'),
+                ('${ generate_primary_key() }', '${ account[1] }', 'now()'),
+                ('${ generate_primary_key() }', '${ account[2] }', 'now()'),
+                ('${ generate_primary_key() }', '${ account[3] }', 'now()'),
+                ('${ generate_primary_key() }', '${ account[4] }', 'now()'),
+                ('${ generate_primary_key() }', '${ account[5] }', 'now()')
                 on conflict(account_name) do nothing;
 
             update account set refer_count = 2 where account_name = 'yujinsheng11';

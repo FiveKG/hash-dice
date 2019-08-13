@@ -1,7 +1,8 @@
 #!/bin/bash
 #Description:  create key pairs
 shopt -s expand_aliases
-alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5JiEbjX8fCMuHCw86jGdg9goPrx7rC5ejNxTjgh3E1v3EV2pTcP'
+# 钱包密码应为使用时的那个密码
+alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5JcqsSvTea4Z5GrZpvhfuCZZuABYNwxBdzovKJgMGoSqP4BFKi7'
 alias cleos='docker exec -it nodeos /usr/bin/cleos -u http://localhost:8888 --wallet-url unix:///root/eosio-wallet/keosd.sock'
 UE_TOKEN_ACCOUNT=eosio.token
 
@@ -69,4 +70,4 @@ function blukImportKey() {
 # 先解锁钱包
 unlock
 # 生成一批测试账号，同时导入私钥
-# blukImportKey
+blukImportKey

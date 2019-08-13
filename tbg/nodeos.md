@@ -22,7 +22,7 @@ root@9270b9e8849b:/eosio# cleos wallet create --to-console
 Creating wallet: default
 Save password to use in the future to unlock this wallet.
 Without password imported keys will not be retrievable.
-"PW5JiEbjX8fCMuHCw86jGdg9goPrx7rC5ejNxTjgh3E1v3EV2pTcP"
+"PW5JcqsSvTea4Z5GrZpvhfuCZZuABYNwxBdzovKJgMGoSqP4BFKi7"
 ```
 
 #### unlock wallet and create keys
@@ -70,6 +70,29 @@ password: [[
 * create test account
     * eosio.token yujinsheng11 luckyhongbao test
 ```
+echo -e "5JR6dFXSR8YsckYtQhH2TD3CnM5DJAYozbiB82T9a9rARnsubxC" | cleos wallet import
+echo -e "5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h" | cleos wallet import
+echo -e "5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo" | cleos wallet import
+echo -e "5JyDaYmfCKEnBFRhfBWFPBzwQPfqrwwxr4eJHti58it6n86H7G2" | cleos wallet import
+echo -e "5HrqjhPdGVmiBRDPwNftkjGCr7Ddoz5bXF8rrzdwhmHxmFnALk4" | cleos wallet import
+cleos create account eosio eosio.token EOS63n3ZaYyGkPP7xRsztJz9roxKdJMG4Go4jvEmc4L27bRMZ3gHV EOS63n3ZaYyGkPP7xRsztJz9roxKdJMG4Go4jvEmc4L27bRMZ3gHV
+cleos create account eosio yujinsheng11 EOS6UtznEsEeFMytBUxhUZy5Bj6iFbhjMJk49xPeoLifDKve7MhyR EOS6UtznEsEeFMytBUxhUZy5Bj6iFbhjMJk49xPeoLifDKve7MhyR
+cleos create account eosio uegametoken EOS6xKtqbXeTwnrwgVx74dnEhNdFiSt3sYuMfJzJNmmkZz6CdQqWv EOS6xKtqbXeTwnrwgVx74dnEhNdFiSt3sYuMfJzJNmmkZz6CdQqWv
+cleos create account eosio tbgametoken EOS5aicTbGvPj2WHEmcN26aAuR5E5PmYYgr4M34NFVr6Tgn9fiJoV EOS5aicTbGvPj2WHEmcN26aAuR5E5PmYYgr4M34NFVr6Tgn9fiJoV
+cleos create account eosio gametestuser EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw
+cleos set contract eosio.token ./eosio.token
+cleos push action eosio.token create '["eosio.token", "1000000000.0000 EOS"]' -p eosio.token
+cleos push action eosio.token issue '["eosio.token", "1000000000.0000 EOS", "issue"]' -p eosio.token
+cleos set contract uegametoken ./eosio.token
+cleos push action uegametoken create '["uegametoken", "1000000000.0000 UE"]' -p uegametoken
+cleos push action uegametoken issue '["uegametoken", "1000000000.0000 UE", "issue"]' -p uegametoken
+cleos set contract tbgametoken ./eosio.token
+cleos push action tbgametoken create '["tbgametoken", "1000000000.0000 TBG"]' -p tbgametoken
+cleos push action tbgametoken issue '["tbgametoken", "1000000000.0000 TBG", "issue"]' -p tbgametoken
+cleos set contract gametestuser ./eosio.token
+cleos push action gametestuser create '["gametestuser", "10000.0000 TEST"]' -p gametestuser
+cleos push action gametestuser issue '["gametestuser", "10000.0000 TEST", "issue"]' -p gametestuser
+
 root@9270b9e8849b:/eosio# cleos create account eosio eosio.token EOS63n3ZaYyGkPP7xRsztJz9roxKdJMG4Go4jvEmc4L27bRMZ3gHV EOS63n3ZaYyGkPP7xRsztJz9roxKdJMG4Go4jvEmc4L27bRMZ3gHV
 executed transaction: 65dccc8711acdc0204ab0ced84e08f243194741434e947d93332977944bdc559  200 bytes  5628 us
 #         eosio <= eosio::newaccount            {"creator":"eosio","name":"eosio.token","owner":{"threshold":1,"keys":[{"key":"EOS63n3ZaYyGkPP7xRszt...
@@ -94,7 +117,7 @@ warning: transaction executed locally, but may not be confirmed by the network y
 
 ### complier smart contract
 ```
-docker run --name eosio_cdt -v /home/yujinsheng/tmp/yuezhi/eosio/eosio-1.6.x/eos/contracts/hey:/contracts -w /contracts -dt eostudio/eosio.cdt:v1.6.1
+docker run --name eosio_cdt -v /home/yujinsheng/tmp/yuezhi/eosio.contracts:/contracts -w /contracts -dt eostudio/eosio.cdt:v1.6.2
 alias eosio-cpp='docker exec -it eosio_cdt /usr/bin/eosio-cpp'
 eosio-cpp ./hey.cpp -I include -o ./hey.wasm --abigen
 ```

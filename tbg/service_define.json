@@ -145,7 +145,7 @@
             }
         },
         {
-            "name" : "投资 UE",
+            "name" : "投资 UE, 参与 TBG 1",
             "summary": "",
             "remark": [
                 "投资必须有上级，没有要先添加",
@@ -167,7 +167,7 @@
             }
         },
         {
-            "name" : "帮朋友投资 UE",
+            "name" : "帮朋友投资 UE, 参与 TBG 1",
             "summary": "",
             "remark": [
 
@@ -251,7 +251,7 @@
                 "data": {
                     "type": "objectArr", "desc": "",
                     "properties": {
-                        "create_time": { "type": "number",  "is_require": true,  "desc": "提现时间" },
+                        "create_time": { "type": "dateTime",  "is_require": true,  "desc": "提现时间" },
                         "withdraw_amount": { "type": "number",  "is_require": false,  "desc": "提现金额" }
                     }
                 }
@@ -526,7 +526,7 @@
                     "detail" : {
                         "type": "objectArray", "desc": "",
                         "properties": {
-                            "create_time": { "type": "decimal",  "is_require": true,  "desc": "时间" },
+                            "create_time": { "type": "dateTime",  "is_require": true,  "desc": "时间" },
                             "invite_account": { "type": "decimal",  "is_require": true,  "desc": "推荐帐号" },
                             "income": { "type": "decimal",  "is_require": true,  "desc": "收益" }
                         }
@@ -809,6 +809,526 @@
                             "sub_account": { "type": "number",  "is_require": true,  "desc": "推荐的子帐号数量" },
                             "percentage": { "type": "decimal",  "is_require": true,  "desc": "可获得的奖金百分比" },
                             "bonus": { "type": "decimal",  "is_require": true,  "desc": "实时奖金额度" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "获取全球合伙人私募信息",
+            "summary": "",
+            "remark": [
+                "获取全球合伙人私募价格",
+                "获取全球合伙人私募资产包"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/trade/raise_buy",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
+                    "assets": { "type": "array",  "is_require": true, "desc": "购买资产数量" },
+                    "release_pool": { "type": "number",  "is_require": true, "desc": "资产包进入线性释放池数量" },
+                    "mining_pool": { "type": "number",  "is_require": true, "desc": "资产包进入矿池数量" }
+                }
+            }
+        },
+        {
+            "name" : "全球合伙人私募",
+            "summary": "",
+            "remark": [
+                "全球合伙人专享，仅可购买一次"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/trade/raise_buy",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
+                "assets": { "type": "number", "is_require": false, "desc": "购买资产数量" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
+        },
+        {
+            "name" : "获取普通买入交易信息",
+            "summary": "",
+            "remark": [
+                "获取获取普通交易价格",
+                "获取获取普通交易资产包"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/trade/buy_assets",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
+                    "assets": { "type": "array",  "is_require": true, "desc": "购买资产数量" },
+                    "sell_fee_rate": { "type": "array",  "is_require": true, "desc": "手续费率" },
+                    "destroy_rate": { "type": "array",  "is_require": true, "desc": "销毁比例" },
+                    "first_buy": { "type": "string",  "is_require": true, "desc": "交易开放时间, 首次买入账号, 逗号分割，如 9,21" },
+                    "buy_time": { "type": "string",  "is_require": true, "desc": "交易开放时间, 逗号分割，如 10,21" },
+                    "available_sale": { "type": "string",  "is_require": true, "desc": "购买资产包获得的可售额度" }
+                }
+            }
+        },
+        {
+            "name" : "买入资产包",
+            "summary": "",
+            "remark": [],
+            "isFunctionPoint" : true,
+            "url" : "/trade/buy_assets",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
+                "assets": { "type": "number", "is_require": false, "desc": "购买资产数量" },
+                "sell_fee": { "type": "array",  "is_require": true, "desc": "手续费" },
+                "destroy": { "type": "array",  "is_require": true, "desc": "销毁数量" },
+                "income": { "type": "array",  "is_require": true, "desc": "实收" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    
+                }
+            }
+        },
+        {
+            "name" : "资产包买入记录",
+            "summary": "",
+            "remark": [],
+            "isFunctionPoint" : true,
+            "url" : "/trade/buy_assets_history",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "create_time": { "type": "dateTime",  "is_require": true,  "desc": "购买时间" },
+                    "price": { "type": "number",  "is_require": true,  "desc": "购买价格" },
+                    "assets": { "type": "number",  "is_require": true, "desc": "购买资产数量" },
+                    "options": { "type": "string",  "is_require": true, "desc": "动作, 撤单，挂单排队。。。" }
+                }
+            }
+        },
+        {
+            "name" : "买入交易列表",
+            "summary": "",
+            "remark": [],
+            "isFunctionPoint" : true,
+            "url" : "/trade/buy_list",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "create_time": { "type": "dateTime",  "is_require": true,  "desc": "购买时间" },
+                    "price": { "type": "number",  "is_require": true,  "desc": "购买价格" },
+                    "transaction": { "type": "number",  "is_require": true, "desc": "成交 / 买入 比例" }
+                }
+            }
+        },
+        {
+            "name" : "获取普通卖出交易信息",
+            "summary": "",
+            "remark": [
+                "获取获取普通卖出交易价格",
+                "手续费", "手续费比例", "销毁数量", "销毁比例"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/trade/sell_assets",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "price": { "type": "sting",  "is_require": true,  "desc": "卖出价格" },
+                    "assets": { "type": "array",  "is_require": true, "desc": "卖出资产数量" },
+                    "sell_time": { "type": "string",  "is_require": true, "desc": "卖出交易开放时间, 逗号分割，如 10,21" },
+                    "one_trx": { "type": "string",  "is_require": true, "desc": "单次最高可卖数量" },
+                    "day_trx": { "type": "string",  "is_require": true, "desc": "每日最高可卖数量" },
+                    "trx_day_count": { "type": "string",  "is_require": true, "desc": "每日最多可卖次数" }
+                }
+            }
+        },
+        {
+            "name" : "卖出 TBG",
+            "summary": "",
+            "remark": [
+                "获取获取普通卖出交易价格",
+                "手续费", "手续费比例", "销毁数量", "销毁比例"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/trade/sell_assets",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
+                "assets": { "type": "number", "is_require": false, "desc": "购买资产数量" },
+                "sell_fee": { "type": "array",  "is_require": true, "desc": "手续费" },
+                "destroy": { "type": "array",  "is_require": true, "desc": "销毁数量" },
+                "income": { "type": "array",  "is_require": true, "desc": "实收" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
+        },
+        {
+            "name" : "卖出交易列表",
+            "summary": "",
+            "remark": [],
+            "isFunctionPoint" : true,
+            "url" : "/trade/sell_list",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "create_time": { "type": "dateTime",  "is_require": true,  "desc": "卖出时间" },
+                    "price": { "type": "number",  "is_require": true,  "desc": "卖出价格" },
+                    "transaction": { "type": "number",  "is_require": true, "desc": "成交 / 卖出 比例" }
+                }
+            }
+        },
+        {
+            "name" : "资产包卖出记录",
+            "summary": "",
+            "remark": [],
+            "isFunctionPoint" : true,
+            "url" : "/trade/sell_history",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "create_time": { "type": "dateTime",  "is_require": true,  "desc": "卖出时间" },
+                    "price": { "type": "number",  "is_require": true,  "desc": "卖出价格" },
+                    "assets": { "type": "number",  "is_require": true, "desc": "卖出资产数量" },
+                    "options": { "type": "string",  "is_require": true, "desc": "动作, 撤单，挂单排队。。。" }
+                }
+            }
+        },
+        {
+            "name" : "有效资产包矿机",
+            "summary": "",
+            "remark": [
+                "有效资产包矿机, 正在挖矿中的矿机详情"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/mine_pool/mining",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "mining_mac_count": { "type": "number",  "is_require": true, "desc": "正在挖矿中的矿机数量" },
+                    "mining_income": { "type": "number",  "is_require": true, "desc": "挖矿总收益" },
+                    "assets": { "type": "number",  "is_require": true, "desc": "资产包额度" },
+                    "per_hour_mining": { "type": "string",  "is_require": true, "desc": "每小时挖矿收益" },
+                    "mining_time": { "type": "sting",  "is_require": true,  "desc": "已挖矿时间" },
+                    "mined": { "type": "sting",  "is_require": true,  "desc": "已挖矿数量" }
+                }
+            }
+        },
+        {
+            "name" : "已结束资产包矿机",
+            "summary": "",
+            "remark": [
+                "已结束资产包矿机"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/mine_pool/mined",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "mining_mac_count": { "type": "number",  "is_require": true, "desc": "已结束的矿机数量" },
+                    "mining_income": { "type": "number",  "is_require": true, "desc": "挖矿总收益" },
+                    "assets": { "type": "number",  "is_require": true, "desc": "资产包额度" },
+                    "per_hour_mining": { "type": "string",  "is_require": true, "desc": "每小时挖矿收益" },
+                    "mining_time": { "type": "sting",  "is_require": true,  "desc": "已挖矿时间" },
+                    "mined": { "type": "sting",  "is_require": true,  "desc": "已挖矿数量" }
+                }
+            }
+        },
+        {
+            "name" : "资产包挖矿详情",
+            "summary": "",
+            "remark": [
+                "点击挖矿详情，进入挖矿详情面"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/mine_pool/detail",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "assets_package_id": { "type": "text",  "is_require": true,  "desc": "资产包 id" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "assets": { "type": "number",  "is_require": true, "desc": "资产包额度" },
+                    "per_hour_mining": { "type": "string",  "is_require": true, "desc": "每小时挖矿收益" },
+                    "mined": { "type": "number",  "is_require": true, "desc": "当前资产包挖矿收益" },
+                    "collecting": { "type": "sting",  "is_require": true,  "desc": "可收取" },
+                    "state": { "type": "sting",  "is_require": true,  "desc": "可收取状态, 未满 24H 不可收取" }
+                }
+            }
+        },
+        {
+            "name" : "资产包挖矿收益收取",
+            "summary": "",
+            "remark": [
+                "根据状态，是否满 24H，点击一键收取或者进入详情当个收取"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/mine_pool/collect",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "assets_package_id": { "type": "text",  "is_require": true,  "desc": "资产包 id" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "mined": { "type": "number",  "is_require": true, "desc": "当前资产包挖矿收益" }
+                }
+            }
+        },
+        {
+            "name" : "线性释放池",
+            "summary": "",
+            "remark": [
+                "线性释放池"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/release_pool/account",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "releasing": { "type": "number",  "is_require": true,  "desc": "释放中" },
+                    "released": { "type": "number",  "is_require": true,  "desc": "释放中" },
+                    "release_rate": { "type": "number",  "is_require": true,  "desc": "每日线性释放比例" },
+                    "level": { "type": "sting",  "is_require": true,  "desc": "会员等级" }
+                }
+            }
+        },
+        {
+            "name" : "线性释放池明细",
+            "summary": "",
+            "remark": [
+                "线性释放池"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/release_pool/detail",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "create_time": { "type": "number",  "is_require": true,  "desc": "时间" },
+                    "release_type": { "type": "number",  "is_require": true,  "desc": "明细" },
+                    "amount": { "type": "number",  "is_require": true,  "desc": "金额" },
+                    "balance": { "type": "sting",  "is_require": true,  "desc": "余额" }
+                }
+            }
+        },
+        {
+            "name" : "可售余额",
+            "summary": "",
+            "remark": [
+                "查看可售余额及相关信息"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/saleable_balance",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "saleable_balance": { "type": "number",  "is_require": true,  "desc": "可售余额" },
+                    "detail": {
+                        "type": "objectArray", "desc": "额度详情",
+                        "properties": {
+                            "create_time": { "type": "dateTime",  "is_require": true,  "desc": "时间" },
+                            "info": { "type": "number",  "is_require": true,  "desc": "明细" },
+                            "amount": { "type": "decimal",  "is_require": true,  "desc": "金额" },
+                            "balance": { "type": "decimal",  "is_require": true,  "desc": "余额" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "可售额度",
+            "summary": "",
+            "remark": [
+                "查看可售额度及相关信息"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/saleable_amount",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "saleable_amount": { "type": "number",  "is_require": true,  "desc": "可售额度" },
+                    "detail": {
+                        "type": "objectArray", "desc": "额度详情",
+                        "properties": {
+                            "create_time": { "type": "dateTime",  "is_require": true,  "desc": "时间" },
+                            "info": { "type": "number",  "is_require": true,  "desc": "明细" },
+                            "amount": { "type": "decimal",  "is_require": true,  "desc": "金额" },
+                            "balance": { "type": "decimal",  "is_require": true,  "desc": "余额" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "获取签到奖励明细",
+            "summary": "",
+            "remark": [
+                "签到奖励明细"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/check_in",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "income": { "type": "number",  "is_require": true,  "desc": "签到获得奖励" },
+                    "detail": {
+                        "type": "objectArray", "desc": "额度详情",
+                        "properties": {
+                            "create_time": { "type": "dateTime",  "is_require": true,  "desc": "时间" },
+                            "reward": { "type": "number",  "is_require": true,  "desc": "签到获得奖励" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "签到",
+            "summary": "",
+            "remark": [
+                "用户签到"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/check_in",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "income": { "type": "number",  "is_require": true,  "desc": "本次签到获得奖励" }
+                }
+            }
+        },
+        {
+            "name" : "TBG 概况",
+            "summary": "",
+            "remark": [
+                "显示 TBG 概况， 资产包挖矿， 绑定 TBG 空投， 参与 TBG-I 空投， 游戏空投， 签到空投"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/tbg/info",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "detail": {
+                        "type": "objectArray", "desc": "额度详情",
+                        "properties": {
+                            "airdrop_type": { "type": "number",  "is_require": true,  "desc": "空投类型" },
+                            "airdrop_amount": { "type": "number",  "is_require": true,  "desc": "空投总额" },
+                            "airdrop_quantity": { "type": "number",  "is_require": true,  "desc": "已空投数量" },
+                            "airdrop_rate": { "type": "number",  "is_require": true,  "desc": "已空投占比" }
                         }
                     }
                 }
