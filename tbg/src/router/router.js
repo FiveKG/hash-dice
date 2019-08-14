@@ -10,6 +10,7 @@ const trade = require("../controllers/trade");
 const airDrop = require("../controllers/airDrop");
 const config = require("../controllers/config");
 const tbg = require("../controllers/tbg");
+const minePool = require("../controllers/minePool");
 
 // 获取服务运行状态
 router.get("/common/health", require("../common/health.js"));
@@ -83,60 +84,56 @@ router.get("/pools/safe", pools.safe);
 // 直接推荐 pk 池
 router.get("/pools/pk", pools.pk);
 
-/***************************  airdrop  ***********************************/
-router.get("/airdrop/game", airDrop.gameAirDrop);
-router.get("/airdrop/check_in", airDrop.checkInAirDrop);
-
 /***************************  trade  ***********************************/
 // 获取全球合伙人私募信息
-router.post("/trade/raise_buy", trade.buy);
+router.get("/trade/raise_buy", trade.getRaiseInfo);
 // 全球合伙人私募
-router.post("/trade/raise_buy", trade.buy);
+router.post("/trade/raise_buy", trade.raiseBuy);
 // 获取普通买入交易信息 
-router.get("/trade/buy_assets", trade.buy);
+router.get("/trade/buy_assets", trade.getBuyAssetsInfo);
 // 买入资产包 
-router.post("/trade/buy_assets", trade.buy);
+router.post("/trade/buy_assets", trade.buyAssets);
 // 资产包买入记录
-router.get("/trade/buy_assets_history", trade.sell);
+router.get("/trade/buy_assets_history", trade.buyAssetsHistory);
 // 买入交易列表
-router.post("/trade/buy_list", trade.buy);
+router.post("/trade/buy_list", trade.buyList);
 // 获取普通卖出交易信息
-router.post("/trade/sell_assets", trade.sell);
+router.post("/trade/sell_assets", trade.getSellAssetsInfo);
 // 卖出 TBG
-router.get("/trade/sell_assets", trade.sell);
+router.get("/trade/sell_assets", trade.sellAssets);
 // 卖出交易列表
-router.get("/trade/sell_list", trade.buy);
+router.get("/trade/sell_list", trade.sellList);
 // 资产包卖出记录
-router.get("/trade/sell_history", trade.sell);
-
-/***************************  saleable  ***********************************/
-// 可售额度
-router.get("/saleable_amount", trade.buy);
-// 可售余额
-router.get("/saleable_balance", trade.sell);
+router.get("/trade/sell_history", trade.sellAssetsHistory);
 
 /***************************  mine_pool  ***********************************/
 // 有效资产包矿机
-router.get("/mine_pool/mining", trade.buy);
+router.get("/mine_pool/mining", minePool.mining);
 // 已结束资产包矿机
-router.get("/mine_pool/mined", trade.buy);
+router.get("/mine_pool/mined", minePool.mined);
 // 资产包挖矿详情
-router.get("/mine_pool/detail", trade.buy);
+router.get("/mine_pool/detail", minePool.detail);
 // 资产包挖矿收益收取
-router.post("/mine_pool/collect", trade.sell);
+router.post("/mine_pool/collect", minePool.collect);
+
+/***************************  saleable  ***********************************/
+// 可售额度
+router.get("/saleable_amount", tbg.saleableAmount);
+// 可售余额
+router.get("/saleable_balance", tbg.saleableBalance);
 
 /***************************  release_pool  ***********************************/
 // 线性释放池资料
-router.get("/release_pool/account", trade.buy);
+router.get("/release_pool/account", tbg.releasePool);
 // 线性释放池明细
-router.get("/release_pool/detail", trade.sell);
+router.get("/release_pool/detail", tbg.releasePoolDetail);
 
 
 /***************************  check_in  ***********************************/
 // 获取签到奖励明细
-router.get("/check_in", trade.buy);
-// 取签
-router.post("/check_in", trade.sell);
+router.get("/check_in", tbg.checkInInfo);
+// 签到
+router.post("/check_in", tbg.checkIn);
 
 /***************************  tbg  ***********************************/
 // TBG 概况

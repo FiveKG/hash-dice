@@ -80,6 +80,10 @@ cleos create account eosio yujinsheng11 EOS6UtznEsEeFMytBUxhUZy5Bj6iFbhjMJk49xPe
 cleos create account eosio uegametoken EOS6xKtqbXeTwnrwgVx74dnEhNdFiSt3sYuMfJzJNmmkZz6CdQqWv EOS6xKtqbXeTwnrwgVx74dnEhNdFiSt3sYuMfJzJNmmkZz6CdQqWv
 cleos create account eosio tbgametoken EOS5aicTbGvPj2WHEmcN26aAuR5E5PmYYgr4M34NFVr6Tgn9fiJoV EOS5aicTbGvPj2WHEmcN26aAuR5E5PmYYgr4M34NFVr6Tgn9fiJoV
 cleos create account eosio gametestuser EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw
+cleos create account eosio tbtestuser1 EOS8NZuZZDNs1oZJL1S6nFqSkEdSVDqbPeKTzdDXa6zr2r6r9HWUx EOS8NZuZZDNs1oZJL1S6nFqSkEdSVDqbPeKTzdDXa6zr2r6r9HWUx
+cleos create account eosio tbtestuser2 EOS8jN5phZUBVoqF2ThYHd7Mfg2HXiZZ96hWWKL1jLbVFktrHY6UV EOS8jN5phZUBVoqF2ThYHd7Mfg2HXiZZ96hWWKL1jLbVFktrHY6UV
+cleos create account eosio tbtestuser3 EOS8AJ1sWcXY85UbkVh6TLjDYaWnGdzmK1Tf723wmgmtyB3n9APbh EOS8AJ1sWcXY85UbkVh6TLjDYaWnGdzmK1Tf723wmgmtyB3n9APbh
+
 cleos set contract eosio.token ./eosio.token
 cleos push action eosio.token create '["eosio.token", "1000000000.0000 EOS"]' -p eosio.token
 cleos push action eosio.token issue '["eosio.token", "1000000000.0000 EOS", "issue"]' -p eosio.token

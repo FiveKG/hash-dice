@@ -1,3 +1,10 @@
+grant select,insert,update,delete on all tables in schema public to wallet_tbg_user; 
+grant select,usage,update on all sequences in schema public to wallet_tbg_user;
+grant execute on all functions in schema public to wallet_tbg_user;
+grant references, trigger on all tables in schema public to wallet_tbg_user;
+grant create on schema public to wallet_tbg_user;
+grant usage on schema public to wallet_tbg_user;
+
 with recursive all_level as (
     select referrer_name, account_name, array[referrer_name] as account, 1 as depth from referrer 
     where referrer_name = '' and length(account_name) > 12 or length(referrer_name) > 12

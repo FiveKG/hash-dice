@@ -11,6 +11,6 @@ const instauuid = require('instauuid');
 
 function generate_primary_key() {
   return instauuid('hex');
-},
+}
 
 module.exports = generate_primary_key;
