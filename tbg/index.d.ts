@@ -9,6 +9,7 @@ declare namespace DB {
          "create_time": Date,
          "refer_count": number,
          "refer_code": string,
+         "account_type": string,
          "state": number,
     }
 
@@ -73,5 +74,14 @@ declare namespace DB {
         "op_type": string,
         "remark": string,
         "create_time": Date,
+    }
+
+    interface AssetsPackage {
+        "id": number
+        "amount": number
+        "saleable_multiple": number
+        "mining_multiple": number
+        "release_multiple": number
+        "amount_type": string
     }
 }

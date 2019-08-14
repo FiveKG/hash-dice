@@ -17,9 +17,9 @@ const ASSETS_PACKAGE_100 = 100;
 const ASSETS_PACKAGE_200 = 200;
 
 // 全球合伙人私募数量
-const RAISE_ASSETS_10K = 10 * 100;
-const RAISE_ASSETS_20K = 20 * 100;
-const RAISE_ASSETS_30K = 30 * 100;
+const RAISE_ASSETS_10K = 10 * 1000;
+const RAISE_ASSETS_20K = 20 * 1000;
+const RAISE_ASSETS_30K = 30 * 1000;
 
 // 矿池产币倍数
 const ASSETS_PACKAGE_MULTIPLE_50 = 2;

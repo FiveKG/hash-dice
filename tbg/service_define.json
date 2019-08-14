@@ -826,16 +826,23 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                    "assets": { "type": "array",  "is_require": true, "desc": "购买资产数量" },
-                    "release_pool": { "type": "number",  "is_require": true, "desc": "资产包进入线性释放池数量" },
-                    "mining_pool": { "type": "number",  "is_require": true, "desc": "资产包进入矿池数量" }
+                    "price": { "type": "sting",  "is_require": true,  "desc": "tbg 购买价格" },
+                    "raise_price": { "type": "sting",  "is_require": true,  "desc": "私募价格" },
+                    "assets_info": {
+                        "type": "objectArray", "desc": "资产包详情",
+                        "properties": {
+                            "id": { "type": "number",  "is_require": true,  "desc": "资产包 id" },
+                            "amount": { "type": "array",  "is_require": true, "desc": "购买资产数量" },
+                            "release_pool": { "type": "number",  "is_require": true, "desc": "资产包进入线性释放池数量" },
+                            "mining_pool": { "type": "number",  "is_require": true, "desc": "资产包进入矿池数量" }
+                        }
+                    }
                 }
             }
         },
@@ -850,8 +857,9 @@
             "type" : "post",
             "requireRole" : [ "*" ],
             "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
                 "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                "assets": { "type": "number", "is_require": false, "desc": "购买资产数量" }
+                "assets_package_id": { "type": "text",  "is_require": true,  "desc": "资产包 id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -871,19 +879,25 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
                     "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                    "assets": { "type": "array",  "is_require": true, "desc": "购买资产数量" },
-                    "sell_fee_rate": { "type": "array",  "is_require": true, "desc": "手续费率" },
-                    "destroy_rate": { "type": "array",  "is_require": true, "desc": "销毁比例" },
+                    "assets_info": {
+                        "type": "objectArray", "desc": "资产包详情",
+                        "properties": {
+                            "id": { "type": "number",  "is_require": true,  "desc": "资产包 id" },
+                            "amount": { "type": "array",  "is_require": true, "desc": "购买资产数量" },
+                            "release_pool": { "type": "number",  "is_require": true, "desc": "资产包进入线性释放池数量" },
+                            "mining_pool": { "type": "number",  "is_require": true, "desc": "资产包进入矿池数量" },
+                            "saleable_amount": { "type": "number",  "is_require": true, "desc": "资产包进入矿池数量" }
+                        }
+                    },
                     "first_buy": { "type": "string",  "is_require": true, "desc": "交易开放时间, 首次买入账号, 逗号分割，如 9,21" },
-                    "buy_time": { "type": "string",  "is_require": true, "desc": "交易开放时间, 逗号分割，如 10,21" },
-                    "available_sale": { "type": "string",  "is_require": true, "desc": "购买资产包获得的可售额度" }
+                    "buy_time": { "type": "string",  "is_require": true, "desc": "交易开放时间, 逗号分割，如 10,21" }
                 }
             }
         },
@@ -896,11 +910,9 @@
             "type" : "post",
             "requireRole" : [ "*" ],
             "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
                 "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                "assets": { "type": "number", "is_require": false, "desc": "购买资产数量" },
-                "sell_fee": { "type": "array",  "is_require": true, "desc": "手续费" },
-                "destroy": { "type": "array",  "is_require": true, "desc": "销毁数量" },
-                "income": { "type": "array",  "is_require": true, "desc": "实收" }
+                "assets_package_id": { "type": "text",  "is_require": true,  "desc": "资产包 id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -973,10 +985,13 @@
                 "data": {
                     "price": { "type": "sting",  "is_require": true,  "desc": "卖出价格" },
                     "assets": { "type": "array",  "is_require": true, "desc": "卖出资产数量" },
+                    "sell_fee_rate": { "type": "array",  "is_require": true, "desc": "手续费率" },
+                    "destroy_rate": { "type": "array",  "is_require": true, "desc": "销毁比例" },
                     "sell_time": { "type": "string",  "is_require": true, "desc": "卖出交易开放时间, 逗号分割，如 10,21" },
                     "one_trx": { "type": "string",  "is_require": true, "desc": "单次最高可卖数量" },
                     "day_trx": { "type": "string",  "is_require": true, "desc": "每日最高可卖数量" },
-                    "trx_day_count": { "type": "string",  "is_require": true, "desc": "每日最多可卖次数" }
+                    "trx_day_count": { "type": "string",  "is_require": true, "desc": "每日最多可卖次数" },
+                    "level": { "type": "sting",  "is_require": true,  "desc": "会员等级" }
                 }
             }
         },

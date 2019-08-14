@@ -23,4 +23,5 @@ module.exports = [
     { "code": 1013, "desc": "this account had activated" },
     { "code": 1014, "desc": "pk pool does not exists" },
     
+    { "code": 1015, "desc": "this account is not a global partner" },
 ];

@@ -9,7 +9,7 @@
  * 当比例>=30%时，系统不下卖单，系统每5分钟进行统计后下单
  */
 
-// 账号首次买入
+// 账号首次买入开放时间
 const FIRST_BUY = 9;
 // 买入 TBG 交易开放时间
 const BUY_START_TIME = 10;
@@ -34,6 +34,9 @@ const MAX_RAISE_PRICE = 0.015;
 // 私募单价 当前单价的 50%
 const RAISE_PRICE = 50;
 
+// 开盘价 redis key
+const OPENING_PRICE_KEY = `tbg:tbg_opening_price`
+
 /**
  * TBG交易开放时间
  * 在交易开放时间结束时，未成交订单由系统自动撤单
@@ -52,7 +55,8 @@ const CONSTANT = {
     "OPENING_PRICE": OPENING_PRICE,
     "MIN_RAISE_PRICE":MIN_RAISE_PRICE,
     "MAX_RAISE_PRICE":MAX_RAISE_PRICE,
-    "RAISE_PRICE":RAISE_PRICE
+    "RAISE_PRICE":RAISE_PRICE,
+    "OPENING_PRICE_KEY": OPENING_PRICE_KEY
 }
 
 module.exports = CONSTANT
@@ -73,4 +77,5 @@ module.exports = CONSTANT
  * @property { number } MIN_RAISE_PRICE TBG每日价格上涨最小额度
  * @property { number } MAX_RAISE_PRICE TBG每日价格上涨最大额度
  * @property { number } RAISE_PRICE  私募单价 当前单价的 50%
+ * @property { string } OPENING_PRICE_KEY 开盘价 redis key
  */
