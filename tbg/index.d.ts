@@ -48,6 +48,7 @@ declare namespace DB {
         "account_name": string,
         "change_amount": number,
         "current_balance": number,
+        "extra": object,
         "op_type": string,
         "remark": string,
         "create_time": Date,
@@ -81,6 +82,7 @@ declare namespace DB {
         "amount": number,
         "saleable_multiple": number,
         "mining_multiple": number,
+        "preset_days": number,
         "release_multiple": number,
         "amount_type": string,
     }
@@ -94,7 +96,9 @@ declare namespace DB {
         /** 交易类型 */
         "trade_type": string,
         /** 交易额外信息 */
-        "extra": object,
+        "extra": {
+            "ap_id": number
+        },
         /** 交易数量 */
         "amount": number, 
         /** 成交的数量 */

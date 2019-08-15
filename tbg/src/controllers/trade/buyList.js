@@ -1,22 +1,12 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@controllers/trade/buyList.js": "买入交易列表" });
-const { get_status, inspect_req_data } = require("../../common/index.js");
-const { getAccountInfo } = require("../../models/account");
+const { get_status } = require("../../common/index.js");
 const { getTradeInfoHistory } = require("../../models/trade");
 
 // 买入交易列表
 async function buyList(req, res, next) {
-    try {
-        let reqData = await inspect_req_data(req);
-        logger.debug(`the param is %j: `, reqData);
-        const accountName = reqData.account_name;
-        const accountInfo = await getAccountInfo(accountName);
-        if (!accountInfo) {
-            return res.send(get_status(1001, "this account does not exists"));
-        }
-
-        const tradeType = "buy";
-        const tradeInfo = await getTradeInfoHistory(accountName, tradeType, "create");
+    try {      
+        const tradeInfo = await getTradeInfoHistory({ "tradeType": "buy", state: "create", orderBy: "ASC" });
         let resData = get_status(1);
         resData["data"] = tradeInfo.map(it => {
             return {

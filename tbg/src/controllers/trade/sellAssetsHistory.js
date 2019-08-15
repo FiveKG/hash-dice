@@ -15,8 +15,7 @@ async function sellAssetsHistory(req, res, next) {
             return res.send(get_status(1001, "this account does not exists"));
         }
 
-        const tradeType = "sell";
-        const tradeInfo = await getTradeInfoHistory(accountName, tradeType);
+        const tradeInfo = await getTradeInfoHistory({ "tradeType": "sell", "accountName": accountName, orderBy: "DESC" });
         let resData = get_status(1);
         resData["data"] = tradeInfo.map(it => {
             return {

@@ -4,15 +4,15 @@ const logger = require("../../common/logger.js").child({ "@models/asset/getAsset
 
 /**
  * 获取资产包信息
- * @param { number } id 资产包 id
- * @returns { Promise<DB.AssetsPackage> }
+ * @param { number[] } id 资产包 id
+ * @returns { Promise<DB.AssetsPackage[]> }
  */
 async function getAssetsInfoById(id) {
     try {
         const sql = `
-            SELECT * FROM assets_package WHERE id = $1
+            SELECT * FROM assets_package WHERE id = any($1)
         `
-        const { rows: [ assetsInfo ] } = await pool.query(sql, [ id ]);
+        const { rows: assetsInfo } = await pool.query(sql, [ [ id ] ]);
         return assetsInfo;
     } catch (err) {
         logger.error("get assets_package info error, the error stock is %O", err);

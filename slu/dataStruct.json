@@ -59,6 +59,7 @@
                 { "name": "amount", "type": "decimal", "dblength": "32", "dftValue": "''", "summary": "资产包额度", "remark": "", "isPrimary": false },
                 { "name": "saleable_multiple", "type": "number", "dblength": "32", "dftValue": "0", "summary": "购买资产包获得的可售额度比例", "remark": "", "isPrimary": false },
                 { "name": "mining_multiple", "type": "number", "dblength": "32", "dftValue": "0", "summary": "矿池产币倍数", "remark": "", "isPrimary": false },
+                { "name": "preset_days", "type": "number", "dblength": "32", "dftValue": "0", "summary": "矿池产币天数数", "remark": "", "isPrimary": false },
                 { "name": "release_multiple", "type": "number", "dblength": "32", "dftValue": "0", "summary": "资产包进入线性释放池倍数", "remark": "", "isPrimary": false },
                 { "name": "amount_type", "type": "text", "dblength": "32", "dftValue": "''", "summary": "资产包类型", "remark": "私募(raise)，普通(common)", "isPrimary": false }
             ]
@@ -80,7 +81,8 @@
                 { "name": "change_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动额度", "remark": "要更改的代币数量", "isPrimary": false },
                 { "name": "current_balance", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动后的余额", "remark": "用户当前的代币数量", "isPrimary": false },
                 { "name": "op_type", "type": "text", "dblength": "20", "dftValue": "''", "summary": "操作类型", "remark": "投资|盈利|提现|分红|绑定|签到|买入|参与TBG-I|推荐收益|挖矿|游戏|分红|释放|卖出销毁|挖矿推荐收益...", "isPrimary": false } ,
-                { "name": "remark", "type": "text", "dblength": "500", "dftValue": "''", "summary": "操作备注", "remark": "余额变动的详细备注", "isPrimary": false } ,
+                { "name": "extra",  "type": "json", "dblength": "10",   "dftValue": "0", "summary": "附加信息" , "remark": "记录相关的 id", "isPrimary": false },
+                { "name": "remark", "type": "text", "dblength": "500", "dftValue": "''", "summary": "操作备注", "remark": "余额变动的详细备注", "isPrimary": false },
                 { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间", "remark": "", "isPrimary": false }
             ]
         },
@@ -123,7 +125,7 @@
                 { "name": "amount", "type": "decimal",  "dblength": "18,6", "dftValue": "0", "summary": "交易数量", "remark"  : "", "isPrimary": false },
                 { "name": "trx_amount", "type": "decimal",  "dblength": "18,6", "dftValue": "0", "summary": "成交数量", "remark"  : "", "isPrimary": false },
                 { "name": "price",        "type": "decimal",  "dblength": "18,6", "dftValue": "0", "summary": "价格", "remark"  : "", "isPrimary": false }, 
-                { "name": "state",        "type": "text",     "dblength": "10",   "dftValue": "0", "summary": "交易数量", "remark"  : "", "isPrimary": false },
+                { "name": "state",        "type": "text",     "dblength": "10",   "dftValue": "0", "summary": "交易状态", "remark"  : "", "isPrimary": false },
                 { "name": "create_time",  "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间", "remark": "", "isPrimary": false },
                 { "name": "finished_time"       , "type": "dateTime"   , "dblength": "8" , "dftValue": "0" , "summary": "交易最后确认时间"   ,"isPrimary": false, "remark": ""}
             ]

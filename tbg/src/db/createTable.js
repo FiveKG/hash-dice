@@ -183,6 +183,7 @@ async function createTable() {
             amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
             saleable_multiple NUMERIC (3, 2) NOT NULL DEFAULT 0,
             mining_multiple NUMERIC (3, 2) NOT NULL DEFAULT 0,
+            preset_days INTEGER NOT NUll DEFAULT 0,
             release_multiple NUMERIC (3, 2) NOT NULL DEFAULT 0,
             amount_type TEXT NOT NULL DEFAULT ''
         );
@@ -191,6 +192,7 @@ async function createTable() {
         comment on column assets_package.amount is '资产包额度';
         comment on column assets_package.saleable_multiple is '购买资产包获得的可售额度比例';
         comment on column assets_package.mining_multiple is '矿池产币倍数';
+        comment on column assets_package.preset_days is '矿池产币天数';
         comment on column assets_package.release_multiple is '资产包进入线性释放池倍数';
         comment on column assets_package.amount_type is '资产包类型，私募(raise)，普通(common)';
     `
