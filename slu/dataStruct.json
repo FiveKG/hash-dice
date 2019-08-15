@@ -114,16 +114,18 @@
             ]
         },
         {
-            "tableName": "trade_tbg", "tableDesc": "交易 TBG ", "group": "account", 
+            "tableName": "trade", "tableDesc": "交易 TBG", "group": "account", 
             "fields": [
                 { "name": "id",           "type": "text", "dblength": "64",   "dftValue": "''", "summary": "主键 id", "remark": "", "isPrimary": true },
                 { "name": "account_name", "type": "text", "dblength": "64",   "dftValue": "''", "summary": "用户 eos 帐号名称" , "remark" : "", "isPrimary": false },
                 { "name": "trade_type",  "type": "text", "dblength": "10",   "dftValue": "''", "summary": "交易类型 raise | buy | sell" , "remark": "", "isPrimary": false },
-                { "name": "ap_id",  "type": "number", "dblength": "10",   "dftValue": "0", "summary": "资产包 id，用于记录用户购买资产包" , "remark": "", "isPrimary": false },
+                { "name": "extra",  "type": "json", "dblength": "10",   "dftValue": "0", "summary": "购买资产包时" , "remark": "资产包 id，用于记录用户购买资产包 { 'ap_id': 1 }", "isPrimary": false },
                 { "name": "amount", "type": "decimal",  "dblength": "18,6", "dftValue": "0", "summary": "交易数量", "remark"  : "", "isPrimary": false },
+                { "name": "trx_amount", "type": "decimal",  "dblength": "18,6", "dftValue": "0", "summary": "成交数量", "remark"  : "", "isPrimary": false },
                 { "name": "price",        "type": "decimal",  "dblength": "18,6", "dftValue": "0", "summary": "价格", "remark"  : "", "isPrimary": false }, 
                 { "name": "state",        "type": "text",     "dblength": "10",   "dftValue": "0", "summary": "交易数量", "remark"  : "", "isPrimary": false },
-                { "name": "create_time",  "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间", "remark": "", "isPrimary": false }
+                { "name": "create_time",  "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间", "remark": "", "isPrimary": false },
+                { "name": "finished_time"       , "type": "dateTime"   , "dblength": "8" , "dftValue": "0" , "summary": "交易最后确认时间"   ,"isPrimary": false, "remark": ""}
             ]
         },
         {

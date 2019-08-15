@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
-const logger = require("../../common/logger.js").child({ "@models/asset/getAssetsInfo.js": "用户提现" });
+const logger = require("../../common/logger.js").child({ "@models/asset/getAssetsInfo.js": "获取资产包信息" });
 
 /**
  * 获取资产包信息

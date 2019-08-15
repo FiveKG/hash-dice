@@ -879,7 +879,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-
+                
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -939,7 +939,7 @@
                 "data": {
                     "create_time": { "type": "dateTime",  "is_require": true,  "desc": "购买时间" },
                     "price": { "type": "number",  "is_require": true,  "desc": "购买价格" },
-                    "assets": { "type": "number",  "is_require": true, "desc": "购买资产数量" },
+                    "amount": { "type": "number",  "is_require": true, "desc": "购买资产数量" },
                     "options": { "type": "string",  "is_require": true, "desc": "动作, 撤单，挂单排队。。。" }
                 }
             }
@@ -961,7 +961,8 @@
                 "data": {
                     "create_time": { "type": "dateTime",  "is_require": true,  "desc": "购买时间" },
                     "price": { "type": "number",  "is_require": true,  "desc": "购买价格" },
-                    "transaction": { "type": "number",  "is_require": true, "desc": "成交 / 买入 比例" }
+                    "amount": { "type": "number",  "is_require": true, "desc": "购买资产数量" },
+                    "transaction": { "type": "number",  "is_require": true, "desc": "成交数量" }
                 }
             }
         },
@@ -984,7 +985,6 @@
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
                     "price": { "type": "sting",  "is_require": true,  "desc": "卖出价格" },
-                    "assets": { "type": "array",  "is_require": true, "desc": "卖出资产数量" },
                     "sell_fee_rate": { "type": "array",  "is_require": true, "desc": "手续费率" },
                     "destroy_rate": { "type": "array",  "is_require": true, "desc": "销毁比例" },
                     "sell_time": { "type": "string",  "is_require": true, "desc": "卖出交易开放时间, 逗号分割，如 10,21" },
@@ -1008,8 +1008,8 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                "assets": { "type": "number", "is_require": false, "desc": "购买资产数量" },
+                "price": { "type": "sting",  "is_require": true,  "desc": "卖出价格" },
+                "amount": { "type": "number", "is_require": false, "desc": "卖出资产数量" },
                 "sell_fee": { "type": "array",  "is_require": true, "desc": "手续费" },
                 "destroy": { "type": "array",  "is_require": true, "desc": "销毁数量" },
                 "income": { "type": "array",  "is_require": true, "desc": "实收" }
@@ -1037,7 +1037,8 @@
                 "data": {
                     "create_time": { "type": "dateTime",  "is_require": true,  "desc": "卖出时间" },
                     "price": { "type": "number",  "is_require": true,  "desc": "卖出价格" },
-                    "transaction": { "type": "number",  "is_require": true, "desc": "成交 / 卖出 比例" }
+                    "amount": { "type": "number",  "is_require": true, "desc": "卖出资产数量" },
+                    "transaction": { "type": "number",  "is_require": true, "desc": "成交数量" }
                 }
             }
         },

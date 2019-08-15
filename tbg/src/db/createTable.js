@@ -122,23 +122,28 @@ async function createTable() {
         comment on column account_op.op_type is '用户的操作记录';
         comment on column account_op.remark is '备注';
         comment on column account_op.create_time is '创建时间';
-        CREATE TABLE IF NOT EXISTS trade_tbg(
+        CREATE TABLE IF NOT EXISTS trade(
             id serial PRIMARY KEY UNIQUE NOT NULL,
             account_name TEXT NOT NULL DEFAULT '',
             trade_type TEXT NOT NULL DEFAULT '',
-            amount TEXT NOT NULL DEFAULT '',
+            extra JSON NOT NUll DEFAULT '{}'::JSONB,
+            amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
+            trx_amount NUMERIC (20, 8) NOT NULL DEFAULT 0，
             price NUMERIC (20, 8) NOT NULL DEFAULT 0,
             state TEXT NOT NULL DEFAULT '',
-            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+            finished_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
-        comment on table trade_tbg is '账号表';
-        comment on column trade_tbg.id is '主键 id';
-        comment on column trade_tbg.account_name is '用户帐号名称';
-        comment on column trade_tbg.trade_type is '交易类型';
-        comment on column trade_tbg.amount is '请求交易的数量';
-        comment on column trade_tbg.price is '价格';
-        comment on column trade_tbg.state is '状态';
-        comment on column trade_tbg.create_time is '创建时间';
+        comment on table trade is '交易 TBG';
+        comment on column trade.id is '主键 id';
+        comment on column trade.account_name is '用户帐号名称';
+        comment on column trade.trade_type is '交易类型';
+        comment on column trade.extra is '资产包 id，用于记录用户购买资产包';
+        comment on column trade.amount is '请求交易的数量';
+        comment on column trade.trx_amount is '成交的数量';
+        comment on column trade.price is '价格';
+        comment on column trade.state is '状态';
+        comment on column trade.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS trade_log(
             id serial PRIMARY KEY UNIQUE NOT NULL,
             tr_id TEXT NOT NULL DEFAULT '',
@@ -149,7 +154,7 @@ async function createTable() {
             memo TEXT NOT NULL DEFAULT '',
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
-        comment on table trade_log is '账号表';
+        comment on table trade_log is '交易日志';
         comment on column trade_log.id is '主键 id';
         comment on column trade_log.tr_id is '请求 id';
         comment on column trade_log.trade_type is '交易类型';

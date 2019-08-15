@@ -77,11 +77,54 @@ declare namespace DB {
     }
 
     interface AssetsPackage {
-        "id": number
-        "amount": number
-        "saleable_multiple": number
-        "mining_multiple": number
-        "release_multiple": number
-        "amount_type": string
+        "id": number,
+        "amount": number,
+        "saleable_multiple": number,
+        "mining_multiple": number,
+        "release_multiple": number,
+        "amount_type": string,
+    }
+
+    /** 交易 TBG */
+    interface Trade {
+        /** 交易 id */
+        "id": string,
+        /** 用户账户名 */
+        "account_name": string,
+        /** 交易类型 */
+        "trade_type": string,
+        /** 交易额外信息 */
+        "extra": object,
+        /** 交易数量 */
+        "amount": number, 
+        /** 成交的数量 */
+        "trx_amount": number,
+        /** 交易价格 */
+        "price": number,
+        /** 交易状态 */
+        "state": string,
+        /** 交易创建时间 */
+        "create_time": Date,
+        /** 交易完成时间 */
+        "finished_time": Date
+    }
+
+    /** 交易日志  */
+    interface Trade_log {
+        /** 交易日志 id  */
+        "id": string,
+        /** 交易 id  */
+        "tr_id": string,
+        /** 交易类型  */
+        "trade_type": string,
+        /** 交易数量  */
+        "amount": number,
+        /** 备注  */
+        "memo": string, 
+        /** 交易价格  */
+        "price": number,
+        /** 成交金额 价格 * 数量  */
+        "volume": number,
+        "create_time": Date
     }
 }

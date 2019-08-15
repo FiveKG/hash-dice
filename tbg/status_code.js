@@ -11,7 +11,7 @@ module.exports = [
     { "code": 1001, "desc": "this account does not exists" },
     { "code": 1002, "desc": "not found referrer" },
     { "code": 1003, "desc": "lack of system account" },
-    { "code": 1004, "desc": "investment must be 30 EOS" },
+    { "code": 1004, "desc": "investment must be 100 UE" },
     { "code": 1005, "desc": "invalid balance" },
     { "code": 1006, "desc": "static sort is empty" },
     { "code": 1007, "desc": "subAccount does not exists" },
@@ -24,4 +24,15 @@ module.exports = [
     { "code": 1014, "desc": "pk pool does not exists" },
     
     { "code": 1015, "desc": "this account is not a global partner" },
+    { "code": 1016, "desc": "this global partner had raised" },
+    { "code": 1017, "desc": "this assets package does not exists" },
+    
+    { "code": 1015, "desc": "this account is not a global partner" },
+    { "code": 1015, "desc": "this account is not a global partner" },
+    { "code": 1015, "desc": "this account is not a global partner" },
+    { "code": 1015, "desc": "this account is not a global partner" },
+    { "code": 1015, "desc": "this account is not a global partner" },
+
+
+    
 ];

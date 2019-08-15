@@ -3,7 +3,7 @@ const logger = require("../../common/logger.js").child({ "@controllers/trade/get
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const asset = require("../../models/asset");
 const { redis } = require("../../common");
-const { OPENING_PRICE_KEY, BUY_START_TIME, BUY_END_TIME, FIRST_BUY } = require("../../common/constant/tradeConstant.js");
+const { OPENING_PRICE_KEY, BUY_START_TIME, BUY_END_TIME, FIRST_BUY, OPENING_PRICE } = require("../../common/constant/tradeConstant.js");
 const { Decimal } = require("decimal.js");
 
 // 获取普通买入交易信息
@@ -25,7 +25,7 @@ async function getBuyAssetsInfo(req, res, next) {
             }
         });
         // 获取开盘价格
-        const openingPrice = await redis.get(OPENING_PRICE_KEY);
+        const openingPrice = await redis.get(OPENING_PRICE_KEY) || OPENING_PRICE;
         resData.data = {
             "price": new Decimal(openingPrice).toNumber(),
             "assets_info": assets_info,

@@ -98,9 +98,9 @@ router.get("/trade/buy_assets_history", trade.buyAssetsHistory);
 // 买入交易列表
 router.post("/trade/buy_list", trade.buyList);
 // 获取普通卖出交易信息
-router.post("/trade/sell_assets", trade.getSellAssetsInfo);
+router.get("/trade/sell_assets", trade.getSellAssetsInfo);
 // 卖出 TBG
-router.get("/trade/sell_assets", trade.sellAssets);
+router.post("/trade/sell_assets", trade.sellAssets);
 // 卖出交易列表
 router.get("/trade/sell_list", trade.sellList);
 // 资产包卖出记录
