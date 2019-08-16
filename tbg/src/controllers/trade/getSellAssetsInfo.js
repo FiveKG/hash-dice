@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-check
 
 const logger = require("../../common/logger.js").child({ "@controllers/trade/getSellAssetsInfo.js": "获取普通卖出交易信息" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
@@ -39,7 +39,7 @@ async function getSellAssetsInfo(req, res, next) {
             "trx_day_count": MEMBER_LEVEL_TRX[levelInfo.ID].DAY_TRX_COUNT,
             "level": levelInfo.NAME
         }
-        return res.send(resData);
+        res.send(resData);
     } catch (err) {
         logger.error("request getSellAssetsInfo TBG error, the error stock is %O", err);
         throw err;

@@ -1197,7 +1197,7 @@
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
                     "releasing": { "type": "number",  "is_require": true,  "desc": "释放中" },
-                    "released": { "type": "number",  "is_require": true,  "desc": "释放中" },
+                    "released": { "type": "number",  "is_require": true,  "desc": "已释放" },
                     "release_rate": { "type": "number",  "is_require": true,  "desc": "每日线性释放比例" },
                     "level": { "type": "sting",  "is_require": true,  "desc": "会员等级" }
                 }
@@ -1220,10 +1220,15 @@
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "create_time": { "type": "number",  "is_require": true,  "desc": "时间" },
-                    "release_type": { "type": "number",  "is_require": true,  "desc": "明细" },
-                    "amount": { "type": "number",  "is_require": true,  "desc": "金额" },
-                    "balance": { "type": "sting",  "is_require": true,  "desc": "余额" }
+                    "detail": {
+                        "type": "objectArray", "desc": "额度详情",
+                        "properties": {
+                            "create_time": { "type": "number",  "is_require": true,  "desc": "时间" },
+                            "release_type": { "type": "number",  "is_require": true,  "desc": "明细" },
+                            "amount": { "type": "number",  "is_require": true,  "desc": "金额" },
+                            "balance": { "type": "sting",  "is_require": true,  "desc": "余额" }
+                        }
+                    }
                 }
             }
         },

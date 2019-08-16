@@ -7,7 +7,7 @@ const logger = require("../../common/logger");
  * @typedef { object } Arg 
  * @property { String } accountName
  * @property { string } [trId]
- * @property { string } opType
+ * @property { string } [opType]
  */
 
 /**
