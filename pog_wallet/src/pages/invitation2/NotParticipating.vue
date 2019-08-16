@@ -16,7 +16,7 @@
       <div class="destroyed">
           <spqn class="destroyed_txt1">   已销毁</spqn> 
           <span class="destroyed_txt2"> 1,201,519.</span>     
-          <span class="destroyed_txt3">2630 2645611qq1</span>
+          <span class="destroyed_txt3">2630 26456</span>
           <span> TBG </span>
           <span class="destroyed_txt4">></span>
       </div> 
