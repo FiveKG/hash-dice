@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@models/asset/personalAssetChange.js": "用户提现" });
+const logger = require("../../common/logger.js").child({ "@models/asset/userWithdraw.js": "用户提现" });
 const { Decimal } = require("decimal.js");
 const { getUserBalance } = require("../balance");
 

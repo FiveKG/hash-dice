@@ -35,10 +35,11 @@ async function allocateSurplusAssets(client, systemAccount, referIncome, distrib
         const devRemark = `Allocating ${ allocateType } income, ${ DEV_OP_POOL } add ${ devChangeAmount } amount`;
         const communityRemark = `Allocating ${ allocateType } income, ${ COMMUNITY_POOL } add ${ communityChangeAmount } amount`;
         const opType = 'Allocating surplus assets';
+        const now = "now()"
         logger.debug(`distributed: ${ distributed }, last: ${ last }`);
-        await insertSystemOpLog(client, devChangeAmount, devAccount.pool_amount, opType, devRemark);
+        await insertSystemOpLog(client, devChangeAmount, devAccount.pool_amount, {}, opType, devRemark, now);
         await updateSystemAmount(client, DEV_OP_POOL, devChangeAmount, devAccount.pool_amount);
-        await insertSystemOpLog(client, communityChangeAmount, communityAccount.pool_amount, opType, communityRemark);
+        await insertSystemOpLog(client, communityChangeAmount, communityAccount.pool_amount, {}, opType, communityRemark, now);
         await updateSystemAmount(client, COMMUNITY_POOL, devChangeAmount, communityAccount.pool_amount);
     } catch (err) {
         console.error("Allocating surplus assets error, the error stock is %O", err);

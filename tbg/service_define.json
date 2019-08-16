@@ -826,16 +826,23 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                    "assets": { "type": "array",  "is_require": true, "desc": "购买资产数量" },
-                    "release_pool": { "type": "number",  "is_require": true, "desc": "资产包进入线性释放池数量" },
-                    "mining_pool": { "type": "number",  "is_require": true, "desc": "资产包进入矿池数量" }
+                    "price": { "type": "sting",  "is_require": true,  "desc": "tbg 购买价格" },
+                    "raise_price": { "type": "sting",  "is_require": true,  "desc": "私募价格" },
+                    "assets_info": {
+                        "type": "objectArray", "desc": "资产包详情",
+                        "properties": {
+                            "id": { "type": "number",  "is_require": true,  "desc": "资产包 id" },
+                            "amount": { "type": "array",  "is_require": true, "desc": "购买资产数量" },
+                            "release_pool": { "type": "number",  "is_require": true, "desc": "资产包进入线性释放池数量" },
+                            "mining_pool": { "type": "number",  "is_require": true, "desc": "资产包进入矿池数量" }
+                        }
+                    }
                 }
             }
         },
@@ -850,8 +857,9 @@
             "type" : "post",
             "requireRole" : [ "*" ],
             "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
                 "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                "assets": { "type": "number", "is_require": false, "desc": "购买资产数量" }
+                "assets_package_id": { "type": "text",  "is_require": true,  "desc": "资产包 id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -871,19 +879,25 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+                
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
                     "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                    "assets": { "type": "array",  "is_require": true, "desc": "购买资产数量" },
-                    "sell_fee_rate": { "type": "array",  "is_require": true, "desc": "手续费率" },
-                    "destroy_rate": { "type": "array",  "is_require": true, "desc": "销毁比例" },
+                    "assets_info": {
+                        "type": "objectArray", "desc": "资产包详情",
+                        "properties": {
+                            "id": { "type": "number",  "is_require": true,  "desc": "资产包 id" },
+                            "amount": { "type": "array",  "is_require": true, "desc": "购买资产数量" },
+                            "release_pool": { "type": "number",  "is_require": true, "desc": "资产包进入线性释放池数量" },
+                            "mining_pool": { "type": "number",  "is_require": true, "desc": "资产包进入矿池数量" },
+                            "saleable_amount": { "type": "number",  "is_require": true, "desc": "资产包进入矿池数量" }
+                        }
+                    },
                     "first_buy": { "type": "string",  "is_require": true, "desc": "交易开放时间, 首次买入账号, 逗号分割，如 9,21" },
-                    "buy_time": { "type": "string",  "is_require": true, "desc": "交易开放时间, 逗号分割，如 10,21" },
-                    "available_sale": { "type": "string",  "is_require": true, "desc": "购买资产包获得的可售额度" }
+                    "buy_time": { "type": "string",  "is_require": true, "desc": "交易开放时间, 逗号分割，如 10,21" }
                 }
             }
         },
@@ -896,11 +910,9 @@
             "type" : "post",
             "requireRole" : [ "*" ],
             "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
                 "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                "assets": { "type": "number", "is_require": false, "desc": "购买资产数量" },
-                "sell_fee": { "type": "array",  "is_require": true, "desc": "手续费" },
-                "destroy": { "type": "array",  "is_require": true, "desc": "销毁数量" },
-                "income": { "type": "array",  "is_require": true, "desc": "实收" }
+                "assets_package_id": { "type": "text",  "is_require": true,  "desc": "资产包 id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -927,7 +939,7 @@
                 "data": {
                     "create_time": { "type": "dateTime",  "is_require": true,  "desc": "购买时间" },
                     "price": { "type": "number",  "is_require": true,  "desc": "购买价格" },
-                    "assets": { "type": "number",  "is_require": true, "desc": "购买资产数量" },
+                    "amount": { "type": "number",  "is_require": true, "desc": "购买资产数量" },
                     "options": { "type": "string",  "is_require": true, "desc": "动作, 撤单，挂单排队。。。" }
                 }
             }
@@ -949,7 +961,8 @@
                 "data": {
                     "create_time": { "type": "dateTime",  "is_require": true,  "desc": "购买时间" },
                     "price": { "type": "number",  "is_require": true,  "desc": "购买价格" },
-                    "transaction": { "type": "number",  "is_require": true, "desc": "成交 / 买入 比例" }
+                    "amount": { "type": "number",  "is_require": true, "desc": "购买资产数量" },
+                    "transaction": { "type": "number",  "is_require": true, "desc": "成交数量" }
                 }
             }
         },
@@ -972,11 +985,13 @@
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
                     "price": { "type": "sting",  "is_require": true,  "desc": "卖出价格" },
-                    "assets": { "type": "array",  "is_require": true, "desc": "卖出资产数量" },
+                    "sell_fee_rate": { "type": "array",  "is_require": true, "desc": "手续费率" },
+                    "destroy_rate": { "type": "array",  "is_require": true, "desc": "销毁比例" },
                     "sell_time": { "type": "string",  "is_require": true, "desc": "卖出交易开放时间, 逗号分割，如 10,21" },
                     "one_trx": { "type": "string",  "is_require": true, "desc": "单次最高可卖数量" },
                     "day_trx": { "type": "string",  "is_require": true, "desc": "每日最高可卖数量" },
-                    "trx_day_count": { "type": "string",  "is_require": true, "desc": "每日最多可卖次数" }
+                    "trx_day_count": { "type": "string",  "is_require": true, "desc": "每日最多可卖次数" },
+                    "level": { "type": "sting",  "is_require": true,  "desc": "会员等级" }
                 }
             }
         },
@@ -993,8 +1008,8 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                "assets": { "type": "number", "is_require": false, "desc": "购买资产数量" },
+                "price": { "type": "sting",  "is_require": true,  "desc": "卖出价格" },
+                "amount": { "type": "number", "is_require": false, "desc": "卖出资产数量" },
                 "sell_fee": { "type": "array",  "is_require": true, "desc": "手续费" },
                 "destroy": { "type": "array",  "is_require": true, "desc": "销毁数量" },
                 "income": { "type": "array",  "is_require": true, "desc": "实收" }
@@ -1022,7 +1037,8 @@
                 "data": {
                     "create_time": { "type": "dateTime",  "is_require": true,  "desc": "卖出时间" },
                     "price": { "type": "number",  "is_require": true,  "desc": "卖出价格" },
-                    "transaction": { "type": "number",  "is_require": true, "desc": "成交 / 卖出 比例" }
+                    "amount": { "type": "number",  "is_require": true, "desc": "卖出资产数量" },
+                    "transaction": { "type": "number",  "is_require": true, "desc": "成交数量" }
                 }
             }
         },
@@ -1065,12 +1081,19 @@
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "mining_mac_count": { "type": "number",  "is_require": true, "desc": "正在挖矿中的矿机数量" },
-                    "mining_income": { "type": "number",  "is_require": true, "desc": "挖矿总收益" },
-                    "assets": { "type": "number",  "is_require": true, "desc": "资产包额度" },
-                    "per_hour_mining": { "type": "string",  "is_require": true, "desc": "每小时挖矿收益" },
-                    "mining_time": { "type": "sting",  "is_require": true,  "desc": "已挖矿时间" },
-                    "mined": { "type": "sting",  "is_require": true,  "desc": "已挖矿数量" }
+                    "mining_count": { "type": "number",  "is_require": true, "desc": "正在挖矿中的矿机数量" },
+                    "mined_amount": { "type": "number",  "is_require": true, "desc": "挖矿总收益" },
+                    "mined_count": { "type": "number",  "is_require": true,  "desc": "已结束的矿机数量" },
+                    "mining_info": {
+                        "type": "objectArray", "desc": "额度详情",
+                        "properties": {
+                            "mining_id": { "type": "text",  "is_require": true,  "desc": "挖矿 id" },
+                            "mining_income": { "type": "number",  "is_require": true, "desc": "挖矿总收益" },
+                            "amount": { "type": "number",  "is_require": true, "desc": "资产包额度" },
+                            "per_hour_mining": { "type": "number",  "is_require": true, "desc": "每小时挖矿收益" },
+                            "mining_time": { "type": "dateTime",  "is_require": true,  "desc": "已挖矿时间" }
+                        }
+                    }
                 }
             }
         },
@@ -1091,12 +1114,20 @@
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "mining_mac_count": { "type": "number",  "is_require": true, "desc": "已结束的矿机数量" },
-                    "mining_income": { "type": "number",  "is_require": true, "desc": "挖矿总收益" },
-                    "assets": { "type": "number",  "is_require": true, "desc": "资产包额度" },
-                    "per_hour_mining": { "type": "string",  "is_require": true, "desc": "每小时挖矿收益" },
-                    "mining_time": { "type": "sting",  "is_require": true,  "desc": "已挖矿时间" },
-                    "mined": { "type": "sting",  "is_require": true,  "desc": "已挖矿数量" }
+                    "mining_count": { "type": "number",  "is_require": true, "desc": "正在挖矿中的矿机数量" },
+                    "mined_amount": { "type": "number",  "is_require": true, "desc": "挖矿总收益" },
+                    "mined_count": { "type": "number",  "is_require": true,  "desc": "已结束的矿机数量" },
+                    "mining_info": {
+                        "type": "objectArray", "desc": "额度详情",
+                        "properties": {
+                            "mining_id": { "type": "text",  "is_require": true,  "desc": "挖矿 id" },
+                            "amount": { "type": "number",  "is_require": true, "desc": "资产包额度" },
+                            "per_hour_mining": { "type": "string",  "is_require": true, "desc": "每小时挖矿收益" },
+                            "mined_income": { "type": "sting",  "is_require": true,  "desc": "已挖矿数量" },
+                            "mining_time": { "type": "dateTime",  "is_require": true,  "desc": "已挖矿时间" },
+                            "total_time": { "type": "dateTime",  "is_require": true,  "desc": "挖矿产币时间" }
+                        }
+                    }
                 }
             }
         },
@@ -1112,17 +1143,17 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "assets_package_id": { "type": "text",  "is_require": true,  "desc": "资产包 id" }
+                "mining_id": { "type": "text",  "is_require": true,  "desc": "挖矿 id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "assets": { "type": "number",  "is_require": true, "desc": "资产包额度" },
+                    "amount": { "type": "number",  "is_require": true, "desc": "资产包额度" },
                     "per_hour_mining": { "type": "string",  "is_require": true, "desc": "每小时挖矿收益" },
                     "mined": { "type": "number",  "is_require": true, "desc": "当前资产包挖矿收益" },
-                    "collecting": { "type": "sting",  "is_require": true,  "desc": "可收取" },
-                    "state": { "type": "sting",  "is_require": true,  "desc": "可收取状态, 未满 24H 不可收取" }
+                    "collect_amount": { "type": "sting",  "is_require": true,  "desc": "可收取数量" },
+                    "state": { "type": "boolean",  "is_require": true,  "desc": "可收取状态, 未满 24H 不可收取" }
                 }
             }
         },
@@ -1138,7 +1169,7 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "assets_package_id": { "type": "text",  "is_require": true,  "desc": "资产包 id" }
+                "mining_id": { "type": "text",  "is_require": true,  "desc": "挖矿 id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -1273,6 +1304,8 @@
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
+                    "airdrop_amount": { "type": "number",  "is_require": true,  "desc": "空投总额" },
+                    "airdrop_quantity": { "type": "number",  "is_require": true,  "desc": "已空投数量" },
                     "income": { "type": "number",  "is_require": true,  "desc": "签到获得奖励" },
                     "detail": {
                         "type": "objectArray", "desc": "额度详情",

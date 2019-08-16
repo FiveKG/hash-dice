@@ -2,6 +2,7 @@
 const logger = require("../../common/logger.js").child({ "@controllers/account/getAccountMember.js": "get account member" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountMemberLevel } = require("../../models/account");
+const { userMember } = require("../../common/userMember.js");
 
 // 获取当前用户等级
 async function getAccountMember(req, res, next) {
@@ -17,7 +18,7 @@ async function getAccountMember(req, res, next) {
             "invest_count": userMemberLevel.count,
             "tbg1": false,
             "tbg2": false,
-            "level": userMember(userMemberLevel.count)
+            "level": userMember(userMemberLevel.count).NAME
         }
         if (userMemberLevel.state === 30) {
             data.tbg1 = true
@@ -40,30 +41,3 @@ async function getAccountMember(req, res, next) {
 }
 
 module.exports = getAccountMember;
-
-/**
- * 会员等级 直接推荐会员数
- * 海蓝会员 0 -5 个会员
- * 紫晶会员 6 - 15 个会员
- * 黄金会员 16 - 30 个会员
- * 红钻会员 31 - 50 个会员
- * 皇冠会员 51 个会员以上
- * @param { number } count 
- * @returns { String }
- */
-function userMember(count) {
-    let level = '';
-    if (count < 6) {
-        level = "海蓝会员"
-    } else if (count < 16) {
-        level = "紫晶会员"
-    } else if (count < 31) {
-        level = "黄金会员"
-    } else if (count < 52) {
-        level = "红钻会员"
-    } else {
-        level = "皇冠会员"
-    }
-
-    return level
-}

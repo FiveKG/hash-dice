@@ -81,7 +81,7 @@ async function startGain(incomeMap, incomeType) {
             // 收取收益
             await client.query("BEGIN");
             const repeat_currency = await updateBalance(client, accountName, changeAmount);
-            await insertBalanceLog(client, accountName, changeAmount.toFixed(8), rows.amount, item.op_type, item.remark, createTime)
+            await insertBalanceLog(client, accountName, changeAmount.toFixed(8), rows.amount, item.op_type, {}, item.remark, createTime)
             await client.query("COMMIT");
 
             // 如果复投资产大于投资额,自动复投生成一个子账号

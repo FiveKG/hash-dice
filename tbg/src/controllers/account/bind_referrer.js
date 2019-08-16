@@ -1,11 +1,12 @@
 // @ts-check
 const { pool } = require("../../db");
 const logger = require("../../common/logger.js").child({ "@controllers/account/bind_referrer.js": "bind referrer" });
-const { get_status, inspect_req_data, redis } = require("../../common/index.js");
+const { get_status, inspect_req_data, redis, generate_primary_key } = require("../../common/index.js");
 const { updateReferCount, insertAccount, getAccountNameByReferCode, randomGetAccount } = require("../../models/account");
 const { insertBalance } = require("../../models/balance");
 const { insertReferrer } = require("../../models/referrer");
 const { insertAccountOp } = require("../../models/accountOp")
+const { insertTbgBalance } = require("../../models/tbgBalance")
 
 // 绑定邀请人
 async function bindReferrer(req, res, next) {
@@ -50,6 +51,7 @@ async function bindReferrer(req, res, next) {
         await insertAccount(client, accountName, referCode, accountType);
         // 添加用户默认资产
         await insertBalance(client, accountName);
+        await insertTbgBalance(client, generate_primary_key(), accountName, 0, 0, 0, new Date());
         // 添加推荐人
         await insertReferrer(client, referrerName, accountName);
         // 修改推荐人推荐数量信息

@@ -8,17 +8,18 @@ const logger = require("../../common/logger")
  * @param { any } changeAmount 变动的额度
  * @param { any } currentBalance 当前余额
  * @param { String } opType 操作类型
+ * @param { object } extra 附加信息
  * @param { String } remark 备注
  * @param { any } now 插入数据的时间
  */
-async function insertBalanceLog(client, accountName, changeAmount, currentBalance, opType, remark, now) {
+async function insertBalanceLog(client, accountName, changeAmount, currentBalance, opType, extra, remark, now) {
     try {
         let sql = `
             INSERT INTO 
-                balance_log(account_name, change_amount, current_balance, op_type, remark, create_time)
-                VALUES($1, $2, $3, $4, $5, $6);
+                balance_log(account_name, change_amount, current_balance, op_type, extra， remark, create_time)
+                VALUES($1, $2, $3, $4, $5, $6, $7);
         `
-        const opts = [ accountName, changeAmount, currentBalance, opType, remark, now ]
+        const opts = [ accountName, changeAmount, currentBalance, opType, extra, remark, now ]
         logger.debug("sql: %s, opts: %O", sql, opts);
         await client.query(sql, opts);
     } catch (err) {

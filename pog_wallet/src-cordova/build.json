@@ -1,0 +1,10 @@
+{
+  "android": {
+    "release": {
+      "keystore": "wallet.keystore",
+      "alias": "wallet",
+      "storePassword": "yuezhi",
+      "password": "yuezhi"
+    }
+  }
+}

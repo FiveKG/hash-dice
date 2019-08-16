@@ -1,5 +1,5 @@
 // @ts-check
-const getTrxAction = require("./getTrxAction.js");
+const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
 const userInvestment = require("../businessLogic/account/userInvestment.js");
 const { WALLET_RECEIVER, EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT } = require("../common/constant/eosConstants.js");

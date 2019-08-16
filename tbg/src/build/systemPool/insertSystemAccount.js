@@ -9,23 +9,21 @@ const { Decimal } = require("decimal.js");
  */
 async function insertSystemAccount(systemAccount) {
     try {
-        let valuesStr = ``
+        let valuesStr = [];
         for (let i = 0; i < systemAccount.length; i++) {
             let account = systemAccount[i];
             let amount = new Decimal(0).toFixed(8);
             let id = i + 1;
-            let str = `('${ id }', '${ account }', ${ amount }),`
-            valuesStr += str;
+            let str = `('${ id }', '${ account }', ${ amount })`
+            valuesStr.push(str);
         }
 
-        // 去除末尾的逗号
-        valuesStr = valuesStr.replace(/,$/, "");
         // 如果重复则不再插入，直接返回
         let querySql = `
             insert into system_pools (
                 id, pool_type, pool_amount
             )
-            values ${ valuesStr }
+            values ${ valuesStr.join(",") }
             on conflict(pool_type) do nothing;
         `
         logger.info("insert test data to system_pools table");
@@ -44,12 +42,17 @@ async function dropAllTable() {
         let querySql = `
             drop table if exists account;
             drop table if exists sub_account;
-            drop table if exists account_op;
             drop table if exists balance;
-            drop table if exists balance_log;
             drop table if exists referrer;
+            drop table if exists balance_log;
             drop table if exists system_pools;
             drop table if exists system_op_log;
+            drop table if exists account_op;
+            drop table if exists trade_tbg;
+            drop table if exists trade_log;
+            drop table if exists tbg_balance;
+            drop table if exists assets_package;
+            drop table if exists user_assets_package;
         `
         logger.info("drop all table");
         await pool.query(querySql);
