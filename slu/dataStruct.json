@@ -97,8 +97,9 @@
         {
             "tableName": "system_op_log", "tableDesc": "系统总账变动日志表", "group": "system", 
             "fields": [
-                { "name": "id", "type": "number", "dblength": "32", "dftValue": "0", "summary": "奖池变动表的 id(自增)", "remark": "" , "isPrimary": true } ,
-                { "name": "change_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动的额度", "remark": "要更改的 eos 数量", "isPrimary": false },
+                { "name": "id", "type": "number", "dblength": "32", "dftValue": "0", "summary": "奖池变动表的 id(自增)", "remark": "" , "isPrimary": true },
+                { "name": "relation_id", "type": "text", "dblength": "32", "dftValue": "''", "summary": "关联的操作", "remark": "id 或者账号" , "isPrimary": false },
+                { "name": "change_amount", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动的额度", "remark": "要更改的代币数量", "isPrimary": false },
                 { "name": "current_balance", "type": "decimal", "dblength": "12,8", "dftValue": "0.0000", "summary": "变动后的额度", "remark": "更改后奖池的代币数量" , "isPrimary": false } ,
                 { "name": "op_type", "type": "text", "dblength": "20", "dftValue": "''", "summary": "操作类型", "remark": "系统奖池变动情况" , "isPrimary": false } ,
                 { "name": "remark", "type": "text", "dblength": "500", "dftValue": "''", "summary": "备注", "remark": "", "isPrimary": false } ,

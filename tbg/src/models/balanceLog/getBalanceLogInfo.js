@@ -1,27 +1,52 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
+const logger = require("../../common/logger");
+
+/**
+ * 
+ * @typedef { object } Arg 
+ * @property { String } accountName
+ * @property { string } [trId]
+ * @property { string } opType
+ */
 
 /**
  * 获取用户的记录
- * @param { String } accountName
- * @param { string } trId
- * @returns { Promise<DB.AccountBalanceLog> }
+ * @param { Arg } params
+ * @returns { Promise<DB.AccountBalanceLog[]> }
  */
-async function getBalanceLogInfo(accountName, trId) {
+async function getBalanceLogInfo(params) {
     try {
+        const { accountName, trId, opType } = params;
+        const opts = [];
+        const values = [];
+
+        if (!!accountName) {
+            opts.push(accountName);
+            values.push(`account_name = $${ opts.length }`);
+        }
+        
+        if (!!trId) {
+            opts.push(trId);
+            values.push(`extra ->> 'tr_id' = $${ opts.length }`)
+        } 
+
+        if (!!opType) {
+            opts.push(opType);
+            values.push(`op_type = $${ opts.length }`);
+        }
+
         let selectSql = `
-            SELECT create_time, change_amount, remark 
-                FROM balance_log 
-                WHERE account_name = $1 
-                AND extra ->> 'tr_id' = $2
-                AND op_type = 'mining'
-                ORDER BY create_time DESC
-                LIMIT 1;
+            SELECT * FROM balance_log 
+                WHERE ${ values.join(" AND ") }
+                ORDER BY create_time DESC;
         `
-        const opts = [ accountName, trId ]
-        let { rows: [ balanceLogInfo ] } = await pool.query(selectSql, opts);
+
+        // logger.debug("selectSql: ", selectSql, opts);
+        let { rows: balanceLogInfo } = await pool.query(selectSql, opts);
         return  balanceLogInfo;
     } catch (err) {
+        logger.error("query balance_log error, the error stock is %O", err);
         throw err;
     }
 }

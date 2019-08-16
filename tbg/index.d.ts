@@ -33,8 +33,16 @@ declare namespace DB {
          "lotto_currency": number,
          "game_currency": number,
          "create_time": Date,
-    
     }
+
+    interface TbgBalance {
+        "id": string,
+        "account_name": string,
+        "release_amount": number,
+        "sell_amount": number,
+        "active_amount": number,
+        "create_time": Date,
+   }
 
     interface Referrer {
         "id": string,

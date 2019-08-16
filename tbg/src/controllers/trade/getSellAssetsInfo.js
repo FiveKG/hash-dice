@@ -7,7 +7,7 @@ const { redis } = require("../../common");
 const { OPENING_PRICE_KEY, DESTROY, SELL_START_TIME, SELL_END_TIME, SELL_FEE, OPENING_PRICE } = require("../../common/constant/tradeConstant.js");
 const { MEMBER_LEVEL_TRX } = require("../../common/constant/assetsConstant.js");
 const { Decimal } = require("decimal.js");
-const userMember = require("../../common/userMember.js");
+const { userMember } = require("../../common/userMember.js");
 
 // 获取普通卖出交易信息
 async function getSellAssetsInfo(req, res, next) {

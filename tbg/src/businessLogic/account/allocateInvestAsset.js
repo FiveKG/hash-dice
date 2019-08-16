@@ -92,7 +92,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
             const opType = `user investment`;
             const remark = `user investment, add ${ item.pool_type } amount`
             logger.debug("income: %O, item: %O", income, item, ACCOUNT_RATE.accountRate[item.pool_type], INVEST_CONSTANT.BASE_RATE);
-            await insertSystemOpLog(client, income, item.pool_amount, opType, remark);
+            await insertSystemOpLog(client, income, item.pool_amount, {}, opType, remark, "now()");
             await updateSystemAmount(client, item.pool_type, income, item.pool_amount);
         }
         // 更新用户状态为激活

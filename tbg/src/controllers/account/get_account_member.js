@@ -2,7 +2,7 @@
 const logger = require("../../common/logger.js").child({ "@controllers/account/getAccountMember.js": "get account member" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountMemberLevel } = require("../../models/account");
-const userMember = require("../../common/userMember.js");
+const { userMember } = require("../../common/userMember.js");
 
 // 获取当前用户等级
 async function getAccountMember(req, res, next) {

@@ -23,15 +23,15 @@ async function getTradeInfoHistory(params) {
 
         if (!!accountName) {
             opts.push(accountName);
-            values.push(`account_name = ${ opts.length }`);
+            values.push(`account_name = $${ opts.length }`);
         }
         
         if (tradeType === "sell") {
             opts.push(tradeType);
-            values.push(`trade_type = ${ opts.length }`)
+            values.push(`trade_type = $${ opts.length }`)
         } else {
             opts.push("sell");
-            values.push(`trade_type != ${ opts.length }`);
+            values.push(`trade_type != $${ opts.length }`);
         }
 
         if (!!state) {

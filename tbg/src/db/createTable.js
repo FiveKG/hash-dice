@@ -73,6 +73,7 @@ async function createTable() {
             account_name TEXT NOT NULL DEFAULT '',
             change_amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
             current_balance NUMERIC (20, 8) NOT NULL DEFAULT 0,
+            extra JSON NOT NUll DEFAULT '{}'::JSONB,
             op_type TEXT NOT NULL DEFAULT '',
             remark TEXT NOT NULL DEFAULT '',
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
@@ -82,6 +83,7 @@ async function createTable() {
         comment on column balance_log.account_name is '用户 eos 帐号名称';
         comment on column balance_log.change_amount is '变动额度';
         comment on column balance_log.current_balance is '变动后的余额';
+        comment on column balance_log.extra is '附加信息, 记录相关 id';
         comment on column balance_log.op_type is '操作类型';
         comment on column balance_log.remark is '操作备注';
         comment on column balance_log.create_time is '创建时间';
@@ -100,6 +102,7 @@ async function createTable() {
             current_balance NUMERIC (20, 8) NOT NULL DEFAULT 0,
             op_type TEXT NOT NULL DEFAULT '',
             remark TEXT NOT NULL DEFAULT '',
+            extra JSON NOT NUll DEFAULT '{}'::JSONB,
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         comment on table system_op_log is '系统总账变动日志表';
@@ -108,6 +111,7 @@ async function createTable() {
         comment on column system_op_log.current_balance is '变动后的额度';
         comment on column system_op_log.op_type is '操作类型';
         comment on column system_op_log.remark is '备注';
+        comment on column system_op_log.extra is '附加信息, 用于记录相关的 id 或者 账户';
         comment on column system_op_log.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS account_op(
             id serial PRIMARY KEY UNIQUE NOT NULL,
@@ -128,7 +132,7 @@ async function createTable() {
             trade_type TEXT NOT NULL DEFAULT '',
             extra JSON NOT NUll DEFAULT '{}'::JSONB,
             amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
-            trx_amount NUMERIC (20, 8) NOT NULL DEFAULT 0，
+            trx_amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
             price NUMERIC (20, 8) NOT NULL DEFAULT 0,
             state TEXT NOT NULL DEFAULT '',
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -138,7 +142,7 @@ async function createTable() {
         comment on column trade.id is '主键 id';
         comment on column trade.account_name is '用户帐号名称';
         comment on column trade.trade_type is '交易类型';
-        comment on column trade.extra is '资产包 id，用于记录用户购买资产包';
+        comment on column trade.extra is '附加信息, 资产包 id,用于记录用户购买资产包';
         comment on column trade.amount is '请求交易的数量';
         comment on column trade.trx_amount is '成交的数量';
         comment on column trade.price is '价格';
@@ -194,7 +198,7 @@ async function createTable() {
         comment on column assets_package.mining_multiple is '矿池产币倍数';
         comment on column assets_package.preset_days is '矿池产币天数';
         comment on column assets_package.release_multiple is '资产包进入线性释放池倍数';
-        comment on column assets_package.amount_type is '资产包类型，私募(raise)，普通(common)';
+        comment on column assets_package.amount_type is '资产包类型,私募(raise),普通(common)';
     `
 
     try {
@@ -207,106 +211,4 @@ async function createTable() {
     }    
 }
 
-async function insert() {
-    try {
-        let sql = `
-            insert into account_op(account_name, op_type, remark, create_time) values (
-                'yujinsheng11',
-                'insert name',
-                'insert',
-                now()
-            ),
-            (
-                'yujinsheng20',
-                'insert a text',
-                'insert',
-                now()
-            ),
-            (
-                'yujinsheng13',
-                'no thx',
-                'insert',
-                now()
-            );
-        `
-        logger.info(`before insert`);
-        await select()
-        logger.info("begin insert data to account_op");
-        let { rows } = await pool.query(sql);
-        logger.debug(`insert text success, the result: ${ JSON.stringify(rows) }`);
-    } catch (err) {
-        logger.error(`insert text error: ${ err }`);
-        throw err;
-    }
-}
-
-async function select() {
-    let sql = `
-        select * from account_op;
-    `
-    try {
-        logger.info("query from account_op");
-        let { rows } = await pool.query(sql);
-        logger.debug(`query result: ${ JSON.stringify(rows) }`);
-    } catch (err) {
-        logger.error(`query error: ${ err }`);
-        throw err;
-    }
-}
-
-async function update() {
-    let sql = `
-        update account_op set account_name = 'love-death-robots' where account_name = 'yujinsheng13';
-    `
-    try {
-        logger.info(`after update`);
-        await select();
-        logger.info("update one");
-        let { rows } = await pool.query(sql);
-        logger.debug(`after update result: ${ JSON.stringify(rows) }`);
-    } catch (err) {
-        logger.error(`update error: ${ err }`);
-        throw err;
-    }
-}
-
-async function del() {
-    let sql = `
-        delete from account_op where account_name = 'yujinsheng11';
-    `
-    try {
-        logger.info(`after delete`);
-        await select();
-        logger.info("delete one from account_op");
-        let { rows } = await pool.query(sql);
-        logger.debug(`after delete result: ${ JSON.stringify(rows) }`);
-    } catch (err) {
-        logger.error(`delete error: ${ err }`);
-        throw err;
-    }
-}
-
-async function alter() {
-    let addCol = `
-        alter table account_op add ip;
-    `
-    // delete column => alter table account_op drop column ip;
-    try {
-        logger.info("alter a column to account_op");
-        let { rows } = await pool.query(addCol);
-        logger.debug(`after alter result: ${ JSON.stringify(rows) }`);
-    } catch (err) {
-        logger.error(`add column error: ${ err }`);
-        throw err;
-    }
-}
-
 module.exports = createTable;
-
-(async () => {
-    // await createTable();
-    // await insert();
-    // await select()
-    // await update()
-    // await del()
-})()

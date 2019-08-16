@@ -61,15 +61,16 @@ async function insertAssetsPackage() {
         });
         // 如果存在则不再重复插入
         const sql = `
-            WITH new_values (amount, saleable_multiple, mining_multiple, preset_days, release_multiple, amount_type) AS (values ${ valuesStrArr.join(",") })
-              INSERT INTO assets_package (amount, saleable_multiple, mining_multiple, release_multiple, amount_type)
+            WITH new_values (amount, saleable_multiple, mining_multiple, preset_days, release_multiple, amount_type) 
+                AS (values ${ valuesStrArr.join(",") })
+              INSERT INTO assets_package (amount, saleable_multiple, mining_multiple, preset_days, release_multiple, amount_type)
               SELECT amount, saleable_multiple, mining_multiple, preset_days, release_multiple, amount_type
               FROM new_values
               WHERE NOT EXISTS (SELECT 1 
                                 FROM assets_package
                                 WHERE assets_package.amount = new_values.amount)
         `
-        logger.debug("sql: %j", sql);
+        // logger.debug("sql: %j", sql);
         await pool.query(sql);
         logger.info("insert assets_package ok");
     } catch (err) {

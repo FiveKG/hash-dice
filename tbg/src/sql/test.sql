@@ -133,3 +133,14 @@ with tmp as (
     order by create_time desc
 )
 select distinct account_name from tmp limit 30;
+
+WITH new_values (amount, saleable_multiple, mining_multiple, preset_days, release_multiple, amount_type) 
+AS (VALUES (50, 1.3, 2, 500, 4, 'common'),
+    (100, 1.4, 2.5, 500, 4.5, 'common'),
+    (200, 1.5, 3, 500, 5, 'common'),
+    (10000, 0, 3, 500, 5, 'raise'),
+    (20000, 0, 3, 500, 5, 'raise'),
+    (30000, 0, 3, 500, 5, 'raise')
+)
+SELECT amount, saleable_multiple, mining_multiple, preset_days, release_multiple, amount_type
+        FROM new_values;

@@ -32,14 +32,16 @@ async function detail(req, res, next) {
         const presetDays = assetsInfo[0].preset_days;
         const minedIncome = assetsInfo[0].mining_multiple * assetsInfo[0].amount;
         const perHourMining = new Decimal(minedIncome).div(presetDays);
-        const balanceLogInfo = await getBalanceLogInfo(accountName, tradeInfo.id);
+        const opType = "mining";
+        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, trId: tradeInfo.id, opType: opType });
         let state = false;
         // 如果还没收取过挖矿收益
-        if (!balanceLogInfo) {
+        if (balanceLogInfo.length === 0) {
             state = diffTime >= 24 ? true : false;
         } else {
             // 收取过挖矿收益，找到最新的一条, 判断是否超过 24h
-            state = df.differenceInHours(now, balanceLogInfo.create_time) >= 24 ? true : false;
+            const latestLog = balanceLogInfo.pop();
+            state = df.differenceInHours(now, latestLog.create_time) >= 24 ? true : false;
         }
         let resData = get_status(1);
         resData["data"] = {

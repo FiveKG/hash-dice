@@ -46,10 +46,56 @@ const CHECK_IN_AIRDROP_7 = 0.07;
 // 资产包挖矿
 const MINING_AIRDROP = 75;
 
-// TBG基金，作为长期社区建设、管理等费用，逐步释放
+// TBG 基金，作为长期社区建设、管理等费用，逐步释放
 const FUND_CURRENCY = 5;
-// TBG区块链实验室，作为区块链技术研发费用，6年逐步释放
+// TBG 区块链实验室，作为区块链技术研发费用，6年逐步释放
 const LABORATORY_CURRENCY = 15;
+
+const BIND_AIRDROP_ID = "bind_airdrop";
+const TBG_1_AIRDROP_ID = "tbg_1_airdrop";
+const CHECK_IN_AIRDROP_ID = "check_in_airdrop";
+const GAME_AIRDROP_ID = "game_airdrop";
+const MINING_AIRDROP_ID = "mining_airdrop";
+const FUND_CURRENCY_ID = "fund_currency";
+const LABORATORY_CURRENCY_ID = "laboratory_currency";
+
+const AIRDROP = [
+    {
+        "id": BIND_AIRDROP_ID,
+        "name": "绑定 TBG 空投",
+        "rate": BIND_AIRDROP / BASE_RATE,
+    },
+    {
+        "id": TBG_1_AIRDROP_ID,
+        "name": "参与 TBG-I 空投",
+        "rate": TBG_1_AIRDROP / BASE_RATE,
+    },
+    {
+        "id": CHECK_IN_AIRDROP_ID,
+        "name": "签到空投",
+        "rate": CHECK_IN_AIRDROP / BASE_RATE,
+    },
+    {
+        "id": GAME_AIRDROP_ID,
+        "name": "游戏空投",
+        "rate": GAME_AIRDROP / BASE_RATE,
+    },
+    {
+        "id": MINING_AIRDROP_ID,
+        "name": "资产包挖矿",
+        "rate": MINING_AIRDROP / BASE_RATE,
+    },
+    {
+        "id": FUND_CURRENCY_ID,
+        "name": "TBG 基金",
+        "rate": FUND_CURRENCY / BASE_RATE,
+    },
+    {
+        "id": LABORATORY_CURRENCY_ID,
+        "name": "TBG 区块链实验室研发费用",
+        "rate": LABORATORY_CURRENCY / BASE_RATE,
+    }
+];
 
 /**
  * TBG发币规划
@@ -71,7 +117,15 @@ const CONSTANT = {
     "CHECK_IN_AIRDROP_4": CHECK_IN_AIRDROP_4,
     "CHECK_IN_AIRDROP_5": CHECK_IN_AIRDROP_5,
     "CHECK_IN_AIRDROP_6": CHECK_IN_AIRDROP_6,
-    "CHECK_IN_AIRDROP_7": CHECK_IN_AIRDROP_7
+    "CHECK_IN_AIRDROP_7": CHECK_IN_AIRDROP_7,
+    "AIRDROP": AIRDROP,
+    "BIND_AIRDROP_ID": BIND_AIRDROP_ID,
+    "TBG_1_AIRDROP_ID": TBG_1_AIRDROP_ID,
+    "CHECK_IN_AIRDROP_ID": CHECK_IN_AIRDROP_ID,
+    "GAME_AIRDROP_ID": GAME_AIRDROP_ID,
+    "MINING_AIRDROP_ID": MINING_AIRDROP_ID,
+    "FUND_CURRENCY_ID": FUND_CURRENCY_ID,
+    "LABORATORY_CURRENCY_ID": LABORATORY_CURRENCY_ID
 }
 
 module.exports = CONSTANT
@@ -95,4 +149,20 @@ module.exports = CONSTANT
  * @property { number } CHECK_IN_AIRDROP_5 每日签到奖励，奖励划入线性释放池
  * @property { number } CHECK_IN_AIRDROP_6 每日签到奖励，奖励划入线性释放池
  * @property { number } CHECK_IN_AIRDROP_7 每日签到奖励，奖励划入线性释放池
+ * @property { Airdrop[] } AIRDROP
+ * @property { string } BIND_AIRDROP_ID
+ * @property { string } TBG_1_AIRDROP_ID
+ * @property { string } CHECK_IN_AIRDROP_ID
+ * @property { string } GAME_AIRDROP_ID
+ * @property { string } MINING_AIRDROP_ID
+ * @property { string } FUND_CURRENCY_ID
+ * @property { string } LABORATORY_CURRENCY_ID
+ */
+
+ /**
+ * @description 常量
+ * @typedef { Object } Airdrop
+ * @property { string } id  
+ * @property { string } name 
+ * @property { number } rate  
  */
