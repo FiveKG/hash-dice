@@ -35,6 +35,20 @@
            在线</br>客服
         </div>
     </div>
+    <div class="myteam">
+      <div class="title clear">
+        <span class="left">
+          我的团队
+        </span>
+        <span class="right">
+          规则>
+        </span>
+      </div>
+
+      <div class="btn2">
+        
+      </div>
+    </div>
   </div>
 </template>
 
@@ -49,6 +63,18 @@ export default {
 <style scoped>
   .warp{
         font-family: '微軟正黑體 Regular', '微軟正黑體';
+  }
+  .clear{
+    overflow: hidden;
+    zoom:1;
+  }
+  .clear:after{
+     content:"";
+     clear:both;
+     display:block;
+     height:0;
+     overflow:hidden;
+     visibility:hidden;
   }
   .top{
     text-align:center;
@@ -130,8 +156,7 @@ export default {
     align-items:center;
     font-size:0.37rem;
     border-right:1px solid #efeff4;
-    justify-content:center;
-    
+    /* justify-content:center; */
   }
   .onlineService .item:nth-child(2){
     flex:2.5 2.5;
@@ -144,4 +169,27 @@ export default {
   .pd2{
     padding-right:0.2rem;
   }
+  .myteam{
+     background:#fff;
+     margin-top:0.35rem;
+  }
+  .myteam .title{
+    width:100%;
+    height:1.3rem;
+    line-height: 1.3rem;
+    border-bottom:1px solid #efeff4;
+  }
+  .myteam .title .left{
+    font-size:0.5rem;
+    font-weight:bold;
+    float:left;
+    padding-left:0.3rem;
+  }
+  .myteam .title .right{
+    font-size:0.35rem;
+    float:right;
+    padding-right:0.3rem;
+  }
+
+
 </style>
