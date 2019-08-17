@@ -3,6 +3,7 @@ const logger = require("../../common/logger.js").child({ "@controllers/income/ot
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getOtherIncome, getGroupIncome, getUserBalance } = require("../../models/balance");
 const { Decimal } = require("decimal.js");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 
 // 其他收益
 async function other(req, res, next) {
@@ -34,11 +35,11 @@ async function other(req, res, next) {
         if (groupIncome) {
             for (let i = 0; i < groupIncome.length; i++) {
                 let item = groupIncome[i];
-                if (item.op_type === "invite income") {
+                if (item.op_type === OPT_CONSTANTS.INVITE) {
                     referIncome = referIncome.add(item.total);
-                } else if (item.op_type === "sort income") {
+                } else if (item.op_type === OPT_CONSTANTS.SORT) {
                     sortIncome = sortIncome.add(item.total);
-                } else if (item.op_type === "mode income") {
+                } else if (item.op_type === OPT_CONSTANTS.MODE) {
                     modeIncome = modeIncome.add(item.total);
                 } else {
                     otherIncome = otherIncome.add(item.total);
@@ -49,16 +50,16 @@ async function other(req, res, next) {
         let rows = await getOtherIncome(reqData.account_name, limit, page);
         let detail = rows.map(item => {
             let info = ``;
-            if (item.op_type === "bingo income") {
-                info = "Bingo奖金"
-            } else if (item.op_type === "pk income") {
-                info = "直接推荐PK奖金";
-            } else if (item.op_type === "safe income") {
-                info = "五倍收益保障金";
-            } else if (item.op_type === "holder income") {
-                info = "股东池分红";
-            } else if (item.op_type === "game income") {
-                info = "游戏推荐奖金";
+            if (item.op_type === OPT_CONSTANTS.BINGO) {
+                info = OPT_CONSTANTS.OPT_TYPE.BINGO.NAME
+            } else if (item.op_type === OPT_CONSTANTS.PK) {
+                info = OPT_CONSTANTS.OPT_TYPE.PK.NAME;
+            } else if (item.op_type === OPT_CONSTANTS.PROTECTION) {
+                info = OPT_CONSTANTS.OPT_TYPE.PROTECTION.NAME;
+            } else if (item.op_type === OPT_CONSTANTS.HOLDER) {
+                info = OPT_CONSTANTS.OPT_TYPE.HOLDER.NAME;
+            } else if (item.op_type === OPT_CONSTANTS.GAME) {
+                info = OPT_CONSTANTS.OPT_TYPE.GAME.NAME;
             } else {
                 info = "other";
             }

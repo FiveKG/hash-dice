@@ -7,6 +7,7 @@ const ACCOUNT_RATE = require("../../common/constant/accountRate.js");
 const ACCOUNT_CONSTANT = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const BALANCE_CONSTANT = require("../../common/constant/balanceConstants");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { updateSystemAmount, getSystemAccountInfo } = require("../../models/systemPool");
 const { allocateSurplusAssets } = require("../systemPool")
@@ -40,10 +41,10 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         }
 
         const accountInfo = await getAccountInfo(accountName);
-        let accountOpType = "investment";
+        let accountOpType = OPT_CONSTANTS.INVITE;
         // 如果之前参加过,则是复投
         if (accountInfo.state === 10 || accountInfo.state === 30) {
-            accountOpType = "repeat";
+            accountOpType = OPT_CONSTANTS.REPEAT;
             userInvestmentRemark = `user ${ accountName } repeat ${ BALANCE_CONSTANT.BASE_RATE } UE`
             await updateRepeatBalance(client, accountName, BALANCE_CONSTANT.BASE_RATE);
         }
@@ -64,18 +65,17 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
                 "account_name": referrer,
                 "change_amount": income,
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-                "op_type": "invite income",
+                "op_type": OPT_CONSTANTS.INVITE,
                 "remark": referIncomeRemark
             }
             // 存入 redis，待用户点击的时候再收取
-            await storeIncome(referrer, "invite", data);
+            await storeIncome(referrer, OPT_CONSTANTS.INVITE, data);
             if (count === 9) {
                 return;
             } else {
                 count++;
             }
         }
-        count = null;
 
         // 获取系统账户
         let systemAccount = await getSystemAccountInfo();
@@ -84,13 +84,15 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
             logger.debug(`lack of system account`);
             throw Error(`lack of system account`);
         }
+
         // 分配剩余的收益
-        await allocateSurplusAssets(client, systemAccount, referIncome, distributed, "referrer");
+        await allocateSurplusAssets(client, systemAccount, referIncome, distributed, OPT_CONSTANTS.INVITE);
+
         // 更新系统池的额度
         for (const item of systemAccount) {
             const income = investAmount.mul(ACCOUNT_RATE.accountRate[item.pool_type] / INVEST_CONSTANT.BASE_RATE);
-            const opType = `user investment`;
-            const remark = `user investment, add ${ item.pool_type } amount`
+            const opType = OPT_CONSTANTS.INVITE;
+            const remark = `user ${ accountName } participate in tbg_1, add ${ item.pool_type } amount`
             logger.debug("income: %O, item: %O", income, item, ACCOUNT_RATE.accountRate[item.pool_type], INVEST_CONSTANT.BASE_RATE);
             await insertSystemOpLog(client, income, item.pool_amount, {}, opType, remark, "now()");
             await updateSystemAmount(client, item.pool_type, income, item.pool_amount);

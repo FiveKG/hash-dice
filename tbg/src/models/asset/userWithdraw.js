@@ -6,8 +6,8 @@ const { getUserBalance } = require("../balance");
 /**
  * 用户提现
  * @param { any } client 指定的数据库实例
- * @param { String } accountName 资产类型
- * @param { Decimal } changeAmount 变动的额度
+ * @param { String } accountName 用户名
+ * @param { Decimal } changeAmount 提现的额度
  * @param { String } opType 操作类型
  * @param { String } remark 备注
  */

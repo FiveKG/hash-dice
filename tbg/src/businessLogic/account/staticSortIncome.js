@@ -3,6 +3,7 @@ const logger = require("../../common/logger");
 const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { allocateSurplusAssets } = require("../systemPool");
 const { getSystemAccountInfo } = require("../../models/systemPool");
 const { getMainAccountBySub } = require("../../models/subAccount/index.js");
@@ -80,18 +81,17 @@ async function handleStaticSort(client, sortEnable, sortList, flag) {
         const mainAccount = mainAccountList[i];
         const mainAccountName = mainAccount.main_account;
         logger.debug("handleStaticSort: ", mainAccount);
-        const opType = `sort income`;
         const remark = `subAccount ${ mainAccount.sub_account_name }, income ${ avg.toFixed(8) }`;
         const now = new Date();
         const data = {
             "account_name": mainAccountName,
             "change_amount": avg,
             "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-            "op_type": opType,
+            "op_type": OPT_CONSTANTS.SORT,
             "remark": remark
         }
         // 将获取的收益添加到 redis
-        await storeIncome(mainAccountName, "sort", data);
+        await storeIncome(mainAccountName, OPT_CONSTANTS.SORT, data);
         // 获取加子账号的收益
         const incomeKey = `tbg:subAccountSort:${ mainAccount.sub_account_name }`;
         const subAccountIncome = await redis.get(incomeKey);
@@ -106,11 +106,12 @@ async function handleStaticSort(client, sortEnable, sortList, flag) {
         }
     }
     
+    // 如果还有剩余
     if (flag) {
         // 系统账户
         let systemAccount = await getSystemAccountInfo();
         let last = sortEnable.minus(avg);
-        await allocateSurplusAssets(client, systemAccount, sortEnable, last, "sort");
+        await allocateSurplusAssets(client, systemAccount, sortEnable, last, OPT_CONSTANTS.SORT);
     }
 }
 

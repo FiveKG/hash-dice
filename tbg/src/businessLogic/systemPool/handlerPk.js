@@ -3,6 +3,7 @@ const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { PK_POOL } = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { getPkAccountList, updateSystemAmount } = require("../../models/systemPool");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { Decimal } = require("decimal.js");
@@ -32,17 +33,16 @@ async function handlerPk() {
         for (let i = 0; i < pkAccountList.length - 5; i++){
             let item = pkAccountList[i]
             let rate = setRate(i);
-            let opType = `pk income`;
             let remark = `account ${ item.referrer_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
             let now = new Date();
             let data = {
                 "account_name": item.referrer_name,
                 "change_amount": distrEnable.mul(rate),
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-                "op_type": opType,
+                "op_type": OPT_CONSTANTS.PK,
                 "remark": remark
             }
-            await storeIncome(item.referrer_name, "pk", data);
+            await storeIncome(item.referrer_name, OPT_CONSTANTS.PK, data);
         }
 
         let changeAmount = new Decimal(-distrEnable);

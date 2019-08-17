@@ -3,6 +3,7 @@ const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { SHAREHOLDERS_POOL } = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { getHolderAccountList, updateSystemAmount } = require("../../models/systemPool");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { Decimal } = require("decimal.js");
@@ -33,7 +34,6 @@ async function handlerHolder() {
             let total = new Decimal(item.total);
             let all = new Decimal(item.all);
             let rate = total.div(all);
-            let opType = `holder income`;
             let remark = `account ${ item.referrer_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
             // await personalAssetChange(client, item.referrer_name, distrEnable.mul(rate), opType, remark);
             let now = new Date();
@@ -41,10 +41,10 @@ async function handlerHolder() {
                 "account_name": item.referrer_name,
                 "change_amount": distrEnable.mul(rate),
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-                "op_type": opType,
+                "op_type": OPT_CONSTANTS.HOLDER,
                 "remark": remark
             }
-            await storeIncome(item.referrer_name, "holder", data);
+            await storeIncome(item.referrer_name, OPT_CONSTANTS.HOLDER, data);
         };
 
         let changeAmount = new Decimal(-distrEnable);

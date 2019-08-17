@@ -9,6 +9,7 @@ const { Decimal } = require("decimal.js");
 const { redis } = require("../../common");
 const { startParse } = require("../../common/parseIncomeData");
 const df = require("date-fns");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 
 // 收取收益
 async function incomeGain(req, res, next) {
@@ -17,7 +18,10 @@ async function incomeGain(req, res, next) {
         logger.debug(`the param is: %j`, reqData);
         let accountName = reqData.account_name;
         let incomeType = reqData.income_type;
-        const incomeTypeList = [ "all", "invite", "bingo", "pk", "safe", "holder", "game", "sort", "mode" ];
+        const incomeTypeList = [ 
+            "all", OPT_CONSTANTS.INVITE, OPT_CONSTANTS.BINGO, OPT_CONSTANTS.PK, 
+            OPT_CONSTANTS.PROTECTION, OPT_CONSTANTS.HOLDER, OPT_CONSTANTS.GAME, OPT_CONSTANTS.SORT, OPT_CONSTANTS.MODE
+        ];
         if (!incomeTypeList.includes(incomeType)) {
             return res.send(get_status(2002, "request params value is invalid"));
         }

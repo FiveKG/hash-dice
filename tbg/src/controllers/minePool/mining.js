@@ -6,6 +6,7 @@ const { getTradeInfoHistory } = require("../../models/trade");
 const { getAssetsInfoById } = require("../../models/asset");
 const df = require("date-fns");
 const { Decimal } = require("decimal.js");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 
 // 有效资产包矿机
 async function mining(req, res, next) {
@@ -19,7 +20,7 @@ async function mining(req, res, next) {
         }
 
         // 找出已经完成交易的订单
-        const tradeInfo = await getTradeInfoHistory({ "tradeType": "buy", "accountName": accountName, "state": "finished", orderBy: "ASC" });
+        const tradeInfo = await getTradeInfoHistory({ "tradeType": OPT_CONSTANTS.BUY, "accountName": accountName, "state": "finished", orderBy: "ASC" });
         let resData = get_status(1);
         // 从交易完成是开始计算挖矿时间
         const apIds = tradeInfo.map(it => it.extra.ap_id);

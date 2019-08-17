@@ -2,6 +2,7 @@
 const { readFileSync, writeFileSync, existsSync } = require("fs");
 const path = require("path");
 const { redis } = require("../../common");
+const { INVITE_CODE_KEY } = require("../../common/constant/accountConstant.js");
 let invitationCode = null;
 
 /**
@@ -73,19 +74,19 @@ async function initCode() {
     const globalCode = await genInvitationCode(10001, 99999);
     try {
         // 如果没有初始化普通推荐码，初始化一堆
-        let isEmptyGeneralCode = await redis.scard("tbg:generalInviteCode");
+        let isEmptyGeneralCode = await redis.scard(INVITE_CODE_KEY.GENERAL);
         console.debug("isEmptyGeneralCode: ", isEmptyGeneralCode);
         if (!isEmptyGeneralCode) {
             console.debug("add general partner invite code");
-            await redis.sadd("tbg:generalInviteCode", generalCode);
+            await redis.sadd(INVITE_CODE_KEY.GENERAL, generalCode);
         }
 
         // 全球合伙人邀请码
-        const isEmptyGlobalCode = await redis.scard("tbg:globalInviteCode");
+        const isEmptyGlobalCode = await redis.scard(INVITE_CODE_KEY.GLOBAL);
         console.debug("isEmptyGlobalCode: ", isEmptyGlobalCode);
         if (!isEmptyGlobalCode) {
             console.debug("add global partner invite code");
-            await redis.sadd("tbg:globalInviteCode", globalCode);
+            await redis.sadd(INVITE_CODE_KEY.GLOBAL, globalCode);
         }
     } catch (err) {
         throw err;
@@ -96,7 +97,7 @@ async function initCode() {
  * 从 redis 里取出一个普通推荐码
  */
 async function getGeneralInviteCode() {
-    let code = await redis.spop("tbg:generalInviteCode");
+    let code = await redis.spop(INVITE_CODE_KEY.GENERAL);
     return code;
 }
 
@@ -104,7 +105,7 @@ async function getGeneralInviteCode() {
  * 从 redis 里取出一个合伙人推荐码
  */
 async function getGlobalInviteCode() {
-    let code = await redis.spop("tbg:globalInviteCode");
+    let code = await redis.spop(INVITE_CODE_KEY.GLOBAL);
     return code;
 }
 

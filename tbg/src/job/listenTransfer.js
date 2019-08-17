@@ -28,7 +28,7 @@ async function handlerTransferActions() {
             } else {
                 userInvestmentRemark = `${ result.from } investment ${ result.amount } UE`;
             }
-            await userInvestment(number(result.amount), result.from, userInvestmentRemark);
+            await userInvestment(Number(result.amount), result.from, userInvestmentRemark);
             await redis.set(`tbg:invest:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
         }

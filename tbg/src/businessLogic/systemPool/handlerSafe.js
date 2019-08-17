@@ -3,6 +3,7 @@ const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { SAFE_POOL } = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { getSafeAccountList, updateSystemAmount } = require("../../models/systemPool");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { Decimal } = require("decimal.js");
@@ -33,7 +34,6 @@ async function handlerSafe() {
             let last = new Decimal(item.last);
             let total = new Decimal(item.all);
             let rate = last.div(total);
-            let opType = `safe income`;
             let remark = `account ${ item.account_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
             // await personalAssetChange(client, item.account_name, distrEnable.mul(rate), opType, remark);
             let now = new Date();
@@ -41,10 +41,10 @@ async function handlerSafe() {
                 "account_name": item.account_name,
                 "change_amount": distrEnable.mul(rate),
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-                "op_type": opType,
+                "op_type": OPT_CONSTANTS.PROTECTION,
                 "remark": remark
             }
-            await storeIncome(item.account_name, "safe", data);
+            await storeIncome(item.account_name, OPT_CONSTANTS.PROTECTION, data);
         }
 
         let changeAmount = new Decimal(-distrEnable);

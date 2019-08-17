@@ -3,6 +3,7 @@ const logger = require("../../common/logger.js").child({ "@controllers/tbg/relea
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountInfo } = require("../../models/account");
 const { getBalanceLogInfo } = require("../../models/balanceLog");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 
 // 线性释放池明细
 async function releasePoolDetail(req, res, next) {
@@ -16,10 +17,15 @@ async function releasePoolDetail(req, res, next) {
         }
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName });
 
+        const typeList = [ 
+            OPT_CONSTANTS.FIRST_BUY, OPT_CONSTANTS.GAME, OPT_CONSTANTS.MINING_REFERRER, OPT_CONSTANTS.MINING,
+            OPT_CONSTANTS.TBG_1, OPT_CONSTANTS.CHECK_IN, OPT_CONSTANTS.BUY, OPT_CONSTANTS.SELL, OPT_CONSTANTS.RELEASE,
+            OPT_CONSTANTS.BIND, OPT_CONSTANTS.DESTROY
+        ];
         let resData = get_status(1);
         resData["data"] = {
             "detail": balanceLogInfo.filter(it  => {
-                if (it.op_type === "") {
+                if (typeList.includes(it.op_type)) {
                     return {
                         "create_time": it.create_time,
                         "release_type": it.op_type,

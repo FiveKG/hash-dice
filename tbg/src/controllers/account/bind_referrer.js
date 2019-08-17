@@ -2,6 +2,7 @@
 const { pool } = require("../../db");
 const logger = require("../../common/logger.js").child({ "@controllers/account/bind_referrer.js": "bind referrer" });
 const { get_status, inspect_req_data, redis, generate_primary_key } = require("../../common/index.js");
+const { ACCOUNT_TYPE, INVITE_CODE, INVITE_CODE_KEY } = require("../../common/constant/accountConstant.js");
 const { updateReferCount, insertAccount, getAccountNameByReferCode, randomGetAccount } = require("../../models/account");
 const { insertBalance } = require("../../models/balance");
 const { insertReferrer } = require("../../models/referrer");
@@ -16,18 +17,18 @@ async function bindReferrer(req, res, next) {
     const inviteCode = reqData.refer_code;
     let referrerName = ``;
     let referCode = ``;
-    let accountType = `general`;
+    let accountType = ACCOUNT_TYPE.GENERAL;
     // 如果邀请码是 "000000" 或者 "W00000", 随机分配一个存在的帐号作为邀请人
-    if (inviteCode === "000000" || inviteCode === "W00000") {
+    if (inviteCode === INVITE_CODE.GENERAL || inviteCode === INVITE_CODE.GLOBAL) {
         const rows = await randomGetAccount(accountName);
         referrerName = !!rows ? rows.account_name : '';
         // 普通用户
-        if (inviteCode === "000000") {
-            referCode = await redis.spop("tbg:generalInviteCode");
+        if (inviteCode === INVITE_CODE.GENERAL) {
+            referCode = await redis.spop(INVITE_CODE_KEY.GENERAL);
         } else {
             // 全球合伙人
-            accountType = "global";
-            const tmp = await redis.spop("tbg:globalInviteCode");
+            accountType = ACCOUNT_TYPE.GLOBAL;
+            const tmp = await redis.spop(INVITE_CODE_KEY.GLOBAL);
             referCode = `W${tmp}`
         }
     } else {

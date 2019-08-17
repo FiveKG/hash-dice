@@ -5,6 +5,7 @@ const { BINGO_POOL } = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const { getBingoAccountList, updateSystemAmount } = require("../../models/systemPool");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { Decimal } = require("decimal.js");
 const logger = require("../../common/logger.js");
 const storeIncome = require("../../common/storeIncome.js");
@@ -38,17 +39,16 @@ async function handlerPk() {
             } else {
                 rate = INCOME_CONSTANT.BINGO_INCOME_OTHER / INCOME_CONSTANT.BASE_RATE / (bingoAccountList.length - 1);
             }
-            let opType = `bingo income`;
             let remark = `account ${ item.account_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
             let now = new Date();
             let data = {
                 "account_name": item.account_name,
                 "change_amount": distrEnable.mul(rate),
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-                "op_type": opType,
+                "op_type": OPT_CONSTANTS.BINGO,
                 "remark": remark
             }
-            await storeIncome(item.account_name, "bingo", data);
+            await storeIncome(item.account_name, OPT_CONSTANTS.BINGO, data);
         };
 
         let changeAmount = new Decimal(-distrEnable);

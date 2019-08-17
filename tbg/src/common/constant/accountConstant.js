@@ -22,7 +22,23 @@ const COMMUNITY_POOL = "communityPool";
 // 开发维护的帐号
 const DEV_OP_POOL = "devOpPool";
 
+// 账号类型
+const ACCOUNT_TYPE = {
+    "GENERAL": "general", // 普通用户
+    "GLOBAL": "global"  // 全球合伙人
+}
 
+// 随机邀请码
+const INVITE_CODE = {
+    "GENERAL": "000000", // 普通用户随机邀请码
+    "GLOBAL": "W00000"  // 全球合伙人随机邀请码
+}
+
+// 邀请码 redis key
+const INVITE_CODE_KEY = {
+    "GENERAL": "tbg:generalInviteCode", // 普通用户邀请码 redis key
+    "GLOBAL": "tbg:globalInviteCode"  // 全球合伙人邀请码 redis key
+}
 
 // 账号参与 tbg1
 const ACCOUNT_ACTIVATED_TBG_1 = 10;
@@ -64,7 +80,10 @@ const CONSTANT = {
     "ACCOUNT_ACTIVATED_TBG_1": ACCOUNT_ACTIVATED_TBG_1,
     "ACCOUNT_ACTIVATED_TBG_2": ACCOUNT_ACTIVATED_TBG_2,
     "ACCOUNT_ACTIVATED_TBG_1_AND_2": ACCOUNT_ACTIVATED_TBG_1_AND_2,
-    "ACCOUNT_INACTIVATED": ACCOUNT_INACTIVATED
+    "ACCOUNT_INACTIVATED": ACCOUNT_INACTIVATED,
+    "ACCOUNT_TYPE": ACCOUNT_TYPE,
+    "INVITE_CODE": INVITE_CODE,
+    "INVITE_CODE_KEY": INVITE_CODE_KEY
 }
 
 module.exports = CONSTANT
@@ -86,4 +105,7 @@ module.exports = CONSTANT
  * @property { number } ACCOUNT_ACTIVATED_TBG_2 账号参与 tbg2
  * @property { number } ACCOUNT_ACTIVATED_TBG_1_AND_2 账号参与 tbg1 和 tbg2
  * @property { number } ACCOUNT_INACTIVATED 账号未激活
+ * @property {{ GENERAL: string, GLOBAL: string }} ACCOUNT_TYPE 账号类型
+ * @property {{ GENERAL: string, GLOBAL: string }} INVITE_CODE 随机邀请码
+ * @property {{ GENERAL: string, GLOBAL: string }} INVITE_CODE_KEY 邀请码 redis key
  */
