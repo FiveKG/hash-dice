@@ -27,8 +27,8 @@ async function getBalanceLogInfo(params) {
         }
         
         if (!!trId) {
-            opts.push(trId);
-            values.push(`extra ->> 'tr_id' = $${ opts.length }`)
+            opts.push(trId.split(","));
+            values.push(`extra ->> 'tr_id' = any($${ opts.length })`)
         } 
 
         if (!!opType) {

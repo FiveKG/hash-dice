@@ -22,18 +22,18 @@ async function detail(req, res, next) {
 
         // 找出已经完成交易的订单
         const tradeInfo = await getTradeInfoById(miningId);
-        if (!tradeInfo) {
+        if (tradeInfo.length === 0) {
             return res.send(get_status(1018, "this account does not exists"));
         }
 
-        // 从交易完成是开始计算挖矿时间
+        // 从交易完成时开始计算挖矿时间
         const now = new Date();
-        const diffTime = df.differenceInHours(now, tradeInfo.finished_time);
-        const assetsInfo = await getAssetsInfoById([ tradeInfo.extra.ap_id ]);
+        const diffTime = df.differenceInHours(now, tradeInfo[0].finished_time);
+        const assetsInfo = await getAssetsInfoById([ tradeInfo[0].extra.ap_id ]);
         const presetDays = assetsInfo[0].preset_days;
         const minedIncome = assetsInfo[0].mining_multiple * assetsInfo[0].amount;
         const perHourMining = new Decimal(minedIncome).div(presetDays);
-        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, trId: tradeInfo.id, opType: OPT_CONSTANTS.MINING });
+        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, trId: tradeInfo[0].id, opType: OPT_CONSTANTS.MINING });
         let state = false;
         // 如果还没收取过挖矿收益
         if (balanceLogInfo.length === 0) {
@@ -50,7 +50,7 @@ async function detail(req, res, next) {
             "mined": perHourMining.mul(diffTime).toFixed(8),
             "mining_time": diffTime,
             "total_time": presetDays * 24,
-            "collect_amount": perHourMining,
+            "collect_amount": perHourMining.mul(diffTime),
             "state": state
         }
         res.send(resData);

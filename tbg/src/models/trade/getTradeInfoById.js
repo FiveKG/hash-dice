@@ -5,14 +5,14 @@ const logger = require("../../common/logger.js").child({ "@models/trade/getTrade
 /**
  * 获取交易信息
  * @param { String } trId 交易 id
- * @returns { Promise<DB.Trade> }
+ * @returns { Promise<DB.Trade[]> }
  */
 async function getTradeInfoById(trId) {
     try {
         const sql = `
-            SELECT * FROM trade WHERE id = $1 AND state = $2
+            SELECT * FROM trade WHERE id = any($1) AND state = $2
         `
-        const { rows: [ tradeInfo ] } = await pool.query(sql, [ trId, "finished" ]);
+        const { rows: tradeInfo } = await pool.query(sql, [ trId.split(","), "finished" ]);
         return tradeInfo;
     } catch (err) {
         logger.error("get trade info error, the error stock is %O", err);
