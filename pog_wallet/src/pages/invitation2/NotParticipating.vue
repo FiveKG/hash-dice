@@ -25,14 +25,14 @@
         <p>...</p>
     </div>
     <div class="onlineService">
-        <div class="col-1">
+        <div class="item">
             <img src="../../../public/img/u5098.png" alt="">
-            <span>最新线性释放池调整... </span>
-            <span>2019-06-23</span>
+            <span class="pd2">最新线性释放池调整... </span>
+            <span>2019-06-23 ></span>
         </div>
-        <div class="col-2">
+        <div class="item">
            <img src="../../../public/img/u5100.svg" alt="">
-          在线客服
+           在线</br>客服
         </div>
     </div>
   </div>
@@ -101,6 +101,7 @@ export default {
      font-family: 'Bahnschrift Regular';
      font-size:0.5rem;
   }
+
   .destroyed_txt1{
     font-family: '微軟正黑體 Regular', '微軟正黑體';
     font-size:0.4rem;
@@ -117,11 +118,30 @@ export default {
   }
   .onlineService{
     background: #fff;
-    padding:0.2rem 0;
-    text-align:center;
     display:flex;
     flex-wrap:nowrap;
     box-sizing:border-box;
     width:100%;
+  }
+ 
+  .onlineService .item:nth-child(1){
+    flex:7.5 7.5;
+    display:flex;
+    align-items:center;
+    font-size:0.37rem;
+    border-right:1px solid #efeff4;
+    justify-content:center;
+    
+  }
+  .onlineService .item:nth-child(2){
+    flex:2.5 2.5;
+    display:flex;
+    align-items:center;
+    font-size:0.37rem;
+    justify-content:center;
+    padding-right:0.1rem;
+  }
+  .pd2{
+    padding-right:0.2rem;
   }
 </style>
