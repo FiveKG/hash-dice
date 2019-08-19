@@ -375,19 +375,20 @@ export default {
     flex:1;
     padding:0.4rem 0.2rem;
   }
+  
   .bonus .content .item p:nth-child(1){
-      font-family:'微軟正黑體 Regular', '微軟正黑體';
-      font-size:0.4rem;
-      white-space:nowrap;
+    font-family:'微軟正黑體 Regular', '微軟正黑體';
+    font-size:0.4rem;
+    white-space:nowrap;
   }
   .bonus .content .item p:nth-child(2){
       font-family: 'Bahnschrift Regular', 'Bahnschrift';
       font-size:0.45rem;
       white-space:nowrap;
       font-weight:400;
-      
   }
-  .bonus .content .item p:nth-child(2) + .bonus .content .item p:nth-child(-n+3){
-      color:#FF9900;
+  .bonus .content .item p:nth-child(3){
+      font-weight:400;
+      font-size:0.4rem;
   }
 </style>
