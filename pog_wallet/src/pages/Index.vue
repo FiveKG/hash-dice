@@ -269,7 +269,7 @@ export default {
   background-color: #f6f6f6;
 }
 .my_page {
-  padding-bottom: 120px;
+  /* padding-bottom: 120px; */
 }
 .tabbar {
   height: 120px;
