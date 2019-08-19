@@ -46,7 +46,12 @@
       </div>
 
       <div class="btn2">
-        
+        <ons-select class="select">
+          <select class="select-input">
+            <option>Opt 1</option>
+            <option>Opt 2</option>
+          </select>
+        </ons-select>
       </div>
     </div>
   </div>
@@ -56,7 +61,11 @@
 
 
 export default {
-   
+    data(){
+        return {
+            
+        }
+    }
 }
 </script>
 
