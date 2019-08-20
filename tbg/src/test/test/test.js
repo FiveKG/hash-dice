@@ -16,5 +16,6 @@ function getInfo(a, b, c, d, e) {
 ;(async () => {
     const arr = [ 1, 2, 3, 4, 5 ]
     // console.debug(...arr);
+    const now = new Date().getHours()
     getInfo(...arr);
 })();

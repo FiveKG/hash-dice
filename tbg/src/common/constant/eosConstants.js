@@ -17,7 +17,7 @@ const UE_TOKEN_SYMBOL = "UE"
 const TBG_TOKEN = "tbgametoken"
 const TBG_TOKEN_SYMBOL = "TBG"
 // 节点信息
-const END_POINT = "http://192.168.1.149:8888"
+const END_POINT = "http://localhost:8888"
 // 私钥
 const PRIVATE_KEY_TEST = "5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo"
 
