@@ -137,41 +137,47 @@ const MEMBER_LEVEL = {
 
 
 const MEMBER_LEVEL_TRX = {
-    "INACTIVATED_TBG_1": {
+    [ MEMBER_LEVEL.INACTIVATED_TBG_1.ID ]: {
         "ONE_MIN_TRX": INACTIVATED_TBG_1_ONE_MIN_TRX,
         "ONE_MAX_TRX": INACTIVATED_TBG_1_ONE_MAX_TRX,
         "DAY_MAX_TRX": INACTIVATED_TBG_1_DAY_MAX_TRX,
         "DAY_TRX_COUNT": INACTIVATED_TBG_1_DAY_TRX_COUNT,
+        "RELEASE_RATE": INACTIVATED_TBG_1
     },
-    "SEA_BLUE": {
+    [ MEMBER_LEVEL.SEA_BLUE.ID ]: {
         "ONE_MIN_TRX": SEA_BLUE_ONE_MIN_TRX,
         "ONE_MAX_TRX": SEA_BLUE_ONE_MAX_TRX,
         "DAY_MAX_TRX": SEA_BLUE_DAY_MAX_TRX,
         "DAY_TRX_COUNT": SEA_BLUE_DAY_TRX_COUNT,
+        "RELEASE_RATE": SEA_BLUE
     },
-    "AMETHYST": {
+    [ MEMBER_LEVEL.AMETHYST.ID ]: {
         "ONE_MIN_TRX": AMETHYST_ONE_MIN_TRX,
         "ONE_MAX_TRX": AMETHYST_ONE_MAX_TRX,
         "DAY_MAX_TRX": AMETHYST_DAY_MAX_TRX,
         "DAY_TRX_COUNT": AMETHYST_DAY_TRX_COUNT,
+        "RELEASE_RATE": AMETHYST
     },
-    "GOLD": {
+    [ MEMBER_LEVEL.GOLD.ID ]: {
         "ONE_MIN_TRX": GOLD_ONE_MIN_TRX,
         "ONE_MAX_TRX": GOLD_ONE_MAX_TRX,
         "DAY_MAX_TRX": GOLD_DAY_MAX_TRX,
         "DAY_TRX_COUNT": GOLD_DAY_TRX_COUNT,
+        "RELEASE_RATE": GOLD
     },
-    "RED_DIAMOND": {
+    [ MEMBER_LEVEL.RED_DIAMOND.ID ]: {
         "ONE_MIN_TRX": RED_DIAMOND_ONE_MIN_TRX,
         "ONE_MAX_TRX": RED_DIAMOND_ONE_MAX_TRX,
         "DAY_MAX_TRX": RED_DIAMOND_DAY_MAX_TRX,
         "DAY_TRX_COUNT": RED_DIAMOND_DAY_TRX_COUNT,
+        "RELEASE_RATE": RED_DIAMOND
     },
-    "CROWN": {
+    [ MEMBER_LEVEL.CROWN.ID ]: {
         "ONE_MIN_TRX": CROWN_ONE_MIN_TRX,
         "ONE_MAX_TRX": CROWN_ONE_MAX_TRX,
         "DAY_MAX_TRX": CROWN_DAY_MAX_TRX,
         "DAY_TRX_COUNT": CROWN_DAY_TRX_COUNT,
+        "RELEASE_RATE": CROWN
     }
 }
 
@@ -304,65 +310,15 @@ module.exports = CONSTANT
 
 /**
   * @description 会员等级交易信息
-  * @typedef { Object } MemberLevelTrx
-  * @property { MLT_INACTIVATED_TBG_1 } INACTIVATED_TBG_1 未参与 TBG-I
-  * @property { MLT_SEA_BLUE } SEA_BLUE 海蓝
-  * @property { MLT_AMETHYST } AMETHYST 紫晶
-  * @property { MLT_GOLD } GOLD 黄金
-  * @property { MLT_RED_DIAMOND } RED_DIAMOND 红钻
-  * @property { MLT_CROWN } CROWN 皇冠
+  * @typedef {{ [ x: string ]: Trx }} MemberLevelTrx
   */
 
   /**
-  * @description 未参与 TBG-I 会员等级交易信息
-  * @typedef { Object } MLT_INACTIVATED_TBG_1
-  * @property { number } ONE_MIN_TRX  未参与 TBG-I 每次最低可卖数量
-  * @property { number } ONE_MAX_TRX 未参与 TBG-I 每次最高可卖数量
-  * @property { number } DAY_MAX_TRX 未参与 TBG-I 单日最高可卖数量
-  * @property { number } DAY_TRX_COUNT 未参与 TBG-I 单日最多可卖次数
-  */
-
-  /**
-  * @description 海蓝会员等级交易信息
-  * @typedef { Object } MLT_SEA_BLUE
-  * @property { number } ONE_MIN_TRX 海蓝 每次最低可卖数量
-  * @property { number } ONE_MAX_TRX 海蓝 每次最高可卖数量
-  * @property { number } DAY_MAX_TRX 海蓝 单日最高可卖数量
-  * @property { number } DAY_TRX_COUNT 海蓝 单日最多可卖次数
-  */
-
- /**
-  * @description 紫晶会员等级交易信息
-  * @typedef { Object } MLT_AMETHYST
-  * @property { number } ONE_MIN_TRX 紫晶 每次最低可卖数量
-  * @property { number } ONE_MAX_TRX 紫晶 每次最高可卖数量
-  * @property { number } DAY_MAX_TRX 紫晶 单日最高可卖数量
-  * @property { number } DAY_TRX_COUNT 紫晶 单日最多可卖次数
-  */
-
-/**
-  * @description 红钻黄金会员等级交易信息
-  * @typedef { Object } MLT_GOLD
-  * @property { number } ONE_MIN_TRX 黄金 每次最低可卖数量
-  * @property { number } ONE_MAX_TRX 黄金 每次最高可卖数量
-  * @property { number } DAY_MAX_TRX 黄金 单日最高可卖数量
-  * @property { number } DAY_TRX_COUNT 黄金 单日最多可卖次数
-  */
-
-/**
-  * @description 皇冠会员等级交易信息
-  * @typedef { Object } MLT_RED_DIAMOND
-  * @property { number } ONE_MIN_TRX 红钻 每次最低可卖数量
-  * @property { number } ONE_MAX_TRX 红钻 每次最高可卖数量
-  * @property { number } DAY_MAX_TRX 红钻 单日最高可卖数量
-  * @property { number } DAY_TRX_COUNT 红钻 单日最多可卖次数
-  */
-
-/**
   * @description 会员等级交易信息
-  * @typedef { Object } MLT_CROWN
-  * @property { number } ONE_MIN_TRX 皇冠 每次最低可卖数量
-  * @property { number } ONE_MAX_TRX 皇冠 每次最高可卖数量
-  * @property { number } DAY_MAX_TRX 皇冠 单日最高可卖数量
-  * @property { number } DAY_TRX_COUNT 皇冠 单日最多可卖次数
+  * @typedef { Object } Trx
+  * @property { number } ONE_MIN_TRX 每次最低可卖数量
+  * @property { number } ONE_MAX_TRX 每次最高可卖数量
+  * @property { number } DAY_MAX_TRX 单日最高可卖数量
+  * @property { number } DAY_TRX_COUNT 单日最多可卖次数
+  * @property { number } RELEASE_RATE 释放比例
   */
