@@ -278,6 +278,8 @@ export default {
   background-color: #fff;
   border-top: 1px solid #f8f8f8;
   z-index: 1000;
+  position:fixed;
+  
 }
 .tabbar__label {
   margin-top: 10px;

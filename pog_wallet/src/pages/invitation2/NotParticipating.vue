@@ -57,7 +57,7 @@
         </span>
       </div>
       <div class="content">
-              <v-ons-select  select-id="my-id" style="width: 50%" v-model="selectedInvitation">
+              <v-ons-select style="width: 50%" v-model="selectedInvitation">
                   <option v-for="item in MyInvitationItem" :value="item.value">
                     {{ item.text }}
                   </option>
@@ -177,6 +177,9 @@ export default {
                 ],
                 selectedMyTeam:'OrdinaryUsers'
         }
+    },
+    created(){
+        
     }
 }
 </script>
@@ -185,6 +188,7 @@ export default {
   /* 公共样式 */
   .wrap{
         font-family: '微軟正黑體 Regular', '微軟正黑體';
+        margin-bottom:2rem;
   }
   .clear{
     overflow: hidden;
@@ -337,10 +341,10 @@ export default {
     display:flex;
     align-items:center;
     justify-content:center;
-  }
-  #my-id{
     height: 1rem;
   }
+  
+  
  
 
 
@@ -474,4 +478,5 @@ export default {
       font-weight:400;
       font-size:0.4rem;
   }
+ 
 </style>
