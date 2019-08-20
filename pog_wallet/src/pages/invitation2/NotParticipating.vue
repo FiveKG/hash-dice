@@ -140,36 +140,19 @@
 
 
         <div class="content">
+
            <div class="item">
-              <p>Bingo 奖金池</p>
-              <p>00:26:09</p>
-              <p>倒计时</p>
+              <p>可售余额</p>
+              <p>197.2660 <span>0000</span></p>
+              <p>TBG</p>
            </div>
+
            <div class="item">
-              <p>最后1位投资者</p>
-              <p>2303.2450</p>
-              <p>UE</p>
+              <p>可售余额</p>
+              <p>197.2660 <span>0000</span></p>
+              <p>TBG</p>
            </div>
-           <div class="item">
-              <p>最后2-30位投资者</p>
-              <p>2303.2450</p>
-              <p>UE</p>
-           </div>
-           <div class="item">
-              <p>TBG分红池</p>
-              <p>5103.0580</p>
-              <p>UE</p>
-           </div>
-           <div class="item">
-              <p>三倍收益保障池</p>
-              <p>1096.0000</p>
-              <p>UE</p>
-           </div>
-           <div class="item">
-              <p>直接推荐PK池</p>
-              <p>154.2532</p>
-              <p>UE</p>
-           </div>
+
         </div>
     </div>
 
@@ -483,7 +466,11 @@ export default {
       white-space:nowrap;
       font-weight:400;
   }
+   .bonus .content .item p:nth-child(2) span{
+      color:#bcbcbc;
+  }
   .bonus .content .item p:nth-child(3){
+      font-family: 'Bahnschrift Regular', 'Bahnschrift';
       font-weight:400;
       font-size:0.4rem;
   }
