@@ -1,5 +1,5 @@
 <template>
-  <div class="warp">
+  <div class="wrap">
     <!-- 头部信息 -->
     <div class="top">
       <h2>eoscheshieos</h2>
@@ -56,30 +56,41 @@
           规则>
         </span>
       </div>
+      <div class="content">
+
+              <v-ons-select class="selsecItem" style="width: 45%" v-model="selectedInvitation">
+                <option v-for="item in MyInvitationItem" :value="item.value">
+                  {{ item.text }}
+                </option>
+              </v-ons-select>
+
+              <v-ons-select class="selsecItem" style="width: 45%" v-model="selectedMyTeam">
+                <option v-for="item in MyTeamItem" :value="item.value">
+                  {{ item.text }}
+                </option>
+              </v-ons-select>
+              
+              <div>
+                我选择了{{selectedInvitation}}
+              </div>
+              <div>
+                我选择了{{selectedMyTeam}}
+              </div>
+
+      </div>
     </div>
 
-    <!-- 投资与子账号 -->
-    <div class="investment">
-        <div class="title clear">
-          <span class="left">
-            投资与子账号
-          </span>
-          <span class="right">
-            规则>
-          </span>
-        </div>
-    </div>
 
     <!-- 全球区块链去中心化游戏平台 -->
     <div class="direction">
         <div class="content">
             <div class="left">
-                <img src="@/assets/img/u5094.svg" alt="">
+                <img src="@/assets/img/u6628.svg" alt="">
             </div>
             <div class="right">  
-              全球区块链去中心化游戏平台，真正公平
-            公正、透明可查、无法作假的区块链去中
-            心化游戏是现在和未来的方向。
+              共同建设全球区块链去中心化游戏社区，
+              购买 TBG 资产包即挖矿，参与游戏获空
+              投，持有 TBG 享股东分红。
             </div>
         </div>
           
@@ -111,6 +122,8 @@
             规则>
           </span>
         </div>
+
+
         <div class="content">
            <div class="item">
               <p>Bingo 奖金池</p>
@@ -154,8 +167,17 @@
 
 export default {
     data(){
-        return {
-            
+          return {
+                MyInvitationItem: [
+                  { text: '普通用户', value: 'OrdinaryUsers' },
+                  { text: '全球合作伙伴', value: 'GlobalPartners' },
+                ],
+                selectedInvitation: 'OrdinaryUsers',
+                MyTeamItem:[
+                  { text: '普通用户', value: 'OrdinaryUsers' },
+                  { text: '全球合作伙伴', value: 'GlobalPartners' },
+                ],
+                selectedMyTeam:'OrdinaryUsers'
         }
     }
 }
@@ -163,7 +185,7 @@ export default {
 
 <style scoped>
   /* 公共样式 */
-  .warp{
+  .wrap{
         font-family: '微軟正黑體 Regular', '微軟正黑體';
   }
   .clear{
@@ -303,13 +325,6 @@ export default {
      background:#fff;
      margin-top:0.35rem;
   }
- 
-
-
-  .investment{
-    background:#fff;
-     margin-top:0.35rem;
-  }
 
 
 
@@ -359,8 +374,6 @@ export default {
   .profit .content .right span{
     color:#868686;
   }
-
-
 
   .bonus{
      background:#fff;
