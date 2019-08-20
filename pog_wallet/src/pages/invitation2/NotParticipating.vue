@@ -57,26 +57,17 @@
         </span>
       </div>
       <div class="content">
-
-              <v-ons-select class="selsecItem" style="width: 45%" v-model="selectedInvitation">
-                <option v-for="item in MyInvitationItem" :value="item.value">
-                  {{ item.text }}
-                </option>
+              <v-ons-select  select-id="my-id" style="width: 50%" v-model="selectedInvitation">
+                  <option v-for="item in MyInvitationItem" :value="item.value">
+                    {{ item.text }}
+                  </option>
               </v-ons-select>
 
-              <v-ons-select class="selsecItem" style="width: 45%" v-model="selectedMyTeam">
-                <option v-for="item in MyTeamItem" :value="item.value">
-                  {{ item.text }}
-                </option>
+              <v-ons-select style="width: 50%" v-model="selectedMyTeam">
+                  <option v-for="item in MyTeamItem" :value="item.value">
+                    {{ item.text }}
+                  </option>
               </v-ons-select>
-              
-              <div>
-                我选择了{{selectedInvitation}}
-              </div>
-              <div>
-                我选择了{{selectedMyTeam}}
-              </div>
-
       </div>
     </div>
 
@@ -96,27 +87,51 @@
           
     </div>
     
-    <!-- TBG-I 收益 -->
-    <div class="profit">
+    <!-- TBG资产包矿池 -->
+    <div class="orePool">
         <div class="title clear">
           <span class="left">
-            TBG-I 收益
+            TBG资产包矿池
+          </span>
+          <span class="right">
+            规则>
+          </span>
+        </div>
+        <div class="content">
+             
+             <div class="left">
+               <!-- <img  src="@/assets/img/u6711.svg" alt=""> -->
+               <img class="people"  src="@/assets/img/u6712.gif" alt="">
+               </div>
+             <div class="right">
+                <p>当前有效资产包</p>
+                <p>1,954.2532 <span>0000</span> TBG</p>
+             </div>
+        </div>
+    </div>
+
+
+     <!--  TBG线性释放池 -->
+    <div class="releasePool">
+        <div class="title clear">
+          <span class="left">
+            TBG线性释放池
           </span>
           <span class="right">
             规则>
           </span>
         </div>
         <div class="content clear">
-          <div class="left">总计</div>
-          <div class="right">492.5160 <span>0210</span> UE</div>
+          <div class="left">释放池余额</div>
+          <div class="right">2,492.5160 <span> 0210 </span> TBG</div>
         </div>
     </div>
 
-    <!-- 奖金及保障池 -->
+    <!-- TBG 可售池 -->
     <div class="bonus">
         <div class="title clear">
           <span class="left">
-            奖金及保障池
+            TBG 可售池
           </span>
           <span class="right">
             规则>
@@ -321,10 +336,80 @@ export default {
   }
 
 
+
+
+
+
+
+
+
+
+
+
   .myteam{
      background:#fff;
      margin-top:0.35rem;
   }
+  .myteam .content{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  #my-id{
+    height: 1rem;
+  }
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+.orePool{
+  background:#fff;
+     margin-top:0.35rem;
+}
+.orePool .content{
+  display:flex;
+  
+}
+.orePool .content .left{
+  flex:2 2;
+  text-align: center;
+  background:url("../../assets/img/u6711.svg") no-repeat ;
+  background-position:center;
+  background-size: 3rem;
+}
+.orePool .content .right{
+  flex:3 3;
+  text-align:center;
+  font-size:0.4rem;
+}
+.orePool .content .right p:nth-child(1){
+  padding-top:0.7rem;
+}
+.orePool .content .right p:nth-child(2){
+  padding-top:0.1rem;
+  font-weight:bold;
+}
+.orePool .content .right p:nth-child(2) span{
+  color:#bcbcbc;
+}
+.people{
+  width:2.5rem;
+  height:2.5rem;
+  z-index: 99;
+}
+
+
+
+
 
 
 
@@ -343,36 +428,34 @@ export default {
     display:flex;
     align-items:center;
   }
- 
    .direction .content .left img{
     padding-right:0.2rem;
   }
-
   .direction .content .right{
     font-size:0.4rem;
   }
 
 
 
-  .profit{
+  .releasePool{
      background:#fff;
      margin-top:0.35rem;
   }
-  .profit .content{
-     padding:0.4rem;
+  .releasePool .content{
+     padding:0.4rem  0.8rem;
   }
-  .profit .content .left{
+  .releasePool .content .left{
     float:left;
     font-size:0.45rem;
     
   }
-  .profit .content .right{
+  .releasePool .content .right{
     float:right;
     font-weight:bold;
     font-size:0.4rem;
   }
-  .profit .content .right span{
-    color:#868686;
+  .releasePool .content .right span{
+    color:#BCBCBC;
   }
 
   .bonus{
