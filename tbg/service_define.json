@@ -1198,6 +1198,7 @@
                 "data": {
                     "releasing": { "type": "number",  "is_require": true,  "desc": "释放中" },
                     "released": { "type": "number",  "is_require": true,  "desc": "已释放" },
+                    "balance_info": { "type": "number",  "is_require": true,  "desc": "用户 TBG 余额" },
                     "release_rate": { "type": "number",  "is_require": true,  "desc": "每日线性释放比例" },
                     "level": { "type": "sting",  "is_require": true,  "desc": "会员等级" }
                 }
@@ -1299,7 +1300,7 @@
                 "签到奖励明细"
             ],
             "isFunctionPoint" : true,
-            "url" : "/check_in",
+            "url" : "/check_in/detail",
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
@@ -1323,13 +1324,36 @@
             }
         },
         {
+            "name" : "获取签到奖励明细",
+            "summary": "",
+            "remark": [
+                "签到奖励明细"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/check_in",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "check_in": { "type": "boolean",  "is_require": true,  "desc": "签到是否已经签到" },
+                    "income": { "type": "number",  "is_require": true,  "desc": "签到获得奖励" },
+                    "detail": { "type": "array", "is_require": true, "desc": "额度详情" }
+                }
+            }
+        },
+        {
             "name" : "签到",
             "summary": "",
             "remark": [
                 "用户签到"
             ],
             "isFunctionPoint" : true,
-            "url" : "/check_in",
+            "url" : "/user_check_in",
             "type" : "post",
             "requireRole" : [ "*" ],
             "req": {

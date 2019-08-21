@@ -3,6 +3,7 @@ const logger = require("../../common/logger.js").child({ "@controllers/tbg/check
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { CHECK_IN_AIRDROP_ID, AIRDROP } = require("../../common/constant/tbgAllocateRate");
 const { TBG_TOKEN_SYMBOL, TBG_TOKEN } = require("../../common/constant/eosConstants");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { getAccountInfo } = require("../../models/account");
 const { getCurrencyStats } = require("../../job/getTrxAction.js");
 const { getSystemLogInfo } = require("../../models/systemOpLog");
@@ -25,10 +26,12 @@ async function checkInInfo(req, res, next) {
         const maxSupply = new Decimal(max_supply.split(" ")[0]);
         // 查询空投记录
         const systemOpLogInfo = await getSystemLogInfo(TBG_TOKEN);
-        const checkInLog = systemOpLogInfo.find(q => q.op_type === CHECK_IN_AIRDROP_ID);
+        const checkInLog = systemOpLogInfo.find(q => q.op_type === OPT_CONSTANTS.CHECK_IN);
         const checkInAirdropInfo = AIRDROP.find(it => it.id === CHECK_IN_AIRDROP_ID);
-        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: CHECK_IN_AIRDROP_ID });
+        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: OPT_CONSTANTS.CHECK_IN });
+        var sumIncome = 0;
         const detail = balanceLogInfo.map(it => {
+            sumIncome += Number(it.change_amount);
             return {
                 "create_time": it.create_time,
                 "reward": it.change_amount
@@ -40,7 +43,7 @@ async function checkInInfo(req, res, next) {
         resData["data"] = {
             "airdrop_amount": amount.toFixed(8),
             "airdrop_quantity": quantity.toFixed(8),
-            "income": 0,
+            "income": sumIncome,
             detail: detail
         }
 

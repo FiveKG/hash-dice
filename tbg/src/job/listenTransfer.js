@@ -1,9 +1,11 @@
 // @ts-check
+const logger = require("../common/logger.js").child({ "@": "listening transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
 const userInvestment = require("../businessLogic/account/userInvestment.js");
 const { WALLET_RECEIVER, EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT } = require("../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
+const { scheduleJob } = require("node-schedule");
 
 async function handlerTransferActions() {
     try {
@@ -147,5 +149,8 @@ async function getLastPos(){
 async function setLastPos(seq){
     await redis.set("tbg:account_action_seq" , seq);
 }
+
+logger.debug(`beginListenAction running...`);
+scheduleJob("*/1 * * * * *", handlerTransferActions);
 
 module.exports = handlerTransferActions;

@@ -1,6 +1,6 @@
 // @ts-check
-const { pool } = require("../../db/index.js");
-const logger = require("../../common/logger.js").child({ "@src/models/account/userInvestment.js": "user investment EOS" });
+const { pool, psTbg1, psBind } = require("../../db/index.js");
+const logger = require("../../common/logger.js").child({ "@src/models/account/userInvestment.js": "user investment" });
 const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const ACCOUNT_RATE = require("../../common/constant/accountRate.js");
@@ -17,6 +17,7 @@ const { updateRepeatBalance } = require("../../models/balance");
 const { getAllParentLevel, updateAccountState, getAccountInfo } = require("../../models/account");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
+const investAirdrop = require("./investAirdrop.js");
 
 /**
  * 用户投资
@@ -30,6 +31,8 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
     // 直接推荐奖励
     let referIncome = investAmount.mul(INVEST_CONSTANT.REFER_INCOME_RATE / INVEST_CONSTANT.BASE_RATE);
     let client = await pool.connect();
+    let psBindData = {};
+    let psTbg1Data = {};
     await client.query("BEGIN");
     try {
         // 先检查是否存在推荐关系
@@ -47,7 +50,14 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
             accountOpType = OPT_CONSTANTS.REPEAT;
             userInvestmentRemark = `user ${ accountName } repeat ${ BALANCE_CONSTANT.BASE_RATE } UE`
             await updateRepeatBalance(client, accountName, BALANCE_CONSTANT.BASE_RATE);
+        } else {
+            // 第一次投资，可以获得参与 tbg1 空投，新用户空投 100，推荐人空投 50, 只空投前 300,000 个UE账号
+            // 如果新用户是在绑定后 48h 内投资的，还可获得绑定空投，新用户空投 20，推荐人空投 10, 只空投前 100,000 个UE账号
+            const { tbg1Data, bindData } = await investAirdrop(accountName, accountInfo.create_time);
+            psBindData = bindData;
+            psTbg1Data = tbg1Data;
         }
+
         // 分配直接推荐奖金
         let count = 1;
         let distributed = new Decimal(0);
@@ -70,7 +80,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
             }
             // 存入 redis，待用户点击的时候再收取
             await storeIncome(referrer, OPT_CONSTANTS.INVITE, data);
-            if (count === 9) {
+            if (count >= 9) {
                 return;
             } else {
                 count++;
@@ -104,6 +114,15 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         // 记录用户操作日志
         await insertAccountOp(client, accountName, accountOpType, userInvestmentRemark);
         await client.query("COMMIT");
+
+        // 发送绑定和参与 tbg1 的消息
+        await psTbg1.pub(psTbg1Data);
+        logger.debug(`publish tbg1 message, psTbg1: %j`, psTbg1Data);
+        // 超过 48h 未投资，不空投
+        if (Object.keys(psBindData).length === 0) {
+            await psBind.pub(psBindData);
+            logger.debug(`publish bind message, psBindData: %j`, psBindData);
+        }
     } catch (err) {
         logger.error("allocate user investment assets error, the error stock is %O", err);
         await client.query("ROLLBACK");

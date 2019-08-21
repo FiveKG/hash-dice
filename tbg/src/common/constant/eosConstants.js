@@ -11,7 +11,7 @@ const DISPENSE_ACCOUNT = "uegametoken";
 const EOS_TOKEN = "eosio.token";
 const EOS_TOKEN_SYMBOL = "EOS"
 // UE token 合约账户
-const UE_TOKEN = "uegametoken";
+const UE_TOKEN = "wallettoken";
 const UE_TOKEN_SYMBOL = "UE"
 // TBG token 合约账户
 const TBG_TOKEN = "tbgametoken"

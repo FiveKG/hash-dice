@@ -130,10 +130,14 @@ router.get("/release_pool/detail", tbg.releasePoolDetail);
 
 
 /***************************  check_in  ***********************************/
+// 获取每日签到信息
+router.get("/check_in", tbg.checkInDetail);
+
 // 获取签到奖励明细
-router.get("/check_in", tbg.checkInInfo);
+router.get("/check_in/detail", tbg.checkInInfo);
+
 // 签到
-router.post("/check_in", tbg.checkIn);
+router.post("/user_check_in", tbg.checkIn);
 
 /***************************  tbg  ***********************************/
 // TBG 概况

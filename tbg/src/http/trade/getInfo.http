@@ -3,3 +3,17 @@ GET http://localhost:9527/trade/raise_buy
 
 ### 获取普通买入交易信息
 GET http://localhost:9527/trade/buy_assets
+
+### 
+POST http://localhost:9527/user_check_in
+Content-Type: application/json
+
+{
+    "account_name": "gametestuser"
+}
+
+### 
+GET http://localhost:9527/check_in?account_name=gametestuser
+
+###
+GET http://localhost:9527/check_in/detail?account_name=gametestuser

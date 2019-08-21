@@ -24,8 +24,22 @@ const BASE_RATE = 100;
 
 // 绑定 TBG 推荐关系即空投 30TBG，前 100,000 个 UE 账号
 const BIND_AIRDROP = 0.3;
+// 前 100,000 个 UE 账号
+const BIND_MEMBER_LIMIT = 100000;
+// 推荐人空投 10
+const BIND_REFERRER_AIRDROP = 10;
+// 账户空投 20
+const BIND_ACCOUNT_AIRDROP = 20;
+
 // 参与 TBG-I 即空投 150TBG，前 300,000 个UE账号，复投不再空投
 const TBG_1_AIRDROP = 4.5;
+// 前 300,000 个 UE 账号
+const TBG_1_MEMBER_LIMIT = 300000;
+// 推荐人空投 50
+const TBG_1_REFERRER_AIRDROP = 100;
+// 账户空投 100
+const TBG_1_ACCOUNT_AIRDROP = 50;
+
 // 每日签到空投
 const CHECK_IN_AIRDROP = 0.2;
 // 游戏空投
@@ -125,7 +139,13 @@ const CONSTANT = {
     "GAME_AIRDROP_ID": GAME_AIRDROP_ID,
     "MINING_AIRDROP_ID": MINING_AIRDROP_ID,
     "FUND_CURRENCY_ID": FUND_CURRENCY_ID,
-    "LABORATORY_CURRENCY_ID": LABORATORY_CURRENCY_ID
+    "LABORATORY_CURRENCY_ID": LABORATORY_CURRENCY_ID,
+    "BIND_MEMBER_LIMIT": BIND_MEMBER_LIMIT,
+    "BIND_REFERRER_AIRDROP": BIND_REFERRER_AIRDROP,
+    "BIND_ACCOUNT_AIRDROP": BIND_ACCOUNT_AIRDROP,
+    "TBG_1_MEMBER_LIMIT": TBG_1_MEMBER_LIMIT,
+    "TBG_1_REFERRER_AIRDROP": TBG_1_REFERRER_AIRDROP,
+    "TBG_1_ACCOUNT_AIRDROP": TBG_1_ACCOUNT_AIRDROP,
 }
 
 module.exports = CONSTANT
@@ -157,6 +177,12 @@ module.exports = CONSTANT
  * @property { string } MINING_AIRDROP_ID
  * @property { string } FUND_CURRENCY_ID
  * @property { string } LABORATORY_CURRENCY_ID
+ * @property { number } BIND_MEMBER_LIMIT 前 100,000 个 UE 账号
+ * @property { number } BIND_REFERRER_AIRDROP 推荐人空投 10
+ * @property { number } BIND_ACCOUNT_AIRDROP 账户空投 20
+ * @property { number } TBG_1_MEMBER_LIMIT  前 300,000 个 UE 账号
+ * @property { number } TBG_1_REFERRER_AIRDROP  推荐人空投 50
+ * @property { number } TBG_1_ACCOUNT_AIRDROP  账户空投 100
  */
 
  /**

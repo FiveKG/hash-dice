@@ -1,7 +1,7 @@
 // @ts-check
 const { pool } = require("../../db");
 const logger = require("../../common/logger.js");
-const { ACCOUNT_INACTIVATED } = require("../../common/constant/accountConstant")
+const { ACCOUNT_INACTIVATED } = require("../../common/constant/accountConstant");
 
 /**
  * 会员等级 直接推荐会员数

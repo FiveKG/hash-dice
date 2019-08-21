@@ -1,9 +1,9 @@
 #!/bin/bash
 #Description: test account api
 shopt -s expand_aliases
-alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5JiEbjX8fCMuHCw86jGdg9goPrx7rC5ejNxTjgh3E1v3EV2pTcP'
+alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5JcqsSvTea4Z5GrZpvhfuCZZuABYNwxBdzovKJgMGoSqP4BFKi7'
 alias cleos='docker exec -it nodeos /usr/bin/cleos -u http://localhost:8888 --wallet-url unix:///root/eosio-wallet/keosd.sock'
-UE_TOKEN_ACCOUNT=eosio.token
+UE_TOKEN_ACCOUNT=wallettoken
 
 # 根据填写的邀请码显示出帐号名称
 function showInviteCode() {
@@ -115,12 +115,12 @@ function subAccount() {
 }
 
 
-# unlock
+unlock
 # 绑定账号信息
 # bindReferrer
 
 # 转账给收款人，参与 TBG-I
-# transfer
+transfer
 
 # 获取用户的邀请码
 # getAccountInvestCode

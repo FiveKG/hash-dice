@@ -144,3 +144,10 @@ AS (VALUES (50, 1.3, 2, 500, 4, 'common'),
 )
 SELECT amount, saleable_multiple, mining_multiple, preset_days, release_multiple, amount_type
         FROM new_values;
+
+
+SELECT (SELECT count(1) as count FROM referrer r
+                        JOIN account a ON r.account_name = a.account_name
+                        AND a.state != 0
+                    ) AS count, *
+                FROM account

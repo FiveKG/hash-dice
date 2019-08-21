@@ -27,11 +27,11 @@ module.exports = [
     { "code": 1016, "desc": "this global partner had raised" },
     { "code": 1017, "desc": "this assets package does not exists" },
     
-    { "code": 1015, "desc": "this account is not a global partner" },
-    { "code": 1015, "desc": "this account is not a global partner" },
-    { "code": 1015, "desc": "this account is not a global partner" },
-    { "code": 1015, "desc": "this account is not a global partner" },
-    { "code": 1015, "desc": "this account is not a global partner" },
+    { "code": 1018, "desc": "check in airdrop quota has been used up" },
+    { "code": 1019, "desc": "today already check in" },
+    { "code": 1020, "desc": "this account is not a global partner" },
+    { "code": 1021, "desc": "this account is not a global partner" },
+    { "code": 1022, "desc": "this account is not a global partner" },
 
 
     

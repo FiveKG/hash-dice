@@ -52,7 +52,7 @@ async function getCurrencyBalance(code, account, symbol) {
     }
 }
 
-getCurrencyBalance(TBG_TOKEN, TBG_TOKEN, TBG_TOKEN_SYMBOL).then().catch(err => console.error(err));
+// getCurrencyBalance(TBG_TOKEN, TBG_TOKEN, TBG_TOKEN_SYMBOL).then().catch(err => console.error(err));
 
 module.exports = {
     getTrxAction,

@@ -7,4 +7,5 @@ module.exports = {
     "releasePoolDetail": require("./releasePoolDetail"),
     "saleableAmount": require("./saleableAmount"),
     "saleableBalance": require("./saleableBalance"),
+    "checkInDetail": require("./checkInDetail.js")
 }

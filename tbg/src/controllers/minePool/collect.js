@@ -43,10 +43,8 @@ async function collect(req, res, next) {
                     const extra = logInfo.extra;
                     // 计算收益
                     const releaseAmount = new Decimal(extra.mining_multiple).mul(extra.amount).div(logInfo.extra.preset_days);
-                    // await updateTbgBalance(pool, accountName, releaseAmount.toNumber(), 0, 0);
                     const remark = `user ${ accountName } collect mining income, amount is ${ releaseAmount.toNumber() }`;
                     const currentBalance = releaseAmount.add(info.current_balance);
-                    // await insertBalanceLog(pool, accountName, releaseAmount, currentBalance, OPT_CONSTANTS.MINING, logInfo.extra, remark, now);
                     const data = {
                         "updateTbgBalance": [ accountName, releaseAmount.toNumber(), 0, 0 ],
                         "insertBalanceLog": [ accountName, releaseAmount.toNumber(), currentBalance.toNumber(), OPT_CONSTANTS.MINING, logInfo.extra, remark, now ]

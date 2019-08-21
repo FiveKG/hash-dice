@@ -17,12 +17,12 @@
             "out_file"    : "/home/yujinsheng/logs/beginListenAction-out.log"
         },
         {
-            "name"        : "mqWithdraw",
-            "script"      : "./mqWithdraw.js",
+            "name"        : "mqHandler",
+            "script"      : "./mqHandler.js",
             "watch"       : false,
             "cwd"         : "../../15_tbg_service/tbg/src/job",
-            "error_file"  : "/home/yujinsheng/logs/mqWithdraw-err.log",
-            "out_file"    : "/home/yujinsheng/logs/mqWithdraw-out.log"
+            "error_file"  : "/home/yujinsheng/logs/mqHandler-err.log",
+            "out_file"    : "/home/yujinsheng/logs/mqHandler-out.log"
         },
         {
             "name"        : "bonusBingo",

@@ -4,7 +4,7 @@ shopt -s expand_aliases
 # 钱包密码应为使用时的那个密码
 alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5JcqsSvTea4Z5GrZpvhfuCZZuABYNwxBdzovKJgMGoSqP4BFKi7'
 alias cleos='docker exec -it nodeos /usr/bin/cleos -u http://localhost:8888 --wallet-url unix:///root/eosio-wallet/keosd.sock'
-UE_TOKEN_ACCOUNT=eosio.token
+UE_TOKEN_ACCOUNT=wallettoken
 
 # 生成 EOS 账号
 function genEosAccountName() {
@@ -53,7 +53,7 @@ function blukImportKey() {
                 # 将账号信息重定向到文件
                 printf "private: $line\n" >> keyPairs
                 # 导入私钥
-                line | cleos wallet import --private-key=$line
+                cleos wallet import --private-key=$line
             else
                 printf "public: $line\n" >> keyPairs
                 printf "accountName: $accountName\n" >> keyPairs
@@ -67,7 +67,18 @@ function blukImportKey() {
     done
 }
 
+# 批量导入密钥
+function recharger() {
+    for account in `grep -o '[0-5a-z\.]\{10\}' keyPairs`
+    do
+        # echo "$account"
+        printf "cleos transfer $UE_TOKEN_ACCOUNT ${account} '10000.0000 UE' -p $UE_TOKEN_ACCOUNT\n"
+    done
+}
+
 # 先解锁钱包
 unlock
 # 生成一批测试账号，同时导入私钥
-blukImportKey
+# blukImportKey
+
+recharger
