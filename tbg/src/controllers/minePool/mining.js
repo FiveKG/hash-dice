@@ -25,6 +25,7 @@ async function mining(req, res, next) {
         // 从交易完成是开始计算挖矿时间
         const apIds = tradeInfo.map(it => it.extra.ap_id);
         const assetsInfo = await getAssetsInfoById(apIds);
+        logger.debug("assetsInfo: ", assetsInfo);
         const assetsMap = new Map();
         for (const val of assetsInfo) {
             assetsMap.set(val.id, val);
@@ -33,7 +34,7 @@ async function mining(req, res, next) {
         let minedCount = 0;
         let miningCount = 0;
         const miningInfo = [];
-        let minedAmount = new Decimal(0)
+        let minedAmount = new Decimal(0);
         const now = new Date();
         for (const val of tradeInfo) {
             const assets = assetsMap.get(val.extra.ap_id);
@@ -52,10 +53,10 @@ async function mining(req, res, next) {
                     mining_time: diffTime,
                     total_time: presetDays * 24
                 }
-                minedAmount.add(tmpObj.mined_income);
+                minedAmount = minedAmount.add(tmpObj.mined_income);
                 miningInfo.push(tmpObj);
             } else {
-                minedAmount.add(assets.mining_multiple * assets.amount);
+                minedAmount = minedAmount.add(assets.mining_multiple * assets.amount);
                 minedCount++;
             }
         }

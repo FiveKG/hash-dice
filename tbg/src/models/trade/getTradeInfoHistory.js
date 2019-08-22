@@ -36,7 +36,7 @@ async function getTradeInfoHistory(params) {
 
         if (!!state) {
             opts.push(state);
-            values.push(`state = ${ opts.length }`);
+            values.push(`state = $${ opts.length }`);
         }
 
         const sql = `

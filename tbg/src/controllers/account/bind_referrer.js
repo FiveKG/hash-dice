@@ -15,6 +15,18 @@ async function bindReferrer(req, res, next) {
     logger.debug(`the param of bind referrer is: %j`, reqData);
     const accountName = reqData.account_name;
     const inviteCode = reqData.refer_code;
+    // 先检查用户是否绑定过
+    let selectSql = `
+             select r.referrer_name, r.account_name 
+                from referrer r 
+                join account a on a.account_name = r.account_name 
+                where r.account_name = $1;
+        `
+    let { rows } = await pool.query(selectSql, [ accountName ]);
+    logger.debug(`the account info is %j`, rows[0]);
+    if (!!rows[0]) {
+        return res.send(get_status(1020, "this account already bind"));
+    }
     let referrerName = ``;
     let referCode = ``;
     let accountType = ACCOUNT_TYPE.GENERAL;

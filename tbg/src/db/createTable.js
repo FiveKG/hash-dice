@@ -168,7 +168,7 @@ async function createTable() {
         comment on column trade_log.memo is '成交金额';
         comment on column trade_log.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS tbg_balance(
-            id serial PRIMARY KEY UNIQUE NOT NULL,
+            id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
             account_name TEXT NOT NULL DEFAULT '',
             release_amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
             sell_amount NUMERIC (20, 8) NOT NULL DEFAULT 0,

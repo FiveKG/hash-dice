@@ -43,7 +43,7 @@ async function mined(req, res, next) {
             const perHourMining = new Decimal(minedIncome).div(presetDays);
             if (diffTime > 0) {
                 miningCount++;
-                minedAmount.add(perHourMining.mul(diffTime));
+                minedAmount = minedAmount.add(perHourMining.mul(diffTime));
             } else {
                 const tmpObj = {
                     mining_id: val.id,
@@ -54,7 +54,7 @@ async function mined(req, res, next) {
                     total_time: presetDays * 24
                 }
                 miningInfo.push(tmpObj);
-                minedAmount.add(minedIncome);
+                minedAmount = minedAmount.add(minedIncome);
                 minedCount++;
             }
         }

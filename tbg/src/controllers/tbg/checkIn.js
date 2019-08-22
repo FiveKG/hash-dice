@@ -12,7 +12,7 @@ const { insertBalanceLog } = require("../../models/balance");
 const { updateTbgBalance } = require("../../models/tbgBalance");
 const { insertAccountOp } = require("../../models/accountOp");
 const { Decimal } = require("decimal.js");
-const { pool } = require("../../db");
+const { pool, psCheckIn } = require("../../db");
 const df = require("date-fns");
 
 // 签到
@@ -35,11 +35,6 @@ async function checkIn(req, res, next) {
         const checkInLog = systemOpLogInfo.find(q => q.op_type === OPT_CONSTANTS.CHECK_IN);
         const checkInAirdropInfo = AIRDROP.find(it => it.id === CHECK_IN_AIRDROP_ID);       
         const amount = maxSupply.mul(checkInAirdropInfo.rate);
-        const quantity = !!checkInLog ? new Decimal(checkInLog.total) : 0;
-        // 如果到达空投占比，则不再空投
-        if (amount.eq(quantity)) {
-            return res.send(get_status(1018, "check in airdrop quota has been used up"))
-        }
 
         // 获取用户签到记录
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: OPT_CONSTANTS.CHECK_IN });
@@ -49,7 +44,7 @@ async function checkIn(req, res, next) {
         // 如果用户每天不是每天都签到，则收益从最近一个连续的地方开始算, 即从最新的一次签到开始累加
         if (balanceLogInfo.length === 0) {
             income = CHECK_IN_AIRDROP_1;
-            currentBalance = 0;
+            currentBalance = CHECK_IN_AIRDROP_1;
         } else {
             // 先判断当天是否已经签到过
             if (df.isToday(balanceLogInfo[0].create_time)) {
@@ -58,6 +53,12 @@ async function checkIn(req, res, next) {
 
             income = new Decimal(balanceLogInfo[0].change_amount).add(CHECK_IN_AIRDROP_1).toNumber();
             currentBalance = new Decimal(balanceLogInfo[0].current_balance).add(income).toNumber();
+        }
+
+        // 如果到达空投占比，则不再空投
+        const quantity = !!checkInLog ? new Decimal(checkInLog.total).add(income) : 0;
+        if (amount.lessThan(quantity)) {
+            return res.send(get_status(1018, "check in airdrop quota has been used up"))
         }
 
         let resData = get_status(1);
@@ -76,9 +77,13 @@ async function checkIn(req, res, next) {
             await updateTbgBalance(client, accountName, income, 0, 0);
             await insertBalanceLog(client, accountName, income, currentBalance, OPT_CONSTANTS.CHECK_IN, {}, balanceRemark, now);
             // await insertSystemOpLog(client, income, 0, {}, OPT_CONSTANTS.CHECK_IN, "remark", now);
+            await client.query("COMMIT");
             // todo
             // 发送用户签到消息，之后通过将收益转入释放池
-            await client.query("COMMIT");
+            let checkInData = {
+                "income": income
+            };
+            await psCheckIn.pub(checkInData);
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;

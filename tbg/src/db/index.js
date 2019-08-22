@@ -9,5 +9,7 @@ module.exports = {
     "psUserWithdraw": require("./psUserWithdraw.js"),
     "psTbg1": require("./psTbg1.js"),
     "psBind": require("./psBind.js"),
-    "psGame": require("./psGame.js")
+    "psGame": require("./psGame.js"),
+    "psTshIncome": require("./psTshIncome.js"),
+    "psRaise": require("./psRaise.js"),
 }

@@ -29,9 +29,9 @@ async function checkInInfo(req, res, next) {
         const checkInLog = systemOpLogInfo.find(q => q.op_type === OPT_CONSTANTS.CHECK_IN);
         const checkInAirdropInfo = AIRDROP.find(it => it.id === CHECK_IN_AIRDROP_ID);
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: OPT_CONSTANTS.CHECK_IN });
-        var sumIncome = 0;
+        let sumIncome = new Decimal(0);
         const detail = balanceLogInfo.map(it => {
-            sumIncome += Number(it.change_amount);
+            sumIncome = sumIncome.add(it.change_amount);
             return {
                 "create_time": it.create_time,
                 "reward": it.change_amount
@@ -39,12 +39,12 @@ async function checkInInfo(req, res, next) {
         })
         let resData = get_status(1);
         const amount = maxSupply.mul(checkInAirdropInfo.rate);
-        const quantity = !!checkInLog ? new Decimal(checkInLog.total) : 0;
+        const quantity = !!checkInLog ? new Decimal(checkInLog.total).toFixed(8) : 0;
         resData["data"] = {
             "airdrop_amount": amount.toFixed(8),
-            "airdrop_quantity": quantity.toFixed(8),
+            "airdrop_quantity": quantity,
             "income": sumIncome,
-            detail: detail
+            "detail": detail
         }
 
         res.send(resData);

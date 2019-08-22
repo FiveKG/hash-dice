@@ -49,7 +49,7 @@ async function handlerPk() {
         let opType = `allocating ${ PK_POOL }`;
         let remark = `allocating ${ PK_POOL }, minus ${ distrEnable }`;
         await updateSystemAmount(client, PK_POOL, changeAmount, rows.pool_amount);
-        await insertSystemOpLog(client, changeAmount, rows.pool_amount, {}, opType, remark, "now()");
+        await insertSystemOpLog(client, changeAmount.toNumber(), rows.pool_amount, {}, opType, remark, "now()");
         await client.query("COMMIT");
         logger.debug(`handler ${ PK_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {

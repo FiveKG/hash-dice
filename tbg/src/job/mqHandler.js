@@ -1,6 +1,10 @@
 // @ts-check
 const logger = require("../common/logger.js").child({ "@": "mq publish and subscribe" });
-const { psUserWithdraw, psBuyAssets, psCheckIn, psSellAssets, psBind, psGame, psTbg1 } = require("../db");
+const { 
+    psUserWithdraw, psBuyAssets, psCheckIn, 
+    psSellAssets, psBind, psGame, psTbg1, 
+    psTshIncome, psRaise
+} = require("../db");
 const handlerWithdraw = require("./handlerWithdraw.js");
 const { insertBalanceLog } = require("../models/balance");
 const { updateTbgBalance } = require("../models/tbgBalance");
@@ -9,7 +13,6 @@ const { pool } = require("../db");
 // 用户提现消息
 psUserWithdraw.sub(async msg => {
     try {
-        console.log(msg);
         let result = JSON.parse(msg);
         await handlerWithdraw(result.account_name, result.symbol, result.amount);
     } catch (err) {
@@ -20,7 +23,6 @@ psUserWithdraw.sub(async msg => {
 // 买入资产包消息
 psBuyAssets.sub(async msg => {
     try {
-        console.log(msg);
         let result = JSON.parse(msg);
         logger.debug("result: %O", result);
     } catch (err) {
@@ -31,7 +33,6 @@ psBuyAssets.sub(async msg => {
 // 签到消息
 psCheckIn.sub(async msg => {
     try {
-        console.log(msg);
         let result = JSON.parse(msg);
         logger.debug("result: %O", result);
     } catch (err) {
@@ -42,7 +43,6 @@ psCheckIn.sub(async msg => {
 // 卖出资产消息
 psSellAssets.sub(async msg => {
     try {
-        console.log(msg);
         let result = JSON.parse(msg);
         logger.debug("result: %O", result);
     } catch (err) {
@@ -53,7 +53,6 @@ psSellAssets.sub(async msg => {
 // 绑定消息
 psBind.sub(async msg => {
     try {
-        console.log(msg);
         let result = JSON.parse(msg);
         logger.debug("result: %O", result);
         const trxList = [];
@@ -86,7 +85,6 @@ psBind.sub(async msg => {
 // 参与 tbg1 消息
 psTbg1.sub(async msg => {
     try {
-        console.log(msg);
         let result = JSON.parse(msg);
         logger.debug("result: %O", result);
         const trxList = [];
@@ -119,9 +117,35 @@ psTbg1.sub(async msg => {
 // 游戏消息
 psGame.sub(async msg => {
     try {
-        console.log(msg);
         let result = JSON.parse(msg);
         logger.debug("result: %O", result);
+    } catch (err) {
+        throw err;
+    }
+});
+
+
+// 股东账户消息
+psTshIncome.sub(async msg => {
+    try {
+        let result = JSON.parse(msg);
+        logger.debug("result: %O", result);
+        // 监听到消息，就从收款账户转钱到股东账户
+        const { changeAmount, currentBalance, memo } = result;
+
+    } catch (err) {
+        throw err;
+    }
+});
+
+
+// 私募消息
+psRaise.sub(async msg => {
+    try {
+        let result = JSON.parse(msg);
+        logger.debug("result: %O", result);
+        const { accountName, ap_id } = result;
+        
     } catch (err) {
         throw err;
     }

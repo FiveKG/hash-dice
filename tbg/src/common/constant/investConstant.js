@@ -28,7 +28,13 @@ const COMMUNITY_INCOME_RATE = 2.1;
 // 分配给开发维护的额度的百分比
 const DEV_OP_INCOME_RATE = 1.4;
 
+// 分配给 TSH 股东收入账号的百分比， 社区 + 开发维护全都转入 TSH 股东收入账号
+const TSH_INCOME_RATE = 3.5;
 
+// 用户复投全球合伙人可得复投额度的 1%
+const REPEAT_GLOBAL_INCOME_RATE = 1
+// 用户复投全球合伙人的推荐人可得复投额度的 0.5%
+const REPEAT_GLOBAL_REFERRER_INCOME_RATE = 0.5
 
 /**
  * @type { Constant }
@@ -47,6 +53,9 @@ const CONSTANT = {
     "GLOBAL_PARTNER_REFERRER": GLOBAL_PARTNER_REFERRER,
     "COMMUNITY_INCOME_RATE": COMMUNITY_INCOME_RATE,
     "DEV_OP_INCOME_RATE": DEV_OP_INCOME_RATE,
+    "TSH_INCOME_RATE": TSH_INCOME_RATE,
+    "REPEAT_GLOBAL_INCOME_RATE": REPEAT_GLOBAL_INCOME_RATE,
+    "REPEAT_GLOBAL_REFERRER_INCOME_RATE": REPEAT_GLOBAL_REFERRER_INCOME_RATE,
 }
 
 module.exports = CONSTANT
@@ -67,4 +76,8 @@ module.exports = CONSTANT
  * @property { number } GLOBAL_PARTNER_REFERRER  分配给全球合伙人的推荐人额度的百分比
  * @property { number } COMMUNITY_INCOME_RATE  分配给社区额度的百分比
  * @property { number } DEV_OP_INCOME_RATE  分配给开发维护的额度的百分比
+ * @property { number } TSH_INCOME_RATE 分配给 TSH 股东收入账号的百分比
+ * @property { number } REPEAT_GLOBAL_INCOME_RATE 用户复投全球合伙人可得复投额度的 1%
+ * @property { number } REPEAT_GLOBAL_REFERRER_INCOME_RATE 用户复投全球合伙人的推荐人可得复投额度的 0.5%
+ * 
  */

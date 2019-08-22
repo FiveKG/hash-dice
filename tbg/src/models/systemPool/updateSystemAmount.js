@@ -1,4 +1,5 @@
 // @ts-check
+const { Decimal } = require("decimal.js");
 
 /**
  * 更新系统账户资产
@@ -9,7 +10,7 @@
  */
 async function updateSystemAmount(client, changeType, changeAmount, preAmount) {
     try {
-        let currentBalance = changeAmount.add(preAmount).toFixed(8);
+        let currentBalance = new Decimal(changeAmount).add(preAmount).toFixed(8);
         let sql = `
             update system_pools set pool_amount = $1 where pool_type = $2;
         `

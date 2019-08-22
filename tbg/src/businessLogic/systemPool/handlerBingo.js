@@ -55,7 +55,7 @@ async function handlerPk() {
         let opType = `allocating ${ BINGO_POOL }`;
         let remark = `allocating ${ BINGO_POOL }, minus ${ distrEnable }`;
         await updateSystemAmount(client, BINGO_POOL, changeAmount, rows.pool_amount);
-        await insertSystemOpLog(client, changeAmount, rows.pool_amount, {}, opType, remark, "now()");
+        await insertSystemOpLog(client, changeAmount.toNumber(), rows.pool_amount, {}, opType, remark, "now()");
         await client.query("COMMIT");
         logger.debug(`handler ${ BINGO_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {
