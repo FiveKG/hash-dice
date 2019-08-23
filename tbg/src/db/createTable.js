@@ -89,12 +89,14 @@ async function createTable() {
         comment on column balance_log.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS system_pools(
             id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
-            pool_type TEXT UNIQUE NOT NULL DEFAULT '',
+            pool_type TEXT NOT NULL DEFAULT '',
+            pool_symbol TEXT NOT NULL DEFAULT '',
             pool_amount NUMERIC (20, 8) NOT NULL DEFAULT 0
         );
         comment on table system_pools is '系统奖池表';
         comment on column system_pools.id is '系统奖池表的 id';
         comment on column system_pools.pool_type is '奖池的类型';
+        comment on column system_pools.pool_symbol is '奖池的货币符号';
         comment on column system_pools.pool_amount is '奖池的金额';
         CREATE TABLE IF NOT EXISTS system_op_log(
             id serial PRIMARY KEY UNIQUE NOT NULL,

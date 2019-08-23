@@ -65,6 +65,7 @@ declare namespace DB {
     interface SystemPools {
          "id": string,
          "pool_type": string,
+         "pool_symbol": string,
          "pool_amount": number,
     }
 

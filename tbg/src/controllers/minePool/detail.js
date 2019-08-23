@@ -40,7 +40,7 @@ async function detail(req, res, next) {
             state = diffTime >= 24 ? true : false;
         } else {
             // 收取过挖矿收益，找到最新的一条, 判断是否超过 24h
-            const latestLog = balanceLogInfo.pop();
+            const latestLog = balanceLogInfo[0];
             state = df.differenceInHours(now, latestLog.create_time) >= 24 ? true : false;
         }
         let resData = get_status(1);

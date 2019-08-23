@@ -6,6 +6,7 @@ const { getBalanceLogInfo } = require("../../models/balanceLog");
 const { getTbgBalanceInfo } = require("../../models/tbgBalance");
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
+const { TBG_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 
 // 可售余额
 async function saleableBalance(req, res, next) {
@@ -17,7 +18,7 @@ async function saleableBalance(req, res, next) {
         if (!accountInfo) {
             return res.send(get_status(1001, "this account does not exists"));
         }
-        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName });
+        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, "symbol": TBG_TOKEN_SYMBOL });
         const tbgBalance = await getTbgBalanceInfo(accountName);
 
         let resData = get_status(1);

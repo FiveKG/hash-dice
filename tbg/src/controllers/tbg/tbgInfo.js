@@ -17,7 +17,7 @@ async function tbgInfo(req, res, next) {
         // max_supply ~ 1.0000 TBG, 先拆分，拿到数量
         const maxSupply = new Decimal(max_supply.split(" ")[0]);
         // 查询空投记录
-        const systemOpLogInfo = await getSystemLogInfo(TBG_TOKEN);
+        const systemOpLogInfo = await getSystemLogInfo({ symbol: TBG_TOKEN_SYMBOL });
         let detail = [];
         if (systemOpLogInfo.length === 0) {
             detail = AIRDROP.map(it => {

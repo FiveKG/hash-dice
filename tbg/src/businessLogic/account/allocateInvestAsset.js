@@ -8,6 +8,7 @@ const ACCOUNT_CONSTANT = require("../../common/constant/accountConstant.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { updateSystemAmount, getSystemAccountInfo } = require("../../models/systemPool");
+const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const { insertAccountOp } = require("../../models/accountOp");
 const addSubAccount = require("./addSubAccount.js");
 const { getAllParentLevel, updateAccountState, getAccountInfo } = require("../../models/account")
@@ -57,12 +58,6 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
 
         // 获取系统账户
         let systemAccount = await getSystemAccountInfo();
-        logger.debug("systemAccount: ", systemAccount);
-        if (systemAccount.length < 8) {
-            logger.debug(`lack of system account`);
-            throw Error(`lack of system account`);
-        }
-
         // 分配直接推荐奖金
         await investReward(client, amount, accountName, referrerAccountList, systemAccount, userInvestmentRemark);
 
@@ -72,8 +67,8 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
             const opType = OPT_CONSTANTS.INVITE;
             const remark = `user ${ accountName } participate in tbg_1, add ${ item.pool_type } amount`
             logger.debug("income: %O, item: %O", income, item, ACCOUNT_RATE.accountRate[item.pool_type], INVEST_CONSTANT.BASE_RATE);
-            await insertSystemOpLog(client, income.toNumber(), item.pool_amount, {}, opType, remark, "now()");
-            await updateSystemAmount(client, item.pool_type, income, item.pool_amount);
+            await insertSystemOpLog(client, income.toNumber(), item.pool_amount, { "symbol": UE_TOKEN_SYMBOL, "aid": item.pool_type }, opType, remark, "now()");
+            await updateSystemAmount(client, item.pool_type, income, item.pool_amount, UE_TOKEN_SYMBOL);
         }
         // 更新用户状态为激活
         await updateAccountState(client, ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1, accountName);

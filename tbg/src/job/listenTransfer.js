@@ -150,7 +150,4 @@ async function setLastPos(seq){
     await redis.set("tbg:account_action_seq" , seq);
 }
 
-logger.debug(`beginListenAction running...`);
-scheduleJob("*/1 * * * * *", handlerTransferActions);
-
 module.exports = handlerTransferActions;

@@ -8,6 +8,7 @@ const {
 const handlerWithdraw = require("./handlerWithdraw.js");
 const { insertBalanceLog } = require("../models/balance");
 const { updateTbgBalance } = require("../models/tbgBalance");
+const raiseAirdrop = require("./raiseAirdrop.js");
 const { pool } = require("../db");
 
 // 用户提现消息
@@ -145,7 +146,7 @@ psRaise.sub(async msg => {
         let result = JSON.parse(msg);
         logger.debug("result: %O", result);
         const { accountName, ap_id } = result;
-        
+        await raiseAirdrop(result);
     } catch (err) {
         throw err;
     }

@@ -6,9 +6,7 @@ const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const TBG_ALLOCATE = require("../common/constant/tbgAllocateRate");
 const { getUserReferrer } = require("../models/referrer");
 const { getBalanceLogInfo } = require("../models/balanceLog");
-const { TSH_INCOME, TBG_MINE_POOL, TBG_TOKEN_COIN } = require("../common/constant/accountConstant.js");
-const { insertSystemOpLog } = require("../models/systemOpLog");
-const { updateSystemAmount, getOneAccount } = require("../models/systemPool");
+const { TSH_INCOME, TBG_MINE_POOL, TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
 const { getAssetsInfoById } = require("../models/asset");
 const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { Api, JsonRpc } = require('eosjs');
@@ -18,43 +16,38 @@ const { TextDecoder, TextEncoder } = require('util');               // node only
 const { insertBalanceLog } = require("../models/balance");
 const { updateTbgBalance } = require("../models/tbgBalance");
 const TRADE_CONSTANTS = require("../common/constant/tradeConstant.js");
+const { generate_primary_key } = require("../common/index.js");
+const { insertTradeLog, updateTrade } = require("../models/trade");
+const { format } = require("date-fns");
 
 
 /**
  * 私募空投
- * @param { String } accountName 用户的帐号
- * @param { number } apId 资产包 id 
- * @param { string } memo 备注
+ * @param {{ accountName: string, apId: number, memo: string, trId: string, price: number }} data
  */
-async function raiseAirdrop(accountName, apId, memo) {
+async function raiseAirdrop(data) {
     try {
         // 获取用户私募的资产信息
+        const { accountName, apId, memo, trId, price } = data;
         const assetsInfo = await getAssetsInfoById([apId]);
         const amount = new Decimal(assetsInfo[0].amount);
         const quantity = amount.mul(assetsInfo[0].release_multiple);
         const signatureProvider = new JsSignatureProvider([ PRIVATE_KEY_TEST ]);
         // @ts-ignore
         const rpc = new JsonRpc(END_POINT, { fetch });
-        // 系统第一个账户没有推荐人，多出的部分转到股东池账户
-        let rows = await getOneAccount(TSH_INCOME);
-        if (!rows) {
-            logger.debug(`system account ${ TSH_INCOME } not found`);
-            throw Error(`system account ${ TSH_INCOME } not found`);
-        }
         const now = new Date();
+        const acBalanceLogInfo = await getBalanceLogInfo({ accountName: accountName, "symbol": TBG_TOKEN_SYMBOL });
+        const acCurrentBalance = !!acBalanceLogInfo[0] ? acBalanceLogInfo[0].current_balance : 0;
+        // 查找推荐人
         let userReferrer = await getUserReferrer(accountName);
-        const reBalanceLogInfo = await getBalanceLogInfo({ accountName: userReferrer, opType: OPT_CONSTANTS.RAISE });
+        let reCurrentBalance, reBalanceRemark;
         const referrerIncome = quantity.mul(TBG_ALLOCATE.RAISE_REFERRER_AIRDROP).div(TBG_ALLOCATE.BASE_RATE);
-        const reCurrentBalance = new Decimal(reBalanceLogInfo[0].current_balance).add(referrerIncome);
-        const reBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.RAISE }, referrer ${ userReferrer } get airdrop ${ referrerIncome }`;
-        const current = amount.mul(assetsInfo[0].mining_multiple).add(rows.pool_amount).toNumber();
-        const destroyAmount = amount.mul(TRADE_CONSTANTS.DESTROY);
-        const miningAmount = amount.mul(assetsInfo[0].mining_multiple);
-        // @ts-ignore
-        // 区块链事务执行
-        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
-        let actions = {
-            actions: [
+        let tmpActions = []
+        // 系统第一个账户没有推荐人，多出的部分转到股东池账户
+        if (!userReferrer) {
+            userReferrer = TSH_INCOME;
+            reCurrentBalance = new Decimal(0).add(referrerIncome);
+            tmpActions.push(
                 {
                     account: TBG_TOKEN_COIN,
                     name: "transfer",
@@ -64,11 +57,60 @@ async function raiseAirdrop(accountName, apId, memo) {
                     }],
                     data: {
                         from: TBG_TOKEN_COIN,
-                        to: accountName,
+                        to: TBG_FREE_POOL,
                         quantity: `${ quantity.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
                         memo: memo,
                     }
                 },
+                {
+                    account: TBG_TOKEN_COIN,
+                    name: "transfer",
+                    authorization: [{
+                        actor: TBG_TOKEN_COIN,
+                        permission: 'active',
+                    }],
+                    data: {
+                        from: TBG_TOKEN_COIN,
+                        to: TSH_INCOME,
+                        quantity: `${ userReferrer.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                        memo: reBalanceRemark,
+                    }
+                }
+            )
+        } else {
+            // 如果有推荐人，推荐人获得的奖励也要转入释放池
+            const reBalanceLogInfo = await getBalanceLogInfo({ accountName: userReferrer, "symbol": TBG_TOKEN_SYMBOL });
+            const currentBalance = !!reBalanceLogInfo[0] ? reBalanceLogInfo[0].current_balance : 0;
+            reCurrentBalance = new Decimal(currentBalance).add(referrerIncome);
+            tmpActions.push({
+                account: TBG_TOKEN_COIN,
+                name: "transfer",
+                authorization: [{
+                    actor: TBG_TOKEN_COIN,
+                    permission: 'active',
+                }],
+                data: {
+                    from: TBG_TOKEN_COIN,
+                    to: TBG_FREE_POOL,
+                    quantity: `${ quantity.add(referrerIncome).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                    memo: memo,
+                }
+            })
+        }
+        reBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.RAISE }, referrer ${ userReferrer } get airdrop ${ referrerIncome }`;
+        // 销毁的额度
+        const destroyAmount = amount.mul(TRADE_CONSTANTS.DESTROY);
+        // 私募可得 5 倍释放 + 0.61 倍销毁
+        const acCurrent = quantity.add(acCurrentBalance).add(destroyAmount).toNumber();
+        // 销毁后当前额度
+        const afterDestroyBalance = quantity.add(acCurrentBalance).add(-destroyAmount);
+        const miningAmount = amount.mul(assetsInfo[0].mining_multiple);
+        // @ts-ignore
+        // 区块链事务执行
+        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
+        let actions = {
+            actions: [
+                ...tmpActions,
                 {
                     account: TBG_TOKEN_COIN,
                     name: "transfer",
@@ -85,21 +127,7 @@ async function raiseAirdrop(accountName, apId, memo) {
                 },
                 {
                     account: TBG_TOKEN_COIN,
-                    name: "transfer",
-                    authorization: [{
-                        actor: TBG_TOKEN_COIN,
-                        permission: 'active',
-                    }],
-                    data: {
-                        from: TBG_TOKEN_COIN,
-                        to: '推荐人',
-                        quantity: `${ referrerIncome.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                        memo: reBalanceRemark,
-                    }
-                },
-                {
-                    account: TBG_TOKEN_COIN,
-                    name: "transfer",
+                    name: "retire",
                     authorization: [{
                         actor: TBG_TOKEN_COIN,
                         permission: 'active',
@@ -115,25 +143,38 @@ async function raiseAirdrop(accountName, apId, memo) {
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
-            // 按私募数量的 5 倍释放，直接转入私募的账户
-            await updateTbgBalance(client, accountName, quantity.toNumber(), 0, 0);
-            await insertBalanceLog(client, accountName, quantity, current, OPT_CONSTANTS.RAISE, {}, memo, now);
+            // 按私募数量的 5 倍释放，直接转入私募的账户的线性释放池
+            await updateTbgBalance(client, accountName, quantity.add(destroyAmount).toNumber(), 0, 0);
+            // 在日志里面记录资产包信息，即交易 id，挖矿时使用
+            // 挖矿的部分可以从 extra 中计算出
+            const extra = { 
+                "symbol": TBG_TOKEN_SYMBOL,
+                "tr_id": trId,
+                 ...assetsInfo[0]
+            }
+            await insertBalanceLog(client, accountName, quantity.add(destroyAmount).toNumber(), acCurrent, OPT_CONSTANTS.RAISE, extra, memo, now);
 
-            // 按私募数量的 3 倍 TBG 由发币账号转入矿池账号
-            await insertSystemOpLog(client, miningAmount.toNumber(), current, {}, OPT_CONSTANTS.MINING, memo, now);
-            await updateSystemAmount(client, TBG_MINE_POOL,  miningAmount, current);
+            // 按私募数量的 5 倍释放，直接转入私募的账户, 同时销毁一部份
+            await updateTbgBalance(client, accountName, destroyAmount.toNumber(), 0, 0);
+            await insertBalanceLog(client, accountName, destroyAmount.toNumber(), afterDestroyBalance, OPT_CONSTANTS.DESTROY, extra, memo, now);
 
             // 0.1 倍推荐奖励给推荐人
-            await updateTbgBalance(client, userReferrer, referrerIncome.toNumber(), 0, 0);
-            await insertBalanceLog(client, userReferrer, referrerIncome, reCurrentBalance, OPT_CONSTANTS.RAISE, {}, reBalanceRemark, now);
+            // 如果有推荐人，更新一下推荐人的释放池
+            if (!!userReferrer) {
+                await updateTbgBalance(client, userReferrer, referrerIncome.toNumber(), 0, 0);
+                await insertBalanceLog(client, userReferrer, referrerIncome, reCurrentBalance, OPT_CONSTANTS.RAISE, { "symbol": TBG_TOKEN_SYMBOL }, reBalanceRemark, now);
+            }
 
-            // 0.0061 倍销毁
-            await insertSystemOpLog(client, destroyAmount.toNumber(), current, {}, OPT_CONSTANTS.DESTROY, memo, now);
-            await updateSystemAmount(client, TSH_INCOME, destroyAmount.toNumber(), current);
             const result = await api.transact(actions, {
                 blocksBehind: 3,
                 expireSeconds: 30,
             });
+            const finishTime = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+            const trLogId = generate_primary_key();
+            const remark = `user ${ accountName } at ${ finishTime } done raise`;
+            // 更新交易状态
+            await updateTrade(client, trId, "finished", finishTime);
+            await insertTradeLog(client, trLogId, trId, OPT_CONSTANTS.RAISE, amount.toNumber(), remark, price, amount.mul(price).toNumber(), finishTime);
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");

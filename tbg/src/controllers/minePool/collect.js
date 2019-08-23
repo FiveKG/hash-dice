@@ -4,6 +4,7 @@ const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountInfo } = require("../../models/account");
 const { updateTbgBalance } = require("../../models/tbgBalance");
 const { getBalanceLogInfo } = require("../../models/balanceLog");
+const { TBG_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const { insertBalanceLog } = require("../../models/balance");
 const df = require("date-fns");
 const { Decimal } = require("decimal.js");
@@ -22,18 +23,22 @@ async function collect(req, res, next) {
             return res.send(get_status(1001, "this account does not exists"));
         }
 
-        // 从交易完成时开始计算挖矿时间
+        // 购买资产包成功后，开始生成挖矿包，从交易完成时开始计算挖矿时间
         const now = new Date();
-        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, trId: miningId, opType: OPT_CONSTANTS.MINING });
+        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, "symbol": TBG_TOKEN_SYMBOL });
+        let currentBalance = !!balanceLogInfo[0] ? new Decimal(balanceLogInfo[0].current_balance) : 0;
+        // 过滤出当前所有的挖矿记录
+        const miningIds = miningId.split(",");
+        const miningInfo = balanceLogInfo.map(it => it.op_type === OPT_CONSTANTS.MINING && miningIds.includes(it.extra.tr_id))
         // 如果还没收取过挖矿收益
-        if (balanceLogInfo.length === 0) {
+        if (miningInfo.length === 0) {
             return res.send(get_status(1));
         }
 
         // 收取过挖矿收益，找到最新的一条, 判断是否超过 24h
         const trxList = [];
         const minedMap = new Map();
-        for (const info of balanceLogInfo) {
+        for (const info of miningInfo) {
             // @ts-ignore
             const logInfo = minedMap.get(info.extra.tr_id);
             if (logInfo) {
@@ -41,10 +46,10 @@ async function collect(req, res, next) {
                 if (diff >= 24) {
                     // 如果超过 24h 未收取，则可以收取，否则不做处理
                     const extra = logInfo.extra;
-                    // 计算收益
+                    // 计算收益, 购买资产包时，将资产包信息存入 extra
                     const releaseAmount = new Decimal(extra.mining_multiple).mul(extra.amount).div(logInfo.extra.preset_days);
                     const remark = `user ${ accountName } collect mining income, amount is ${ releaseAmount.toNumber() }`;
-                    const currentBalance = releaseAmount.add(info.current_balance);
+                    currentBalance = releaseAmount.add(currentBalance);
                     const data = {
                         "updateTbgBalance": [ accountName, releaseAmount.toNumber(), 0, 0 ],
                         "insertBalanceLog": [ accountName, releaseAmount.toNumber(), currentBalance.toNumber(), OPT_CONSTANTS.MINING, logInfo.extra, remark, now ]

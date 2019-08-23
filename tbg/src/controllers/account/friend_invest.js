@@ -4,6 +4,7 @@ const logger = require("../../common/logger.js").child({ "@controllers/account/f
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const userInvestment = require("../../businessLogic/account/userInvestment.js");
 const { getUserBalance, updateWithdrawEnable, insertBalanceLog } = require("../../models/balance");
+const { TBG_TOKEN_SYMBOL, UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const { getAccountInfo } = require("../../models/account");
 const { ACCOUNT_INACTIVATED } = require("../../common/constant/accountConstant.js")
@@ -45,7 +46,7 @@ async function friendInvest(req, res, next) {
             await client.query("BEGIN");
             // 帮朋友投资，扣除用户的额度
             await updateWithdrawEnable(client, friendAccount, changeAmount.toNumber());
-            await insertBalanceLog(client, friendAccount, changeAmount, userBalance, "friend_invest", {}, remark, now);
+            await insertBalanceLog(client, friendAccount, changeAmount, userBalance, "friend_invest", { "symbol": UE_TOKEN_SYMBOL }, remark, now);
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");

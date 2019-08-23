@@ -16,6 +16,7 @@ const UE_TOKEN_SYMBOL = "UE"
 // TBG token 合约账户
 const TBG_TOKEN = "tbgametoken"
 const TBG_TOKEN_SYMBOL = "TBG"
+
 // 节点信息
 const END_POINT = "http://localhost:8888"
 // 私钥

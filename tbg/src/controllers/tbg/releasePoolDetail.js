@@ -4,6 +4,7 @@ const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountInfo } = require("../../models/account");
 const { getBalanceLogInfo } = require("../../models/balanceLog");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
+const { TBG_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 
 // 线性释放池明细
 async function releasePoolDetail(req, res, next) {
@@ -15,7 +16,7 @@ async function releasePoolDetail(req, res, next) {
         if (!accountInfo) {
             return res.send(get_status(1001, "this account does not exists"));
         }
-        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName });
+        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, "symbol": TBG_TOKEN_SYMBOL });
 
         const typeList = [ 
             OPT_CONSTANTS.FIRST_BUY, OPT_CONSTANTS.GAME, OPT_CONSTANTS.MINING_REFERRER, OPT_CONSTANTS.MINING,

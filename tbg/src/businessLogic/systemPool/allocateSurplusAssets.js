@@ -4,6 +4,7 @@ const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const { DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME } = require("../../common/constant/accountConstant.js");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { updateSystemAmount } = require("../../models/systemPool");
+const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 
 /** 
  * 处理分配剩余的那部分资产，分别转入社区账号和设计、技术账号
@@ -16,9 +17,9 @@ const { updateSystemAmount } = require("../../models/systemPool");
 async function allocateSurplusAssets(client, systemAccount, referIncome, distributed, allocateType) {
     try {
         // 找到社区账号和设计、技术账号
-        const devAccount = systemAccount.find(item => item.pool_type === DEV_OP_POOL );
-        const communityAccount = systemAccount.find(item => item.pool_type === COMMUNITY_POOL  );
-        const tshAccount = systemAccount.find(item => item.pool_type === TSH_INCOME  );
+        const devAccount = systemAccount.find(item => item.pool_type === DEV_OP_POOL && item.pool_symbol === UE_TOKEN_SYMBOL);
+        const communityAccount = systemAccount.find(item => item.pool_type === COMMUNITY_POOL  && item.pool_symbol === UE_TOKEN_SYMBOL);
+        const tshAccount = systemAccount.find(item => item.pool_type === TSH_INCOME && item.pool_symbol === UE_TOKEN_SYMBOL);
         console.debug("devAccount: ", devAccount);
         console.debug("communityAccount: ", communityAccount);
         if (!devAccount) {
@@ -44,14 +45,14 @@ async function allocateSurplusAssets(client, systemAccount, referIncome, distrib
         const now = "now()"
         logger.debug(`distributed: ${ distributed }, last: ${ last }`);
         // 开发账户
-        await insertSystemOpLog(client, devChangeAmount, devAccount.pool_amount, {}, opType, devRemark, now);
-        await updateSystemAmount(client, DEV_OP_POOL, devChangeAmount, devAccount.pool_amount);
+        await insertSystemOpLog(client, devChangeAmount, devAccount.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: DEV_OP_POOL }, opType, devRemark, now);
+        await updateSystemAmount(client, DEV_OP_POOL, devChangeAmount, devAccount.pool_amount, UE_TOKEN_SYMBOL);
         // 社区账户
-        await insertSystemOpLog(client, communityChangeAmount, communityAccount.pool_amount, {}, opType, communityRemark, now);
-        await updateSystemAmount(client, COMMUNITY_POOL, devChangeAmount, communityAccount.pool_amount);
+        await insertSystemOpLog(client, communityChangeAmount, communityAccount.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: COMMUNITY_POOL }, opType, communityRemark, now);
+        await updateSystemAmount(client, COMMUNITY_POOL, devChangeAmount, communityAccount.pool_amount, UE_TOKEN_SYMBOL);
         // 股东账户
-        await insertSystemOpLog(client, last, tshAccount.pool_amount, {}, opType, tshRemark, now);
-        await updateSystemAmount(client, TSH_INCOME, last, tshAccount.pool_amount);
+        await insertSystemOpLog(client, last, tshAccount.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: TSH_INCOME }, opType, tshRemark, now);
+        await updateSystemAmount(client, TSH_INCOME, last, tshAccount.pool_amount, UE_TOKEN_SYMBOL);
     } catch (err) {
         logger.error("Allocating surplus assets error, the error stock is %O", err);
         throw err;

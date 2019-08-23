@@ -5,6 +5,7 @@ const { BINGO_POOL } = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const { getBingoAccountList, updateSystemAmount } = require("../../models/systemPool");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
+const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { Decimal } = require("decimal.js");
 const logger = require("../../common/logger.js");
@@ -54,8 +55,8 @@ async function handlerPk() {
         let changeAmount = new Decimal(-distrEnable);
         let opType = `allocating ${ BINGO_POOL }`;
         let remark = `allocating ${ BINGO_POOL }, minus ${ distrEnable }`;
-        await updateSystemAmount(client, BINGO_POOL, changeAmount, rows.pool_amount);
-        await insertSystemOpLog(client, changeAmount.toNumber(), rows.pool_amount, {}, opType, remark, "now()");
+        await updateSystemAmount(client, BINGO_POOL, changeAmount, rows.pool_amount, UE_TOKEN_SYMBOL);
+        await insertSystemOpLog(client, changeAmount.toNumber(), rows.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: BINGO_POOL }, opType, remark, "now()");
         await client.query("COMMIT");
         logger.debug(`handler ${ BINGO_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {

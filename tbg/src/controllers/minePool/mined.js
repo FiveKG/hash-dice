@@ -36,12 +36,12 @@ async function mined(req, res, next) {
         const now = new Date();
         for (const val of tradeInfo) {
             const assets = assetsMap.get(val.extra.ap_id);
-            // 如果时差大于 0, 说明还在挖矿，否则已经结束
             const diffTime = df.differenceInHours(now, val.finished_time);
             const presetDays = assets.preset_days;
             const minedIncome = assets.mining_multiple * assets.amount;
             const perHourMining = new Decimal(minedIncome).div(presetDays);
-            if (diffTime > 0) {
+            // 如果时差小于总挖矿时间，说明还在挖矿，否则已经结束
+            if (diffTime < assets.preset_days * 24) {
                 miningCount++;
                 minedAmount = minedAmount.add(perHourMining.mul(diffTime));
             } else {

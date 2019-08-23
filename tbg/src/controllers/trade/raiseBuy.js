@@ -8,10 +8,10 @@ const { pool, psRaise } = require("../../db");
 const { format } = require("date-fns");
 const { insertAccountOp } = require("../../models/accountOp");
 const { Decimal } = require("decimal.js");
-const { AIRDROP, MINING_AIRDROP_ID } = require("../../common/constant/tbgAllocateRate");
+const { RAISE_LIMIT } = require("../../common/constant/tbgAllocateRate");
+const { TBG_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
+const { TSH_INCOME, TBG_MINE_POOL, TBG_TOKEN_COIN } = require("../../common/constant/accountConstant.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
-const { TBG_TOKEN_SYMBOL, TBG_TOKEN } = require("../../common/constant/eosConstants");
-const { getCurrencyStats } = require("../../job/getTrxAction.js");
 const { getSystemLogInfo } = require("../../models/systemOpLog");
 
 // 全球合伙人私募
@@ -50,18 +50,13 @@ async function raiseBuy(req, res, next) {
         const volume = amount.mul(price);
         const memo = `user ${ accountName } at ${ createTime } raised a ${ amount.toNumber() } assets package`;
 
-        const { [TBG_TOKEN_SYMBOL]: { max_supply } } = await getCurrencyStats(TBG_TOKEN, TBG_TOKEN_SYMBOL);
-        // max_supply ~ 1.0000 TBG, 先拆分，拿到数量
-        const maxSupply = new Decimal(max_supply.split(" ")[0]);
-
-        // 查询用户的签到空投记录
-        const systemOpLogInfo = await getSystemLogInfo(TBG_TOKEN);
-        const raiseInLog = systemOpLogInfo.find(q => q.op_type === OPT_CONSTANTS.RAISE);
-        const raiseAirdropInfo = AIRDROP.find(it => it.id === MINING_AIRDROP_ID);
+        // 查询所有的私募空投记录
+        const systemOpLogInfo = await getSystemLogInfo({ symbol: TBG_TOKEN_SYMBOL });
+        const raiseLog = systemOpLogInfo.find(q => q.op_type === OPT_CONSTANTS.RAISE);
         
-        // 如果到达空投占比，则不再空投
-        const quantity = !!raiseInLog ? new Decimal(raiseInLog.total).add(amount) : 0;
-        if (maxSupply.mul(raiseAirdropInfo.rate).lessThan(quantity)) {
+        // 当私募所有拨出达35,000,000TBG或余数不足以满足最低私募时，即中止私募
+        const quantity = !!raiseLog ? new Decimal(raiseLog.total).add(amount) : 0;
+        if (new Decimal(RAISE_LIMIT).lessThan(quantity)) {
             return res.send(get_status(1018, "check in airdrop quota has been used up"))
         }
 
@@ -69,6 +64,7 @@ async function raiseBuy(req, res, next) {
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
+            // 私募时先生成私募订单和私募日志
             await insertAccountOp(client, accountName, tradeType, memo);
             await insertTrade(client, trId, accountName, tradeType, { "ap_id": apId }, amount.toNumber(), 0, price, "create", createTime, finishedTime);
             await insertTradeLog(client, trLogId, trId, tradeType, amount.toNumber(), memo, price, volume.toNumber(), createTime);
@@ -77,8 +73,10 @@ async function raiseBuy(req, res, next) {
             // 空投 TBG
             const raiseData = {
                 "accountName": accountName,
-                "ap_id": apId,
-                "memo": memo
+                "apId": apId,
+                "memo": memo,
+                "trId": trId,
+                "price": price
             }
             await psRaise.pub(raiseData)
         } catch (err) {

@@ -6,6 +6,7 @@ const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { getHolderAccountList, updateSystemAmount } = require("../../models/systemPool");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
+const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const df = require("date-fns");
 const logger = require("../../common/logger.js");
@@ -50,8 +51,8 @@ async function handlerHolder() {
         let changeAmount = new Decimal(-distrEnable);
         let opType = `allocating ${ SHAREHOLDERS_POOL }`;
         let remark = `allocating ${ SHAREHOLDERS_POOL }, minus ${ distrEnable }`;
-        await updateSystemAmount(client, SHAREHOLDERS_POOL, changeAmount, rows.pool_amount);
-        await insertSystemOpLog(client, changeAmount.toNumber(), rows.pool_amount, {}, opType, remark, "now()");
+        await updateSystemAmount(client, SHAREHOLDERS_POOL, changeAmount, rows.pool_amount, UE_TOKEN_SYMBOL);
+        await insertSystemOpLog(client, changeAmount.toNumber(), rows.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: SHAREHOLDERS_POOL }, opType, remark, "now()");
         await client.query("COMMIT");
         logger.debug(`handler ${ SHAREHOLDERS_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {

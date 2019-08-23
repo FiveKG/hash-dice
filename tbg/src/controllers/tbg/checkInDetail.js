@@ -23,8 +23,9 @@ async function checkInDetail(req, res, next) {
         if (!accountInfo) {
             return res.send(get_status(1001, "this account does not exists"));
         }
-        
+        // 获取签到信息
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: OPT_CONSTANTS.CHECK_IN });
+        // 如果有的话，直接看第一条的内容，change_amount 就是最新签到所得，create_time 为最新签到日期
         const createTime = !!balanceLogInfo[0] ? balanceLogInfo[0].create_time : new Date(1970, 0, 1);
         const changeAmount = !!balanceLogInfo[0] ? balanceLogInfo[0].change_amount : 0;
         let resData = get_status(1);

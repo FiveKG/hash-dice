@@ -1,7 +1,9 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
 const logger = require("../../common/logger.js").child({ "@": "test" });
+const { generate_primary_key } = require("../../common")
 const { Decimal } = require("decimal.js");
+const { UE_TOKEN_SYMBOL, TBG_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 
 /**
  * 插入系统奖池表
@@ -13,20 +15,21 @@ async function insertSystemAccount(systemAccount) {
         for (let i = 0; i < systemAccount.length; i++) {
             let account = systemAccount[i];
             let amount = new Decimal(0).toFixed(8);
-            let id = i + 1;
-            let str = `('${ id }', '${ account }', ${ amount })`
-            valuesStr.push(str);
+            valuesStr.push(`('${ generate_primary_key() }', '${ account }', ${ amount }, '${ UE_TOKEN_SYMBOL }')`, `('${ generate_primary_key() }', '${ account }', ${ amount }, '${ TBG_TOKEN_SYMBOL }')`);
         }
 
         // 如果重复则不再插入，直接返回
         let querySql = `
-            insert into system_pools (
-                id, pool_type, pool_amount
-            )
-            values ${ valuesStr.join(",") }
-            on conflict(pool_type) do nothing;
+            WITH new_values (id, pool_type, pool_amount, pool_symbol) 
+                AS (values ${ valuesStr.join(",") })
+              INSERT INTO system_pools (id, pool_type, pool_amount, pool_symbol)
+              SELECT id, pool_type, pool_amount, pool_symbol
+              FROM new_values
+              WHERE NOT EXISTS (SELECT 1 
+                                FROM system_pools
+                                WHERE system_pools.pool_type = new_values.pool_type AND system_pools.pool_symbol = new_values.pool_symbol)
         `
-        logger.info("insert test data to system_pools table");
+        // logger.info("insert test data to system_pools table, sql is %s", querySql);
         await pool.query(querySql);
         logger.info("insert ok");
     } catch (err) {

@@ -1,8 +1,8 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@controllers/tbg/releasePool.js": "线性释放池资料" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
-const { CHECK_IN_AIRDROP_ID } = require("../../common/constant/tbgAllocateRate");
 const { MEMBER_LEVEL_TRX } = require("../../common/constant/assetsConstant.js");
+const { RELEASE } = require("../../common/constant/optConstants.js");
 const { getAccountInfo, getAccountMemberLevel } = require("../../models/account");
 const { getBalanceLogInfo } = require("../../models/balanceLog");
 const { Decimal } = require("decimal.js");
@@ -30,9 +30,11 @@ async function releasePool(req, res, next) {
         // 获取用户的 TBG 余额
         const [ balanceInfo ] = await getCurrencyBalance(accountName, accountName, TBG_TOKEN_SYMBOL);
         const levelInfo = userMember(userMemberLevel.count);
-        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: CHECK_IN_AIRDROP_ID });
+        // 获取所有的释放记录
+        const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: RELEASE });
         const tbgBalance = await getTbgBalanceInfo(accountName);
-        const released = !!balanceLogInfo[0].current_balance ? balanceLogInfo[0].current_balance : 0
+        // 累加释放的资产
+        const released = balanceLogInfo.map(it => it.change_amount).reduce((pre, cur) => pre + cur);
         let resData = get_status(1);
         resData["data"] = {
             "releasing": new Decimal(tbgBalance.release_amount).toFixed(8),

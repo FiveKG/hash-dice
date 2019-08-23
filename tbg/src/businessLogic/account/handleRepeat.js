@@ -10,6 +10,7 @@ const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { updateSystemAmount, getOneAccount } = require("../../models/systemPool");
+const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 
 /**
  * 用户复投
@@ -53,8 +54,8 @@ async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRe
             const opType = OPT_CONSTANTS.INVITE;
             const current = rows.pool_amount + changeAmount;
             const memo = `${ userInvestmentRemark }, global account's referrer ${ userReferrer } add ${ changeAmount } UE currency`;
-            await insertSystemOpLog(client, changeAmount, current, {}, opType, memo, "now()");
-            await updateSystemAmount(client, TSH_INCOME, changeAmount, current);
+            await insertSystemOpLog(client, changeAmount, current, { "symbol": UE_TOKEN_SYMBOL, aid: TSH_INCOME }, opType, memo, "now()");
+            await updateSystemAmount(client, TSH_INCOME, changeAmount, current, UE_TOKEN_SYMBOL);
             tshIncomeData = {
                 "changeAmount": changeAmount,
                 "currentBalance": current,
