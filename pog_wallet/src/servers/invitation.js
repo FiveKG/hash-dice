@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // var baseURL = 'http://172.81.224.11/api';
-var baseURL = 'http://192.168.1.141:9527';
+// var baseURL = 'http://192.168.1.141:9527';
+var baseURL = 'http://192.168.1.152:9527';
 
 const xhr = axios.create({
     baseURL,
@@ -205,6 +206,63 @@ const withdrawHistory = (reqData) => {
     return getData(url, data);
 }
 
+//有效资产包矿机
+const effectiveAssets= (reqData) => {
+    const url = '/mine_pool/mining';
+    const data = reqData;
+    return getData(url, data);
+}
+// 已结束资产包矿机
+const overAssets= (reqData) => {
+    const url = '/mine_pool/mined';
+    const data = reqData;
+    return getData(url, data);
+}
+//资产包挖矿详情
+const assetMiningDetails= (reqData) => {
+    const url = '/mine_pool/detail';
+    const data = reqData;
+    return getData(url, data);
+}
+//资产包挖矿收益收取
+const assetMiningCharge= (reqData) => {
+    const url = '/mine_pool/collect';
+    const data = reqData;
+    return postData(url, data);
+}
+//线性释放池
+const LinearReleasePool= (reqData) => {
+    const url = '/release_pool/account';
+    const data = reqData;
+    return getData(url, data);
+}
+//线性释放池明细
+const LinearReleaseDetail= (reqData) => {
+    const url = '/release_pool/detail';
+    const data = reqData;
+    return getData(url, data);
+}
+//可售余额
+const SaleableBalance= (reqData) => {
+    const url = '/saleable_balance';
+    const data = reqData;
+    return getData(url, data);
+}
+//可售额度
+const SaleableAmount= (reqData) => {
+    const url = '/saleable_amount';
+    const data = reqData;
+    return getData(url, data);
+}
+//签到奖励明细
+const CheckIn= (reqData) => {
+    const url = '/check_in';
+    const data = reqData;
+    return getData(url, data);
+}
+
+
+
 export {
     getConfig,
     setInvitation,
@@ -235,4 +293,14 @@ export {
     withdraw,
     friendInvest,
     withdrawHistory,
+
+    effectiveAssets,
+    overAssets,
+    assetMiningDetails,
+    assetMiningCharge,
+    LinearReleasePool,
+    LinearReleaseDetail,
+    SaleableBalance,
+    SaleableAmount,
+    CheckIn,
 }

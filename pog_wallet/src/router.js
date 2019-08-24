@@ -79,6 +79,14 @@ import ShareholderPool from './pages/invitation/ShareholderPool'
 import FivePool from './pages/invitation/FivePool'
 import PkPool from './pages/invitation/PkPool'
 
+import AssetPool from './pages/invitation2/AssetPool/AssetPool'
+import MiningDetails from './pages/invitation2/AssetPool/MiningDetails'
+import AssetLinearPool from './pages/invitation2/AssetLinearPool/AssetLinearPool'
+import AssetLinearDetails from './pages/invitation2/AssetLinearPool/AssetLinearDetails'
+import SaleableBalance from './pages/invitation2/SaleableBalance'
+import SaleableLimit from './pages/invitation2/SaleableLimit'
+import SignDetails from './pages/invitation2/SignDetails'
+
 Vue.use(Router)
 
 const router = new Router({
@@ -462,7 +470,43 @@ const router = new Router({
       path: '/pogSearchToken',
       name: 'PogSearchToken',
       component: PogSearchToken,
-    }
+    },
+
+    {
+      path: '/assetPool',
+      name: 'AssetPool',
+      component: AssetPool,
+    },
+    {
+      path: '/miningDetails',
+      name: 'MiningDetails',
+      component: MiningDetails,
+    },
+    {
+      path: '/assetLinearPool',
+      name: 'AssetLinearPool',
+      component: AssetLinearPool,
+    },
+    {
+      path: '/assetLinearDetails',
+      name: 'AssetLinearDetails',
+      component: AssetLinearDetails,
+    },
+    {
+      path: '/saleableBalance',
+      name: 'SaleableBalance',
+      component: SaleableBalance,
+    },
+    {
+      path: '/saleableLimit',
+      name: 'SaleableLimit',
+      component: SaleableLimit,
+    },
+    {
+      path: '/signDetails',
+      name: 'SignDetails',
+      component: SignDetails,
+    },
   ]
 })
 
