@@ -1,5 +1,5 @@
 <template>
-  <div class="warp">
+  <div class="wrap">
     <!-- 头部信息 -->
     <div class="top">
       <h2>eoscheshieos</h2>
@@ -56,92 +56,103 @@
           规则>
         </span>
       </div>
+      <div class="content">
+              <v-ons-select style="width: 50%" v-model="selectedInvitation">
+                  <option v-for="item in MyInvitationItem" :value="item.value">
+                    {{ item.text }}
+                  </option>
+              </v-ons-select>
+
+              <v-ons-select style="width: 50%" v-model="selectedMyTeam">
+                  <option v-for="item in MyTeamItem" :value="item.value">
+                    {{ item.text }}
+                  </option>
+              </v-ons-select>
+      </div>
     </div>
 
-    <!-- 投资与子账号 -->
-    <div class="investment">
-        <div class="title clear">
-          <span class="left">
-            投资与子账号
-          </span>
-          <span class="right">
-            规则>
-          </span>
-        </div>
-    </div>
 
     <!-- 全球区块链去中心化游戏平台 -->
     <div class="direction">
         <div class="content">
             <div class="left">
-                <img src="@/assets/img/u5094.svg" alt="">
+                <img src="@/assets/img/u6628.svg" alt="">
             </div>
             <div class="right">  
-              全球区块链去中心化游戏平台，真正公平
-            公正、透明可查、无法作假的区块链去中
-            心化游戏是现在和未来的方向。
+              共同建设全球区块链去中心化游戏社区，
+              购买 TBG 资产包即挖矿，参与游戏获空
+              投，持有 TBG 享股东分红。
             </div>
         </div>
           
     </div>
     
-    <!-- TBG-I 收益 -->
-    <div class="profit">
+    <!-- TBG资产包矿池 -->
+    <div class="orePool">
         <div class="title clear">
           <span class="left">
-            TBG-I 收益
+            TBG资产包矿池
+          </span>
+          <span class="right">
+            规则>
+          </span>
+        </div>
+        <div class="content">
+             
+             <div class="left">
+               <!-- <img  src="@/assets/img/u6711.svg" alt=""> -->
+               <img class="people"  src="@/assets/img/u6712.gif" alt="">
+               </div>
+             <div class="right">
+                <p>当前有效资产包</p>
+                <p>1,954.2532 <span>0000</span> TBG</p>
+             </div>
+        </div>
+    </div>
+
+
+     <!--  TBG线性释放池 -->
+    <div class="releasePool">
+        <div class="title clear">
+          <span class="left">
+            TBG线性释放池
           </span>
           <span class="right">
             规则>
           </span>
         </div>
         <div class="content clear">
-          <div class="left">总计</div>
-          <div class="right">492.5160 <span>0210</span> UE</div>
+          <div class="left">释放池余额</div>
+          <div class="right">2,492.5160 <span> 0210 </span> TBG</div>
         </div>
     </div>
 
-    <!-- 奖金及保障池 -->
+    <!-- TBG 可售池 -->
     <div class="bonus">
         <div class="title clear">
           <span class="left">
-            奖金及保障池
+            TBG 可售池
           </span>
           <span class="right">
             规则>
           </span>
         </div>
+
+
         <div class="content">
+
            <div class="item">
-              <p>Bingo 奖金池</p>
-              <p>00:26:09</p>
-              <p>倒计时</p>
+              <p>可售余额</p>
+              <p>197.2660 <span>0000</span></p>
+              <p>TBG</p>
            </div>
+
            <div class="item">
-              <p>最后1位投资者</p>
-              <p>2303.2450</p>
-              <p>UE</p>
+              <p>可售余额</p>
+              <p>197.2660 <span>0000</span></p>
+              <p>TBG</p>
            </div>
-           <div class="item">
-              <p>最后2-30位投资者</p>
-              <p>2303.2450</p>
-              <p>UE</p>
-           </div>
-           <div class="item">
-              <p>TBG分红池</p>
-              <p>5103.0580</p>
-              <p>UE</p>
-           </div>
-           <div class="item">
-              <p>三倍收益保障池</p>
-              <p>1096.0000</p>
-              <p>UE</p>
-           </div>
-           <div class="item">
-              <p>直接推荐PK池</p>
-              <p>154.2532</p>
-              <p>UE</p>
-           </div>
+
         </div>
     </div>
 
@@ -154,17 +165,30 @@
 
 export default {
     data(){
-        return {
-            
+          return {
+                MyInvitationItem: [
+                  { text: '普通用户', value: 'OrdinaryUsers' },
+                  { text: '全球合作伙伴', value: 'GlobalPartners' },
+                ],
+                selectedInvitation: 'OrdinaryUsers',
+                MyTeamItem:[
+                  { text: '普通用户', value: 'OrdinaryUsers' },
+                  { text: '全球合作伙伴', value: 'GlobalPartners' },
+                ],
+                selectedMyTeam:'OrdinaryUsers'
         }
+    },
+    created(){
+        
     }
 }
 </script>
 
 <style scoped>
   /* 公共样式 */
-  .warp{
+  .wrap{
         font-family: '微軟正黑體 Regular', '微軟正黑體';
+        margin-bottom:2rem;
   }
   .clear{
     overflow: hidden;
@@ -299,17 +323,80 @@ export default {
   }
 
 
+
+
+
+
+
+
+
+
+
+
   .myteam{
      background:#fff;
      margin-top:0.35rem;
   }
+  .myteam .content{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height: 1rem;
+  }
+  
+  
  
 
 
-  .investment{
-    background:#fff;
+
+
+
+
+
+
+
+
+
+
+.orePool{
+  background:#fff;
      margin-top:0.35rem;
-  }
+}
+.orePool .content{
+  display:flex;
+  
+}
+.orePool .content .left{
+  flex:2 2;
+  text-align: center;
+  background:url("../../assets/img/u6711.svg") no-repeat ;
+  background-position:center;
+  background-size: 3rem;
+}
+.orePool .content .right{
+  flex:3 3;
+  text-align:center;
+  font-size:0.4rem;
+}
+.orePool .content .right p:nth-child(1){
+  padding-top:0.7rem;
+}
+.orePool .content .right p:nth-child(2){
+  padding-top:0.1rem;
+  font-weight:bold;
+}
+.orePool .content .right p:nth-child(2) span{
+  color:#bcbcbc;
+}
+.people{
+  width:2.5rem;
+  height:2.5rem;
+  z-index: 99;
+}
+
+
+
+
 
 
 
@@ -328,39 +415,35 @@ export default {
     display:flex;
     align-items:center;
   }
- 
    .direction .content .left img{
     padding-right:0.2rem;
   }
-
   .direction .content .right{
     font-size:0.4rem;
   }
 
 
 
-  .profit{
+  .releasePool{
      background:#fff;
      margin-top:0.35rem;
   }
-  .profit .content{
-     padding:0.4rem;
+  .releasePool .content{
+     padding:0.4rem  0.8rem;
   }
-  .profit .content .left{
+  .releasePool .content .left{
     float:left;
     font-size:0.45rem;
     
   }
-  .profit .content .right{
+  .releasePool .content .right{
     float:right;
     font-weight:bold;
     font-size:0.4rem;
   }
-  .profit .content .right span{
-    color:#868686;
+  .releasePool .content .right span{
+    color:#BCBCBC;
   }
-
-
 
   .bonus{
      background:#fff;
@@ -387,8 +470,13 @@ export default {
       white-space:nowrap;
       font-weight:400;
   }
+   .bonus .content .item p:nth-child(2) span{
+      color:#bcbcbc;
+  }
   .bonus .content .item p:nth-child(3){
+      font-family: 'Bahnschrift Regular', 'Bahnschrift';
       font-weight:400;
       font-size:0.4rem;
   }
+ 
 </style>
