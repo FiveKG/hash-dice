@@ -30,13 +30,12 @@ async function handlerHolder() {
         // 本次分配的金额
         let distrEnable = holderPoolAmount.mul(INCOME_CONSTANT.SHAREHOLDERS_ALLOCATE_RATE).div(INCOME_CONSTANT.BASE_RATE);
         let holderAccountList = await getHolderAccountList();
-        console.log("holderAccountList: ", holderAccountList);
+        logger.debug("holderAccountList: ", holderAccountList);
         for (let item of holderAccountList) {
             let total = new Decimal(item.total);
             let all = new Decimal(item.all);
             let rate = total.div(all);
             let remark = `account ${ item.referrer_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
-            // await personalAssetChange(client, item.referrer_name, distrEnable.mul(rate), opType, remark);
             let now = new Date();
             let data = {
                 "account_name": item.referrer_name,

@@ -14,7 +14,7 @@ const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // developme
 const fetch = require('node-fetch');                                // node only
 const { TextDecoder, TextEncoder } = require('util');               // node only
 const { insertBalanceLog } = require("../models/balance");
-const { updateTbgBalance } = require("../models/tbgBalance");
+const { updateTbgBalance, getTbgBalanceInfo } = require("../models/tbgBalance");
 const TRADE_CONSTANTS = require("../common/constant/tradeConstant.js");
 const { generate_primary_key } = require("../common/index.js");
 const { insertTradeLog, updateTrade } = require("../models/trade");
@@ -36,8 +36,8 @@ async function raiseAirdrop(data) {
         // @ts-ignore
         const rpc = new JsonRpc(END_POINT, { fetch });
         const now = new Date();
-        const acBalanceLogInfo = await getBalanceLogInfo({ accountName: accountName, "symbol": TBG_TOKEN_SYMBOL });
-        const acCurrentBalance = !!acBalanceLogInfo[0] ? acBalanceLogInfo[0].current_balance : 0;
+        const tbgBalance = await getTbgBalanceInfo(accountName);
+        const acCurrentBalance = new Decimal(tbgBalance.release_amount)
         // 查找推荐人
         let userReferrer = await getUserReferrer(accountName);
         let reCurrentBalance, reBalanceRemark;
@@ -57,20 +57,6 @@ async function raiseAirdrop(data) {
                     }],
                     data: {
                         from: TBG_TOKEN_COIN,
-                        to: TBG_FREE_POOL,
-                        quantity: `${ quantity.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                        memo: memo,
-                    }
-                },
-                {
-                    account: TBG_TOKEN_COIN,
-                    name: "transfer",
-                    authorization: [{
-                        actor: TBG_TOKEN_COIN,
-                        permission: 'active',
-                    }],
-                    data: {
-                        from: TBG_TOKEN_COIN,
                         to: TSH_INCOME,
                         quantity: `${ userReferrer.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
                         memo: reBalanceRemark,
@@ -79,9 +65,8 @@ async function raiseAirdrop(data) {
             )
         } else {
             // 如果有推荐人，推荐人获得的奖励也要转入释放池
-            const reBalanceLogInfo = await getBalanceLogInfo({ accountName: userReferrer, "symbol": TBG_TOKEN_SYMBOL });
-            const currentBalance = !!reBalanceLogInfo[0] ? reBalanceLogInfo[0].current_balance : 0;
-            reCurrentBalance = new Decimal(currentBalance).add(referrerIncome);
+            const reTbgBalance = await getTbgBalanceInfo(userReferrer);
+            reCurrentBalance = new Decimal(reTbgBalance.release_amount).add(referrerIncome);
             tmpActions.push({
                 account: TBG_TOKEN_COIN,
                 name: "transfer",
@@ -111,6 +96,20 @@ async function raiseAirdrop(data) {
         let actions = {
             actions: [
                 ...tmpActions,
+                {
+                    account: TBG_TOKEN_COIN,
+                    name: "transfer",
+                    authorization: [{
+                        actor: TBG_TOKEN_COIN,
+                        permission: 'active',
+                    }],
+                    data: {
+                        from: TBG_TOKEN_COIN,
+                        to: TBG_FREE_POOL,
+                        quantity: `${ quantity.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                        memo: memo,
+                    }
+                },
                 {
                     account: TBG_TOKEN_COIN,
                     name: "transfer",
@@ -174,7 +173,7 @@ async function raiseAirdrop(data) {
             const remark = `user ${ accountName } at ${ finishTime } done raise`;
             // 更新交易状态
             await updateTrade(client, trId, "finished", finishTime);
-            await insertTradeLog(client, trLogId, trId, OPT_CONSTANTS.RAISE, amount.toNumber(), remark, price, amount.mul(price).toNumber(), finishTime);
+            await insertTradeLog(client, trLogId, trId, accountName, OPT_CONSTANTS.RAISE, amount.toNumber(), remark, price, amount.mul(price).toNumber(), finishTime);
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");

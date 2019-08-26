@@ -7,14 +7,13 @@ const { TBG_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../../common/constant/accountConstant");
 const { getAccountInfo } = require("../../models/account");
 const { getCurrencyStats } = require("../../job/getTrxAction.js");
-const { getSystemLogInfo, insertSystemOpLog } = require("../../models/systemOpLog");
+const { getBalanceLogByTerm } = require("../../models/balanceLog");
 const { getBalanceLogInfo } = require("../../models/balanceLog");
 const { insertBalanceLog } = require("../../models/balance");
-const { updateTbgBalance } = require("../../models/tbgBalance");
+const { updateTbgBalance, getTbgBalanceInfo } = require("../../models/tbgBalance");
 const { insertAccountOp } = require("../../models/accountOp");
 const { Decimal } = require("decimal.js");
-const { pool, psCheckIn } = require("../../db");
-const { updateSystemAmount, getSystemAccountInfo } = require("../../models/systemPool");
+const { pool } = require("../../db");
 const df = require("date-fns");
 
 // 签到
@@ -30,8 +29,10 @@ async function checkIn(req, res, next) {
 
         // 获取用户签到记录
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, "symbol": TBG_TOKEN_SYMBOL });
+        const tbgBalance = await getTbgBalanceInfo(accountName);
         let income = 0;
-        let currentBalance = !!balanceLogInfo[0] ? balanceLogInfo[0].current_balance : 0;
+        // let currentBalance = !!balanceLogInfo[0] ? balanceLogInfo[0].current_balance : 0;
+        let currentBalance = tbgBalance.release_amount;
         const checkInLog = balanceLogInfo.filter(it => it.op_type === OPT_CONSTANTS.CHECK_IN);
         // 如果用户每天不是每天都签到，收益从最近一个连续的地方开始算, 即从最新的一次签到开始累加
         if (checkInLog.length === 0) {
@@ -61,11 +62,10 @@ async function checkIn(req, res, next) {
         const { [TBG_TOKEN_SYMBOL]: { max_supply } } = await getCurrencyStats(TBG_TOKEN_COIN, TBG_TOKEN_SYMBOL);
         // max_supply ~ 1.0000 TBG, 先拆分，拿到数量
         const maxSupply = new Decimal(max_supply.split(" ")[0]);
-        const systemOpLogInfo = await getSystemLogInfo({ symbol: TBG_TOKEN_SYMBOL });
-        const allCheckInLog = systemOpLogInfo.find(q => q.op_type === OPT_CONSTANTS.CHECK_IN);
+        const total = await getBalanceLogByTerm({ symbol: TBG_TOKEN_SYMBOL, opType: OPT_CONSTANTS.CHECK_IN });
         const checkInAirdropInfo = AIRDROP.find(it => it.id === CHECK_IN_AIRDROP_ID);       
         const amount = maxSupply.mul(checkInAirdropInfo.rate);
-        const quantity = !!allCheckInLog ? new Decimal(allCheckInLog.total).add(income).toNumber() : 0;
+        const quantity = !!total ? new Decimal(total).add(income).toNumber() : 0;
         if (amount.lessThan(quantity)) {
             return res.send(get_status(1018, "check in airdrop quota has been used up"))
         }

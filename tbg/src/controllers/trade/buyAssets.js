@@ -4,7 +4,8 @@ const { get_status, inspect_req_data, generate_primary_key } = require("../../co
 const { getAccountInfo } = require("../../models/account");
 const { getAssetsInfoById } = require("../../models/asset");
 const { insertTrade, insertTradeLog } = require("../../models/trade");
-const { pool } = require("../../db");
+const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
+const { pool, psBuyAssets } = require("../../db");
 const { format } = require("date-fns");
 const { Decimal } = require("decimal.js");
 
@@ -36,10 +37,10 @@ async function buyAssets(req, res, next) {
         await client.query("BEGIN");
         try {
             await insertTrade(client, trId, accountName, tradeType, { "ap_id": apId }, amount.toNumber(), 0, price, "create", createTime, finishedTime);
-            await insertTradeLog(client, trLogId, trId, tradeType, amount.toNumber(), memo, price, volume.toNumber(), createTime);
-            // todo 
-            // 空投 TBG
+            await insertTradeLog(client, trLogId, trId, accountName, tradeType, amount.toNumber(), memo, price, volume.toNumber(), createTime);
             await client.query("COMMIT");
+            // todo
+            // 买入时，用户会转代币给收款人，直接监听转账，如果监听到，并且内容匹配，按 tbg 规则分配用户收益
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;

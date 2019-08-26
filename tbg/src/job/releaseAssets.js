@@ -4,12 +4,21 @@ const { MEMBER_LEVEL_TRX } = require("../common/constant/assetsConstant.js");
 const { Decimal } = require("decimal.js");
 const { userMember } = require("../common/userMember.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
-const { ACCOUNT_INACTIVATED } = require("../common/constant/accountConstant");
+const { ACCOUNT_INACTIVATED, ACCOUNT_ACTIVATED_TBG_1 } = require("../common/constant/accountConstant");
 const { pool } = require("../db");
 const { scheduleJob } = require("node-schedule");
+const { TSH_INCOME, TBG_MINE_POOL, TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
+const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
+const { Api, JsonRpc } = require('eosjs');
+const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
+const fetch = require('node-fetch');                                // node only
+const { TextDecoder, TextEncoder } = require('util');               // node only
+const { format } = require("date-fns");
+const { updateTbgBalance, getTbgBalanceInfo } = require("../models/tbgBalance");
 
 /**
  * 所有进入释放池的TBG，从次日0:00开始释放
+ * 从用户的释放池减去，增加到可用余额
  */
 async function releaseAssets() {
     try {
@@ -17,18 +26,37 @@ async function releaseAssets() {
             SELECT (SELECT count(1) as count FROM referrer r
                         JOIN account a ON r.account_name = a.account_name
                         AND a.state != ${ ACCOUNT_INACTIVATED }
+                        AND a.state != ${ ACCOUNT_ACTIVATED_TBG_1 }
                     ) AS count, account_name
                 FROM account
         `
+        // 查找所有参与 tbg2 的用户
         let { rows: memberInfo } = await pool.query(selectAccountLevelSql);
+        // 将用户信息存入 map 中
         const memberMap = new Map();
         for (const info of memberInfo) {
             memberMap.set(info.account_name, info.count);
         }
         
+        // 查找所有用户的 TBG 资产
         const trxList = [];
+        const releaseList = [];
         const { rows: tbgBalanceInfo } = await pool.query("SELECT * FROM tbg_balance");
         const now = new Date();
+        let sql = `
+            INSERT INTO 
+                balance_log(account_name, change_amount, current_balance, op_type, extra，remark, create_time)
+                VALUES($1, $2, $3, $4, $5, $6, $7);
+        `
+        // 减去用户释放池资产，更新可售余额
+        const updateBalanceSql = `
+            UPDATE tbg_balance 
+                SET release_amount = release_amount + $1, 
+                    sell_amount = sell_amount + $2,  
+                    active_amount = active_amount + $3
+                WHERE account_name = $4
+        `
+        // 遍历会员，根据等级释放
         for (const info of tbgBalanceInfo) {
             const levelInfo = userMember(memberMap.get(info.account_name));
             // 当前会员等级的释放比例
@@ -37,19 +65,52 @@ async function releaseAssets() {
             const releaseAmount = new Decimal(info.release_amount);
             // 可释放的额度
             const dayRelease = releaseAmount.mul(releaseRate);
-            let sql = `
-                INSERT INTO 
-                    balance_log(account_name, change_amount, current_balance, op_type, extra， remark, create_time)
-                    VALUES($1, $2, $3, $4, $5, $6, $7);
-            `
-            const remark = `user ${ info.account_name } at ${ now } release assets ${ dayRelease.toFixed(8) }`
-            const opts = [ info.account_name, dayRelease, releaseAmount.minus(dayRelease), OPT_CONSTANTS.RELEASE, {}, remark, now ]
+            const remark = `user ${ info.account_name } at ${ now } release assets ${ dayRelease.toFixed(8) }, minus release_amount ${ dayRelease }`
+            const opts = [ info.account_name, -dayRelease, releaseAmount.minus(dayRelease), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL }, remark, now ]
 
+            // 从用户的释放池减去
             trxList.push({
                 sql: sql,
                 values: opts
             });
+
+            // 增加到可用余额
+            const remark1 = `user ${ info.account_name } at ${ now } release assets ${ dayRelease.toFixed(8) }, add active_amount ${ dayRelease }`
+            trxList.push({
+                sql: sql,
+                values: [ info.account_name, dayRelease, new Decimal(info.active_amount).add(dayRelease), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL }, remark, now ]
+            });
+
+            const updateOpts = [ -dayRelease, 0, dayRelease, info.account_name ]
+
+            trxList.push({
+                sql: updateBalanceSql,
+                values: updateOpts
+            });
+
+            releaseList.push({ account_name: info.account_name, release_amount: dayRelease })
         }
+
+        // 此处可以直接转给用户，智能合约已经设置为用户不可私下交易，只能通过平台转出
+        const actionList = releaseList.map(it => {
+            return {
+                account: TBG_TOKEN_COIN,
+                name: "transfer",
+                authorization: [{
+                    actor: TBG_TOKEN_COIN,
+                    permission: 'active',
+                }],
+                data: {
+                    from: TBG_FREE_POOL,
+                    to: it.account_name,
+                    quantity: `${ new Decimal(it.release_amount).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                    memo: `${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } release asset`
+                }
+            }
+        })
+        // @ts-ignore
+        // 区块链事务执行
+        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
 
         const client = await pool.connect();
         await client.query("BEGIN");
@@ -57,6 +118,17 @@ async function releaseAssets() {
             await Promise.all(trxList.map(it => {
                 client.query(it.sql, it.values);
             }));
+            // 每二十笔交易打包一次
+            while (actionList.length > 0) {
+                let actions = {
+                    actions: actionList.splice(0, 20)
+                }
+        
+                const result = await api.transact(actions, {
+                    blocksBehind: 3,
+                    expireSeconds: 30,
+                });
+            }
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");

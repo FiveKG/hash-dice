@@ -4,6 +4,7 @@ const { get_status, inspect_req_data, generate_primary_key } = require("../../co
 const { getAccountInfo } = require("../../models/account");
 const { getAssetsInfoById } = require("../../models/asset");
 const { insertTrade, insertTradeLog, getTradeInfo } = require("../../models/trade");
+const { getBalanceLogByTerm } = require("../../models/balanceLog");
 const { pool, psRaise } = require("../../db");
 const { format } = require("date-fns");
 const { insertAccountOp } = require("../../models/accountOp");
@@ -51,11 +52,9 @@ async function raiseBuy(req, res, next) {
         const memo = `user ${ accountName } at ${ createTime } raised a ${ amount.toNumber() } assets package`;
 
         // 查询所有的私募空投记录
-        const systemOpLogInfo = await getSystemLogInfo({ symbol: TBG_TOKEN_SYMBOL });
-        const raiseLog = systemOpLogInfo.find(q => q.op_type === OPT_CONSTANTS.RAISE);
-        
+        const total = await getBalanceLogByTerm({ symbol: TBG_TOKEN_SYMBOL, opType: OPT_CONSTANTS.RAISE });
         // 当私募所有拨出达35,000,000TBG或余数不足以满足最低私募时，即中止私募
-        const quantity = !!raiseLog ? new Decimal(raiseLog.total).add(amount) : 0;
+        const quantity = !!total ? new Decimal(total).add(amount) : 0;
         if (new Decimal(RAISE_LIMIT).lessThan(quantity)) {
             return res.send(get_status(1018, "check in airdrop quota has been used up"))
         }
@@ -67,7 +66,7 @@ async function raiseBuy(req, res, next) {
             // 私募时先生成私募订单和私募日志
             await insertAccountOp(client, accountName, tradeType, memo);
             await insertTrade(client, trId, accountName, tradeType, { "ap_id": apId }, amount.toNumber(), 0, price, "create", createTime, finishedTime);
-            await insertTradeLog(client, trLogId, trId, tradeType, amount.toNumber(), memo, price, volume.toNumber(), createTime);
+            await insertTradeLog(client, trLogId, trId, accountName, tradeType, amount.toNumber(), memo, price, volume.toNumber(), createTime);
             await client.query("COMMIT");
             // todo 
             // 空投 TBG

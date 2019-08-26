@@ -1,17 +1,17 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
-const logger = require("../../common/logger.js").child({ "@models/trade/getTradeLog.js": "获取交易日志信息" });
+const logger = require("../../common/logger.js").child({ "@models/trade/getAllTrade.js": "获取所有交易信息" });
 
 /**
- * 获取交易日志信息
+ * 获取所有交易信息
  * @param { String } tradeType 交易类型，买或者买
  * @param { string } tradeState 交易状态
- * @returns { Promise<DB.Trade_log[]> }
+ * @returns { Promise<DB.Trade[]> }
  */
-async function getTradeLog(tradeType, tradeState) {
+async function getAllTrade(tradeType, tradeState) {
     try {
         const sql = `
-            SELECT * FROM trade_log 
+            SELECT * FROM trade 
                 WHERE trade_type = $1 
                 AND state  = $2 
                 ORDER BY create_time DESC
@@ -25,4 +25,4 @@ async function getTradeLog(tradeType, tradeState) {
     }
 }
 
-module.exports = getTradeLog;
+module.exports = getAllTrade;

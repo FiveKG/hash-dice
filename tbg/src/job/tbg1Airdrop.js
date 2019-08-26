@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/checkInAirdrop.js": "签到空投" });
+const logger = require("../common/logger.js").child({ "@src/job/tbg1Airdrop.js": "参加 tbg1 空投" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const { TSH_INCOME, TBG_MINE_POOL, TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
@@ -13,22 +13,48 @@ const { format } = require("date-fns");
 
 
 /**
- * 签到空投
- * 从日志中找出今日所有的签到用户
- * 每日0点将本日签到所有的空投数量
- * 由发币账号转至释放池账号
- * 直至签到空投数量空投完毕后中止
+ * 参加 tbg1 空投
+ * @param {{ account: DataInfo, referrer?: DataInfo }} data
  */
-async function checkInAirdrop() {
+async function tbg1Airdrop(data) {
     try {
-        const sql = `
-            SELECT * FROM balance_log WHERE op_type = $1 AND create_time BETWEEN CAST($2 AS DATE) - 1 AND $2
+        const trxList = [];
+        const dataList = []
+        if (!!data.referrer) {
+            dataList.push(data.referrer);
+        }
+        let sql = `
+            INSERT INTO 
+                balance_log(account_name, change_amount, current_balance, op_type, extra，remark, create_time)
+                VALUES($1, $2, $3, $4, $5, $6, $7);
         `
-        const now = new Date();
-        const { rows: checkInList } = await pool.query(sql, [ OPT_CONSTANTS.CHECK_IN, now ]);
-        const signatureProvider = new JsSignatureProvider([ PRIVATE_KEY_TEST ]);
+        // 减去用户释放池资产，更新可售余额
+        const updateBalanceSql = `
+            UPDATE tbg_balance 
+                SET release_amount = release_amount + $1, 
+                    sell_amount = sell_amount + $2,  
+                    active_amount = active_amount + $3
+                WHERE account_name = $4
+        `
+        for (const info of dataList) {
+            const opts = [ info.account_name, info.release_amount, info.current_balance, info.op_type, info.extra, info.remark, info.create_time ]
 
-        const actionList = checkInList.map(it => {
+            trxList.push({
+                sql: sql,
+                values: opts
+            });
+
+            const updateOpts = [ info.release_amount, info.sell_amount, info.active_amount, info.account_name ]
+
+            trxList.push({
+                sql: updateBalanceSql,
+                values: updateOpts
+            });
+        }
+        
+        const signatureProvider = new JsSignatureProvider([ PRIVATE_KEY_TEST ]);
+        // 用户参加 tbg1，由发币账号转至释放池账号
+        const actionList = dataList.map(it => {
             return {
                 account: TBG_TOKEN_COIN,
                 name: "transfer",
@@ -39,31 +65,56 @@ async function checkInAirdrop() {
                 data: {
                     from: TBG_TOKEN_COIN,
                     to: TBG_FREE_POOL,
-                    quantity: `${ new Decimal(it.change_amount).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                    memo: `${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } check in airdrop`
+                    quantity: `${ new Decimal(it.release_amount).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                    memo: `${ format(it.create_time, "YYYY-MM-DD : HH:mm:ssZ") } check in airdrop`
                 }
             }
         })
         // @ts-ignore
         // 区块链事务执行
         const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
+        const client = await pool.connect();
+        await client.query("BEGIN");
+        try {
+            await Promise.all(trxList.map(it => {
+                client.query(it.sql, it.values);
+            }));
+            // 打包交易
+            while (actionList.length > 0) {
+                let actions = {
+                    actions: actionList.splice(0, 20)
+                }
 
-        // 每二十笔交易打包一次
-        while (actionList.length > 0) {
-            let actions = {
-                actions: actionList.splice(0, 20)
+                const result = await api.transact(actions, {
+                    blocksBehind: 3,
+                    expireSeconds: 30,
+                });
             }
-    
-            const result = await api.transact(actions, {
-                blocksBehind: 3,
-                expireSeconds: 30,
-            });
+            await client.query("COMMIT");
+        } catch (err) {
+            await client.query("ROLLBACK");
+            throw err;
+        } finally {
+            await client.release();
         }
-
     } catch (err) {
         logger.error("check in airdrop error, the error stock is %O", err);
         throw err;
     }
 }
 
-module.exports = checkInAirdrop
+module.exports = tbg1Airdrop
+
+/**
+ * @description
+ * @typedef { object } DataInfo
+ * @property { string } account_name
+ * @property { number } release_amount
+ * @property { number } sell_amount
+ * @property { number } active_amount
+ * @property { number } current_balance
+ * @property { string } op_type
+ * @property { object } extra
+ * @property { string } remark
+ * @property { Date } create_time
+ */

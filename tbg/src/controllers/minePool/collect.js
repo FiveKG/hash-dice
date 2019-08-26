@@ -2,7 +2,7 @@
 const logger = require("../../common/logger.js").child({ "@controllers/minePool/collect.js": "资产包挖矿收益收取" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountInfo } = require("../../models/account");
-const { updateTbgBalance } = require("../../models/tbgBalance");
+const { updateTbgBalance, getTbgBalanceInfo } = require("../../models/tbgBalance");
 const { getBalanceLogInfo } = require("../../models/balanceLog");
 const { TBG_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const { insertBalanceLog } = require("../../models/balance");
@@ -12,6 +12,7 @@ const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { pool } = require("../../db");
 
 // 资产包挖矿收益收取
+// 收取后，增加用户的释放资产
 // @ts-ignore
 async function collect(req, res, next) {
     try {
@@ -26,7 +27,9 @@ async function collect(req, res, next) {
         // 购买资产包成功后，开始生成挖矿包，从交易完成时开始计算挖矿时间
         const now = new Date();
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, "symbol": TBG_TOKEN_SYMBOL });
-        let currentBalance = !!balanceLogInfo[0] ? new Decimal(balanceLogInfo[0].current_balance) : 0;
+        // let currentBalance = !!balanceLogInfo[0] ? new Decimal(balanceLogInfo[0].current_balance) : 0;
+        const tbgBalance = await getTbgBalanceInfo(accountName);
+        let currentBalance = new Decimal(tbgBalance.release_amount);
         // 过滤出当前所有的挖矿记录
         const miningIds = miningId.split(",");
         const miningInfo = balanceLogInfo.map(it => it.op_type === OPT_CONSTANTS.MINING && miningIds.includes(it.extra.tr_id))
@@ -67,9 +70,9 @@ async function collect(req, res, next) {
         try {
             await Promise.all(trxList.map(it => {
                 // @ts-ignore
-                updateTbgBalance(client, ...it.insertBalanceLog),
+                updateTbgBalance(client, ...it.updateTbgBalance),
                 // @ts-ignore
-                insertBalanceLog(client, ...it.updateTbgBalance)
+                insertBalanceLog(client, ...it.insertBalanceLog)
             }))
             await client.query("COMMIT");
         } catch (err) {

@@ -7,8 +7,7 @@ const { TBG_TOKEN_COIN } = require("../../common/constant/accountConstant");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { getAccountInfo } = require("../../models/account");
 const { getCurrencyStats } = require("../../job/getTrxAction.js");
-const { getSystemLogInfo } = require("../../models/systemOpLog");
-const { getBalanceLogInfo } = require("../../models/balanceLog");
+const { getBalanceLogInfo, getBalanceLogByTerm } = require("../../models/balanceLog");
 const { Decimal } = require("decimal.js");
 
 // 获取签到奖励明细
@@ -26,8 +25,7 @@ async function checkInInfo(req, res, next) {
         // max_supply ~ 1.0000 TBG, 先拆分，拿到数量
         const maxSupply = new Decimal(max_supply.split(" ")[0]);
         // 查询空投记录
-        const systemOpLogInfo = await getSystemLogInfo({ symbol: TBG_TOKEN_SYMBOL });
-        const checkInLog = systemOpLogInfo.find(q => q.op_type === OPT_CONSTANTS.CHECK_IN);
+        const total = await getBalanceLogByTerm({ symbol: TBG_TOKEN_SYMBOL, opType: OPT_CONSTANTS.CHECK_IN });
         const checkInAirdropInfo = AIRDROP.find(it => it.id === CHECK_IN_AIRDROP_ID);
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: OPT_CONSTANTS.CHECK_IN });
         let sumIncome = new Decimal(0);
@@ -40,7 +38,7 @@ async function checkInInfo(req, res, next) {
         })
         let resData = get_status(1);
         const amount = maxSupply.mul(checkInAirdropInfo.rate);
-        const quantity = !!checkInLog ? new Decimal(checkInLog.total).toFixed(8) : 0;
+        const quantity = !!total ? new Decimal(total).toFixed(8) : 0;
         resData["data"] = {
             "airdrop_amount": amount.toFixed(8),
             "airdrop_quantity": quantity,

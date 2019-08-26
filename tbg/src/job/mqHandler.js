@@ -6,9 +6,11 @@ const {
     psTshIncome, psRaise
 } = require("../db");
 const handlerWithdraw = require("./handlerWithdraw.js");
-const { insertBalanceLog } = require("../models/balance");
-const { updateTbgBalance } = require("../models/tbgBalance");
 const raiseAirdrop = require("./raiseAirdrop.js");
+const checkInAirdrop = require("./checkInAirdrop");
+const bindAirdrop = require("./bindAirdrop");
+const tbg1Airdrop = require("./tbg1Airdrop");
+const tshIncomeAirdrop = require("./tshIncomeAirdrop");
 const { pool } = require("../db");
 
 // 用户提现消息
@@ -56,27 +58,7 @@ psBind.sub(async msg => {
     try {
         let result = JSON.parse(msg);
         logger.debug("result: %O", result);
-        const trxList = [];
-        trxList.push(result.account);
-        if (!!result.referrer) {
-            trxList.push(result.referrer);
-        }
-        const client = await pool.connect();
-        await client.query("BEGIN");
-        try {
-            await Promise.all(trxList.map(it => {
-                // @ts-ignore
-                updateTbgBalance(client, ...it.insertBalanceLog),
-                // @ts-ignore
-                insertBalanceLog(client, ...it.updateTbgBalance)
-            }))
-            await client.query("COMMIT");
-        } catch (err) {
-            await client.query("ROLLBACK");
-            throw err;
-        } finally {
-            await client.release();
-        }
+        await bindAirdrop(result);
     } catch (err) {
         throw err;
     }
@@ -88,27 +70,7 @@ psTbg1.sub(async msg => {
     try {
         let result = JSON.parse(msg);
         logger.debug("result: %O", result);
-        const trxList = [];
-        trxList.push(result.account);
-        if (!!result.referrer) {
-            trxList.push(result.referrer);
-        }
-        const client = await pool.connect();
-        await client.query("BEGIN");
-        try {
-            await Promise.all(trxList.map(it => {
-                // @ts-ignore
-                updateTbgBalance(client, ...it.insertBalanceLog),
-                // @ts-ignore
-                insertBalanceLog(client, ...it.updateTbgBalance)
-            }))
-            await client.query("COMMIT");
-        } catch (err) {
-            await client.query("ROLLBACK");
-            throw err;
-        } finally {
-            await client.release();
-        }
+        await tbg1Airdrop(result);
     } catch (err) {
         throw err;
     }
@@ -132,8 +94,7 @@ psTshIncome.sub(async msg => {
         let result = JSON.parse(msg);
         logger.debug("result: %O", result);
         // 监听到消息，就从收款账户转钱到股东账户
-        const { changeAmount, currentBalance, memo } = result;
-
+        await tshIncomeAirdrop(result);
     } catch (err) {
         throw err;
     }
@@ -145,7 +106,6 @@ psRaise.sub(async msg => {
     try {
         let result = JSON.parse(msg);
         logger.debug("result: %O", result);
-        const { accountName, ap_id } = result;
         await raiseAirdrop(result);
     } catch (err) {
         throw err;

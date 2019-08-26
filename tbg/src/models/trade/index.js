@@ -7,5 +7,6 @@ module.exports = {
     "insertTradeLog": require("./insertTradeLog.js"),
     "getTradeInfoHistory": require("./getTradeInfoHistory.js"),
     "getTradeInfoById": require("./getTradeInfoById.js"),
-    "updateTrade": require("./updateTrade.js")
+    "updateTrade": require("./updateTrade.js"),
+    "getAllTrade": require("./getAllTrade.js")
 }
