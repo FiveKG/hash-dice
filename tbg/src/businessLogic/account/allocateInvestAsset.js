@@ -1,5 +1,5 @@
 // @ts-check
-const { pool, psTbg1, psBind } = require("../../db/index.js");
+const { pool, psTbg1, psBind, psTshIncome } = require("../../db/index.js");
 const logger = require("../../common/logger.js").child({ "@src/models/account/userInvestment.js": "user investment" });
 const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
@@ -11,7 +11,7 @@ const { updateSystemAmount, getSystemAccountInfo } = require("../../models/syste
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const { insertAccountOp } = require("../../models/accountOp");
 const addSubAccount = require("./addSubAccount.js");
-const { getAllParentLevel, updateAccountState, getAccountInfo } = require("../../models/account")
+const { getAllParentLevel, updateAccountState, getAccountInfo, getGlobalAccount } = require("../../models/account")
 const handleRepeat = require("./handleRepeat.js");
 const investAirdrop = require("./investAirdrop.js");
 const investReward = require("./investReward.js");
@@ -45,7 +45,8 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         if (accountInfo.state === 10 || accountInfo.state === 30) {
             accountOpType = OPT_CONSTANTS.REPEAT;
             // 用户复投
-            const globalAccount = referrerAccountList[1];
+            const accountInfo = await getGlobalAccount(ACCOUNT_CONSTANT.ACCOUNT_TYPE.GLOBAL, referrerAccountList);
+            const globalAccount = accountInfo.account_name;
             psTshIncomeData = await handleRepeat(client, accountInfo, globalAccount, userInvestmentRemark);
         } else {
             // 第一次投资，可以获得参与 tbg1 空投，新用户空投 100，推荐人空投 50, 只空投前 300,000 个UE账号
@@ -58,6 +59,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
 
         // 获取系统账户
         let systemAccount = await getSystemAccountInfo();
+        logger.debug("systemAccount: ", systemAccount);
         // 分配直接推荐奖金
         await investReward(client, amount, accountName, referrerAccountList, systemAccount, userInvestmentRemark);
 
@@ -79,17 +81,20 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         await client.query("COMMIT");
 
         // 发送绑定和参与 tbg1 的消息
-        await psTbg1.pub(psTbg1Data);
-        logger.debug(`publish tbg1 message, psTbg1Data: %j`, psTbg1Data);
+        if (Object.keys(psTbg1Data).length !== 0) {
+            await psTbg1.pub(psTbg1Data);
+            logger.debug(`publish tbg1 message, psTbg1Data: %j`, psTbg1Data);
+        }
+        
         // 超过 48h 未投资，不空投
-        if (Object.keys(psBindData).length === 0) {
+        if (Object.keys(psBindData).length !== 0) {
             await psBind.pub(psBindData);
             logger.debug(`publish bind message, psBindData: %j`, psBindData);
         }
 
         // 分配剩余的资产，发送到 tshincome 处理
-        if (Object.keys(psTshIncomeData).length === 0) {
-            await psBind.pub(psTshIncomeData);
+        if (Object.keys(psTshIncomeData).length !== 0) {
+            await psTshIncome.pub(psTshIncomeData);
             logger.debug(`publish tshincome message, psTshIncomeData: %j`, psTshIncomeData);
         }
     } catch (err) {

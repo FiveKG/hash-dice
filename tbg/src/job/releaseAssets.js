@@ -45,7 +45,7 @@ async function releaseAssets() {
         const now = new Date();
         let sql = `
             INSERT INTO 
-                balance_log(account_name, change_amount, current_balance, op_type, extra，remark, create_time)
+                balance_log(account_name, change_amount, current_balance, op_type, extra, remark, create_time)
                 VALUES($1, $2, $3, $4, $5, $6, $7);
         `
         // 减去用户释放池资产，更新可售余额
@@ -110,6 +110,7 @@ async function releaseAssets() {
         })
         // @ts-ignore
         // 区块链事务执行
+        const rpc = new JsonRpc(END_POINT, { fetch });
         const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
 
         const client = await pool.connect();
@@ -118,7 +119,7 @@ async function releaseAssets() {
             await Promise.all(trxList.map(it => {
                 client.query(it.sql, it.values);
             }));
-            // 每二十笔交易打包一次
+            
             while (actionList.length > 0) {
                 let actions = {
                     actions: actionList.splice(0, 20)

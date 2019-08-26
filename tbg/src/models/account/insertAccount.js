@@ -16,7 +16,7 @@ async function insertAccount(client, accountName, referCode, accountType) {
                 VALUES($1, $2, $3, $4, $5, $6, $7);
         `
         const opts = [ generate_primary_key(), accountName, 0, referCode, 0, accountType, "now()" ]
-        console.debug("the sql is %s, the values is %O", sql, opts);
+        // console.debug("the sql is %s, the values is %O", sql, opts);
         await client.query(sql, opts);
     } catch (err) {
         console.error("insert data to account error, the error stock is %O", err);

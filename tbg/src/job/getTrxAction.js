@@ -8,7 +8,7 @@ async function getTrxAction(actionSeq) {
         // @ts-ignore
         const rpc = new JsonRpc(END_POINT, { fetch });
         const resp = await rpc.history_get_actions(WALLET_RECEIVER, actionSeq, 9);
-        console.debug("resp: ", resp);
+        // console.debug("resp: ", resp.actions);
         return resp.actions;
     } catch (err) {
         throw err;
@@ -53,6 +53,7 @@ async function getCurrencyBalance(code, account, symbol) {
 }
 
 // getCurrencyBalance(TBG_TOKEN, TBG_TOKEN, TBG_TOKEN_SYMBOL).then().catch(err => console.error(err));
+// getTrxAction(0).then(res => console.debug(res[0].action_trace.act)).catch(err => console.error(err))
 
 module.exports = {
     getTrxAction,

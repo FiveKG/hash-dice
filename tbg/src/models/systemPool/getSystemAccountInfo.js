@@ -8,7 +8,7 @@ const { pool } = require("../../db/index.js");
 async function getSystemAccountInfo() {
     try {
         let selectSystemAccountSql = `
-            SELECT pool_type, pool_amount FROM system_pools;
+            SELECT * FROM system_pools;
         `
         let { rows } = await pool.query(selectSystemAccountSql);
         return  rows

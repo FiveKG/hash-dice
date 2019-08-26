@@ -32,14 +32,26 @@ async function bindReferrer(req, res, next) {
     let accountType = ACCOUNT_TYPE.GENERAL;
     // 如果邀请码是 "000000" 或者 "W00000", 随机分配一个存在的帐号作为邀请人
     if (inviteCode === INVITE_CODE.GENERAL || inviteCode === INVITE_CODE.GLOBAL) {
-        const rows = await randomGetAccount(accountName);
-        referrerName = !!rows ? rows.account_name : '';
         // 普通用户
         if (inviteCode === INVITE_CODE.GENERAL) {
+            // 开始先检查下有无全球合伙人, 没有的话普通用户不能绑定
+            let sql = `
+                select count(1)::INTEGER AS count from account where account_type = $1
+            `
+            let { rows: [{ count }] } = await pool.query(sql, [ ACCOUNT_TYPE.GLOBAL ]);
+            logger.debug("count: ", count);
+            if (!count) {
+                return res.send(get_status(1021, "当前系统还没有全球合伙人，需有人成为全球合伙人后才可正常绑定"));
+            }
+            const rows = await randomGetAccount(accountName);
+            referrerName = rows.account_name;
             referCode = await redis.spop(INVITE_CODE_KEY.GENERAL);
         } else {
             // 全球合伙人
+            // 全球合伙人的推荐人都为空，每个全球合伙人都位于最顶端，下方不能有其他全球合伙人
             accountType = ACCOUNT_TYPE.GLOBAL;
+            const rows = await randomGetAccount(accountName, accountType);
+            referrerName = !!rows ? rows.account_name : '';
             const tmp = await redis.spop(INVITE_CODE_KEY.GLOBAL);
             referCode = `W${tmp}`
         }
@@ -55,7 +67,7 @@ async function bindReferrer(req, res, next) {
             }
         }
     }
-    
+
     const client = await pool.connect();
     await client.query("BEGIN");
     try {

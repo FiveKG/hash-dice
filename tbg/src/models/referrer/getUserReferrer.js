@@ -13,8 +13,8 @@ async function getUserReferrer(accountName) {
                 join referrer r on r.referrer_name  = a.account_name 
                 where r.account_name = $1;
         `
-        let { rows } = await pool.query(selectSql, [ accountName ]);
-        return rows;
+        let { rows: [ referrerInfo ] } = await pool.query(selectSql, [ accountName ]);
+        return !!referrerInfo ? referrerInfo.account_name : referrerInfo;
     } catch (err) {
         throw err
     }

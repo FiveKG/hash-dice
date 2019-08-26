@@ -1,28 +1,24 @@
 #!/bin/bash
 #Description: test account api
 shopt -s expand_aliases
-alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5JcqsSvTea4Z5GrZpvhfuCZZuABYNwxBdzovKJgMGoSqP4BFKi7'
+alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5J6pxhZNj2GZMLc77eMkYpEWxp6ReZwQmPrS7g7ty7nLiiup2Vn'
 alias cleos='docker exec -it nodeos /usr/bin/cleos -u http://localhost:8888 --wallet-url unix:///root/eosio-wallet/keosd.sock'
-UE_TOKEN_ACCOUNT=wallettoken
+WALLET_RECEIVER=tbgjoin
+UE_TOKEN_ACCOUNT=uetokencoin
 
 # 根据填写的邀请码显示出帐号名称
 function showInviteCode() {
-    accountList=$(grep "accountName" ../keyPairs | awk '{print $2}')
+    accountList=$(grep -o '[0-5a-z\.]\{12,\}' ../keyPairs)
     for ac in $accountList
     do
         # 发送请求到 tbg 服务
-        curl -XGET http://localhost:9527/account/show_account_name_by_code -H "Content-Type: application/json" -d '
-        {
-            "account_name": "'${ac}'",
-            "refer_code": "000000"
-        }
-        '
+        curl -XGET http://localhost:9527/account/show_account_name_by_code?account_name=${ac}&refer_code=000000
     done
 }
 
 # 获取用户的邀请码
 function getAccountInvestCode() {
-    accountList=$(grep "accountName" ../keyPairs | awk '{print $2}')
+    accountList=$(grep -o '[0-5a-z\.]\{12,\}' ../keyPairs)
     for ac in $accountList
     do
         # 发送请求到 tbg 服务
@@ -32,7 +28,7 @@ function getAccountInvestCode() {
 
 # 帐号是否激活
 function isActivated() {
-    accountList=$(grep "accountName" ../keyPairs | awk '{print $2}')
+    accountList=$(grep -o '[0-5a-z\.]\{12,\}' ../keyPairs)
     for ac in $accountList
     do
         # 发送请求到 tbg 服务
@@ -42,7 +38,7 @@ function isActivated() {
 
 # 帐号是否已经绑定
 function isBind() {
-    accountList=$(grep "accountName" ../keyPairs | awk '{print $2}')
+    accountList=$(grep -o '[0-5a-z\.]\{12,\}' ../keyPairs)
     for ac in $accountList
     do
         # 发送请求到 tbg 服务
@@ -52,24 +48,24 @@ function isBind() {
 
 # 绑定推荐关系
 function bindReferrer() {
-    accountList=$(grep "accountName" ./keyPairs | awk '{print $2}')
+    accountList=$(grep -o '[0-5a-z\.]\{12,\}' ../keyPairs)
     for ac in $accountList
     do
         # 发送请求到 tbg 服务
-        curl -XPOST http://localhost:9527/account/bind_referrer -H "Content-Type: application/json" -d '
-        {
-            "account_name": "'${ac}'",
-            "refer_code": "000000"
-        }
-        '
+        # echo '{"account_name":"'${ac}'","refer_code":"000000"}'
+        curl -XPOST http://localhost:9527/account/bind_referrer -H "Content-Type: application/json" -d '{
+            "account_name":"'${ac}'",
+            "refer_code":"000000"
+        }'
     done
 }
 
 # 转账给收款人，自己投资
 function transfer() {
-    accountList=$(grep "accountName" ./keyPairs | awk '{print $2}')
+    accountList=$(grep -o '[0-5a-z\.]\{12,\}' ../keyPairs)
     for ac in $accountList
     do
+        echo $count
         unset quantity
         unset recevicer
         unset memo
@@ -78,15 +74,15 @@ function transfer() {
         amount="100.0000"
         symbol="UE"
         quantity="${amount} ${symbol}"
-        recevicer="uegametoken"
+        recevicer=$WALLET_RECEIVER
         memo=tbg_invest:${ac}
-        cleos push action eosio.token transfer "{\"from\":\"${ac}\",\"to\":\"${recevicer}\",\"quantity\":\"${quantity}\",\"memo\":\"${memo}\"}" -p ${ac}
+        cleos push action $UE_TOKEN_ACCOUNT transfer "[\"${ac}\",\"${WALLET_RECEIVER}\",\"${quantity}\",\"${memo}\"]" -p ${ac}
     done
 }
 
 # 用户等级
 function userLevel() {
-    accountList=$(grep "accountName" ../keyPairs | awk '{print $2}')
+    accountList=$(grep -o '[0-5a-z\.]\{12,\}' ../keyPairs)
     for ac in $accountList
     do
         # 发送请求到 tbg 服务
@@ -96,7 +92,7 @@ function userLevel() {
 
 # 投资首页信息
 function investmentIndexPage() {
-    accountList=$(grep "accountName" ../keyPairs | awk '{print $2}')
+    accountList=$(grep -o '[0-5a-z\.]\{12,\}' ../keyPairs)
     for ac in $accountList
     do
         # 发送请求到 tbg 服务
@@ -106,7 +102,7 @@ function investmentIndexPage() {
 
 # 子帐号
 function subAccount() {
-    accountList=$(grep "accountName" ../keyPairs | awk '{print $2}')
+    accountList=$(grep -o '[0-5a-z\.]\{12,\}' ../keyPairs)
     for ac in $accountList
     do
         # 发送请求到 tbg 服务
@@ -117,10 +113,10 @@ function subAccount() {
 
 unlock
 # 绑定账号信息
-# bindReferrer
+bindReferrer
 
 # 转账给收款人，参与 TBG-I
-transfer
+# transfer
 
 # 获取用户的邀请码
 # getAccountInvestCode

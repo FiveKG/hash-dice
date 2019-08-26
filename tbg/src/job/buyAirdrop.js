@@ -32,7 +32,7 @@ async function buyAirdrop(data) {
         let tmpActions = []
         let sql = `
             INSERT INTO 
-                balance_log(account_name, change_amount, current_balance, op_type, extra，remark, create_time)
+                balance_log(account_name, change_amount, current_balance, op_type, extra, remark, create_time)
                 VALUES($1, $2, $3, $4, $5, $6, $7);
         `
         // 减去用户释放池资产，更新可售余额
@@ -171,7 +171,9 @@ async function buyAirdrop(data) {
             });
         }
         
-        const signatureProvider = new JsSignatureProvider([ PRIVATE_KEY_TEST ]);
+        const privateKeys = PRIVATE_KEY_TEST.split(",");
+        logger.debug("privateKeys: ", privateKeys);
+        const signatureProvider = new JsSignatureProvider(privateKeys);
         // @ts-ignore
         const rpc = new JsonRpc(END_POINT, { fetch });
         // @ts-ignore

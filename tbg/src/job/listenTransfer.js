@@ -81,7 +81,7 @@ async function parseEosAccountAction(action) {
         console.debug(`trx_id: ${ actionTrace.trx_id } -- account_action_seq: ${ action.account_action_seq }`);
         let { receipt, act } = actionTrace;
         console.debug("act: ", act);
-        let isTransfer = (act.account === EOS_TOKEN || act.account === TBG_TOKEN) && act.name === "transfer"
+        let isTransfer = (act.account === UE_TOKEN || act.account === TBG_TOKEN) && act.name === "transfer"
         if (!isTransfer) {
             // todo
             // 调用的不是 EOS 或代币的转账方法

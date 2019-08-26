@@ -28,6 +28,7 @@ async function investAirdrop(client, accountName, create_time) {
         // 第一次投资，可以获得参与 tbg1 空投，新用户空投 100，推荐人空投 50, 只空投前 300,000 个UE账号
         const { rows: [ { total } ] } = await pool.query("SELECT count(1)::INTEGER AS total  FROM account");
         let userReferrer = await getUserReferrer(accountName);
+        logger.debug("userReferrer: ", userReferrer);
         const now = new Date();
         if (total <= TBG_ALLOCATE.BIND_MEMBER_LIMIT) {
             // 系统第一个账户没有推荐人，多出的部分转到股东池账户
@@ -65,6 +66,7 @@ async function investAirdrop(client, accountName, create_time) {
                 // 新用户可获得的空投额度
                 const accountTbgBalance = await getTbgBalanceInfo(accountName);
                 const referrerTbgBalance = await getTbgBalanceInfo(userReferrer);
+                logger.debug("referrerTbgBalance: ", referrerTbgBalance);
                 const bindAirdrop = TBG_ALLOCATE.BIND_ACCOUNT_AIRDROP;
                 const acCurrentBalance = new Decimal(accountTbgBalance.release_amount).add(bindAirdrop);
                 const acBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, get airdrop ${ bindAirdrop }`;

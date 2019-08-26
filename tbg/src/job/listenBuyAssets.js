@@ -6,7 +6,10 @@ const { UE_TOKEN } = require("../common/constant/eosConstants.js");
 const { TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
 const buyAirdrop = require("./buyAirdrop");
 const BUY_ASSETS_KEY = "tbg:buy_assets:account_action_seq";
+const { scheduleJob } = require("node-schedule");
 
+logger.debug(`beginListenAction running...`);
+scheduleJob("*/1 * * * * *", handlerTransferActions);
 
 async function handlerTransferActions() {
     try {
@@ -19,7 +22,7 @@ async function handlerTransferActions() {
             const trxSeq = await redis.get(`tbg:buy:trx:${ result.account_action_seq }`);
             logger.debug("result: ", result, "trxSeq: ", trxSeq);
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
-            if (trxSeq) {
+            if (trxSeq || !result.assets_package_id) {
                 await setLastPos(result.account_action_seq);
                 await redis.set(BUY_ASSETS_KEY, result.account_action_seq);
                 continue;

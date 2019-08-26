@@ -27,7 +27,7 @@ psUserWithdraw.sub(async msg => {
 psBuyAssets.sub(async msg => {
     try {
         let result = JSON.parse(msg);
-        logger.debug("result: %O", result);
+        logger.debug("psBuyAssets result: %O", result);
     } catch (err) {
         throw err;
     }
@@ -37,7 +37,7 @@ psBuyAssets.sub(async msg => {
 psCheckIn.sub(async msg => {
     try {
         let result = JSON.parse(msg);
-        logger.debug("result: %O", result);
+        logger.debug("psCheckIn result: %O", result);
     } catch (err) {
         throw err;
     }
@@ -47,7 +47,7 @@ psCheckIn.sub(async msg => {
 psSellAssets.sub(async msg => {
     try {
         let result = JSON.parse(msg);
-        logger.debug("result: %O", result);
+        logger.debug("psSellAssets result: %O", result);
     } catch (err) {
         throw err;
     }
@@ -57,7 +57,7 @@ psSellAssets.sub(async msg => {
 psBind.sub(async msg => {
     try {
         let result = JSON.parse(msg);
-        logger.debug("result: %O", result);
+        logger.debug("psBind result: %O", result);
         await bindAirdrop(result);
     } catch (err) {
         throw err;
@@ -69,7 +69,7 @@ psBind.sub(async msg => {
 psTbg1.sub(async msg => {
     try {
         let result = JSON.parse(msg);
-        logger.debug("result: %O", result);
+        logger.debug("psTbg1 result: %O", result);
         await tbg1Airdrop(result);
     } catch (err) {
         throw err;
@@ -81,7 +81,7 @@ psTbg1.sub(async msg => {
 psGame.sub(async msg => {
     try {
         let result = JSON.parse(msg);
-        logger.debug("result: %O", result);
+        logger.debug("psGame result: %O", result);
     } catch (err) {
         throw err;
     }
@@ -92,7 +92,7 @@ psGame.sub(async msg => {
 psTshIncome.sub(async msg => {
     try {
         let result = JSON.parse(msg);
-        logger.debug("result: %O", result);
+        logger.debug("psTshIncome result: %O", result);
         // 监听到消息，就从收款账户转钱到股东账户
         await tshIncomeAirdrop(result);
     } catch (err) {
@@ -105,7 +105,7 @@ psTshIncome.sub(async msg => {
 psRaise.sub(async msg => {
     try {
         let result = JSON.parse(msg);
-        logger.debug("result: %O", result);
+        logger.debug("psRaise result: %O", result);
         await raiseAirdrop(result);
     } catch (err) {
         throw err;

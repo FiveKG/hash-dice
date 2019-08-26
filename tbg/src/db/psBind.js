@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({"@": "publish - subscribe user withdraw"});
+const logger = require("../common/logger.js").child({"@": "publish - subscribe bind referrer"});
 const getAmqpChannel = require("./amqp.js");
 const { BIND } = require("../common/constant/optConstants.js");
 
@@ -16,7 +16,7 @@ async function subscribe(callback) {
     try {
         let channel = await getAmqpChannel(BIND);
         channel.consume(BIND, msg => {
-            logger.debug("subscribe userWithdraw message: ", msg);
+            // logger.debug("bind referrer message: ", msg);
             if (msg !== null) {
                 callback(msg.content.toString());
                 channel.ack(msg);

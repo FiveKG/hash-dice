@@ -22,7 +22,7 @@ const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRemark) {
     try {
         let tshIncomeData = {};
-        const accountName = accountInfo.account_type;
+        const accountName = accountInfo.account_name;
         const accountOpType = OPT_CONSTANTS.REPEAT;
         userInvestmentRemark = `user ${ accountName } repeat ${ BALANCE_CONSTANT.BASE_RATE } UE`
         await updateRepeatBalance(client, accountName, BALANCE_CONSTANT.BASE_RATE);
@@ -43,6 +43,7 @@ async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRe
 
         // 全球合伙人的推荐人可得复投额度的 0.5%
         const userReferrer = await getUserReferrer(globalAccount);
+        logger.debug("userReferrer: ", userReferrer);
         const changeAmount = BALANCE_CONSTANT.BASE_RATE * INVEST_CONSTANT.REPEAT_GLOBAL_REFERRER_INCOME_RATE / INVEST_CONSTANT.BASE_RATE;
         if (!userReferrer) {
             // 系统第一个账户没有推荐人，多出的部分转到股东池账户
@@ -51,15 +52,9 @@ async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRe
                 logger.debug(`system account ${ TSH_INCOME } not found`);
                 throw Error(`system account ${ TSH_INCOME } not found`);
             }
-            const opType = OPT_CONSTANTS.INVITE;
-            const current = rows.pool_amount + changeAmount;
-            const memo = `${ userInvestmentRemark }, global account's referrer ${ userReferrer } add ${ changeAmount } UE currency`;
-            await insertSystemOpLog(client, changeAmount, current, { "symbol": UE_TOKEN_SYMBOL, aid: TSH_INCOME }, opType, memo, "now()");
-            await updateSystemAmount(client, TSH_INCOME, changeAmount, current, UE_TOKEN_SYMBOL);
             tshIncomeData = {
                 "changeAmount": changeAmount,
-                "currentBalance": current,
-                "memo": memo
+                "memo": `user ${ accountName } at ${ df.format(now, "YYYY-MM-DD : HH:mm:ssZ") } ${ OPT_CONSTANTS.REPEAT }, allocating repeat surplus assets to ${ TSH_INCOME }`
             }
         } else {
             const memo = `${ userInvestmentRemark }, global account's referrer ${ userReferrer } add ${ changeAmount } UE currency`;

@@ -26,7 +26,9 @@ async function checkInAirdrop() {
         `
         const now = new Date();
         const { rows: checkInList } = await pool.query(sql, [ OPT_CONSTANTS.CHECK_IN, now ]);
-        const signatureProvider = new JsSignatureProvider([ PRIVATE_KEY_TEST ]);
+        const privateKeys = PRIVATE_KEY_TEST.split(",");
+        logger.debug("privateKeys: ", privateKeys);
+        const signatureProvider = new JsSignatureProvider(privateKeys);
 
         const actionList = checkInList.map(it => {
             return {
@@ -46,6 +48,7 @@ async function checkInAirdrop() {
         })
         // @ts-ignore
         // 区块链事务执行
+        const rpc = new JsonRpc(END_POINT, { fetch });
         const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
 
         // 每二十笔交易打包一次

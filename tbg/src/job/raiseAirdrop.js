@@ -32,7 +32,9 @@ async function raiseAirdrop(data) {
         const assetsInfo = await getAssetsInfoById([apId]);
         const amount = new Decimal(assetsInfo[0].amount);
         const quantity = amount.mul(assetsInfo[0].release_multiple);
-        const signatureProvider = new JsSignatureProvider([ PRIVATE_KEY_TEST ]);
+        const privateKeys = PRIVATE_KEY_TEST.split(",");
+        logger.debug("privateKeys: ", privateKeys);
+        const signatureProvider = new JsSignatureProvider(privateKeys);
         // @ts-ignore
         const rpc = new JsonRpc(END_POINT, { fetch });
         const now = new Date();
@@ -92,6 +94,7 @@ async function raiseAirdrop(data) {
         const miningAmount = amount.mul(assetsInfo[0].mining_multiple);
         // @ts-ignore
         // 区块链事务执行
+        const rpc = new JsonRpc(END_POINT, { fetch });
         const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         let actions = {
             actions: [
@@ -168,6 +171,7 @@ async function raiseAirdrop(data) {
                 blocksBehind: 3,
                 expireSeconds: 30,
             });
+            
             const finishTime = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
             const trLogId = generate_primary_key();
             const remark = `user ${ accountName } at ${ finishTime } done raise`;

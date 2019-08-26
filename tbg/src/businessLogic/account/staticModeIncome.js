@@ -38,7 +38,7 @@ async function staticMode(client, amount, subAccount) {
         const subAccountInfo = await getMainAccountBySub(modeList);
         // 三三静态收益分配
         for (let i = 1; i < subAccountInfo.length; i++) {
-            const rate = setRate(1);
+            const rate = setRate(i);
             const availableIncome = modeEnable.mul(rate);
             const mainAccount = subAccountInfo[i].main_account;
             const remark = `subAccount ${ subAccount }, income ${ availableIncome }, level ${ i }`;

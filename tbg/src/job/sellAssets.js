@@ -33,7 +33,7 @@ async function sellAssets(data) {
         let tmpActions = []
         let insertBalanceLogSql = `
             INSERT INTO 
-                balance_log(account_name, change_amount, current_balance, op_type, extra，remark, create_time)
+                balance_log(account_name, change_amount, current_balance, op_type, extra, remark, create_time)
                 VALUES($1, $2, $3, $4, $5, $6, $7);
         `
         const updateBalanceSql = `

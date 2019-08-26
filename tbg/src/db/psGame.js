@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({"@": "publish - subscribe user withdraw"});
+const logger = require("../common/logger.js").child({"@": "publish - subscribe game"});
 const getAmqpChannel = require("./amqp.js");
 const { GAME } = require("../common/constant/optConstants.js");
 
@@ -16,7 +16,7 @@ async function subscribe(callback) {
     try {
         let channel = await getAmqpChannel(GAME);
         channel.consume(GAME, msg => {
-            logger.debug("subscribe userWithdraw message: ", msg);
+            // logger.debug("game message: ", msg);
             if (msg !== null) {
                 callback(msg.content.toString());
                 channel.ack(msg);

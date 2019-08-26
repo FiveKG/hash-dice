@@ -36,9 +36,9 @@ const TBG_1_AIRDROP = 4.5;
 // 前 300,000 个 UE 账号
 const TBG_1_MEMBER_LIMIT = 300000;
 // 推荐人空投 50
-const TBG_1_REFERRER_AIRDROP = 100;
+const TBG_1_REFERRER_AIRDROP = 50;
 // 账户空投 100
-const TBG_1_ACCOUNT_AIRDROP = 50;
+const TBG_1_ACCOUNT_AIRDROP = 100;
 
 // 每日签到空投
 const CHECK_IN_AIRDROP = 0.2;

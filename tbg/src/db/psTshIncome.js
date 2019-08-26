@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({"@": "publish - subscribe user withdraw"});
+const logger = require("../common/logger.js").child({"@": "publish - subscribe tshincome"});
 const getAmqpChannel = require("./amqp.js");
 const { TSH_INCOME } = require("../common/constant/accountConstant.js");
 
@@ -16,7 +16,7 @@ async function subscribe(callback) {
     try {
         let channel = await getAmqpChannel(TSH_INCOME);
         channel.consume(TSH_INCOME, msg => {
-            logger.debug("subscribe userWithdraw message: ", msg);
+            // logger.debug("tshincome message: ", msg);
             if (msg !== null) {
                 callback(msg.content.toString());
                 channel.ack(msg);

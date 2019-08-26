@@ -1,8 +1,10 @@
 // @ts-check
-const { getAccountInfo } = require("../../models/account");
+const { getAccountInfo, getGlobalAccount } = require("../../models/account");
 const { insertSubAccount } = require("../../models/subAccount");
 const logger = require("../../common/logger.js")
 const { redis } = require("../../common/index.js");
+const { pool } = require("../../db");
+const { ACCOUNT_TYPE } = require("../../common/constant/accountConstant.js");
 
 /**
  * 添加子帐号
@@ -16,7 +18,8 @@ async function addSubAccount(client, accountName, subAccount, referrerAccountLis
         logger.debug("set user static mode");
         // 直接投资,参与 tbg1, 且所有推荐人都是普通用户,这些账号都在一个三三公排
         const rootAccount = referrerAccountList[1];
-        const accountInfo = await getAccountInfo(rootAccount);
+        // 先判断推荐关系中有几个全球合伙人，如果有多个，最后一个全球合伙人就是新的三三静态最顶端的用户
+        const accountInfo = await getGlobalAccount(ACCOUNT_TYPE.GLOBAL, referrerAccountList);
         logger.debug("accountInfo: ", accountInfo);
         const levelKey = `tbg:level:${ accountInfo.id }`
         const flag = await redis.get(levelKey);

@@ -151,3 +151,9 @@ SELECT (SELECT count(1) as count FROM referrer r
                         AND a.state != 0
                     ) AS count, *
                 FROM account
+
+select account_name 
+    from account 
+    where account_name != 'yujinsheng11'
+    and account_type = 'general'
+    order by random() limit 1;

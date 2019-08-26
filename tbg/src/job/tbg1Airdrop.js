@@ -19,13 +19,13 @@ const { format } = require("date-fns");
 async function tbg1Airdrop(data) {
     try {
         const trxList = [];
-        const dataList = []
+        const dataList = [ data.account ]
         if (!!data.referrer) {
             dataList.push(data.referrer);
         }
         let sql = `
             INSERT INTO 
-                balance_log(account_name, change_amount, current_balance, op_type, extra，remark, create_time)
+                balance_log(account_name, change_amount, current_balance, op_type, extra, remark, create_time)
                 VALUES($1, $2, $3, $4, $5, $6, $7);
         `
         // 减去用户释放池资产，更新可售余额
@@ -36,6 +36,7 @@ async function tbg1Airdrop(data) {
                     active_amount = active_amount + $3
                 WHERE account_name = $4
         `
+        logger.debug("dataList: ", dataList);
         for (const info of dataList) {
             const opts = [ info.account_name, info.release_amount, info.current_balance, info.op_type, info.extra, info.remark, info.create_time ]
 
@@ -52,7 +53,9 @@ async function tbg1Airdrop(data) {
             });
         }
         
-        const signatureProvider = new JsSignatureProvider([ PRIVATE_KEY_TEST ]);
+        const privateKeys = PRIVATE_KEY_TEST.split(",");
+        logger.debug("privateKeys: ", privateKeys);
+        const signatureProvider = new JsSignatureProvider(privateKeys);
         // 用户参加 tbg1，由发币账号转至释放池账号
         const actionList = dataList.map(it => {
             return {
@@ -69,9 +72,11 @@ async function tbg1Airdrop(data) {
                     memo: `${ format(it.create_time, "YYYY-MM-DD : HH:mm:ssZ") } check in airdrop`
                 }
             }
-        })
+        });
+        logger.debug("actionList: ", actionList);
         // @ts-ignore
         // 区块链事务执行
+        const rpc = new JsonRpc(END_POINT, { fetch });
         const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         const client = await pool.connect();
         await client.query("BEGIN");
@@ -79,17 +84,12 @@ async function tbg1Airdrop(data) {
             await Promise.all(trxList.map(it => {
                 client.query(it.sql, it.values);
             }));
-            // 打包交易
-            while (actionList.length > 0) {
-                let actions = {
-                    actions: actionList.splice(0, 20)
-                }
 
-                const result = await api.transact(actions, {
-                    blocksBehind: 3,
-                    expireSeconds: 30,
-                });
-            }
+            await api.transact({ actions: actionList }, {
+                blocksBehind: 3,
+                expireSeconds: 30,
+            });
+
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");

@@ -14,8 +14,7 @@ const { Decimal } = require("decimal.js");
 
 ;(async () => {
     let systemAccount = [ 
-        SAFE_POOL, SHAREHOLDERS_POOL, SORT_POOL, TBG_FREE_POOL, TBG_JOIN, TBG_MINE_POOL, TBG_TOKEN_COIN, 
-         PK_POOL, BINGO_POOL, MODE_POOL, DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME, PSH_INCOME
+        SAFE_POOL, SHAREHOLDERS_POOL, SORT_POOL, PK_POOL, BINGO_POOL, MODE_POOL, DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME    
     ]
     await initCode();
     // await clearRedisKeyBeforeInit();

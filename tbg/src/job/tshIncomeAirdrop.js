@@ -12,13 +12,14 @@ const { TextDecoder, TextEncoder } = require('util');               // node only
 
 /**
  * 多出的部分空投到股东池账户
- * @param {{ changeAmount: number, apId: number, memo: string, trId: string, price: number }} data
+ * @param {{ changeAmount: number, memo: string }} data
  */
 async function tshIncomeAirdrop(data) {
     try {
-        // 获取用户私募的资产信息
         const { changeAmount, memo } = data;
-        const signatureProvider = new JsSignatureProvider([ PRIVATE_KEY_TEST ]);
+        const privateKeys = PRIVATE_KEY_TEST.split(",");
+        logger.debug("privateKeys: ", privateKeys);
+        const signatureProvider = new JsSignatureProvider(privateKeys);
         // @ts-ignore
         const rpc = new JsonRpc(END_POINT, { fetch });
         const now = new Date();
