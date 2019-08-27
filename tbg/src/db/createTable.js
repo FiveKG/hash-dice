@@ -129,7 +129,7 @@ async function createTable() {
         comment on column account_op.remark is '备注';
         comment on column account_op.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS trade(
-            id serial PRIMARY KEY UNIQUE NOT NULL,
+            id TEXT PRIMARY KEY UNIQUE NOT NULL,
             account_name TEXT NOT NULL DEFAULT '',
             trade_type TEXT NOT NULL DEFAULT '',
             extra JSON NOT NUll DEFAULT '{}'::JSONB,
@@ -151,7 +151,7 @@ async function createTable() {
         comment on column trade.state is '状态';
         comment on column trade.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS trade_log(
-            id serial PRIMARY KEY UNIQUE NOT NULL,
+            id TEXT PRIMARY KEY UNIQUE NOT NULL,
             tr_id TEXT NOT NULL DEFAULT '',
             trade_type TEXT NOT NULL DEFAULT '',
             amount NUMERIC (20, 8) NOT NULL DEFAULT 0,

@@ -5,16 +5,11 @@ const { Decimal } = require("decimal.js");
 const { userMember } = require("../common/userMember.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const { ACCOUNT_INACTIVATED, ACCOUNT_ACTIVATED_TBG_1 } = require("../common/constant/accountConstant");
-const { pool } = require("../db");
+const { pool, psTrx } = require("../db");
 const { scheduleJob } = require("node-schedule");
-const { TSH_INCOME, TBG_MINE_POOL, TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
-const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
-const { Api, JsonRpc } = require('eosjs');
-const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
-const fetch = require('node-fetch');                                // node only
-const { TextDecoder, TextEncoder } = require('util');               // node only
+const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
+const { TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { format } = require("date-fns");
-const { updateTbgBalance, getTbgBalanceInfo } = require("../models/tbgBalance");
 
 /**
  * 所有进入释放池的TBG，从次日0:00开始释放
@@ -108,10 +103,6 @@ async function releaseAssets() {
                 }
             }
         })
-        // @ts-ignore
-        // 区块链事务执行
-        const rpc = new JsonRpc(END_POINT, { fetch });
-        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
 
         const client = await pool.connect();
         await client.query("BEGIN");
@@ -119,17 +110,6 @@ async function releaseAssets() {
             await Promise.all(trxList.map(it => {
                 client.query(it.sql, it.values);
             }));
-            
-            while (actionList.length > 0) {
-                let actions = {
-                    actions: actionList.splice(0, 20)
-                }
-        
-                const result = await api.transact(actions, {
-                    blocksBehind: 3,
-                    expireSeconds: 30,
-                });
-            }
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");
@@ -137,6 +117,9 @@ async function releaseAssets() {
         } finally {
             await client.release();
         }
+
+        // 发送区块链转帐消息
+        await psTrx.pub(actionList);
     } catch (err) {
         logger.error("release assets error, the error stock is %O", err);
         throw err;

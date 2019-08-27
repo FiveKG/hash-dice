@@ -2,9 +2,11 @@
 const logger = require("../common/logger.js").child({ "@": "listening user buy asset package" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
-const { UE_TOKEN } = require("../common/constant/eosConstants.js");
+const { UE_TOKEN, WALLET_RECEIVER } = require("../common/constant/eosConstants.js");
+const { RAISE, BUY, FIRST_BUY } = require("../common/constant/optConstants");
 const { TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
 const buyAirdrop = require("./buyAirdrop");
+const raiseAirdrop = require("./raiseAirdrop");
 const BUY_ASSETS_KEY = "tbg:buy_assets:account_action_seq";
 const { scheduleJob } = require("node-schedule");
 
@@ -14,22 +16,28 @@ scheduleJob("*/1 * * * * *", handlerTransferActions);
 async function handlerTransferActions() {
     try {
         const actionSeq = await getLastPos();
-        const actions = await getTrxAction(actionSeq);
+        const actions = await getTrxAction(UE_TOKEN, actionSeq);
         logger.debug("actionSeq: ", actionSeq);
         for (const action of actions) {
             logger.debug(action);
             const result = await parseEosAccountAction(action);
             const trxSeq = await redis.get(`tbg:buy:trx:${ result.account_action_seq }`);
-            logger.debug("result: ", result, "trxSeq: ", trxSeq);
+            logger.debug("result: ", result, "trxSeq: ", !!trxSeq, !result.trx_type);
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
-            if (trxSeq || !result.assets_package_id) {
+            if (!!trxSeq || !result.trx_type) {
                 await setLastPos(result.account_action_seq);
                 await redis.set(BUY_ASSETS_KEY, result.account_action_seq);
                 continue;
             }
 
             // 监听到用户购买资产包后，执行相应的逻辑
-            await buyAirdrop({ accountName: result.from, apId: Number(result.assets_package_id) })
+            if (result.trx_type === RAISE) {
+                await raiseAirdrop({ accountName: result.from, price: Number(result.price) });
+            } 
+            
+            if (result.trx_type === BUY) {
+                await buyAirdrop({ accountName: result.from, price: Number(result.price), apId: Number(result.assets_package_id) })
+            }
             await redis.set(`tbg:buy:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
         }
@@ -55,6 +63,7 @@ async function parseEosAccountAction(action) {
             "symbol": "",
             "price": "",
             "assets_package_id": "",
+            "trx_type": ""
         }
         let actionTrace = action.action_trace;
         if (!actionTrace) {
@@ -97,19 +106,20 @@ async function parseEosAccountAction(action) {
             logger.debug(`receipt receiver does not match, ${ to } !== ${ TBG_FREE_POOL }`);
             return result;
         }
-        // "account_name,price,assets_package_id"
-        let [ account_name, price, assets_package_id ] = memo.split(",");
-        if (!account_name || !price || !assets_package_id) {
-            logger.debug("invalid memo, memo must be include account_name, price, assets_package_id, format like 'account_name,price,assets_package_id'")
+        // "account_name,price,trx_type,assets_package_id"
+        let [ account_name, price, trx_type, assets_package_id ] = memo.split(",");
+        if (!account_name || !price || !trx_type) {
+            logger.debug("invalid memo, memo must be include account_name, price, trx_type, assets_package_id format like 'account_name,price,trx_type,assets_package_id'")
             return result;
         }
         let [ amount, symbol ] = quantity.split(" ");
         if (symbol === "UE") {
             result["price"] = price;
-            result["assets_package_id"] = assets_package_id;
             result["from"] = from;
             result["amount"] = amount;
             result["symbol"] = symbol;
+            result["trx_type"] = trx_type;
+            result["assets_package_id"] = assets_package_id;
             return result;
         } else {
             // todo

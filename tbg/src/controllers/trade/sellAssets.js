@@ -38,7 +38,7 @@ async function sellAssets(req, res, next) {
         await client.query("BEGIN");
         try {
             await insertTrade(client, trId, accountName, tradeType, {}, sellAmount.toNumber(), 0, price, "create", createTime, finishedTime);
-            await insertTradeLog(client, trLogId, trId, accountName, tradeType, sellAmount.toNumber(), memo, price, volume.toNumber(), createTime);
+            await insertTradeLog(client, trLogId, trId, tradeType, sellAmount.toNumber(), memo, price, volume.toNumber(), createTime);
             await client.query("COMMIT");
 
             // 发送卖出的消息

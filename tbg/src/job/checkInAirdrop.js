@@ -1,16 +1,11 @@
 // @ts-check
-const { pool } = require("../db/index.js");
+const { pool, psTrx } = require("../db/index.js");
 const logger = require("../common/logger.js").child({ "@src/job/checkInAirdrop.js": "签到空投" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
-const { TSH_INCOME, TBG_MINE_POOL, TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
-const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
-const { Api, JsonRpc } = require('eosjs');
-const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
-const fetch = require('node-fetch');                                // node only
-const { TextDecoder, TextEncoder } = require('util');               // node only
+const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
+const { TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { format } = require("date-fns");
-
 
 /**
  * 签到空投
@@ -26,9 +21,6 @@ async function checkInAirdrop() {
         `
         const now = new Date();
         const { rows: checkInList } = await pool.query(sql, [ OPT_CONSTANTS.CHECK_IN, now ]);
-        const privateKeys = PRIVATE_KEY_TEST.split(",");
-        logger.debug("privateKeys: ", privateKeys);
-        const signatureProvider = new JsSignatureProvider(privateKeys);
 
         const actionList = checkInList.map(it => {
             return {
@@ -46,23 +38,9 @@ async function checkInAirdrop() {
                 }
             }
         })
-        // @ts-ignore
-        // 区块链事务执行
-        const rpc = new JsonRpc(END_POINT, { fetch });
-        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
 
-        // 每二十笔交易打包一次
-        while (actionList.length > 0) {
-            let actions = {
-                actions: actionList.splice(0, 20)
-            }
-    
-            const result = await api.transact(actions, {
-                blocksBehind: 3,
-                expireSeconds: 30,
-            });
-        }
-
+        // 发送区块链转帐消息
+        await psTrx.pub(actionList);
     } catch (err) {
         logger.error("check in airdrop error, the error stock is %O", err);
         throw err;

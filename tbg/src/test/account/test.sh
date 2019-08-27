@@ -110,9 +110,24 @@ function subAccount() {
     done
 }
 
+# 添加全球合伙人
+function addGlobal() {
+    curl -XPOST http://localhost:9527/account/bind_referrer -H 'Content-Type: application/json' -d '
+    {
+        "account_name": "gametestuser",
+        "refer_code": "W00000"
+    }'
+
+    curl -XPOST http://localhost:9527/account/bind_referrer -H 'Content-Type: application/json' -d '
+    {
+        "account_name": "yujinsheng11",
+        "refer_code": "W00000"
+    }'
+}
 
 unlock
 # 绑定账号信息
+addGlobal
 bindReferrer
 
 # 转账给收款人，参与 TBG-I

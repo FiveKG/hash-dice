@@ -85,7 +85,7 @@ async function investAirdrop(client, accountName, create_time) {
                         "create_time": now
                     },
                     "referrer": {
-                        "account_name": accountName,
+                        "account_name": userReferrer,
                         "release_amount": bindAirdrop,
                         "sell_amount": 0,
                         "active_amount": 0,

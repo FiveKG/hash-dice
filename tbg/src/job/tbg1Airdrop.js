@@ -1,14 +1,9 @@
 // @ts-check
-const { pool } = require("../db/index.js");
+const { pool, psTrx } = require("../db/index.js");
 const logger = require("../common/logger.js").child({ "@src/job/tbg1Airdrop.js": "参加 tbg1 空投" });
 const { Decimal } = require("decimal.js");
-const OPT_CONSTANTS = require("../common/constant/optConstants.js");
-const { TSH_INCOME, TBG_MINE_POOL, TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
+const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
 const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
-const { Api, JsonRpc } = require('eosjs');
-const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
-const fetch = require('node-fetch');                                // node only
-const { TextDecoder, TextEncoder } = require('util');               // node only
 const { format } = require("date-fns");
 
 
@@ -52,10 +47,6 @@ async function tbg1Airdrop(data) {
                 values: updateOpts
             });
         }
-        
-        const privateKeys = PRIVATE_KEY_TEST.split(",");
-        logger.debug("privateKeys: ", privateKeys);
-        const signatureProvider = new JsSignatureProvider(privateKeys);
         // 用户参加 tbg1，由发币账号转至释放池账号
         const actionList = dataList.map(it => {
             return {
@@ -69,27 +60,16 @@ async function tbg1Airdrop(data) {
                     from: TBG_TOKEN_COIN,
                     to: TBG_FREE_POOL,
                     quantity: `${ new Decimal(it.release_amount).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                    memo: `${ format(it.create_time, "YYYY-MM-DD : HH:mm:ssZ") } check in airdrop`
+                    memo: `${ format(it.create_time, "YYYY-MM-DD : HH:mm:ssZ") } tbg1 airdrop`
                 }
             }
         });
-        logger.debug("actionList: ", actionList);
-        // @ts-ignore
-        // 区块链事务执行
-        const rpc = new JsonRpc(END_POINT, { fetch });
-        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
             await Promise.all(trxList.map(it => {
                 client.query(it.sql, it.values);
             }));
-
-            await api.transact({ actions: actionList }, {
-                blocksBehind: 3,
-                expireSeconds: 30,
-            });
-
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");
@@ -97,8 +77,11 @@ async function tbg1Airdrop(data) {
         } finally {
             await client.release();
         }
+
+        // 发送区块链转帐消息
+        await psTrx.pub(actionList);
     } catch (err) {
-        logger.error("check in airdrop error, the error stock is %O", err);
+        logger.error("tbg1 airdrop error, the error stock is %O", err);
         throw err;
     }
 }

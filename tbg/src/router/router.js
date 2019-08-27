@@ -88,19 +88,19 @@ router.get("/pools/pk", pools.pk);
 // 获取全球合伙人私募信息
 router.get("/trade/raise_buy", trade.getRaiseInfo);
 // 全球合伙人私募
-router.post("/trade/raise_buy", trade.raiseBuy);
+router.post("/trade/global_raise_buy", trade.raiseBuy);
 // 获取普通买入交易信息 
 router.get("/trade/buy_assets", trade.getBuyAssetsInfo);
 // 买入资产包 
-router.post("/trade/buy_assets", trade.buyAssets);
+router.post("/trade/user_buy_assets", trade.buyAssets);
 // 资产包买入记录
 router.get("/trade/buy_assets_history", trade.buyAssetsHistory);
 // 买入交易列表
-router.post("/trade/buy_list", trade.buyList);
+router.get("/trade/buy_list", trade.buyList);
 // 获取普通卖出交易信息
 router.get("/trade/sell_assets", trade.getSellAssetsInfo);
 // 卖出 TBG
-router.post("/trade/sell_assets", trade.sellAssets);
+router.post("/trade/user_sell_assets", trade.sellAssets);
 // 卖出交易列表
 router.get("/trade/sell_list", trade.sellList);
 // 资产包卖出记录

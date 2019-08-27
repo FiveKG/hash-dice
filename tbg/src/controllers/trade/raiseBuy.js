@@ -5,15 +5,13 @@ const { getAccountInfo } = require("../../models/account");
 const { getAssetsInfoById } = require("../../models/asset");
 const { insertTrade, insertTradeLog, getTradeInfo } = require("../../models/trade");
 const { getBalanceLogByTerm } = require("../../models/balanceLog");
-const { pool, psRaise } = require("../../db");
+const { pool } = require("../../db");
 const { format } = require("date-fns");
 const { insertAccountOp } = require("../../models/accountOp");
 const { Decimal } = require("decimal.js");
 const { RAISE_LIMIT } = require("../../common/constant/tbgAllocateRate");
 const { TBG_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
-const { TSH_INCOME, TBG_MINE_POOL, TBG_TOKEN_COIN } = require("../../common/constant/accountConstant.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
-const { getSystemLogInfo } = require("../../models/systemOpLog");
 
 // 全球合伙人私募
 async function raiseBuy(req, res, next) {
@@ -38,7 +36,7 @@ async function raiseBuy(req, res, next) {
             return res.send(get_status(1016, "this global partner had raised"));
         }
 
-        const assetsInfo = await getAssetsInfoById(apId);
+        const assetsInfo = await getAssetsInfoById([apId]);
         if (assetsInfo.length === 0) {
             return res.send(get_status(1017, "this assets package does not exists"));
         }
@@ -56,9 +54,8 @@ async function raiseBuy(req, res, next) {
         // 当私募所有拨出达35,000,000TBG或余数不足以满足最低私募时，即中止私募
         const quantity = !!total ? new Decimal(total).add(amount) : 0;
         if (new Decimal(RAISE_LIMIT).lessThan(quantity)) {
-            return res.send(get_status(1018, "check in airdrop quota has been used up"))
+            return res.send(get_status(1018, "raise airdrop quota has been used up"))
         }
-
         
         const client = await pool.connect();
         await client.query("BEGIN");
@@ -66,18 +63,10 @@ async function raiseBuy(req, res, next) {
             // 私募时先生成私募订单和私募日志
             await insertAccountOp(client, accountName, tradeType, memo);
             await insertTrade(client, trId, accountName, tradeType, { "ap_id": apId }, amount.toNumber(), 0, price, "create", createTime, finishedTime);
-            await insertTradeLog(client, trLogId, trId, accountName, tradeType, amount.toNumber(), memo, price, volume.toNumber(), createTime);
+            await insertTradeLog(client, trLogId, trId, tradeType, amount.toNumber(), memo, price, volume.toNumber(), createTime);
             await client.query("COMMIT");
             // todo 
-            // 空投 TBG
-            const raiseData = {
-                "accountName": accountName,
-                "apId": apId,
-                "memo": memo,
-                "trId": trId,
-                "price": price
-            }
-            await psRaise.pub(raiseData)
+            // 监听用户是否转账私募 TBG
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;

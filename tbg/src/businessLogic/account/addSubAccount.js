@@ -17,9 +17,9 @@ async function addSubAccount(client, accountName, subAccount, referrerAccountLis
     try {
         logger.debug("set user static mode");
         // 直接投资,参与 tbg1, 且所有推荐人都是普通用户,这些账号都在一个三三公排
-        const rootAccount = referrerAccountList[1];
         // 先判断推荐关系中有几个全球合伙人，如果有多个，最后一个全球合伙人就是新的三三静态最顶端的用户
         const accountInfo = await getGlobalAccount(ACCOUNT_TYPE.GLOBAL, referrerAccountList);
+        const rootAccount = accountInfo.account_name;
         logger.debug("accountInfo: ", accountInfo);
         const levelKey = `tbg:level:${ accountInfo.id }`
         const flag = await redis.get(levelKey);
@@ -69,7 +69,8 @@ async function addSubAccount(client, accountName, subAccount, referrerAccountLis
  */
 async function createSubId(mainId) {
     // 获取到剩余位置的数量
-    const members = await redis.scard("tbg:subAccount:position");
+    const posKey = `tbg:position:${ mainId }`
+    const members = await redis.scard(posKey);
     // 获取当前层级
     const currentMaxLevel = await redis.get(`tbg:level:${ mainId }`);
     let level = parseInt(currentMaxLevel);
@@ -78,9 +79,9 @@ async function createSubId(mainId) {
     if (!members) {
         level = level + 1;
         await redis.set(`tbg:level:${ mainId }`, level);
-        await genPositionList(level);
+        await genPositionList(posKey, level);
     } 
-    const position = await redis.spop("tbg:subAccount:position");
+    const position = await redis.spop(posKey);
     logger.debug("position: %d", position);
     // 子账号表的主键 id， 由根节点账号 id + 中横线 + 层级 + 位置组成
     const id = mainId + "-" + level + position;
@@ -97,14 +98,15 @@ async function createSubId(mainId) {
 
 /**
  * 生成位置, 存入 redis，分配位置时, 随机取一个
+ * @param { string } posKey
  * @param { number } level 
  */
-async function genPositionList(level) {
+async function genPositionList(posKey, level) {
     const pos = []
     for (let i = 1; i <= Math.pow(3, level - 1); i++) {
         pos.push(i);
     }
-    await redis.sadd("tbg:subAccount:position", pos);
+    await redis.sadd(posKey, pos);
 }
 
 module.exports = addSubAccount;

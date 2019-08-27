@@ -5,7 +5,7 @@ const logger = require("../../common/logger.js").child({ "@models/trade/getTrade
 /**
  * 获取交易信息
  * @param { string } accountName 用户账户名
- * @param { String? } tradeType 资产包类型
+ * @param { String? } [tradeType] 资产包类型
  * @returns { Promise<DB.Trade[]> }
  */
 async function getTradeInfo(accountName, tradeType) {

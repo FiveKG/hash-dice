@@ -3,41 +3,20 @@ const logger = require("../common/logger.js").child({ "@": "mq publish and subsc
 const { 
     psUserWithdraw, psBuyAssets, psCheckIn, 
     psSellAssets, psBind, psGame, psTbg1, 
-    psTshIncome, psRaise
+    psTshIncome, psRaise, psTrx
 } = require("../db");
 const handlerWithdraw = require("./handlerWithdraw.js");
 const raiseAirdrop = require("./raiseAirdrop.js");
-const checkInAirdrop = require("./checkInAirdrop");
 const bindAirdrop = require("./bindAirdrop");
 const tbg1Airdrop = require("./tbg1Airdrop");
 const tshIncomeAirdrop = require("./tshIncomeAirdrop");
-const { pool } = require("../db");
+const trxAction = require("./trxAction.js");
 
 // 用户提现消息
 psUserWithdraw.sub(async msg => {
     try {
         let result = JSON.parse(msg);
         await handlerWithdraw(result.account_name, result.symbol, result.amount);
-    } catch (err) {
-        throw err;
-    }
-});
-
-// 买入资产包消息
-psBuyAssets.sub(async msg => {
-    try {
-        let result = JSON.parse(msg);
-        logger.debug("psBuyAssets result: %O", result);
-    } catch (err) {
-        throw err;
-    }
-});
-
-// 签到消息
-psCheckIn.sub(async msg => {
-    try {
-        let result = JSON.parse(msg);
-        logger.debug("psCheckIn result: %O", result);
     } catch (err) {
         throw err;
     }
@@ -100,14 +79,13 @@ psTshIncome.sub(async msg => {
     }
 });
 
-
-// 私募消息
-psRaise.sub(async msg => {
+// 订阅转账的消息，避免双花
+psTrx.sub(async msg => {
     try {
         let result = JSON.parse(msg);
-        logger.debug("psRaise result: %O", result);
-        await raiseAirdrop(result);
+        logger.debug("psTrx result: %O", result);
+        await trxAction(result);
     } catch (err) {
         throw err;
     }
-});
+})

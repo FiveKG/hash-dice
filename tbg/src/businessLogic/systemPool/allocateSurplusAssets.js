@@ -20,8 +20,6 @@ async function allocateSurplusAssets(client, systemAccount, referIncome, distrib
         const devAccount = systemAccount.find(item => item.pool_type === DEV_OP_POOL && item.pool_symbol === UE_TOKEN_SYMBOL);
         const communityAccount = systemAccount.find(item => item.pool_type === COMMUNITY_POOL  && item.pool_symbol === UE_TOKEN_SYMBOL);
         const tshAccount = systemAccount.find(item => item.pool_type === TSH_INCOME && item.pool_symbol === UE_TOKEN_SYMBOL);
-        console.debug("devAccount: ", devAccount);
-        console.debug("communityAccount: ", communityAccount);
         if (!devAccount) {
             logger.debug(`system account ${ DEV_OP_POOL } not found`);
             throw new Error(`system account ${ DEV_OP_POOL } not found`);

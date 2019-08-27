@@ -1,13 +1,20 @@
 // @ts-check
-const { JsonRpc } = require("eosjs");
-const fetch = require("node-fetch");
-const { WALLET_RECEIVER, END_POINT, TBG_TOKEN, TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
+const { Api, JsonRpc } = require('eosjs');
+const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
+const fetch = require('node-fetch');                                // node only
+const { TextDecoder, TextEncoder } = require('util');               // node only
+const { END_POINT } = require("../common/constant/eosConstants.js");
 
-async function getTrxAction(actionSeq) {
+/**
+ * 
+ * @param { string } accountName 
+ * @param { number } actionSeq 
+ */
+async function getTrxAction(accountName, actionSeq) {
     try {
         // @ts-ignore
         const rpc = new JsonRpc(END_POINT, { fetch });
-        const resp = await rpc.history_get_actions(WALLET_RECEIVER, actionSeq, 9);
+        const resp = await rpc.history_get_actions(accountName, actionSeq, 9);
         // console.debug("resp: ", resp.actions);
         return resp.actions;
     } catch (err) {
@@ -52,11 +59,33 @@ async function getCurrencyBalance(code, account, symbol) {
     }
 }
 
+/**
+ * 获取用户代币资产
+ * @param { string } transactionId 交易 id
+ */
+async function getTransaction(transactionId) {
+    try {
+        // @ts-ignore
+        const rpc = new JsonRpc(END_POINT, { fetch });
+        const resp = rpc.history_get_transaction("d4688e098ce71b685fc1cdc80d33ecf7e87138aa6a90b495c3063c969816e834");
+        
+        return resp;
+    } catch (err) {
+        throw err;
+    }
+}
+
 // getCurrencyBalance(TBG_TOKEN, TBG_TOKEN, TBG_TOKEN_SYMBOL).then().catch(err => console.error(err));
 // getTrxAction(0).then(res => console.debug(res[0].action_trace.act)).catch(err => console.error(err))
+// getTransaction("").then(res => {
+//     for (const info of res.traces) {
+//         console.debug(info.act);
+//     }
+// }).catch(err => console.error(err))
 
 module.exports = {
     getTrxAction,
     getCurrencyStats,
-    getCurrencyBalance
+    getCurrencyBalance,
+    getTransaction
 }

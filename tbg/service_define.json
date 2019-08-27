@@ -832,8 +832,8 @@
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "price": { "type": "sting",  "is_require": true,  "desc": "tbg 购买价格" },
-                    "raise_price": { "type": "sting",  "is_require": true,  "desc": "私募价格" },
+                    "price": { "type": "string",  "is_require": true,  "desc": "tbg 购买价格" },
+                    "raise_price": { "type": "string",  "is_require": true,  "desc": "私募价格" },
                     "assets_info": {
                         "type": "objectArray", "desc": "资产包详情",
                         "properties": {
@@ -853,13 +853,13 @@
                 "全球合伙人专享，仅可购买一次"
             ],
             "isFunctionPoint" : true,
-            "url" : "/trade/raise_buy",
+            "url" : "/trade/global_raise_buy",
             "type" : "post",
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                "assets_package_id": { "type": "text",  "is_require": true,  "desc": "资产包 id" }
+                "price": { "type": "text",  "is_require": true,  "desc": "购买价格" },
+                "assets_package_id": { "type": "number",  "is_require": true,  "desc": "资产包 id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -906,13 +906,13 @@
             "summary": "",
             "remark": [],
             "isFunctionPoint" : true,
-            "url" : "/trade/buy_assets",
+            "url" : "/trade/user_buy_assets",
             "type" : "post",
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "price": { "type": "sting",  "is_require": true,  "desc": "购买价格" },
-                "assets_package_id": { "type": "text",  "is_require": true,  "desc": "资产包 id" }
+                "price": { "type": "text",  "is_require": true,  "desc": "购买价格" },
+                "assets_package_id": { "type": "number",  "is_require": true,  "desc": "资产包 id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -1003,7 +1003,7 @@
                 "手续费", "手续费比例", "销毁数量", "销毁比例"
             ],
             "isFunctionPoint" : true,
-            "url" : "/trade/sell_assets",
+            "url" : "/trade/user_sell_assets",
             "type" : "post",
             "requireRole" : [ "*" ],
             "req": {
