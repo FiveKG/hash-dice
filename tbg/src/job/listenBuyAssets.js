@@ -5,7 +5,7 @@ const { redis } = require("../common");
 const { UE_TOKEN, WALLET_RECEIVER } = require("../common/constant/eosConstants.js");
 const { RAISE, BUY, FIRST_BUY } = require("../common/constant/optConstants");
 const { TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
-const buyAirdrop = require("./buyAirdrop");
+const buyAssets = require("./buyAssets");
 const raiseAirdrop = require("./raiseAirdrop");
 const BUY_ASSETS_KEY = "tbg:buy_assets:account_action_seq";
 const { scheduleJob } = require("node-schedule");
@@ -36,7 +36,7 @@ async function handlerTransferActions() {
             } 
             
             if (result.trx_type === BUY) {
-                await buyAirdrop({ accountName: result.from, price: Number(result.price), apId: Number(result.assets_package_id) })
+                await buyAssets({ accountName: result.from, price: Number(result.price), apId: Number(result.assets_package_id) })
             }
             await redis.set(`tbg:buy:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);

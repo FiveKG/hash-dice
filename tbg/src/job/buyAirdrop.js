@@ -1,6 +1,6 @@
 // @ts-check
 const { pool, psTrx } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/buyAirdrop.js": "购买资产包" });
+const logger = require("../common/logger.js").child({ "@src/job/buyAirdrop.js": "购买资产包空投" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const { getUserReferrer } = require("../models/referrer");
@@ -17,6 +17,7 @@ const { format } = require("date-fns");
 
 /**
  * 用户首次买入资产空投
+ * 等卖单成交以后才更新用户的信息，否则将金额退回用户账户
  * @param {{ accountName: string, price: number, apId: number }} data
  */
 async function buyAirdrop(data) {
@@ -43,6 +44,8 @@ async function buyAirdrop(data) {
             return;
         }
         const now = new Date();
+        // 拿出排在前面的订单
+        const trxInfo = tradeInfo.filter(it => it.state === "create" && it.extra.ap_id === apId).shift();
         // 获取资产包信息
         const assetsInfo = await getAssetsInfoById([apId]);
         const amount = new Decimal(assetsInfo[0].amount);
@@ -53,7 +56,10 @@ async function buyAirdrop(data) {
         // 获得的可售额度
         const sellAmount = amount;
         // 查找用户交易记录，如果没有，说明是第一次买入，此时需要给全球合伙人和全球合伙人的推荐人空投
-        if (tradeInfo.length === 0) {
+        const firstTrade = tradeInfo.filter(it => it.trade_type === OPT_CONSTANTS.FIRST_BUY && it.state === "create");
+        let opType = OPT_CONSTANTS.BUY;
+        if (firstTrade.length === 1) {
+            opType = OPT_CONSTANTS.FIRST_BUY;
             let referrerAccountList = await getAllParentLevel(accountName);
             logger.debug("referrerAccountList: ", referrerAccountList);
             if (referrerAccountList.length === 0) {
@@ -67,7 +73,7 @@ async function buyAirdrop(data) {
             // 系统第一个账户没有推荐人，多出的部分转到股东池账户
             if (!userReferrer) {
                 userReferrer = TSH_INCOME;
-                const reBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.FIRST_BUY }, surplus assets airdrop ${ amount.mul(0.005) } to ${ userReferrer }`;
+                const reBalanceRemark = `user ${ accountName } at ${ now } ${ opType }, surplus assets airdrop ${ amount.mul(0.005) } to ${ userReferrer }`;
                 tmpActions.push(
                     {
                         account: TBG_TOKEN_COIN,
@@ -80,7 +86,7 @@ async function buyAirdrop(data) {
                             from: TBG_TOKEN_COIN,
                             to: TBG_FREE_POOL,
                             quantity: `${ amount.mul(0.01).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                            memo: `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.FIRST_BUY }, airdrop ${ amount.mul(0.01) } to global account  ${ userReferrer }`,
+                            memo: `user ${ accountName } at ${ now } ${ opType}, airdrop ${ amount.mul(0.01) } to global account  ${ userReferrer }`,
                         }
                     },
                     {
@@ -101,7 +107,7 @@ async function buyAirdrop(data) {
             } else {
                 // 如果有推荐人，推荐人获得的奖励也要转入释放池
                 const tbgBalance = await getTbgBalanceInfo(userReferrer);
-                const reBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.FIRST_BUY }, airdrop ${ amount.mul(0.005) } to global account referrer ${ userReferrer } `;
+                const reBalanceRemark = `user ${ accountName } at ${ now } ${ opType }, airdrop ${ amount.mul(0.005) } to global account referrer ${ userReferrer } `;
                 tmpActions.push(
                     {
                         account: TBG_TOKEN_COIN,
@@ -114,7 +120,7 @@ async function buyAirdrop(data) {
                             from: TBG_TOKEN_COIN,
                             to: TBG_FREE_POOL,
                             quantity: `${ amount.mul(0.01).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                            memo: `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.FIRST_BUY }, airdrop ${ amount.mul(0.01) } to global account  ${ userReferrer }`,
+                            memo: `user ${ accountName } at ${ now } ${ opType }, airdrop ${ amount.mul(0.01) } to global account  ${ userReferrer }`,
                         }
                     },
                     {
@@ -133,7 +139,7 @@ async function buyAirdrop(data) {
                     }
                 )
 
-                const opts = [ accountName, amount.mul(0.005), amount.mul(0.005).add(tbgBalance.release_amount), OPT_CONSTANTS.FIRST_BUY, { "symbol": TBG_TOKEN_SYMBOL }, reBalanceRemark, now ]
+                const opts = [ accountName, amount.mul(0.005), amount.mul(0.005).add(tbgBalance.release_amount), opType, { "symbol": TBG_TOKEN_SYMBOL }, reBalanceRemark, now ]
 
                 trxList.push({
                     sql: sql,
@@ -149,17 +155,17 @@ async function buyAirdrop(data) {
             // 如果不是第一次买入，只更新用户的释放资产和可售额度
             // 记录更新用户释放池资产日志
             const tbgBalance = await getTbgBalanceInfo(accountName);
-            const remark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.FIRST_BUY }, add release_amount ${ quantity } `;
+            const remark = `user ${ accountName } at ${ now } ${ opType }, add release_amount ${ quantity } `;
             trxList.push({
                 sql: sql,
-                values: [ accountName, quantity, quantity.add(tbgBalance.release_amount), OPT_CONSTANTS.BUY, { "symbol": TBG_TOKEN_SYMBOL }, remark, now ]
+                values: [ accountName, quantity, quantity.add(tbgBalance.release_amount), opType, { "symbol": TBG_TOKEN_SYMBOL }, remark, now ]
             });
 
             // 记录更新用户可售额度日志
-            const remark1 = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.FIRST_BUY }, add sell_amount ${ sellAmount } `;
+            const remark1 = `user ${ accountName } at ${ now } ${ opType }, add sell_amount ${ sellAmount } `;
             trxList.push({
                 sql: sql,
-                values: [ accountName, sellAmount, sellAmount.add(tbgBalance.sell_amount), OPT_CONSTANTS.BUY, { "symbol": TBG_TOKEN_SYMBOL }, remark1, now ]
+                values: [ accountName, sellAmount, sellAmount.add(tbgBalance.sell_amount), opType, { "symbol": TBG_TOKEN_SYMBOL }, remark1, now ]
             });
 
             // 更新用户的释放资产和可售额度
@@ -217,12 +223,14 @@ async function buyAirdrop(data) {
             }));
             const finishTime = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
             const trLogId = generate_primary_key();
-            const remark = `user ${ accountName } at ${ finishTime } done raise`;
+            const remark = `user ${ accountName } at buy ${ amount } asset, trade waiting`;
             // 更新交易状态
-            await updateTrade(client, trId, "finished", finishTime);
-            await insertTradeLog(client, trLogId, trId, OPT_CONSTANTS.RAISE, amount.toNumber(), remark, price, amount.mul(price).toNumber(), finishTime);
-            // 更新用户状态
-            await updateAccountState(client, accountState,accountName);
+            await updateTrade(client, trxInfo.id, "wait", finishTime);
+            await insertTradeLog(client, trLogId, trxInfo.id, opType, amount.toNumber(), remark, price, amount.mul(price).toNumber(), finishTime);
+            // 用户第一次投资，更新用户状态为参加 tbg1、2 或 1 2
+            if (firstTrade.length === 1) {
+                await updateAccountState(client, accountState,accountName);
+            }
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");

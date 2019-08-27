@@ -74,7 +74,7 @@ async function sellAssets(data) {
                     trxList.push({
                         sql: updateTradeSql,
                         values: [ "finished", finishTime, amount, info.id ]
-                    })
+                    });
                 } else {
                     const memo = `user ${ amount } sell, trade waiting`
                     trxList.push({

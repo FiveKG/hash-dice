@@ -11,7 +11,7 @@ const logger = require("../../common/logger.js").child({ "@models/trade/getTrade
 async function getTradeInfo(accountName, tradeType) {
     try {
         const sql = `
-            SELECT * FROM trade WHERE account_name = $1 AND trade_type = COALESCE($2, trade_type)
+            SELECT * FROM trade WHERE account_name = $1 AND trade_type = COALESCE($2, trade_type) ORDER BY create_time DESC;
         `
         const { rows } = await pool.query(sql, [ accountName, !tradeType ? null : tradeType ]);
         return rows;
