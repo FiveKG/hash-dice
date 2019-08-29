@@ -46,7 +46,7 @@ async function investAirdrop(client, accountName, create_time) {
                         "active_amount": 0,
                         "current_balance": acCurrentBalance,
                         "op_type": bindId,
-                        "extra": { "symbol": TBG_TOKEN_SYMBOL },
+                        "extra": { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE },
                         "remark": acBalanceRemark,
                         "create_time": now
                     }
@@ -80,7 +80,7 @@ async function investAirdrop(client, accountName, create_time) {
                         "active_amount": 0,
                         "current_balance": acCurrentBalance,
                         "op_type": bindId,
-                        "extra": { "symbol": TBG_TOKEN_SYMBOL },
+                        "extra": { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE },
                         "remark": acBalanceRemark,
                         "create_time": now
                     },
@@ -91,7 +91,7 @@ async function investAirdrop(client, accountName, create_time) {
                         "active_amount": 0,
                         "current_balance": reCurrentBalance,
                         "op_type": bindId,
-                        "extra": { "symbol": TBG_TOKEN_SYMBOL },
+                        "extra": { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE },
                         "remark": reBalanceRemark,
                         "create_time": now
                     }
@@ -117,7 +117,7 @@ async function investAirdrop(client, accountName, create_time) {
                         "active_amount": 0,
                         "current_balance": acCurrentBalance,
                         "op_type": tbg1Id,
-                        "extra": { "symbol": TBG_TOKEN_SYMBOL },
+                        "extra": { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE },
                         "remark": acBalanceRemark,
                         "create_time": now
                     }
@@ -151,7 +151,7 @@ async function investAirdrop(client, accountName, create_time) {
                         "active_amount": 0,
                         "current_balance": acCurrentBalance,
                         "op_type": tbg1Id,
-                        "extra": { "symbol": TBG_TOKEN_SYMBOL },
+                        "extra": { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE },
                         "remark": acBalanceRemark,
                         "create_time": now
                     },
@@ -162,7 +162,7 @@ async function investAirdrop(client, accountName, create_time) {
                         "active_amount": 0,
                         "current_balance": reCurrentBalance,
                         "op_type": tbg1Id,
-                        "extra": { "symbol": TBG_TOKEN_SYMBOL },
+                        "extra": { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE },
                         "remark": reBalanceRemark,
                         "create_time": now
                     }

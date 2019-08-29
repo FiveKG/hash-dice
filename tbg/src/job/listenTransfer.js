@@ -133,12 +133,11 @@ async function parseEosAccountAction(action) {
 
 async function getLastPos(){    
     let lastPosStr = await redis.get("tbg:account_action_seq");
-    let lastPos = parseInt(lastPosStr);
-    if(isNaN(lastPos)){
+    if(!lastPosStr){
         await redis.set("tbg:account_action_seq", 0);
         return 0;
     }
-    return lastPos + 1;
+    return parseInt(lastPosStr) + 1;
 }
 
 /**

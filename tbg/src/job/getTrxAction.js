@@ -134,13 +134,13 @@ async function transfer(tokenContract, from, to, quantity, memo, privateKeyList)
     }
 }
 
-getCurrencyBalance('tbgtokencoin', 'tbgfreepool', 'TBG')
-.then(res => console.error(res))
-.catch(err => console.error(err));
+// getCurrencyBalance('tbgtokencoin', 'tbgfreepool', 'TBG')
+// .then(res => console.error(res))
+// .catch(err => console.error(err));
 
-transfer('tbgtokencoin', 'tbgfreepool', 'yujinsheng11', '10.0000 TBG', 'memo', PRIVATE_KEY_TEST.split(","))
-.then(res => console.error(res))
-.catch(err => console.error(err));
+// transfer('tbgtokencoin', 'yujinsheng11', 'tbgfreepool', '10.0000 TBG', 'memo', PRIVATE_KEY_TEST.split(","))
+// .then(res => console.error(res))
+// .catch(err => console.error(err));
 
 
 module.exports = {

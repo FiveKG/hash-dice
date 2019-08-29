@@ -15,19 +15,22 @@ const { format } = require("date-fns");
 async function buyAssets(data) {
     try {
         const { accountName, price, apId } = data;
-        const tradeInfo = await getTradeInfo(accountName);
+        let opType = OPT_CONSTANTS.BUY;
+        const tradeInfo = await getTradeInfo(accountName, opType);
         // 没有交易记录，不做处理
         if (tradeInfo.length === 0) {
             return;
         }
         // 拿出排在前面的订单
         const trxInfo = tradeInfo.filter(it => it.state === "create" && it.extra.ap_id === apId).shift();
+        if (!trxInfo) {
+            return;
+        }
         // 获取资产包信息
         const assetsInfo = await getAssetsInfoById([apId]);
         const amount = new Decimal(assetsInfo[0].amount);
         // 查找用户交易记录，如果没有，说明是第一次买入，此时需要给全球合伙人和全球合伙人的推荐人空投
-        const firstTrade = tradeInfo.filter(it => it.trade_type === OPT_CONSTANTS.FIRST_BUY && it.state === "create");
-        let opType = OPT_CONSTANTS.BUY;
+        const firstTrade = tradeInfo.filter(it => it.trade_type === OPT_CONSTANTS.FIRST_BUY);
         if (firstTrade.length === 1) {
             opType = OPT_CONSTANTS.FIRST_BUY;
         }

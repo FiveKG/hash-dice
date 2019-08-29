@@ -150,6 +150,7 @@ async function raiseAirdrop(data) {
             // 挖矿的部分可以从 extra 中计算出
             const extra = { 
                 "symbol": TBG_TOKEN_SYMBOL,
+                "op_type": OPT_CONSTANTS.RELEASE,
                 "tr_id": trId,
                  ...assetsInfo[0]
             }
@@ -163,7 +164,7 @@ async function raiseAirdrop(data) {
             // 如果有推荐人，更新一下推荐人的释放池
             if (!!userReferrer) {
                 await updateTbgBalance(client, userReferrer, referrerIncome.toNumber(), 0, 0);
-                await insertBalanceLog(client, userReferrer, referrerIncome.toNumber(), reCurrentBalance.toNumber(), OPT_CONSTANTS.RAISE, { "symbol": TBG_TOKEN_SYMBOL }, reBalanceRemark, now);
+                await insertBalanceLog(client, userReferrer, referrerIncome.toNumber(), reCurrentBalance.toNumber(), OPT_CONSTANTS.RAISE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, reBalanceRemark, now);
             }
             const finishTime = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
             const trLogId = generate_primary_key();

@@ -30,8 +30,9 @@ module.exports = [
     { "code": 1018, "desc": "check in airdrop quota has been used up" },
     { "code": 1019, "desc": "today already check in" },
     { "code": 1020, "desc": "this account already bind" },
-    { "code": 1021, "desc": "this account is not a global partner" },
-    { "code": 1022, "desc": "this account is not a global partner" },
+    { "code": 1021, "desc": "less then one trade min amount" },
+    { "code": 1022, "desc": "more then one trade max amount" },
+    { "code": 1023, "desc": "more than one day to sell count" },
 
 
     

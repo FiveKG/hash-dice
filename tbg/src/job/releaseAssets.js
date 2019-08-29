@@ -61,7 +61,7 @@ async function releaseAssets() {
             // 可释放的额度
             const dayRelease = releaseAmount.mul(releaseRate);
             const remark = `user ${ info.account_name } at ${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } release assets ${ dayRelease.toFixed(8) }, minus release_amount ${ dayRelease }`
-            const opts = [ info.account_name, -dayRelease.toNumber(), releaseAmount.minus(dayRelease).toNumber(), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL }, remark, format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
+            const opts = [ info.account_name, -dayRelease.toNumber(), releaseAmount.minus(dayRelease).toNumber(), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, remark, format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
 
             // 从用户的释放池减去
             trxList.push({
@@ -73,7 +73,7 @@ async function releaseAssets() {
             const remark1 = `user ${ info.account_name } at ${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } release assets ${ dayRelease.toFixed(8) }, add active_amount ${ dayRelease }`
             trxList.push({
                 sql: sql,
-                values: [ info.account_name, dayRelease.toNumber(), new Decimal(info.active_amount).add(dayRelease).toNumber(), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL }, remark1, format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
+                values: [ info.account_name, dayRelease.toNumber(), new Decimal(info.active_amount).add(dayRelease).toNumber(), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": 'active_amount' }, remark1, format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
             });
 
             const updateOpts = [ -dayRelease.toNumber(), 0, dayRelease.toNumber(), info.account_name ]

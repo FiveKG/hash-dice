@@ -117,31 +117,32 @@ void token::transfer( const name&    from,
     check( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
     check( memo.size() <= 256, "memo has more than 256 bytes" );
 
-    // 如果 from 是普通用户交易，需要判断交易时间（trade_time）是否在 10 - 21，并且只能转账到 admin 账户
-    // 如果 from 是 admin 账户，则不受条件限制，可以自由交易
     configs conf(get_self(), get_self().value);
 
-    const auto& existing = conf.find(from.value);
-    if (existing != conf.end()) {
-      print("<- configs if ->");
-      auto payer = has_auth( to ) ? to : from;
+    // 查找到 configs 表
+    const auto& it = conf.find(get_self().value);
+    check( it != conf.end(), "please add configs first" );
+    auto from_iter = find(it->admin_name.begin(), it->admin_name.end(), from);
+    // 如果 from 是普通用户交易，需要判断交易时间（trade_time）是否在 10 - 21，并且只能转账到 admin 账户
+    // 如果 from 是 admin 账户，则不受条件限制，可以自由交易
+    if (from_iter != it->admin_name.end()) {
+       print("<- configs if ->");
+       auto payer = has_auth( to ) ? to : from;
 
-      sub_balance( from, quantity );
-      add_balance( to, quantity, payer );
+       sub_balance( from, quantity );
+       add_balance( to, quantity, payer );
     } else {
-      print("<- configs else ->");
-      // 拿到当前块的时间戳
-      uint32_t count_seconds = current_time_point().sec_since_epoch();
-      auto hours_sec = count_seconds % ONE_DAY;
-      // 先判断是不是交易时间
-      check( hours_sec < TRX_CLOSING_HOURS && hours_sec > TRX_OPENING_HOURS, "The transaction is not open，Please transfer money during trading hours" );
-      //  判断是不是转给 admin 账户
-      const auto& ex = conf.find(to.value);
-      check( ex != conf.end(), "The transaction was rejected" );
-      auto payer = has_auth( to ) ? to : from;
-
-      sub_balance( from, quantity );
-      add_balance( to, quantity, payer );
+       // 拿到当前块的时间戳
+       uint32_t count_seconds = current_time_point().sec_since_epoch();
+       auto hours_sec = count_seconds % ONE_DAY;
+       // 先判断是不是交易时间
+       check( hours_sec < TRX_CLOSING_HOURS && hours_sec > TRX_OPENING_HOURS, "The transaction is not open，Please transfer money during trading hours" );
+       //  判断是不是转给 admin 账户
+       auto to_iter = find(it->admin_name.begin(), it->admin_name.end(), to);
+       check( to_iter != it->admin_name.end(), "The transaction was rejected" );
+       auto payer = has_auth( to ) ? to : from;
+       sub_balance( from, quantity );
+       add_balance( to, quantity, payer );
     }
 }
 

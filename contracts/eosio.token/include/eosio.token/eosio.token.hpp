@@ -35,10 +35,10 @@ namespace eosio {
                admin.push_back(receiver);
                admin.push_back(test_account);
                conftable.emplace(receiver, [&]( auto& c ) {
-               c.creator = receiver;
-               c.admin_name = admin;
-               c.trx_opening_hours = TRX_OPENING_HOURS;
-               c.trx_closing_hours = TRX_CLOSING_HOURS;
+                  c.creator = receiver;
+                  c.admin_name = admin;
+                  c.trx_opening_hours = TRX_OPENING_HOURS;
+                  c.trx_closing_hours = TRX_CLOSING_HOURS;
                }); 
             }                                                                          
          }

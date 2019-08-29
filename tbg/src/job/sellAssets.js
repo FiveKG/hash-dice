@@ -3,7 +3,8 @@ const { pool, psTrx } = require("../db/index.js");
 const logger = require("../common/logger.js").child({ "@src/job/sellAssets.js": "卖出资产" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
-const { TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
+const { TBG_TOKEN_SYMBOL, WALLET_RECEIVER, UE_TOKEN } = require("../common/constant/eosConstants.js");
+const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
 const { getTbgBalanceInfo } = require("../models/tbgBalance");
 const { generate_primary_key } = require("../common/index.js");
 const { getAllTrade } = require("../models/trade");
@@ -12,6 +13,8 @@ const buyAirdrop = require("./buyAirdrop.js");
 
 /**
  * 卖出资产
+ * 用户卖出 TBG，可以得到 UE
+ * 监听用户 TBG 转账，如果有，将相应的 UE 转回用户的账户中 
  * @param {{ "account_name": string, "price": number, 
  *          "amount": number, "sell_fee": number, "destroy": number, 
  *          "income": number, "create_time": string, trId: string }} data
@@ -39,11 +42,18 @@ async function sellAssets(data) {
             INSERT INTO trade_log(id, tr_id, trade_type, amount, memo, price, volume, create_time)
                 VALUES($1, $2, $3, $4, $5, $6, $7, $8);
         `
-        const now = new Date();
-        const { account_name: accountName, price, amount, sell_fee, destroy, create_time, trId } = data;
+        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+        const { account_name: accountName, price, amount, sell_fee, destroy, create_time, trId, income } = data;
+        const queryTradeSql = `SELECT * FROM trade WHERE id = $1 AND state = 'wait'`;
+        // 根据监听到的信息去查找订单
+        const { rows: [ tradeInfo ] } = await pool.query(queryTradeSql, [ trId ]);
+        // 如果找不到这个卖单直接返回，不做处理
+        if (!tradeInfo) {
+            return
+        }
+        
         // 获取所有等待交易的买单，根据用户卖出的额度
         const tradeLogList = await getAllTrade("buy", "wait");
-
         // 如果找不到买单, 修改订单的状态为等待卖出
         if (tradeLogList.length === 0) {
             const finishTime = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
@@ -105,11 +115,11 @@ async function sellAssets(data) {
             const remark2 = `user sell ${ amount } assets, minus ${ amount } active_amount`;
             trxList.push({
                 sql: insertBalanceLogSql,
-                values: [ accountName, -amount, tbgBalance.sell_amount - amount, OPT_CONSTANTS.FIRST_BUY, { "symbol": TBG_TOKEN_SYMBOL }, remark1, now ]
+                values: [ accountName, -amount, tbgBalance.sell_amount - amount, OPT_CONSTANTS.SELL, { "symbol": TBG_TOKEN_SYMBOL, "op_type": 'sell_amount' }, remark1, now ]
             })
             trxList.push({
                 sql: insertBalanceLogSql,
-                values: [ accountName, -amount, tbgBalance.active_amount - amount, OPT_CONSTANTS.FIRST_BUY, { "symbol": TBG_TOKEN_SYMBOL }, remark2, now ]
+                values: [ accountName, -amount, tbgBalance.active_amount - amount, OPT_CONSTANTS.SELL, { "symbol": TBG_TOKEN_SYMBOL, "op_type": 'active_amount' }, remark2, now ]
             })
             trxList.push({
                 sql: updateBalanceSql,
@@ -128,6 +138,53 @@ async function sellAssets(data) {
                 values: [ "finished", finishTime, amount, trId ]
             });
         }
+
+        const destroyAmount =  new Decimal(destroy);
+        const incomeAmount = new Decimal(income);
+        // 卖出需要销毁一部分额度
+        // 监听转账时，用户一次将所有的 TBG 代币都转到了 TBG_FREE_POOL，所以需要从 TBG_FREE_POOL 再转回发币账户，只能用发币账户销毁
+        tmpActions.push(
+            {
+                account: UE_TOKEN,
+                name: "transfer",
+                authorization: [{
+                    actor: WALLET_RECEIVER,
+                    permission: 'active',
+                }],
+                data: {
+                    from: WALLET_RECEIVER,
+                    to: accountName,
+                    quantity: `${ incomeAmount.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                    memo: `user ${ accountName } sell ${ amount } TBG, get ${ income } UE`,
+                }
+            },
+            {
+                account: TBG_TOKEN_COIN,
+                name: "transfer",
+                authorization: [{
+                    actor: TBG_TOKEN_COIN,
+                    permission: 'active',
+                }],
+                data: {
+                    from: TBG_FREE_POOL,
+                    to: TBG_TOKEN_COIN,
+                    quantity: `${ destroyAmount.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                    memo: `user ${ accountName } sell ${ amount } TBG, destroy to ${ TBG_TOKEN_COIN } destroy`,
+                }
+            },
+            {
+                account: TBG_TOKEN_COIN,
+                name: "retire",
+                authorization: [{
+                    actor: TBG_TOKEN_COIN,
+                    permission: 'active',
+                }],
+                data: {
+                    quantity: `${ destroyAmount.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                    memo: `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.RAISE }, destroy ${ destroyAmount.toFixed(4) }`,
+                }
+            }
+        )
 
         const client = await pool.connect();
         await client.query("BEGIN");

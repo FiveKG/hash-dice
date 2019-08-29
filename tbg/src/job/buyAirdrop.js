@@ -149,7 +149,7 @@ async function buyAirdrop(data) {
                     }
                 )
 
-                const opts = [ accountName, amount.mul(0.005), amount.mul(0.005).add(tbgBalance.release_amount), opType, { "symbol": TBG_TOKEN_SYMBOL, "tr_id": data.id, ...assetsInfo[0] }, reBalanceRemark, now ]
+                const opts = [ accountName, amount.mul(0.005), amount.mul(0.005).add(tbgBalance.release_amount), opType, { "symbol": TBG_TOKEN_SYMBOL, "tr_id": data.id, ...assetsInfo[0], "op_type": OPT_CONSTANTS.RELEASE }, reBalanceRemark, now ]
 
                 trxList.push({
                     sql: sql,
@@ -168,14 +168,14 @@ async function buyAirdrop(data) {
             const remark = `user ${ accountName } at ${ now } ${ opType }, add release_amount ${ quantity } `;
             trxList.push({
                 sql: sql,
-                values: [ accountName, quantity, quantity.add(tbgBalance.release_amount), opType, { "symbol": TBG_TOKEN_SYMBOL }, remark, now ]
+                values: [ accountName, quantity, quantity.add(tbgBalance.release_amount), opType, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, remark, now ]
             });
 
             // 记录更新用户可售额度日志
             const remark1 = `user ${ accountName } at ${ now } ${ opType }, add sell_amount ${ sellAmount } `;
             trxList.push({
                 sql: sql,
-                values: [ accountName, sellAmount, sellAmount.add(tbgBalance.sell_amount), opType, { "symbol": TBG_TOKEN_SYMBOL }, remark1, now ]
+                values: [ accountName, sellAmount, sellAmount.add(tbgBalance.sell_amount), opType, { "symbol": TBG_TOKEN_SYMBOL, "op_type": 'sell_amount' }, remark1, now ]
             });
 
             // 更新用户的释放资产和可售额度
