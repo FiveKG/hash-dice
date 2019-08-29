@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@src/models/account/handleRepeat.js": "用户复投" });
+const logger = require("../../common/logger.js").child({ "@src/businessLogic/account/handleRepeat.js": "用户复投" });
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const BALANCE_CONSTANT = require("../../common/constant/balanceConstants");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");

@@ -1,27 +1,34 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@src/job/buyAirdrop.js": "购买资产包空投" });
+const { pool, psTrx } = require("../db/index.js");
+const logger = require("../common/logger.js").child({ "@src/job/mining.js": "挖矿" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
+const TBG_ALLOCATE = require("../common/constant/tbgAllocateRate");
+const ACCOUNT_CONSTANT = require("../common/constant/accountConstant.js");
 const { getUserReferrer } = require("../models/referrer");
 const { TSH_INCOME, TBG_MINE_POOL, TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
-const { getAssetsInfoById } = require("../models/asset");
 const { TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
-const { getTbgBalanceInfo } = require("../models/tbgBalance");
-const { getAllParentLevel, getGlobalAccount } = require("../models/account")
-const ACCOUNT_CONSTANT = require("../common/constant/accountConstant.js");
-const { getTradeInfo } = require("../models/trade");
-const { getAccountInfo } = require("../models/account");
+const { updateTbgBalance, getTbgBalanceInfo } = require("../models/tbgBalance");
+const { getAllParentLevel, getGlobalAccount } = require("../models/account");
 const { format } = require("date-fns");
+const { scheduleJob } = require("node-schedule");
+
+logger.debug(`releaseAssets running...`);
+// 每天 0：00 释放
+scheduleJob("0 0 0 */1 * *", mining);
+// mining()
 
 /**
- * 用户首次买入资产空投
- * 等卖单成交以后才更新用户的信息，否则将金额退回用户账户
- * @param { DB.Trade } data
+ * 挖矿
+ * 每日0点统计将用户收取的挖矿数量从矿池账号转至释放池账号
  */
-async function buyAirdrop(data) {
+async function mining() {
     try {
+        // 查找所有用户的 TBG 资产
         const trxList = [];
-        let tmpActions = []
+        const tmpActions = [];
+        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+        const opType = OPT_CONSTANTS.MINING;
         let sql = `
             INSERT INTO 
                 balance_log(account_name, change_amount, current_balance, op_type, extra, remark, create_time)
@@ -35,42 +42,19 @@ async function buyAirdrop(data) {
                     active_amount = active_amount + $3
                 WHERE account_name = $4
         `
-        const { account_name: accountName, price, extra: { ap_id: apId }, trade_type } = data;
-        const tradeInfo = await getTradeInfo(accountName);
-        // 没有交易记录，不做处理
-        if (tradeInfo.length === 0) {
-            return {
-                actionsList: [],
-                queryList: []
-            };
+        // 获取这一天所有的收取过挖矿的记录
+        const getBalanceLogSql = `SELECT * FROM balance_log WHERE extra ->> 'symbol' = $1 AND op_type = $2 AND create_time BETWEEN CAST($3 AS DATE) - 1 AND $3`
+        let { rows: balanceLogInfo } = await pool.query(getBalanceLogSql, [ TBG_TOKEN_SYMBOL, opType, now]);
+
+        if (balanceLogInfo.length === 0) {
+            return;
         }
-        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
-        // 获取资产包信息
-        const assetsInfo = await getAssetsInfoById([apId]);
-        const amount = new Decimal(assetsInfo[0].amount);
-        // 进入释放池的额度
-        const quantity = amount.mul(assetsInfo[0].release_multiple);
-        // 进入矿池的额度
-        const miningAmount = amount.mul(assetsInfo[0].mining_multiple);
-        // 获得的可售额度
-        const sellAmount = amount;
-        // 查找用户交易记录，如果没有，说明是第一次买入，此时需要给全球合伙人和全球合伙人的推荐人空投
-        let opType = OPT_CONSTANTS.BUY;
-        if (trade_type === OPT_CONSTANTS.FIRST_BUY) {
-            opType = OPT_CONSTANTS.FIRST_BUY;
-            const accountInfo = await getAccountInfo(accountName);
-            let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2;
-            if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1) {
-                accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2
-            }
-            
-            const updateAccountStateSql = `UPDATE account SET state = $1 WHERE account_name = $2;`
-            // 用户第一次投资，更新用户状态为参加 tbg1、2 或 1 2
-            trxList.push({
-                sql: updateAccountStateSql,
-                values: [ accountState, accountName ]
-            });
+        
+        // 遍历所有的记录
+        for (const info of balanceLogInfo) {
             // 查找用户的推荐关系，再从中找出全球合伙人
+            const accountName = info.account_name;
+            const amount = new Decimal(info.change_amount);
             let referrerAccountList = await getAllParentLevel(accountName);
             logger.debug("referrerAccountList: ", referrerAccountList);
             if (referrerAccountList.length === 0) {
@@ -150,7 +134,7 @@ async function buyAirdrop(data) {
                     }
                 )
 
-                const opts = [ accountName, amount.mul(0.005), amount.mul(0.005).add(tbgBalance.release_amount), OPT_CONSTANTS.FIRST_BUY_REFERRER, { "symbol": TBG_TOKEN_SYMBOL, "tr_id": data.id, ...assetsInfo[0], "op_type": OPT_CONSTANTS.RELEASE }, reBalanceRemark, now ]
+                const opts = [ accountName, amount.mul(0.005), amount.mul(0.005).add(tbgBalance.release_amount), OPT_CONSTANTS.MINING_REFERRER, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, reBalanceRemark, now ]
 
                 trxList.push({
                     sql: sql,
@@ -162,72 +146,45 @@ async function buyAirdrop(data) {
                     values: [ amount.mul(0.005), 0, 0, accountName ]
                 });
             }
-        } else {
-            // 如果不是第一次买入，只更新用户的释放资产和可售额度
-            // 记录更新用户释放池资产日志
-            const tbgBalance = await getTbgBalanceInfo(accountName);
-            const remark = `user ${ accountName } at ${ now } ${ opType }, add release_amount ${ quantity } `;
-            trxList.push({
-                sql: sql,
-                values: [ accountName, quantity.toNumber(), quantity.add(tbgBalance.release_amount).toNumber(), opType, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, remark, 'now()' ]
-            });
 
-            // 记录更新用户可售额度日志
-            const remark1 = `user ${ accountName } at ${ now } ${ opType }, add sell_amount ${ sellAmount } `;
-            trxList.push({
-                sql: sql,
-                values: [ accountName, sellAmount.toNumber(), sellAmount.add(tbgBalance.sell_amount).toNumber(), opType, { "symbol": TBG_TOKEN_SYMBOL, "op_type": 'sell_amount' }, remark1, now ]
-            });
-
-            // 更新用户的释放资产和可售额度
-            trxList.push({
-                sql: updateBalanceSql,
-                values: [ quantity.toNumber(), sellAmount.toNumber(), 0, accountName ]
-            });
-        }
-
-        let actions = {
-            actions: [
-                ...tmpActions,
-                {
-                    account: TBG_TOKEN_COIN,
-                    name: "transfer",
-                    authorization: [{
-                        actor: TBG_TOKEN_COIN,
-                        permission: 'active',
-                    }],
-                    data: {
-                        from: TBG_TOKEN_COIN,
-                        to: TBG_FREE_POOL,
-                        quantity: `${ quantity.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                        memo: `user ${ accountName } at ${ now } buy assets package, transfer to ${ TBG_FREE_POOL }`,
-                    }
-                },
-                {
-                    account: TBG_TOKEN_COIN,
-                    name: "transfer",
-                    authorization: [{
-                        actor: TBG_TOKEN_COIN,
-                        permission: 'active',
-                    }],
-                    data: {
-                        from: TBG_TOKEN_COIN,
-                        to: TBG_MINE_POOL,
-                        quantity: `${ miningAmount.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                        memo: `user ${ accountName } at ${ now } buy assets package, transfer to ${ TBG_MINE_POOL }`,
-                    }
+            // 挖矿收益转到 TBG_FREE_POOL 帐号
+            tmpActions.push({
+                account: TBG_TOKEN_COIN,
+                name: "transfer",
+                authorization: [{
+                    actor: TBG_TOKEN_COIN,
+                    permission: 'active',
+                }],
+                data: {
+                    from: TBG_TOKEN_COIN,
+                    to: TBG_FREE_POOL,
+                    quantity: `${ amount.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                    memo: `${ now } check in airdrop`
                 }
-            ]
+            })
         }
 
-        return {
-            actionsList: actions.actions,
-            queryList: trxList
+
+        const client = await pool.connect();
+        await client.query("BEGIN");
+        try {
+            await Promise.all(trxList.map(it => {
+                client.query(it.sql, it.values);
+            }));
+            await client.query("COMMIT");
+        } catch (err) {
+            await client.query("ROLLBACK");
+            throw err;
+        } finally {
+            await client.release();
         }
+
+        // 发送区块链转帐消息
+        await psTrx.pub(tmpActions);
     } catch (err) {
-        logger.error("raise airdrop error, the error stock is %O", err);
+        logger.error("mining error, the error stock is %O", err);
         throw err;
     }
 }
 
-module.exports = buyAirdrop
+module.exports = mining

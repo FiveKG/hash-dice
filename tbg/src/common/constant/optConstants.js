@@ -24,8 +24,11 @@ const SELL = 'sell';
 // 挖矿推荐收益
 const MINING_REFERRER = 'mining_referrer';
 
-// 首次购买推荐收益
+// 首次购买
 const FIRST_BUY = 'first_buy';
+
+// 首次购买推荐收益
+const FIRST_BUY_REFERRER = 'first_buy_referrer'
 
 // 卖出销毁
 const DESTROY = 'destroy';
@@ -95,8 +98,12 @@ const OPT_TYPE = {
         "ID": MINING_REFERRER
     },
     "FIRST_BUY": {
-        "NAME": "首次购买推荐收益",
+        "NAME": "首次购买",
         "ID": FIRST_BUY
+    },
+    "FIRST_BUY_REFERRER": {
+        "NAME": "首次购买推荐收益",
+        "ID": FIRST_BUY_REFERRER
     },
     "DESTROY": {
         "NAME": "卖出销毁",
@@ -173,6 +180,7 @@ const CONSTANT = {
     "SELL": SELL,
     "MINING_REFERRER": MINING_REFERRER,
     "FIRST_BUY": FIRST_BUY,
+    "FIRST_BUY_REFERRER": FIRST_BUY_REFERRER,
     "DESTROY": DESTROY,
     "BIND": BIND,
     "TBG_1": TBG_1,
@@ -203,7 +211,8 @@ module.exports = CONSTANT
  * @property { string } BUY 转出
  * @property { string } SELL 买入
  * @property { string } MINING_REFERRER 挖矿推荐收益
- * @property { string } FIRST_BUY 首次购买推荐收益
+ * @property { string } FIRST_BUY 首次购买
+ * @property { string } FIRST_BUY_REFERRER 首次购买推荐收益
  * @property { string } DESTROY 卖出销毁
  * @property { string } BIND 绑定
  * @property { string } TBG_1 参与 TBG-I

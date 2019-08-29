@@ -14,10 +14,30 @@ const { insertTradeLog, updateTrade, getTradeInfo } = require("../models/trade")
 const { format } = require("date-fns");
 
 logger.debug(`beginListenAction running...`);
-scheduleJob("*/1 * * * * *", handlerTransferActions);
+scheduleJob("*/1 * * * * *", begin);
+const SELL_LOCK = `tbg:lock:sell`;
+let count  = 1;
+async function begin() {
+    try {
+        const investLock = await redis.get(SELL_LOCK);
+        if (!investLock) {
+            await handlerTransferActions();
+        } else {
+            if (count > 10)  {
+                await redis.del(SELL_LOCK);
+            } else {
+                count += 1;
+            }
+            return;
+        }
+    } catch (err) {
+        throw err;
+    }
+}
 
 async function handlerTransferActions() {
     try {
+        await redis.set(SELL_LOCK, 1);
         const actionSeq = await getLastPos();
         const actions = await getTrxAction(UE_TOKEN, actionSeq);
         logger.debug("actionSeq: ", actionSeq);
@@ -83,6 +103,7 @@ async function handlerTransferActions() {
             await redis.set(`tbg:sell:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
         }
+        await redis.del(SELL_LOCK);
     } catch (err) {
         throw err;
     }
@@ -131,7 +152,7 @@ async function parseEosAccountAction(action) {
         result["trx_id"] = actionTrace.trx_id;
         logger.debug(`trx_id: ${ actionTrace.trx_id } -- account_action_seq: ${ action.account_action_seq }`);
         let { receipt, act } = actionTrace;
-        logger.debug("act: ", act);
+        // logger.debug("act: ", act);
         // 此处只监听 TBG 代币的转账，用户卖出时是将 TBG 转到收款账户
         let isTransfer = act.account === TBG_TOKEN_COIN && act.name === "transfer"
         if (!isTransfer) {

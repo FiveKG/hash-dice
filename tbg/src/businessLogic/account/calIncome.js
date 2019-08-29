@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
-const logger = require("../../common/logger.js").child({ "@src/models/account/userInvestment.js": "Calculated income" });
+const logger = require("../../common/logger.js").child({ "@src/businessLogic/account/calIncome.js": "Calculated income" });
 const { getStaticSort } = require("../../models/account");
 const staticModeIncome = require("./staticModeIncome.js");
 const staticSortIncome = require("./staticSortIncome.js");

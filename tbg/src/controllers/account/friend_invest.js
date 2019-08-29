@@ -57,7 +57,7 @@ async function friendInvest(req, res, next) {
         }
         
         // 投资
-        await userInvestment(investAmount, friendAccount, remark);
+        // await userInvestment(investAmount, friendAccount, remark);
         res.send(get_status(1));
     } catch (err) {
         logger.error("request friendInvest error, the error stock is %O", err);

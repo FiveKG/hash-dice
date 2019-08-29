@@ -22,13 +22,13 @@ POST http://localhost:9527/trade/user_buy_assets
 Content-Type: application/json
 
 {
-    "account_name": "t5234vtx51gs",
+    "account_name": "yujinsheng11",
     "price": "1.800",
     "assets_package_id": 2
 }
 
 ### 获取普通买入交易信息
-GET http://localhost:9527/trade/sell_assets
+GET http://localhost:9527/trade/sell_assets?account_name=yujinsheng11
 
 ### 资产包买入记录
 GET http://localhost:9527/trade/buy_assets_history?account_name=yujinsheng11

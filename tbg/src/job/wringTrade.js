@@ -120,7 +120,7 @@ async function replenish(waitOrder) {
     try {
         const queryList = [];
         const tmpActions = [];
-        const now = new Date();
+        const now = df.format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
         const updateTradeSql = `
             UPDATE trade SET state = $1, finished_time = $2, trx_amount = $3 WHERE id = $4
         `
@@ -138,20 +138,20 @@ async function replenish(waitOrder) {
             const trId = generate_primary_key();
             queryList.push({
                 sql: insertTradeSql,
-                values: [ trId, TBG_TOKEN_COIN, info.trade_type, info.extra, info.amount, info.amount, info.price, "finished", df.format(now, "YYYY-MM-DD : HH:mm:ssZ"), df.format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
+                values: [ trId, TBG_TOKEN_COIN, info.trade_type, info.extra, info.amount, info.amount, info.price, "finished", now, now ]
             });
             queryList.push({
                 sql: insertTradeLogSql,
-                values: [ generate_primary_key(), trId, info.trade_type, info.amount, memo, info.price, info.amount * info.price, df.format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
+                values: [ generate_primary_key(), trId, info.trade_type, info.amount, memo, info.price, info.amount * info.price, now ]
             });
             // 修改用户的订单并记录日志
             queryList.push({
                 sql: updateTradeSql,
-                values: [ "finished", df.format(now, "YYYY-MM-DD : HH:mm:ssZ"), info.amount, info.id ]
+                values: [ "finished", now, info.amount, info.id ]
             })
             queryList.push({
                 sql: insertTradeLogSql,
-                values: [ generate_primary_key(), info.id, info.trade_type, info.amount, memo, info.price, info.amount * info.price, df.format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
+                values: [ generate_primary_key(), info.id, info.trade_type, info.amount, memo, info.price, info.amount * info.price, now ]
             });
             const { queryList: trxList, actionsList } = await buyAirdrop(info);
             queryList.push(...trxList);
@@ -169,7 +169,7 @@ async function replenish(waitOrder) {
                 data: {
                     from: TBG_TOKEN_COIN,
                     to: TBG_FREE_POOL,
-                    quantity: `${ new Decimal(it.release_amount).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                    quantity: `${ new Decimal(it.amount).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
                     memo: `${ df.format(it.create_time, "YYYY-MM-DD : HH:mm:ssZ") } platform replenish order`
                 }
             }

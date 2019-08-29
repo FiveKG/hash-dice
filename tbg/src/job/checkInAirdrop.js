@@ -6,7 +6,10 @@ const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
 const { TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { format } = require("date-fns");
+const { scheduleJob } = require("node-schedule");
 
+logger.debug("checkInAirdrop running")
+scheduleJob("0 0 0 */1 * *", checkInAirdrop);
 /**
  * 签到空投
  * 从日志中找出今日所有的签到用户
@@ -21,7 +24,6 @@ async function checkInAirdrop() {
         `
         const now = new Date();
         const { rows: checkInList } = await pool.query(sql, [ OPT_CONSTANTS.CHECK_IN, now ]);
-
         const actionList = checkInList.map(it => {
             return {
                 account: TBG_TOKEN_COIN,
@@ -37,7 +39,7 @@ async function checkInAirdrop() {
                     memo: `${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } check in airdrop`
                 }
             }
-        })
+        });
 
         // 发送区块链转帐消息
         await psTrx.pub(actionList);

@@ -19,20 +19,22 @@ async function releasePoolDetail(req, res, next) {
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, "symbol": TBG_TOKEN_SYMBOL });
 
         const typeList = [ 
-            OPT_CONSTANTS.FIRST_BUY, OPT_CONSTANTS.GAME, OPT_CONSTANTS.MINING_REFERRER, OPT_CONSTANTS.MINING,
+            OPT_CONSTANTS.FIRST_BUY, OPT_CONSTANTS.FIRST_BUY_REFERRER, OPT_CONSTANTS.GAME, OPT_CONSTANTS.MINING_REFERRER, OPT_CONSTANTS.MINING,
             OPT_CONSTANTS.TBG_1, OPT_CONSTANTS.CHECK_IN, OPT_CONSTANTS.BUY, OPT_CONSTANTS.SELL, OPT_CONSTANTS.RELEASE,
             OPT_CONSTANTS.BIND, OPT_CONSTANTS.DESTROY
         ];
         let resData = get_status(1);
         resData["data"] = {
-            "detail": balanceLogInfo.filter(it  => typeList.includes(it.op_type) && it.extra.op_type === OPT_CONSTANTS.RELEASE).map(it => {
-                return {
-                    "create_time": it.create_time,
-                    "release_type": it.op_type,
-                    "amount": it.change_amount,
-                    "balance": it.current_balance
-                }
-            })
+            "detail": balanceLogInfo.filter(it => {
+                    return typeList.includes(it.op_type) && it.extra.op_type === OPT_CONSTANTS.RELEASE
+                }).map(it => {
+                    return {
+                        "create_time": it.create_time,
+                        "release_type": it.op_type,
+                        "amount": it.change_amount,
+                        "balance": it.current_balance
+                    }
+                })
         }
         res.send(resData);
     } catch (err) {

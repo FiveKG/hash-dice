@@ -34,8 +34,8 @@ async function raiseAirdrop(data) {
         const assetsInfo = await getAssetsInfoById([tradeInfo[0].extra.ap_id]);
         const amount = new Decimal(assetsInfo[0].amount);
         const quantity = amount.mul(assetsInfo[0].release_multiple);
-        const now = new Date();
-        const memo = `user ${ accountName } at ${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } ${ OPT_CONSTANTS.RAISE }`
+        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+        const memo = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.RAISE }`
         const tbgBalance = await getTbgBalanceInfo(accountName);
         const acCurrentBalance = new Decimal(tbgBalance.release_amount)
         // 查找推荐人
@@ -154,17 +154,17 @@ async function raiseAirdrop(data) {
                 "tr_id": trId,
                  ...assetsInfo[0]
             }
-            await insertBalanceLog(client, accountName, quantity.add(destroyAmount).toNumber(), acCurrent, OPT_CONSTANTS.RAISE, extra, memo, now);
+            await insertBalanceLog(client, accountName, quantity.add(destroyAmount).toNumber(), acCurrent, OPT_CONSTANTS.RAISE, extra, memo, 'now()');
 
             // 按私募数量的 5 倍释放，直接转入私募的账户, 同时销毁一部份
             await updateTbgBalance(client, accountName, destroyAmount.toNumber(), 0, 0);
-            await insertBalanceLog(client, accountName, destroyAmount.toNumber(), afterDestroyBalance.toNumber(), OPT_CONSTANTS.DESTROY, extra, memo, now);
+            await insertBalanceLog(client, accountName, -destroyAmount.toNumber(), afterDestroyBalance.toNumber(), OPT_CONSTANTS.DESTROY, extra, memo, 'now()');
 
             // 0.1 倍推荐奖励给推荐人
             // 如果有推荐人，更新一下推荐人的释放池
             if (!!userReferrer) {
                 await updateTbgBalance(client, userReferrer, referrerIncome.toNumber(), 0, 0);
-                await insertBalanceLog(client, userReferrer, referrerIncome.toNumber(), reCurrentBalance.toNumber(), OPT_CONSTANTS.RAISE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, reBalanceRemark, now);
+                await insertBalanceLog(client, userReferrer, referrerIncome.toNumber(), reCurrentBalance.toNumber(), OPT_CONSTANTS.RAISE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, reBalanceRemark, 'now()');
             }
             const finishTime = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
             const trLogId = generate_primary_key();

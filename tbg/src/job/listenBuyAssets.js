@@ -10,11 +10,31 @@ const raiseAirdrop = require("./raiseAirdrop");
 const BUY_ASSETS_KEY = "tbg:buy_assets:account_action_seq";
 const { scheduleJob } = require("node-schedule");
 
-logger.debug(`beginListenAction running...`);
-scheduleJob("*/1 * * * * *", handlerTransferActions);
+logger.debug(`listenBuyAssets running...`);
+scheduleJob("*/1 * * * * *", begin);
+const BUY_LOCK = `tbg:lock:buy`;
+let count = 1;
+async function begin() {
+    try {
+        const investLock = await redis.get(BUY_LOCK);
+        if (!investLock) {
+            await handlerTransferActions();
+        } else {
+            if (count > 10)  {
+                await redis.del(BUY_LOCK);
+            } else {
+                count += 1;
+            }
+            return;
+        }
+    } catch (err) {
+        throw err;
+    }
+}
 
 async function handlerTransferActions() {
     try {
+        await redis.set(BUY_LOCK, 1);
         const actionSeq = await getLastPos();
         const actions = await getTrxAction(UE_TOKEN, actionSeq);
         logger.debug("actionSeq: ", actionSeq);
@@ -41,6 +61,7 @@ async function handlerTransferActions() {
             await redis.set(`tbg:buy:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
         }
+        await redis.del(BUY_LOCK);
     } catch (err) {
         throw err;
     }
@@ -89,7 +110,7 @@ async function parseEosAccountAction(action) {
         result["trx_id"] = actionTrace.trx_id;
         logger.debug(`trx_id: ${ actionTrace.trx_id } -- account_action_seq: ${ action.account_action_seq }`);
         let { receipt, act } = actionTrace;
-        logger.debug("act: ", act);
+        // logger.debug("act: ", act);
         // 此处只监听 UE 代币的转账
         let isTransfer = act.account === UE_TOKEN && act.name === "transfer"
         if (!isTransfer) {

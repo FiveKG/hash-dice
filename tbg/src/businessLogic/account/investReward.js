@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@src/models/account/investReward.js": "直接推荐奖励" });
+const logger = require("../../common/logger.js").child({ "@src/businessLogic/account/investReward.js": "直接推荐奖励" });
 const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");

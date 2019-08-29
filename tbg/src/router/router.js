@@ -7,7 +7,6 @@ const balance = require("../controllers/balance");
 const income = require("../controllers/income");
 const team = require("../controllers/team");
 const trade = require("../controllers/trade");
-const airDrop = require("../controllers/airDrop");
 const config = require("../controllers/config");
 const tbg = require("../controllers/tbg");
 const minePool = require("../controllers/minePool");

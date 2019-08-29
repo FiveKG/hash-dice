@@ -43,7 +43,7 @@ async function mining(req, res, next) {
             const minedIncome = assets.mining_multiple * assets.amount;
             const perHourMining = new Decimal(minedIncome).div(presetDays).div(24);
             // 如果时差小于总挖矿时间，说明还在挖矿，否则已经结束
-            if (diffTime < assets.preset_days * 24) {
+            if (diffTime < presetDays * 24) {
                 miningCount++;
                 const tmpObj = {
                     mining_id: val.id,

@@ -25,13 +25,13 @@ async function saleableAmount(req, res, next) {
         resData["data"] = {
             "saleable_balance": new Decimal(tbgBalance.sell_amount).toFixed(8),
             "detail": balanceLogInfo.filter(it  => {
-                if ((it.op_type === OPT_CONSTANTS.BUY || it.op_type === OPT_CONSTANTS.SELL) && it.extra.op_type === 'sell_amount') {
-                    return {
-                        "create_time": it.create_time,
-                        "info": it.op_type,
-                        "amount": it.change_amount,
-                        "balance": it.current_balance
-                    }
+                return (it.op_type === OPT_CONSTANTS.BUY || it.op_type === OPT_CONSTANTS.SELL) && it.extra.op_type === 'sell_amount'
+            }).map(it => {
+                return {
+                    "create_time": it.create_time,
+                    "info": it.op_type,
+                    "amount": it.change_amount,
+                    "balance": it.current_balance
                 }
             })
         }

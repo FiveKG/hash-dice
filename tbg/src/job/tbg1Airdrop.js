@@ -33,7 +33,7 @@ async function tbg1Airdrop(data) {
         `
         logger.debug("dataList: ", dataList);
         for (const info of dataList) {
-            const opts = [ info.account_name, info.release_amount, info.current_balance, info.op_type, info.extra, info.remark, info.create_time ]
+            const opts = [ info.account_name, info.release_amount, info.current_balance, info.op_type, info.extra, info.remark, 'now()' ]
 
             trxList.push({
                 sql: sql,

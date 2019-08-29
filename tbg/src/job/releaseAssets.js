@@ -10,6 +10,7 @@ const { scheduleJob } = require("node-schedule");
 const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
 const { TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { format } = require("date-fns");
+const { getTbgBalanceInfo } = require("../models/tbgBalance");
 
 /**
  * 所有进入释放池的TBG，从次日0:00开始释放
@@ -37,7 +38,7 @@ async function releaseAssets() {
         const trxList = [];
         const releaseList = [];
         const { rows: tbgBalanceInfo } = await pool.query("SELECT * FROM tbg_balance");
-        const now = new Date();
+        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
         let sql = `
             INSERT INTO 
                 balance_log(account_name, change_amount, current_balance, op_type, extra, remark, create_time)
@@ -54,14 +55,15 @@ async function releaseAssets() {
         // 遍历会员，根据等级释放
         for (const info of tbgBalanceInfo) {
             const levelInfo = userMember(memberMap.get(info.account_name));
+            const tbgBalance = await getTbgBalanceInfo(info.account_name);
             // 当前会员等级的释放比例
             const releaseRate = MEMBER_LEVEL_TRX[levelInfo.ID].RELEASE_RATE;
             // 释放池资产额度
-            const releaseAmount = new Decimal(info.release_amount);
+            const releaseAmount = new Decimal(tbgBalance.release_amount);
             // 可释放的额度
             const dayRelease = releaseAmount.mul(releaseRate);
-            const remark = `user ${ info.account_name } at ${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } release assets ${ dayRelease.toFixed(8) }, minus release_amount ${ dayRelease }`
-            const opts = [ info.account_name, -dayRelease.toNumber(), releaseAmount.minus(dayRelease).toNumber(), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, remark, format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
+            const remark = `user ${ info.account_name } at ${ now } release assets ${ dayRelease.toFixed(8) }, minus release_amount ${ dayRelease }`
+            const opts = [ info.account_name, -dayRelease.toNumber(), releaseAmount.minus(dayRelease).toNumber(), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, remark, now ]
 
             // 从用户的释放池减去
             trxList.push({
@@ -70,10 +72,10 @@ async function releaseAssets() {
             });
 
             // 增加到可用余额
-            const remark1 = `user ${ info.account_name } at ${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } release assets ${ dayRelease.toFixed(8) }, add active_amount ${ dayRelease }`
+            const remark1 = `user ${ info.account_name } at ${ now } release assets ${ dayRelease.toFixed(8) }, add active_amount ${ dayRelease }`
             trxList.push({
                 sql: sql,
-                values: [ info.account_name, dayRelease.toNumber(), new Decimal(info.active_amount).add(dayRelease).toNumber(), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": 'active_amount' }, remark1, format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
+                values: [ info.account_name, dayRelease.toNumber(), new Decimal(info.active_amount).add(dayRelease).toNumber(), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": 'active_amount' }, remark1, now ]
             });
 
             const updateOpts = [ -dayRelease.toNumber(), 0, dayRelease.toNumber(), info.account_name ]
@@ -99,7 +101,7 @@ async function releaseAssets() {
                     from: TBG_FREE_POOL,
                     to: it.account_name,
                     quantity: `${ new Decimal(it.release_amount).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                    memo: `${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } release asset`
+                    memo: `${ now } release asset`
                 }
             }
         })
@@ -128,7 +130,7 @@ async function releaseAssets() {
 
 logger.debug(`releaseAssets running...`);
 // 每天 0：00 释放
-// scheduleJob("0 0 0 */1 * *", releaseAssets);
-releaseAssets()
+scheduleJob("0 0 0 */1 * *", releaseAssets);
+// releaseAssets()
 
 module.exports = releaseAssets;

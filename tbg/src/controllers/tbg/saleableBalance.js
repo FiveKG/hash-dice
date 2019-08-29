@@ -24,14 +24,14 @@ async function saleableBalance(req, res, next) {
         let resData = get_status(1);
         resData["data"] = {
             "saleable_amount": new Decimal(tbgBalance.active_amount).toFixed(8),
-            "detail": balanceLogInfo.filter(it  => {
-                if ((it.op_type === OPT_CONSTANTS.RELEASE || it.op_type === OPT_CONSTANTS.SELL) && it.extra.op_type === 'active_amount') {
-                    return {
-                        "create_time": it.create_time,
-                        "info": it.op_type,
-                        "amount": it.change_amount,
-                        "balance": it.current_balance
-                    }
+            "detail": balanceLogInfo.filter(it => {
+                return (it.op_type === OPT_CONSTANTS.RELEASE || it.op_type === OPT_CONSTANTS.SELL) && it.extra.op_type === 'active_amount'
+            }).map(it => {
+                return {
+                    "create_time": it.create_time,
+                    "info": it.op_type,
+                    "amount": it.change_amount,
+                    "balance": it.current_balance
                 }
             })
         }

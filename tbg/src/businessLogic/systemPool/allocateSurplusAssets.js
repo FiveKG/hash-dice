@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@src/models/account/userInvestment.js": "user investment" });
+const logger = require("../../common/logger.js").child({ "@src/businessLogic/systemPool/allocateSurplusAssets.js": "allocate surplus assets" });
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const { DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME } = require("../../common/constant/accountConstant.js");
 const { insertSystemOpLog } = require("../../models/systemOpLog");

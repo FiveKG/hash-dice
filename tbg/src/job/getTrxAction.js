@@ -3,7 +3,7 @@ const { Api, JsonRpc } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
 const fetch = require('node-fetch');                                // node only
 const { TextDecoder, TextEncoder } = require('util');               // node only
-const { END_POINT, PRIVATE_KEY_TEST } = require("../common/constant/eosConstants.js");
+const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN, UE_TOKEN } = require("../common/constant/eosConstants.js");
 
 /**
  * 
@@ -133,15 +133,6 @@ async function transfer(tokenContract, from, to, quantity, memo, privateKeyList)
         throw err;
     }
 }
-
-// getCurrencyBalance('tbgtokencoin', 'tbgfreepool', 'TBG')
-// .then(res => console.error(res))
-// .catch(err => console.error(err));
-
-// transfer('tbgtokencoin', 'yujinsheng11', 'tbgfreepool', '10.0000 TBG', 'memo', PRIVATE_KEY_TEST.split(","))
-// .then(res => console.error(res))
-// .catch(err => console.error(err));
-
 
 module.exports = {
     getTrxAction,
