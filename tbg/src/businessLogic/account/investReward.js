@@ -82,7 +82,7 @@ function setRate(position) {
         return INCOME_CONSTANT.REFER_SEVENTH_LEVEL / INCOME_CONSTANT.BASE_RATE;
     } else if (position === 8) {
         return INCOME_CONSTANT.REFER_EIGHTH_LEVEL / INCOME_CONSTANT.BASE_RATE;
-    } else if (position === 9) {
+    } else {
         return INCOME_CONSTANT.REFER_NINTH_LEVEL / INCOME_CONSTANT.BASE_RATE;
     } 
 }

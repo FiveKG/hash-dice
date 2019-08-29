@@ -5,11 +5,11 @@ const BALANCE_CONSTANT = require("../../common/constant/balanceConstants");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { TSH_INCOME } = require("../../common/constant/accountConstant.js");
 const { getUserReferrer } = require("../../models/referrer");
-const { updateRepeatBalance } = require("../../models/balance");
+const { updateRepeatBalance, insertBalanceLog, getUserBalance } = require("../../models/balance");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
-const { insertSystemOpLog } = require("../../models/systemOpLog");
-const { updateSystemAmount, getOneAccount } = require("../../models/systemPool");
+const { Decimal }= require("decimal.js");
+const { getOneAccount } = require("../../models/systemPool");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 
 /**
@@ -23,12 +23,20 @@ async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRe
     try {
         let tshIncomeData = {};
         const accountName = accountInfo.account_name;
+        const repeatAmount = BALANCE_CONSTANT.BASE_RATE;
+        const accountBalance = await getUserBalance(accountName);
+        // 如果复投额度不足, 不做处理
+        const repeatCurrency = new Decimal(accountBalance.repeat_currency);
+        if (repeatCurrency.lessThan(repeatAmount)) {
+            return tshIncomeData;
+        }
         const accountOpType = OPT_CONSTANTS.REPEAT;
-        userInvestmentRemark = `user ${ accountName } repeat ${ BALANCE_CONSTANT.BASE_RATE } UE`
-        await updateRepeatBalance(client, accountName, BALANCE_CONSTANT.BASE_RATE);
+        userInvestmentRemark = `user ${ accountName } repeat ${ repeatAmount } UE`
+        await updateRepeatBalance(client, accountName, repeatAmount);
+        await insertBalanceLog(client, accountName, repeatAmount, repeatCurrency.minus(repeatAmount).toNumber(), accountOpType, { "symbol": UE_TOKEN_SYMBOL }, userInvestmentRemark, 'now()');
         // 如果第一个全球合伙人自己复投，多出的部分转到股东池账户
         // 全球合伙人可得复投额度的 1%
-        const globalChangeAmount = BALANCE_CONSTANT.BASE_RATE * INVEST_CONSTANT.REPEAT_GLOBAL_INCOME_RATE / INVEST_CONSTANT.BASE_RATE;
+        const globalChangeAmount = repeatAmount * INVEST_CONSTANT.REPEAT_GLOBAL_INCOME_RATE / INVEST_CONSTANT.BASE_RATE;
         const globalMemo = `${ userInvestmentRemark }, global account ${ globalAccount } add ${ globalChangeAmount } UE currency`;
         const now = new Date();
         const globalData = {
@@ -44,7 +52,7 @@ async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRe
         // 全球合伙人的推荐人可得复投额度的 0.5%
         const userReferrer = await getUserReferrer(globalAccount);
         logger.debug("userReferrer: ", userReferrer);
-        const changeAmount = BALANCE_CONSTANT.BASE_RATE * INVEST_CONSTANT.REPEAT_GLOBAL_REFERRER_INCOME_RATE / INVEST_CONSTANT.BASE_RATE;
+        const changeAmount = repeatAmount * INVEST_CONSTANT.REPEAT_GLOBAL_REFERRER_INCOME_RATE / INVEST_CONSTANT.BASE_RATE;
         if (!userReferrer) {
             // 系统第一个账户没有推荐人，多出的部分转到股东池账户
             let rows = await getOneAccount(TSH_INCOME);

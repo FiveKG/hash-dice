@@ -11,6 +11,7 @@ const { Decimal } = require("decimal.js");
 const df = require("date-fns");
 const logger = require("../../common/logger.js");
 const storeIncome = require("../../common/storeIncome.js");
+const { redis } = require("../../common/index.js");
 
 /**
  * 五倍收益保障池分配
@@ -27,16 +28,57 @@ async function handlerSafe() {
         }
 
         let safePoolAmount = new Decimal(rows.pool_amount);
+        if (safePoolAmount.eq(0)) {
+            return;
+        }
         // 本次分配的金额
         let distrEnable = safePoolAmount.mul(INCOME_CONSTANT.SAFE_ALLOCATE_RATE / INCOME_CONSTANT.SAFE_ALLOCATE_RATE);
         let safeAccountList = await getSafeAccountList();
-        console.log("safeAccountList: ", safeAccountList);
-        for (let item of safeAccountList) {
+        if (safeAccountList.length === 0) {
+            return;
+        }
+
+        // 用户的收益还包括 redis 里面未收取的部分
+        const tmpList = [];
+        let total = safeAccountList.map(it => it.total).reduce((pre, curr) => Number(pre) + Number(curr));
+        for (const info of safeAccountList) {
+            let incomeJsonIfy = await redis.hgetall(`tbg:income:${ info.account_name }`);
+            let incomeArr = JSON.parse(incomeJsonIfy);
+            let amount = new Decimal(info.total);
+            for (let item of incomeArr) {
+                let changeAmount = new Decimal(item.change_amount);
+                amount = amount.add(changeAmount);
+            }
+
+            total = amount.add(total).toNumber();
+            const last = new Decimal(INCOME_CONSTANT.SAFE_OUT_LINE).minus(amount);
+            // 如果收益低于三倍收益保障
+            if (!last.lessThanOrEqualTo(INCOME_CONSTANT.SAFE_OUT_LINE)) {
+                tmpList.push({
+                    account_name: info.account_name,
+                    last: last.toNumber()
+                });
+            }
+        }
+
+        const bonusList = tmpList.map(it => {
+            return {
+                account_name: it.account_name,
+                last: it.last,
+                all: total
+            }
+        });
+
+        if (bonusList.length === 0) {
+            return;
+        }
+
+        console.log("bonusList: ", bonusList);
+        for (let item of bonusList) {
             let last = new Decimal(item.last);
             let total = new Decimal(item.all);
             let rate = last.div(total);
             let remark = `account ${ item.account_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
-            // await personalAssetChange(client, item.account_name, distrEnable.mul(rate), opType, remark);
             let now = new Date();
             let data = {
                 "account_name": item.account_name,
@@ -58,7 +100,6 @@ async function handlerSafe() {
     } catch (err) {
         await client.query("ROLLBACK");
         logger.error(`handler ${ SAFE_POOL } pool error, the error stock is %O`, err);
-        throw err;
         throw err;
     } finally {
         await client.release();

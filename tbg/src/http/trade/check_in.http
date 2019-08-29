@@ -1,0 +1,13 @@
+### 签到
+POST http://localhost:9527/user_check_in
+Content-Type: application/json
+
+{
+    "account_name": "gametestuser"
+}
+
+### 获取每日签到信息
+GET http://localhost:9527/check_in?account_name=gametestuser
+
+### 获取签到奖励明细
+GET http://localhost:9527/check_in/detail?account_name=gametestuser

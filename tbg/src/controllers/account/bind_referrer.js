@@ -82,7 +82,7 @@ async function bindReferrer(req, res, next) {
         // 修改推荐人推荐数量信息
         await updateReferCount(client, referrerName);
         // 记录操作日志
-        await insertAccountOp(client, accountName, "bind referrer", remark)
+        await insertAccountOp(client, accountName, "bind", remark)
         await client.query("COMMIT");
         res.send(get_status(1));
     } catch (err) {

@@ -10,6 +10,7 @@ const { getCurrencyBalance } = require("../../job/getTrxAction.js");
 const { userMember } = require("../../common/userMember.js");
 const { getTbgBalanceInfo } = require("../../models/tbgBalance");
 const { TBG_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
+const { TBG_TOKEN_COIN } = require("../../common/constant/accountConstant");
 
 // 线性释放池资料
 async function releasePool(req, res, next) {
@@ -28,19 +29,22 @@ async function releasePool(req, res, next) {
         }
 
         // 获取用户的 TBG 余额
-        const [ balanceInfo ] = await getCurrencyBalance(accountName, accountName, TBG_TOKEN_SYMBOL);
+        const [ balanceInfo ] = await getCurrencyBalance(TBG_TOKEN_COIN, accountName, TBG_TOKEN_SYMBOL);
         const levelInfo = userMember(userMemberLevel.count);
         // 获取所有的释放记录
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: RELEASE });
         const tbgBalance = await getTbgBalanceInfo(accountName);
         // 累加释放的资产
-        const released = balanceLogInfo.map(it => it.change_amount).reduce((pre, cur) => pre + cur);
+        let released = 0;
+        if (balanceLogInfo.length !== 0) {
+            released = balanceLogInfo.map(it => it.change_amount).reduce((pre, cur) => Number(pre) + Number(cur))
+        }
         let resData = get_status(1);
         resData["data"] = {
             "releasing": new Decimal(tbgBalance.release_amount).toFixed(8),
             "released": new Decimal(released).toFixed(8),
             "release_rate": MEMBER_LEVEL_TRX[levelInfo.ID].RELEASE_RATE,
-            "balance_info": balanceInfo,
+            "balance_info": !balanceInfo ? 0 : balanceInfo,
             "level": levelInfo.NAME
         }
         res.send(resData);

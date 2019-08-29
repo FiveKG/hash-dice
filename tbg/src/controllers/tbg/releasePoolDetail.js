@@ -25,14 +25,12 @@ async function releasePoolDetail(req, res, next) {
         ];
         let resData = get_status(1);
         resData["data"] = {
-            "detail": balanceLogInfo.filter(it  => {
-                if (typeList.includes(it.op_type)) {
-                    return {
-                        "create_time": it.create_time,
-                        "release_type": it.op_type,
-                        "amount": it.change_amount,
-                        "balance": it.current_balance
-                    }
+            "detail": balanceLogInfo.filter(it  => typeList.includes(it.op_type)).map(it => {
+                return {
+                    "create_time": it.create_time,
+                    "release_type": it.op_type,
+                    "amount": it.change_amount,
+                    "balance": it.current_balance
                 }
             })
         }

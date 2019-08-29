@@ -41,7 +41,7 @@ async function mining(req, res, next) {
             const diffTime = df.differenceInHours(now, val.finished_time);
             const presetDays = assets.preset_days;
             const minedIncome = assets.mining_multiple * assets.amount;
-            const perHourMining = new Decimal(minedIncome).div(presetDays);
+            const perHourMining = new Decimal(minedIncome).div(presetDays).div(24);
             // 如果时差小于总挖矿时间，说明还在挖矿，否则已经结束
             if (diffTime < assets.preset_days * 24) {
                 miningCount++;
@@ -49,11 +49,11 @@ async function mining(req, res, next) {
                     mining_id: val.id,
                     amount: assets.amount,
                     per_hour_mining: perHourMining, 
-                    mined_income: perHourMining.mul(diffTime).toFixed(4),
+                    mining_income: perHourMining.mul(diffTime).toFixed(4),
                     mining_time: diffTime,
                     total_time: presetDays * 24
                 }
-                minedAmount = minedAmount.add(tmpObj.mined_income);
+                minedAmount = minedAmount.add(tmpObj.mining_income);
                 miningInfo.push(tmpObj);
             } else {
                 minedAmount = minedAmount.add(assets.mining_multiple * assets.amount);

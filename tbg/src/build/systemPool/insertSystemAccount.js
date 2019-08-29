@@ -51,11 +51,10 @@ async function dropAllTable() {
             drop table if exists system_pools;
             drop table if exists system_op_log;
             drop table if exists account_op;
-            drop table if exists trade_tbg;
+            drop table if exists trade;
             drop table if exists trade_log;
             drop table if exists tbg_balance;
             drop table if exists assets_package;
-            drop table if exists user_assets_package;
         `
         logger.info("drop all table");
         await pool.query(querySql);

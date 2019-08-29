@@ -80,6 +80,7 @@ cleos create account eosio yujinsheng11 EOS6UtznEsEeFMytBUxhUZy5Bj6iFbhjMJk49xPe
 cleos create account eosio gametestuser EOS6xKtqbXeTwnrwgVx74dnEhNdFiSt3sYuMfJzJNmmkZz6CdQqWv EOS6xKtqbXeTwnrwgVx74dnEhNdFiSt3sYuMfJzJNmmkZz6CdQqWv
 cleos create account eosio tbgametoken EOS5aicTbGvPj2WHEmcN26aAuR5E5PmYYgr4M34NFVr6Tgn9fiJoV EOS5aicTbGvPj2WHEmcN26aAuR5E5PmYYgr4M34NFVr6Tgn9fiJoV
 cleos create account eosio tbtestuser1 EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw
+cleos create account eosio dengderong EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw
 
 cleos set contract eosio.token ./eosio.token
 cleos push action eosio.token create '["eosio.token", "1000000000.0000 EOS"]' -p eosio.token

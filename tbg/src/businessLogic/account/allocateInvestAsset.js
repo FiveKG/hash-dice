@@ -42,7 +42,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         const accountInfo = await getAccountInfo(accountName);
         let accountOpType = OPT_CONSTANTS.INVITE;
         // 如果之前参加过,则是复投, 复投全球合伙人可得复投额度的 1%, 全球合伙人的推荐人可得复投额度的 0.5%
-        if (accountInfo.state === 10 || accountInfo.state === 30) {
+        if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1 || accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2) {
             accountOpType = OPT_CONSTANTS.REPEAT;
             // 用户复投
             const accountInfo = await getGlobalAccount(ACCOUNT_CONSTANT.ACCOUNT_TYPE.GLOBAL, referrerAccountList);
@@ -59,7 +59,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
 
         // 获取系统账户
         let systemAccount = await getSystemAccountInfo();
-        logger.debug("systemAccount: ", systemAccount);
+        // logger.debug("systemAccount: ", systemAccount);
         // 分配直接推荐奖金
         await investReward(client, amount, accountName, referrerAccountList, systemAccount, userInvestmentRemark);
 
@@ -68,7 +68,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
             const income = investAmount.mul(ACCOUNT_RATE.accountRate[item.pool_type] / INVEST_CONSTANT.BASE_RATE);
             const opType = OPT_CONSTANTS.INVITE;
             const remark = `user ${ accountName } participate in tbg_1, add ${ item.pool_type } amount`
-            logger.debug("income: %O, item: %O", income, item, ACCOUNT_RATE.accountRate[item.pool_type], INVEST_CONSTANT.BASE_RATE);
+            // logger.debug("income: %O, item: %O", income, item, ACCOUNT_RATE.accountRate[item.pool_type], INVEST_CONSTANT.BASE_RATE);
             await insertSystemOpLog(client, income.toNumber(), item.pool_amount, { "symbol": UE_TOKEN_SYMBOL, "aid": item.pool_type }, opType, remark, "now()");
             await updateSystemAmount(client, item.pool_type, income, item.pool_amount, UE_TOKEN_SYMBOL);
         }

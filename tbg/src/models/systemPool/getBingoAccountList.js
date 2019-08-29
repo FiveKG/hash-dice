@@ -1,5 +1,6 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
+const { INVITE } = require("../../common/constant/optConstants");
 
 /**
  * 查找符合直接推荐PK奖金分红的帐号
@@ -10,7 +11,7 @@ async function getBingoAccount() {
         let sql = `
             with tmp as (
                 select * from account_op 
-                where op_type = 'investment' 
+                where op_type = '${ INVITE }' 
                 order by create_time desc
             )
             select distinct account_name from tmp limit 30;

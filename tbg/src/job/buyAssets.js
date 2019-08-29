@@ -9,7 +9,7 @@ const { generate_primary_key } = require("../common/index.js");
 const { format } = require("date-fns");
 
 /**
- * 监听到用户转账后，更改用交易状态
+ * 监听到用户转账后，更改用交易状态, 在用户卖单或者是平台插单时再空投
  * @param {{ accountName: string, price: number, apId: number }} data
  */
 async function buyAssets(data) {

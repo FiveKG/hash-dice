@@ -1,5 +1,5 @@
 // @ts-check
-const { pool } = require("../db/index.js");
+const { pool, psTrx } = require("../db/index.js");
 const logger = require("../common/logger.js").child({ "@src/job/sellAssets.js": "卖出资产" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
@@ -8,6 +8,7 @@ const { getTbgBalanceInfo } = require("../models/tbgBalance");
 const { generate_primary_key } = require("../common/index.js");
 const { getAllTrade } = require("../models/trade");
 const { format } = require("date-fns");
+const buyAirdrop = require("./buyAirdrop.js");
 
 /**
  * 卖出资产
@@ -61,7 +62,7 @@ async function sellAssets(data) {
             // 遍历所有的买单
             let total = 0;
             for (const info of tradeLogList) {
-                // 如果当前用户卖出的数量大于当前的买单数量，继续给下个卖给下一个
+                // 如果当前用户卖出的数量大于当前的买单数量，继续卖给下一个
                 total += info.amount;
                 const finishTime = format(now, "YYYY-MM-DD : HH:mm:ssZ");
                 if (info.amount < amount) {
@@ -75,6 +76,10 @@ async function sellAssets(data) {
                         sql: updateTradeSql,
                         values: [ "finished", finishTime, amount, info.id ]
                     });
+
+                    const { queryList, actionsList } = await buyAirdrop(info);
+                    trxList.push(...queryList);
+                    tmpActions.push(...actionsList);
                 } else {
                     const memo = `user ${ amount } sell, trade waiting`
                     trxList.push({
@@ -123,6 +128,7 @@ async function sellAssets(data) {
                 values: [ "finished", finishTime, amount, trId ]
             });
         }
+
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
@@ -136,6 +142,9 @@ async function sellAssets(data) {
         } finally {
             await client.release();
         }
+
+        // 一笔交易完成，才对用户执行空投及相关的转账操作
+        await psTrx.pub(tmpActions);
     } catch (err) {
         logger.error("raise airdrop error, the error stock is %O", err);
         throw err;

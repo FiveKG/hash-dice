@@ -27,9 +27,15 @@ async function handlerPk() {
         }
 
         let pkPoolAmount = new Decimal(rows.pool_amount);
+        if (pkPoolAmount.eq(0)) {
+            return;
+        }
         // 本次分配的金额
         let distrEnable = pkPoolAmount.mul(INCOME_CONSTANT.REFER_PK_ALLOCATE_RATE / INCOME_CONSTANT.BASE_RATE);
         let pkAccountList = await getPkAccountList();
+        if (pkAccountList.length === 0) {
+            return;
+        }
         console.log("pkAccountList: ", pkAccountList);
         for (let i = 0; i < pkAccountList.length - 5; i++){
             let item = pkAccountList[i]

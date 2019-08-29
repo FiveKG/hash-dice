@@ -27,15 +27,18 @@ async function collect(req, res, next) {
         // 购买资产包成功后，开始生成挖矿包，从交易完成时开始计算挖矿时间
         const now = new Date();
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, "symbol": TBG_TOKEN_SYMBOL });
-        // let currentBalance = !!balanceLogInfo[0] ? new Decimal(balanceLogInfo[0].current_balance) : 0;
         const tbgBalance = await getTbgBalanceInfo(accountName);
         let currentBalance = new Decimal(tbgBalance.release_amount);
         // 过滤出当前所有的挖矿记录
         const miningIds = miningId.split(",");
-        const miningInfo = balanceLogInfo.map(it => it.op_type === OPT_CONSTANTS.MINING && miningIds.includes(it.extra.tr_id))
+        const miningInfo = balanceLogInfo.filter(it => {
+            if (!!it.extra.tr_id) {
+                it.op_type === OPT_CONSTANTS.MINING && miningIds.includes(it.extra.tr_id)
+            }
+        })
         // 如果还没收取过挖矿收益
         if (miningInfo.length === 0) {
-            return res.send(get_status(1));
+            return res.send(get_status(1, "can not collect mining income"));
         }
 
         // 收取过挖矿收益，找到最新的一条, 判断是否超过 24h

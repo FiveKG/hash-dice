@@ -1,5 +1,4 @@
 // @ts-check
-const { pool, psTrx } = require("../db/index.js");
 const logger = require("../common/logger.js").child({ "@src/job/buyAirdrop.js": "购买资产包空投" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
@@ -10,15 +9,13 @@ const { TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { getTbgBalanceInfo } = require("../models/tbgBalance");
 const { getAllParentLevel, getGlobalAccount } = require("../models/account")
 const ACCOUNT_CONSTANT = require("../common/constant/accountConstant.js");
-const { insertTradeLog, updateTrade, getTradeInfoHistory, getTradeInfo } = require("../models/trade");
-const { generate_primary_key } = require("../common/index.js");
-const { getAccountInfo, updateAccountState } = require("../models/account");
-const { format } = require("date-fns");
+const { getTradeInfo } = require("../models/trade");
+const { getAccountInfo } = require("../models/account");
 
 /**
  * 用户首次买入资产空投
  * 等卖单成交以后才更新用户的信息，否则将金额退回用户账户
- * @param {{ accountName: string, price: number, apId: number }} data
+ * @param { DB.Trade } data
  */
 async function buyAirdrop(data) {
     try {
@@ -37,15 +34,16 @@ async function buyAirdrop(data) {
                     active_amount = active_amount + $3
                 WHERE account_name = $4
         `
-        const { accountName, price, apId } = data;
+        const { account_name: accountName, price, extra: { ap_id: apId }, trade_type } = data;
         const tradeInfo = await getTradeInfo(accountName);
         // 没有交易记录，不做处理
         if (tradeInfo.length === 0) {
-            return;
+            return {
+                actionsList: [],
+                queryList: []
+            };
         }
         const now = new Date();
-        // 拿出排在前面的订单
-        const trxInfo = tradeInfo.filter(it => it.state === "create" && it.extra.ap_id === apId).shift();
         // 获取资产包信息
         const assetsInfo = await getAssetsInfoById([apId]);
         const amount = new Decimal(assetsInfo[0].amount);
@@ -56,10 +54,22 @@ async function buyAirdrop(data) {
         // 获得的可售额度
         const sellAmount = amount;
         // 查找用户交易记录，如果没有，说明是第一次买入，此时需要给全球合伙人和全球合伙人的推荐人空投
-        const firstTrade = tradeInfo.filter(it => it.trade_type === OPT_CONSTANTS.FIRST_BUY && it.state === "create");
         let opType = OPT_CONSTANTS.BUY;
-        if (firstTrade.length === 1) {
+        if (trade_type === OPT_CONSTANTS.FIRST_BUY) {
             opType = OPT_CONSTANTS.FIRST_BUY;
+            const accountInfo = await getAccountInfo(accountName);
+            let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2;
+            if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1) {
+                accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2
+            }
+            
+            const updateAccountStateSql = `UPDATE account SET state = $1 WHERE account_name = $2;`
+            // 用户第一次投资，更新用户状态为参加 tbg1、2 或 1 2
+            trxList.push({
+                sql: updateAccountStateSql,
+                values: [ accountState, accountName ]
+            });
+            // 查找用户的推荐关系，再从中找出全球合伙人
             let referrerAccountList = await getAllParentLevel(accountName);
             logger.debug("referrerAccountList: ", referrerAccountList);
             if (referrerAccountList.length === 0) {
@@ -67,8 +77,8 @@ async function buyAirdrop(data) {
                 throw Error("没有推荐关系，请先设置推荐关系，检查数据是否正确");
             }
             // 全球合伙人
-            const accountInfo = await getGlobalAccount(ACCOUNT_CONSTANT.ACCOUNT_TYPE.GLOBAL, referrerAccountList);
-            const globalAccount = accountInfo.account_name;
+            const globalAccountInfo = await getGlobalAccount(ACCOUNT_CONSTANT.ACCOUNT_TYPE.GLOBAL, referrerAccountList);
+            const globalAccount = globalAccountInfo.account_name;
             let userReferrer = await getUserReferrer(globalAccount);
             // 系统第一个账户没有推荐人，多出的部分转到股东池账户
             if (!userReferrer) {
@@ -139,7 +149,7 @@ async function buyAirdrop(data) {
                     }
                 )
 
-                const opts = [ accountName, amount.mul(0.005), amount.mul(0.005).add(tbgBalance.release_amount), opType, { "symbol": TBG_TOKEN_SYMBOL }, reBalanceRemark, now ]
+                const opts = [ accountName, amount.mul(0.005), amount.mul(0.005).add(tbgBalance.release_amount), opType, { "symbol": TBG_TOKEN_SYMBOL, "tr_id": data.id, ...assetsInfo[0] }, reBalanceRemark, now ]
 
                 trxList.push({
                     sql: sql,
@@ -209,38 +219,10 @@ async function buyAirdrop(data) {
             ]
         }
 
-        const accountInfo = await getAccountInfo(accountName);
-        let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2;
-        if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1) {
-            accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2
+        return {
+            actionsList: actions.actions,
+            queryList: trxList
         }
-
-        const client = await pool.connect();
-        await client.query("BEGIN");
-        try {
-            await Promise.all(trxList.map(it => {
-                client.query(it.sql, it.values);
-            }));
-            const finishTime = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
-            const trLogId = generate_primary_key();
-            const remark = `user ${ accountName } at buy ${ amount } asset, trade waiting`;
-            // 更新交易状态
-            await updateTrade(client, trxInfo.id, "wait", finishTime);
-            await insertTradeLog(client, trLogId, trxInfo.id, opType, amount.toNumber(), remark, price, amount.mul(price).toNumber(), finishTime);
-            // 用户第一次投资，更新用户状态为参加 tbg1、2 或 1 2
-            if (firstTrade.length === 1) {
-                await updateAccountState(client, accountState,accountName);
-            }
-            await client.query("COMMIT");
-        } catch (err) {
-            await client.query("ROLLBACK");
-            throw err;
-        } finally {
-            await client.release();
-        }
-
-        // 发送区块链转帐消息
-        await psTrx.pub(actions.actions);
     } catch (err) {
         logger.error("raise airdrop error, the error stock is %O", err);
         throw err;

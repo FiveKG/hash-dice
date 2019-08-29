@@ -60,8 +60,8 @@ async function releaseAssets() {
             const releaseAmount = new Decimal(info.release_amount);
             // 可释放的额度
             const dayRelease = releaseAmount.mul(releaseRate);
-            const remark = `user ${ info.account_name } at ${ now } release assets ${ dayRelease.toFixed(8) }, minus release_amount ${ dayRelease }`
-            const opts = [ info.account_name, -dayRelease, releaseAmount.minus(dayRelease), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL }, remark, now ]
+            const remark = `user ${ info.account_name } at ${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } release assets ${ dayRelease.toFixed(8) }, minus release_amount ${ dayRelease }`
+            const opts = [ info.account_name, -dayRelease.toNumber(), releaseAmount.minus(dayRelease).toNumber(), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL }, remark, format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
 
             // 从用户的释放池减去
             trxList.push({
@@ -70,20 +70,20 @@ async function releaseAssets() {
             });
 
             // 增加到可用余额
-            const remark1 = `user ${ info.account_name } at ${ now } release assets ${ dayRelease.toFixed(8) }, add active_amount ${ dayRelease }`
+            const remark1 = `user ${ info.account_name } at ${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } release assets ${ dayRelease.toFixed(8) }, add active_amount ${ dayRelease }`
             trxList.push({
                 sql: sql,
-                values: [ info.account_name, dayRelease, new Decimal(info.active_amount).add(dayRelease), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL }, remark, now ]
+                values: [ info.account_name, dayRelease.toNumber(), new Decimal(info.active_amount).add(dayRelease).toNumber(), OPT_CONSTANTS.RELEASE, { "symbol": TBG_TOKEN_SYMBOL }, remark1, format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
             });
 
-            const updateOpts = [ -dayRelease, 0, dayRelease, info.account_name ]
+            const updateOpts = [ -dayRelease.toNumber(), 0, dayRelease.toNumber(), info.account_name ]
 
             trxList.push({
                 sql: updateBalanceSql,
                 values: updateOpts
             });
 
-            releaseList.push({ account_name: info.account_name, release_amount: dayRelease })
+            releaseList.push({ account_name: info.account_name, release_amount: dayRelease.toNumber() })
         }
 
         // 此处可以直接转给用户，智能合约已经设置为用户不可私下交易，只能通过平台转出
@@ -127,7 +127,8 @@ async function releaseAssets() {
 }
 
 logger.debug(`releaseAssets running...`);
-// 每天 0：00 派奖
-scheduleJob("0 0 0 */1 * *", releaseAssets);
+// 每天 0：00 释放
+// scheduleJob("0 0 0 */1 * *", releaseAssets);
+releaseAssets()
 
 module.exports = releaseAssets;

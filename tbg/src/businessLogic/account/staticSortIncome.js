@@ -7,7 +7,6 @@ const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { allocateSurplusAssets } = require("../systemPool");
 const { getSystemAccountInfo } = require("../../models/systemPool");
 const { getMainAccountBySub } = require("../../models/subAccount/index.js");
-const { getStaticSortIncomeByMain } = require("../../models/balanceLog/index.js");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
 const { redis } = require("../../common/index.js");
@@ -75,8 +74,6 @@ async function handleStaticSort(client, sortEnable, sortList, flag) {
     const accountNameList = Array.from(new Set(mainAccountList.map(item => item.main_account)));
     logger.debug("mainAccountList: %O, accountNameList: %O", mainAccountList, accountNameList);
     // 查找主帐户的收益信息
-    const mainAccountIncomeInfo = await getStaticSortIncomeByMain(accountNameList);
-    logger.debug("mainAccountIncomeInfo: %O", mainAccountIncomeInfo);
     for (let i = 0; i < mainAccountList.length; i++) {
         const mainAccount = mainAccountList[i];
         const mainAccountName = mainAccount.main_account;
@@ -95,14 +92,16 @@ async function handleStaticSort(client, sortEnable, sortList, flag) {
         // 获取加子账号的收益
         const incomeKey = `tbg:subAccountSort:${ mainAccount.sub_account_name }`;
         const subAccountIncome = await redis.get(incomeKey);
-        // 继续累加子账号的收益
-        const amount = new Decimal(subAccountIncome).add(avg.toFixed(8));            
-        // 低于出线额度的用户可分配奖金
-        if (amount.lessThan(INCOME_CONSTANT.SORT_OUT_LINE)) {
-            await redis.set(incomeKey, amount.toFixed(8));
-        } else {
-            // 超过出线额度的，从 redis 中清掉
-            await redis.del(incomeKey);
+        if (!!subAccountIncome) {
+            // 继续累加子账号的收益
+            const amount = new Decimal(subAccountIncome).add(avg.toFixed(8));            
+            // 低于出线额度的用户可分配奖金
+            if (amount.lessThan(INCOME_CONSTANT.SORT_OUT_LINE)) {
+                await redis.set(incomeKey, amount.toFixed(8));
+            } else {
+                // 超过出线额度的，从 redis 中清掉
+                await redis.del(incomeKey);
+            }
         }
     }
     

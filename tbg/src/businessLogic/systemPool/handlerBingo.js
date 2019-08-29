@@ -27,9 +27,15 @@ async function handlerPk() {
         }
 
         let bingoPoolAmount = new Decimal(rows.pool_amount);
+        if (bingoPoolAmount.eq(0)) {
+            return;
+        }
         // 本次分配的金额
         let distrEnable = bingoPoolAmount.mul(INCOME_CONSTANT.BINGO_ALLOCATE_RATE / INCOME_CONSTANT.BASE_RATE);
         let bingoAccountList = await getBingoAccountList();
+        if (bingoAccountList.length === 0) {
+            return;
+        }
         console.log("bingoAccountList: ", bingoAccountList)
         for (let i = 0; i< bingoAccountList.length; i++){
             let item = bingoAccountList[i]

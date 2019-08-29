@@ -27,24 +27,31 @@ async function handlerHolder() {
         }
 
         let holderPoolAmount = new Decimal(rows.pool_amount);
+        if (holderPoolAmount.eq(0)) {
+            return;
+        }
         // 本次分配的金额
         let distrEnable = holderPoolAmount.mul(INCOME_CONSTANT.SHAREHOLDERS_ALLOCATE_RATE).div(INCOME_CONSTANT.BASE_RATE);
         let holderAccountList = await getHolderAccountList();
+        if (holderAccountList.length === 0) {
+            return;
+        }
+        // 计算每个 TBG 可以分配多少个额度
+        const total = holderAccountList.map(it => it.sell_amount).reduce((pre, curr) => Number(pre) + Number(curr));
+        const bonus = distrEnable.div(total);
         logger.debug("holderAccountList: ", holderAccountList);
         for (let item of holderAccountList) {
-            let total = new Decimal(item.total);
-            let all = new Decimal(item.all);
-            let rate = total.div(all);
-            let remark = `account ${ item.referrer_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
+            const changeAmount = bonus.mul(item.sell_amount).toFixed(8);
+            let remark = `account ${ item.account_name }, income ${ changeAmount }`;
             let now = new Date();
             let data = {
-                "account_name": item.referrer_name,
-                "change_amount": distrEnable.mul(rate),
+                "account_name": item.account_name,
+                "change_amount": changeAmount,
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
                 "op_type": OPT_CONSTANTS.HOLDER,
                 "remark": remark
             }
-            await storeIncome(item.referrer_name, OPT_CONSTANTS.HOLDER, data);
+            await storeIncome(item.account_name, OPT_CONSTANTS.HOLDER, data);
         };
 
         let changeAmount = new Decimal(-distrEnable);
