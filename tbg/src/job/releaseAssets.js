@@ -13,7 +13,7 @@ const { format } = require("date-fns");
 const { getTbgBalanceInfo } = require("../models/tbgBalance");
 
 /**
- * 所有进入释放池的TBG，从次日0:00开始释放
+ * 所有进入释放池的TBG，从次日 0:00 开始释放
  * 从用户的释放池减去，增加到可用余额
  */
 async function releaseAssets() {

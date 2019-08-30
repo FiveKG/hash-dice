@@ -6,6 +6,7 @@ const fetch = require('node-fetch');                                // node only
 const { TextDecoder, TextEncoder } = require('util');               // node only
 const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN, UE_TOKEN, WALLET_RECEIVER } = require("../../common/constant/eosConstants.js");
 const df = require("date-fns");
+const { scheduleJob } = require("node-schedule");
 let network = {
     main_net: "https://nodes.get-scatter.com"
 }
@@ -29,6 +30,26 @@ let network = {
         const flag = df.isWithinRange(new Date(), startTime, endTime)
         console.debug(flag);
 
+        const signatureProvider = new JsSignatureProvider(PRIVATE_KEY_TEST.split(","));
+        // @ts-ignore
+        const rpc = new JsonRpc(END_POINT, { fetch });
+        // @ts-ignore
+        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
+        // scheduleJob("* * * * * *", async () => {
+            
+        // });
+        // const head_block_num = await rpc.get_info(); 
+        // const id = await rpc.get_block(head_block_num.head_block_num);
+        // console.debug("head_block_num: %O, id: %O", head_block_num.head_block_time, id);
+
+        while (true) {
+            await sleep(500);
+            const { head_block_num, head_block_time } = await rpc.get_info();
+            const { id, timestamp } = await rpc.get_block(head_block_num);
+            console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
+        }
+
+        
         const account = 'gametestuser'
         const amount = "10000.0000"
         const symbol = "UE"
@@ -42,6 +63,19 @@ let network = {
         throw err;
     }
 })();
+
+/**
+ * 
+ * @param { number } ms 
+ */
+async function sleep(ms) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve()
+        }, ms);
+    });
+}
+
 
 /**
  * 

@@ -25,6 +25,7 @@ async function begin() {
         } else {
             if (count > 10)  {
                 await redis.del(SELL_LOCK);
+                count = 0;
             } else {
                 count += 1;
             }

@@ -19,6 +19,7 @@ async function begin() {
         const investLock = await redis.get(BUY_LOCK);
         if (!investLock) {
             await handlerTransferActions();
+            count = 0;
         } else {
             if (count > 10)  {
                 await redis.del(BUY_LOCK);

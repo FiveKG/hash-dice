@@ -37,7 +37,6 @@ async function checkIn(req, res, next) {
         // 如果用户每天不是每天都签到，收益从最近一个连续的地方开始算, 即从最新的一次签到开始累加
         if (checkInLog.length === 0) {
             income = CHECK_IN_AIRDROP_1;
-            currentBalance = CHECK_IN_AIRDROP_1;
         } else {
             // 先判断当天是否已经签到过
             if (df.isToday(checkInLog[0].create_time)) {
@@ -53,10 +52,9 @@ async function checkIn(req, res, next) {
                 // 如果昨天没签到，则从一开始算起
                 income = new Decimal(CHECK_IN_AIRDROP_1).toNumber();
             }
-
-            currentBalance = new Decimal(currentBalance).add(income).toNumber();
         }
 
+        currentBalance = new Decimal(currentBalance).add(income).toNumber();
         // 如果到达空投占比，则不再空投
         // 查询用户的签到空投记录
         const { [TBG_TOKEN_SYMBOL]: { max_supply } } = await getCurrencyStats(TBG_TOKEN_COIN, TBG_TOKEN_SYMBOL);
@@ -84,7 +82,7 @@ async function checkIn(req, res, next) {
             await insertAccountOp(client, accountName, OPT_CONSTANTS.CHECK_IN, `user ${ accountName } at ${ now } check in`);
             // 空投先进入线性释放池，每日零点释放后转入用户的帐户中, 同时写一条记录
             await updateTbgBalance(client, accountName, income, 0, 0);
-            await insertBalanceLog(client, accountName, income, currentBalance, OPT_CONSTANTS.CHECK_IN, { "symbol": TBG_TOKEN_SYMBOL }, balanceRemark, now);
+            await insertBalanceLog(client, accountName, income, currentBalance, OPT_CONSTANTS.CHECK_IN, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, balanceRemark, now);
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");

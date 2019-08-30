@@ -10,6 +10,7 @@ const { scheduleJob } = require("node-schedule");
 
 logger.debug("checkInAirdrop running")
 scheduleJob("0 0 0 */1 * *", checkInAirdrop);
+// checkInAirdrop()
 /**
  * 签到空投
  * 从日志中找出今日所有的签到用户
@@ -24,6 +25,7 @@ async function checkInAirdrop() {
         `
         const now = new Date();
         const { rows: checkInList } = await pool.query(sql, [ OPT_CONSTANTS.CHECK_IN, now ]);
+        logger.debug("checkInList: ", checkInList);
         const actionList = checkInList.map(it => {
             return {
                 account: TBG_TOKEN_COIN,
