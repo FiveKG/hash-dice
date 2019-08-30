@@ -9,12 +9,12 @@
             "out_file"    : "/home/yujinsheng/logs/tbgService-out.log"
         },
         {
-            "name"        : "beginListenAction",
-            "script"      : "./beginListenAction.js",
+            "name"        : "listenTransfer",
+            "script"      : "./listenTransfer.js",
             "watch"       : false,
             "cwd"         : "../../15_tbg_service/tbg/src/job",
-            "error_file"  : "/home/yujinsheng/logs/beginListenAction-err.log",
-            "out_file"    : "/home/yujinsheng/logs/beginListenAction-out.log"
+            "error_file"  : "/home/yujinsheng/logs/listenTransfer-err.log",
+            "out_file"    : "/home/yujinsheng/logs/listenTransfer-out.log"
         },
         {
             "name"        : "mqHandler",
@@ -55,6 +55,54 @@
             "cwd"         : "../../15_tbg_service/tbg/src/job",
             "error_file"  : "/home/yujinsheng/logs/bonusHolder-err.log",
             "out_file"    : "/home/yujinsheng/logs/bonusHolder-out.log"
+        },
+        {
+            "name"        : "listenTrade",
+            "script"      : "./listenTrade.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/listenTrade-err.log",
+            "out_file"    : "/home/yujinsheng/logs/listenTrade-out.log"
+        },
+        {
+            "name"        : "adjustPrice",
+            "script"      : "./adjustPrice.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/adjustPrice-err.log",
+            "out_file"    : "/home/yujinsheng/logs/adjustPrice-out.log"
+        },
+        {
+            "name"        : "releaseAssets",
+            "script"      : "./releaseAssets.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/releaseAssets-err.log",
+            "out_file"    : "/home/yujinsheng/logs/releaseAssets-out.log"
+        },
+        {
+            "name"        : "checkInAirdrop",
+            "script"      : "./checkInAirdrop.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/checkInAirdrop-err.log",
+            "out_file"    : "/home/yujinsheng/logs/checkInAirdrop-out.log"
+        },
+        {
+            "name"        : "mining",
+            "script"      : "./mining.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/mining-err.log",
+            "out_file"    : "/home/yujinsheng/logs/mining-out.log"
+        },
+        {
+            "name"        : "wringTrade",
+            "script"      : "./wringTrade.js",
+            "watch"       : false,
+            "cwd"         : "../../15_tbg_service/tbg/src/job",
+            "error_file"  : "/home/yujinsheng/logs/wringTrade-err.log",
+            "out_file"    : "/home/yujinsheng/logs/wringTrade-out.log"
         }
     ]
 }

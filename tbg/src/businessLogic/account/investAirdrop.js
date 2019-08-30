@@ -30,6 +30,8 @@ async function investAirdrop(client, accountName, create_time) {
         let userReferrer = await getUserReferrer(accountName);
         // 获取推荐人当前的余额
         const accountTbgBalance = await getTbgBalanceInfo(accountName);
+        let acCurrentBalance = new Decimal(accountTbgBalance.release_amount);
+        let reCurrentBalance = new Decimal(0);
         let referrerTbgBalance = null;
         const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
         if (total <= TBG_ALLOCATE.BIND_MEMBER_LIMIT) {
@@ -37,7 +39,7 @@ async function investAirdrop(client, accountName, create_time) {
             const bindId = OPT_CONSTANTS.BIND;
             if (!userReferrer) {
                 const bindAirdrop = TBG_ALLOCATE.BIND_ACCOUNT_AIRDROP;
-                const acCurrentBalance = new Decimal(accountTbgBalance.release_amount).add(bindAirdrop);
+                acCurrentBalance = acCurrentBalance.add(bindAirdrop);
                 const acBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, reward airdrop ${ bindAirdrop }`;
                 bindData = {
                     "account": {
@@ -67,9 +69,9 @@ async function investAirdrop(client, accountName, create_time) {
                 // 新用户可获得的空投额度
                 referrerTbgBalance = await getTbgBalanceInfo(userReferrer);
                 const bindAirdrop = TBG_ALLOCATE.BIND_ACCOUNT_AIRDROP;
-                const acCurrentBalance = new Decimal(accountTbgBalance.release_amount).add(bindAirdrop);
+                acCurrentBalance = acCurrentBalance.add(bindAirdrop);
                 const acBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, reward airdrop ${ bindAirdrop }`;
-                const reCurrentBalance = new Decimal(referrerTbgBalance.release_amount).add(TBG_ALLOCATE.BIND_REFERRER_AIRDROP);
+                reCurrentBalance = new Decimal(reCurrentBalance).add(referrerTbgBalance.release_amount).add(TBG_ALLOCATE.BIND_REFERRER_AIRDROP);
                 const reBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, account referrer ${ userReferrer } get airdrop ${ TBG_ALLOCATE.BIND_REFERRER_AIRDROP }`;
                 bindData = {
                     "account": {
@@ -104,7 +106,7 @@ async function investAirdrop(client, accountName, create_time) {
             const tbg1Id = OPT_CONSTANTS.TBG_1;
             if (!userReferrer) {
                 const tbg1Airdrop = TBG_ALLOCATE.TBG_1_ACCOUNT_AIRDROP;
-                const acCurrentBalance = new Decimal(accountTbgBalance.release_amount).add(tbg1Airdrop);
+                acCurrentBalance = acCurrentBalance.add(tbg1Airdrop);
                 const acBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, reward airdrop ${ tbg1Airdrop }`;
                 tbg1Data = {
                     "account": {
@@ -132,13 +134,15 @@ async function investAirdrop(client, accountName, create_time) {
                 }
             } else {
                 const tbg1Airdrop = TBG_ALLOCATE.TBG_1_ACCOUNT_AIRDROP;
+                // 如果获取过推荐人资产，则不再获取
                 if (!referrerTbgBalance) {
                     referrerTbgBalance = await getTbgBalanceInfo(userReferrer);
+                    reCurrentBalance = reCurrentBalance.add(referrerTbgBalance.release_amount);
                 }
                 // 增加空投收益到当前余额
-                const acCurrentBalance = new Decimal(accountTbgBalance.release_amount).add(tbg1Airdrop);
+                acCurrentBalance = acCurrentBalance.add(tbg1Airdrop);
                 const acBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, reward airdrop ${ tbg1Airdrop }`;
-                const reCurrentBalance = new Decimal(referrerTbgBalance.release_amount).add(TBG_ALLOCATE.TBG_1_REFERRER_AIRDROP);
+                reCurrentBalance = reCurrentBalance.add(TBG_ALLOCATE.TBG_1_REFERRER_AIRDROP);
                 const reBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, account referrer ${ userReferrer } get airdrop ${ TBG_ALLOCATE.TBG_1_REFERRER_AIRDROP }`;
                 tbg1Data = {
                     "account": {

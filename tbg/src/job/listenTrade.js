@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@": "listening transfer" });
+const logger = require("../common/logger.js").child({ "@": "listening trade transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis, generate_primary_key } = require("../common");
 const userInvestment = require("../businessLogic/account/userInvestment.js");

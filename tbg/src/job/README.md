@@ -19,7 +19,7 @@
 #### `listenTrade.js`
 * 监听用户买入, 卖出 TBG 资产转帐（参加 TBG2）每秒钟监听一次
 
-#### `AdjustPrice.js`
+#### `adjustPrice.js`
 * 每天 0：00 按照一定的比例调整当天的交易价格
 
 #### `releaseAssets.js`
