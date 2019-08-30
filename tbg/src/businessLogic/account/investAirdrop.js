@@ -28,14 +28,15 @@ async function investAirdrop(client, accountName, create_time) {
         // 第一次投资，可以获得参与 tbg1 空投，新用户空投 100，推荐人空投 50, 只空投前 300,000 个UE账号
         const { rows: [ { total } ] } = await pool.query("SELECT count(1)::INTEGER AS total  FROM account");
         let userReferrer = await getUserReferrer(accountName);
-        logger.debug("userReferrer: ", userReferrer);
+        // 获取推荐人当前的余额
+        const accountTbgBalance = await getTbgBalanceInfo(accountName);
+        let referrerTbgBalance = null;
         const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
         if (total <= TBG_ALLOCATE.BIND_MEMBER_LIMIT) {
             // 系统第一个账户没有推荐人，多出的部分转到股东池账户
             const bindId = OPT_CONSTANTS.BIND;
             if (!userReferrer) {
                 const bindAirdrop = TBG_ALLOCATE.BIND_ACCOUNT_AIRDROP;
-                const accountTbgBalance = await getTbgBalanceInfo(accountName);
                 const acCurrentBalance = new Decimal(accountTbgBalance.release_amount).add(bindAirdrop);
                 const acBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, reward airdrop ${ bindAirdrop }`;
                 bindData = {
@@ -64,9 +65,7 @@ async function investAirdrop(client, accountName, create_time) {
                 }
             } else {
                 // 新用户可获得的空投额度
-                const accountTbgBalance = await getTbgBalanceInfo(accountName);
-                const referrerTbgBalance = await getTbgBalanceInfo(userReferrer);
-                logger.debug("referrerTbgBalance: ", referrerTbgBalance);
+                referrerTbgBalance = await getTbgBalanceInfo(userReferrer);
                 const bindAirdrop = TBG_ALLOCATE.BIND_ACCOUNT_AIRDROP;
                 const acCurrentBalance = new Decimal(accountTbgBalance.release_amount).add(bindAirdrop);
                 const acBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, reward airdrop ${ bindAirdrop }`;
@@ -105,8 +104,6 @@ async function investAirdrop(client, accountName, create_time) {
             const tbg1Id = OPT_CONSTANTS.TBG_1;
             if (!userReferrer) {
                 const tbg1Airdrop = TBG_ALLOCATE.TBG_1_ACCOUNT_AIRDROP;
-                // 获取用户当前的余额
-                const accountTbgBalance = await getTbgBalanceInfo(accountName);
                 const acCurrentBalance = new Decimal(accountTbgBalance.release_amount).add(tbg1Airdrop);
                 const acBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, reward airdrop ${ tbg1Airdrop }`;
                 tbg1Data = {
@@ -135,9 +132,9 @@ async function investAirdrop(client, accountName, create_time) {
                 }
             } else {
                 const tbg1Airdrop = TBG_ALLOCATE.TBG_1_ACCOUNT_AIRDROP;
-                // 获取推荐人当前的余额
-                const accountTbgBalance = await getTbgBalanceInfo(accountName);
-                const referrerTbgBalance = await getTbgBalanceInfo(userReferrer);
+                if (!referrerTbgBalance) {
+                    referrerTbgBalance = await getTbgBalanceInfo(userReferrer);
+                }
                 // 增加空投收益到当前余额
                 const acCurrentBalance = new Decimal(accountTbgBalance.release_amount).add(tbg1Airdrop);
                 const acBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, reward airdrop ${ tbg1Airdrop }`;
