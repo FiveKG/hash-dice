@@ -14,7 +14,7 @@ const { getUserBalance } = require("../balance");
 async function userWithdraw(client, accountName, changeAmount, opType, remark) {
     try {
         let rows = await getUserBalance(accountName);
-        console.log("userWithdraw: user balance is ", rows);
+        logger.log("userWithdraw: user balance is ", rows);
         if (!rows) {
             throw Error("this account not exist");
         }

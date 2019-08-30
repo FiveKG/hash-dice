@@ -985,8 +985,8 @@
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
                     "price": { "type": "sting",  "is_require": true,  "desc": "卖出价格" },
-                    "sell_fee_rate": { "type": "array",  "is_require": true, "desc": "手续费率" },
-                    "destroy_rate": { "type": "array",  "is_require": true, "desc": "销毁比例" },
+                    "sell_fee_rate": { "type": "text",  "is_require": true, "desc": "手续费率" },
+                    "destroy_rate": { "type": "text",  "is_require": true, "desc": "销毁比例" },
                     "sell_time": { "type": "string",  "is_require": true, "desc": "卖出交易开放时间, 逗号分割，如 10,21" },
                     "one_trx": { "type": "string",  "is_require": true, "desc": "单次最高可卖数量" },
                     "day_trx": { "type": "string",  "is_require": true, "desc": "每日最高可卖数量" },
@@ -1008,11 +1008,11 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "price": { "type": "sting",  "is_require": true,  "desc": "卖出价格" },
-                "amount": { "type": "number", "is_require": false, "desc": "卖出资产数量" },
-                "sell_fee": { "type": "array",  "is_require": true, "desc": "手续费" },
-                "destroy": { "type": "array",  "is_require": true, "desc": "销毁数量" },
-                "income": { "type": "array",  "is_require": true, "desc": "实收" }
+                "price": { "type": "text",  "is_require": true,  "desc": "卖出价格" },
+                "amount": { "type": "text", "is_require": false, "desc": "卖出资产数量" },
+                "sell_fee": { "type": "text",  "is_require": true, "desc": "手续费" },
+                "destroy": { "type": "text",  "is_require": true, "desc": "销毁数量" },
+                "income": { "type": "text",  "is_require": true, "desc": "实收" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,

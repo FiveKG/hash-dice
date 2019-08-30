@@ -25,7 +25,7 @@ async function raiseAirdrop(data) {
     try {
         // 获取用户私募的资产信息
         const { accountName, price } = data;
-        const tradeInfo = await getTradeInfoHistory({ "tradeType": OPT_CONSTANTS.RAISE, "accountName": accountName, orderBy: "ASC" });
+        const tradeInfo = await getTradeInfoHistory({ "tradeType": OPT_CONSTANTS.RAISE, "accountName": accountName, orderBy: "ASC", state: "create" });
         // 如果找不到私募订单, 直接返回不做后续处理
         if (tradeInfo.length === 0) {
             return;

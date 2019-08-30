@@ -40,7 +40,7 @@ async function sellAssets(req, res, next) {
             return res.send(get_status(1022, "more then one trade max amount")); 
         }
 
-        const sql = `SELECT * FROM trade WHERE account_name = $1 AND op_type = $2 AND create_time > current_date`;
+        const sql = `SELECT * FROM trade WHERE account_name = $1 AND trade_type = $2 AND create_time > current_date`;
         const { rows } = await pool.query(sql, [ accountName, 'sell' ]);
         // 检查是否超过一天可卖的次数
         if (rows.length > trxInfo.DAY_TRX_COUNT) {
@@ -61,7 +61,7 @@ async function sellAssets(req, res, next) {
         // const sellAmount = new Decimal(amount);
         const volume = sellAmount.mul(price);
         const memo = `user ${ accountName } at ${ createTime } sell a ${ sellAmount.toNumber() } assets`;
-        const tradeType = "buy";
+        const tradeType = "sell";
         const client = await pool.connect();
         await client.query("BEGIN");
         try {

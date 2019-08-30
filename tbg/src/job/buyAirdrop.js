@@ -53,7 +53,7 @@ async function buyAirdrop(data) {
         // 进入矿池的额度
         const miningAmount = amount.mul(assetsInfo[0].mining_multiple);
         // 获得的可售额度
-        const sellAmount = amount;
+        const sellAmount = amount.mul(assetsInfo[0].saleable_multiple);
         // 查找用户交易记录，如果没有，说明是第一次买入，此时需要给全球合伙人和全球合伙人的推荐人空投
         let opType = OPT_CONSTANTS.BUY;
         if (trade_type === OPT_CONSTANTS.FIRST_BUY) {

@@ -6,6 +6,7 @@ const userInvestment = require("../businessLogic/account/userInvestment.js");
 const { WALLET_RECEIVER, EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN } = require("../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
+const INVEST_KEY = "tbg:invest:account_action_seq";
 
 logger.debug(`handlerTransferActions running...`);
 // 每秒中执行一次,有可能上一条监听的还没有执行完毕,下一次监听又再执行了一次,从而造成多条数据重复
@@ -44,7 +45,7 @@ async function handlerTransferActions() {
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
             if (trxSeq || !result.invest_type) {
                 await setLastPos(result.account_action_seq);
-                await redis.set("tbg:account_action_seq", result.account_action_seq);
+                await redis.set(INVEST_KEY, result.account_action_seq);
                 continue;
             }
             let userInvestmentRemark = ``;
@@ -158,9 +159,9 @@ async function parseEosAccountAction(action) {
 }
 
 async function getLastPos(){    
-    let lastPosStr = await redis.get("tbg:account_action_seq");
+    let lastPosStr = await redis.get(INVEST_KEY);
     if(!lastPosStr){
-        await redis.set("tbg:account_action_seq", 0);
+        await redis.set(INVEST_KEY, 0);
         return 0;
     }
     return parseInt(lastPosStr) + 1;
@@ -171,7 +172,7 @@ async function getLastPos(){
  * @param { number } seq
  */
 async function setLastPos(seq){
-    await redis.set("tbg:account_action_seq" , seq);
+    await redis.set(INVEST_KEY , seq);
 }
 
 module.exports = handlerTransferActions;

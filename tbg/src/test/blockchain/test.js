@@ -42,12 +42,12 @@ let network = {
         // const id = await rpc.get_block(head_block_num.head_block_num);
         // console.debug("head_block_num: %O, id: %O", head_block_num.head_block_time, id);
 
-        while (true) {
-            await sleep(500);
-            const { head_block_num, head_block_time } = await rpc.get_info();
-            const { id, timestamp } = await rpc.get_block(head_block_num);
-            console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
-        }
+        // while (true) {
+        //     await sleep(500);
+        //     const { head_block_num, head_block_time } = await rpc.get_info();
+        //     const { id, timestamp } = await rpc.get_block(head_block_num);
+        //     console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
+        // }
 
         
         const account = 'gametestuser'
@@ -56,9 +56,10 @@ let network = {
         const quantity = `${amount} ${symbol}`
         const memo = `tbg_invest:${account}`
         // const resp = await transfer(UE_TOKEN, 'yujinsheng11', 'tbgfreepool', quantity, 'yujinsheng11,0.05,raise,4', PRIVATE_KEY_TEST.split(","))
-        // const resp = await transfer(UE_TOKEN, 'yujinsheng11', 'tbgfreepool', '180.0000 UE', 'yujinsheng11,1.80,buy,2', PRIVATE_KEY_TEST.split(","))
+        // const resp = await transfer(UE_TOKEN, account, 'tbgfreepool', '101.1400 UE', 'gametestuser,1.0114,buy,2', PRIVATE_KEY_TEST.split(","));
+        const resp = await transfer(TBG_TOKEN, 'yujinsheng11', 'tbgfreepool', '101.1400 TBG', 'yujinsheng11,1.0114,sell,100', PRIVATE_KEY_TEST.split(","));
         // const resp = await getTrxAction(WALLET_RECEIVER, 0)
-        // console.debug(resp)
+        console.debug(resp)
     } catch (err) {
         throw err;
     }

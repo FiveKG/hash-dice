@@ -4,7 +4,7 @@ const logger = require("../common/logger.js").child({ "@src/job/wringTrade.js": 
 const { TRADE_ORDER_RATE, BUY_END_TIME, BUY_START_TIME, BASE_RATE } = require("../common/constant/tradeConstant");
 const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant");
 const { TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants");
-const {  SELL } = require("../common/constant/optConstants");
+const {  SELL, BUY } = require("../common/constant/optConstants");
 const { generate_primary_key } = require("../common/index.js");
 const df = require("date-fns");
 const { Decimal } = require("decimal.js");
@@ -58,7 +58,7 @@ async function wringTrade() {
                 SELECT * FROM trade ORDER BY create_time DESC;
             `
             const { rows: tradeInfo } = await pool.query(sql);
-            const buyOrder = tradeInfo.filter(it => it.trade_type !== SELL && (it.state === "finished" || it.state === "wait"));
+            const buyOrder = tradeInfo.filter(it => it.trade_type !== BUY && (it.state === "finished" || it.state === "wait"));
             const sellOrder = tradeInfo.filter(it => it.trade_type === SELL && (it.state === "finished" || it.state === "wait"));
             // 如果没有订单，不做处理
             if (tradeInfo.length === 0) {

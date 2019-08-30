@@ -36,7 +36,7 @@ async function handlerPk() {
         if (bingoAccountList.length === 0) {
             return;
         }
-        console.log("bingoAccountList: ", bingoAccountList)
+        logger.log("bingoAccountList: ", bingoAccountList)
         for (let i = 0; i< bingoAccountList.length; i++){
             let item = bingoAccountList[i]
             let rate = 0;

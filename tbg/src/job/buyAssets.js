@@ -16,7 +16,7 @@ async function buyAssets(data) {
     try {
         const { accountName, price, apId } = data;
         let opType = OPT_CONSTANTS.BUY;
-        const tradeInfo = await getTradeInfo(accountName, opType);
+        const tradeInfo = await getTradeInfoHistory({  accountName: accountName, tradeType: opType, orderBy: "DESC" });
         // 没有交易记录，不做处理
         if (tradeInfo.length === 0) {
             return;

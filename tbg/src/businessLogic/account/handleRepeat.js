@@ -26,7 +26,7 @@ async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRe
         const repeatAmount = BALANCE_CONSTANT.BASE_RATE;
         const accountBalance = await getUserBalance(accountName);
         // 如果复投额度不足, 不做处理
-        const repeatCurrency = new Decimal(accountBalance.repeat_currency);
+        const repeatCurrency = new Decimal(accountBalance.amount);
         if (repeatCurrency.lessThan(repeatAmount)) {
             return tshIncomeData;
         }

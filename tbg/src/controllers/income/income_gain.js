@@ -42,7 +42,8 @@ async function incomeGain(req, res, next) {
             await startGain(incomeMap, incomeType);
             await redis.hdel(`income:${ accountName }`, incomeType);
             incomeMap = await redis.hgetall(`income:${ accountName }`);
-            detailArr = await startParse(incomeMap);
+            const result = await startParse(incomeMap);
+            detailArr.push(result);
         }
 
         let rows = await getUserBalance(accountName);
@@ -75,13 +76,13 @@ async function startGain(incomeMap, incomeType) {
     }
     const client = await pool.connect();
     try {
-        console.log("incomeJsonIfy: ", incomeJsonIfy);
+        // console.log("incomeJsonIfy: ", incomeJsonIfy);
         let incomeArr = JSON.parse(incomeJsonIfy);
         for (let item of incomeArr) {
             const accountName = item.account_name;
             let changeAmount = new Decimal(item.change_amount);
             let rows = await getUserBalance(accountName);
-            console.log("item: ", item);
+            // console.log("item: ", item);
             const createTime = df.format(item.create_time, "YYYY-MM-DD HH:mm:ssZ");
             // 收取收益
             await client.query("BEGIN");

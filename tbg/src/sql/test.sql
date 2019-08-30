@@ -157,3 +157,6 @@ select account_name
     where account_name != 'yujinsheng11'
     and account_type = 'general'
     order by random() limit 1;
+
+
+SELECT * FROM trade WHERE account_name = 'gametestuser' AND trade_type != 'sell' ORDER BY create_time DESC;

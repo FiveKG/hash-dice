@@ -6,7 +6,7 @@ const {
     psTshIncome, psRaise, psTrx
 } = require("../db");
 const handlerWithdraw = require("./handlerWithdraw.js");
-const raiseAirdrop = require("./raiseAirdrop.js");
+const handlerSellAssets = require("./handlerSellAssets.js");
 const bindAirdrop = require("./bindAirdrop");
 const tbg1Airdrop = require("./tbg1Airdrop");
 const tshIncomeAirdrop = require("./tshIncomeAirdrop");
@@ -27,6 +27,7 @@ psSellAssets.sub(async msg => {
     try {
         let result = JSON.parse(msg);
         logger.debug("psSellAssets result: %O", result);
+        await handlerSellAssets(result);
     } catch (err) {
         throw err;
     }

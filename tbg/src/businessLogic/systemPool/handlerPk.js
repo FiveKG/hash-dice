@@ -36,7 +36,7 @@ async function handlerPk() {
         if (pkAccountList.length === 0) {
             return;
         }
-        console.log("pkAccountList: ", pkAccountList);
+        logger.log("pkAccountList: ", pkAccountList);
         for (let i = 0; i < pkAccountList.length - 5; i++){
             let item = pkAccountList[i]
             let rate = setRate(i);

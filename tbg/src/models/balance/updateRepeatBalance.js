@@ -17,7 +17,7 @@ async function updateRepeatBalance(client, accountName, changeAmount) {
         `
         logger.info("update personal amount");
         const opts = [ changeAmount, accountName ]
-        console.debug("the sql is %s, the opts is %O", updateAmountSql, opts);
+        logger.debug("the sql is %s, the opts is %O", updateAmountSql, opts);
         const { rows: [ { repeat_currency } ] } = await client.query(updateAmountSql, opts);
         logger.info(`update '${ accountName }' amount ok`);
         return repeat_currency;

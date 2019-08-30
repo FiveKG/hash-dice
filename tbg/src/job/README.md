@@ -13,14 +13,11 @@
 #### `bonusSafe.js`
 * 收益保障池每日 00:00 进行分配
 
-#### `beginListenAction.js`
+#### `listenTransfer.js`
 * 监听用户投资转帐（参加 TBG1）每秒钟监听一次
 
-#### `listenSellAssets.js`
-* 监听用户买入 TBG 资产包转帐（参加 TBG2）每秒钟监听一次
-
-#### `listenBuyAssets.js`
-* 监听用户卖出 TBG 资产转帐（TBG2）每秒钟监听一次
+#### `listenTrade.js`
+* 监听用户买入, 卖出 TBG 资产转帐（参加 TBG2）每秒钟监听一次
 
 #### `AdjustPrice.js`
 * 每天 0：00 按照一定的比例调整当天的交易价格

@@ -45,8 +45,8 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1 || accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2) {
             accountOpType = OPT_CONSTANTS.REPEAT;
             // 用户复投
-            const accountInfo = await getGlobalAccount(ACCOUNT_CONSTANT.ACCOUNT_TYPE.GLOBAL, referrerAccountList);
-            const globalAccount = accountInfo.account_name;
+            const globalAccountInfo = await getGlobalAccount(ACCOUNT_CONSTANT.ACCOUNT_TYPE.GLOBAL, referrerAccountList);
+            const globalAccount = globalAccountInfo.account_name;
             psTshIncomeData = await handleRepeat(client, accountInfo, globalAccount, userInvestmentRemark);
         } else {
             // 第一次投资，可以获得参与 tbg1 空投，新用户空投 100，推荐人空投 50, 只空投前 300,000 个UE账号

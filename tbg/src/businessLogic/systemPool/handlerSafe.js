@@ -73,7 +73,7 @@ async function handlerSafe() {
             return;
         }
 
-        console.log("bonusList: ", bonusList);
+        logger.log("bonusList: ", bonusList);
         for (let item of bonusList) {
             let last = new Decimal(item.last);
             let total = new Decimal(item.all);
