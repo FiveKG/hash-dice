@@ -1,3 +1,4 @@
+### docker 部署 `rabbitmq`
 docker run -d --name rabbitmq rabbitmq && \
 docker exec -it rabbitmq /bin/bash 
 rabbitmqctl add_user mq_user "pass_2019" && \
@@ -9,7 +10,7 @@ listeners.tcp.1 = 0.0.0.0:5672" > /etc/rabbitmq/rabbitmq.conf
 docker run -d --name rabbitmq -e RABBITMQ_DEFAULT_USER=mq_user -e RABBITMQ_DEFAULT_PASS=password rabbitmq
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 -e RABBITMQ_DEFAULT_USER=mq_user -e RABBITMQ_DEFAULT_PASS=pass_2019 rabbitmq:3-management
 
-## postgres
+### docker 部署 postgres
 
 ``` bash
 docker pull postgres
@@ -34,8 +35,8 @@ pg_dump -U lucky_money -h 172.17.0.4 -f ./lucky_money.sql lucky_money
 docker exec -i postgres psql -U lucky_money -d lucky_money < ./lucky_money.sql
 ```
 
-## redis
-
+### docker 部署 redis
+* 注意修改监听地址
 > https://segmentfault.com/a/1190000014091287
 
 ``` bash

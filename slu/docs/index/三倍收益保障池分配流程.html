@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>三倍收益保障池分配流程</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="resources/css/axure_rp_page.css" type="text/css" rel="stylesheet"/>
+    <link href="data/styles.css" type="text/css" rel="stylesheet"/>
+    <link href="files/三倍收益保障池分配流程/styles.css" type="text/css" rel="stylesheet"/>
+    <script src="resources/scripts/jquery-3.2.1.min.js"></script>
+    <script src="resources/scripts/axure/axQuery.js"></script>
+    <script src="resources/scripts/axure/globals.js"></script>
+    <script src="resources/scripts/axutils.js"></script>
+    <script src="resources/scripts/axure/annotation.js"></script>
+    <script src="resources/scripts/axure/axQuery.std.js"></script>
+    <script src="resources/scripts/axure/doc.js"></script>
+    <script src="resources/scripts/messagecenter.js"></script>
+    <script src="resources/scripts/axure/events.js"></script>
+    <script src="resources/scripts/axure/recording.js"></script>
+    <script src="resources/scripts/axure/action.js"></script>
+    <script src="resources/scripts/axure/expr.js"></script>
+    <script src="resources/scripts/axure/geometry.js"></script>
+    <script src="resources/scripts/axure/flyout.js"></script>
+    <script src="resources/scripts/axure/model.js"></script>
+    <script src="resources/scripts/axure/repeater.js"></script>
+    <script src="resources/scripts/axure/sto.js"></script>
+    <script src="resources/scripts/axure/utils.temp.js"></script>
+    <script src="resources/scripts/axure/variables.js"></script>
+    <script src="resources/scripts/axure/drag.js"></script>
+    <script src="resources/scripts/axure/move.js"></script>
+    <script src="resources/scripts/axure/visibility.js"></script>
+    <script src="resources/scripts/axure/style.js"></script>
+    <script src="resources/scripts/axure/adaptive.js"></script>
+    <script src="resources/scripts/axure/tree.js"></script>
+    <script src="resources/scripts/axure/init.temp.js"></script>
+    <script src="resources/scripts/axure/legacy.js"></script>
+    <script src="resources/scripts/axure/viewer.js"></script>
+    <script src="resources/scripts/axure/math.js"></script>
+    <script src="resources/scripts/axure/jquery.nicescroll.min.js"></script>
+    <script src="data/document.js"></script>
+    <script src="files/三倍收益保障池分配流程/data.js"></script>
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+  </head>
+  <body>
+    <div id="base" class="">
+
+      <!-- Unnamed (Parallelogram) -->
+      <div id="u210" class="ax_default flow_shape">
+        <img id="u210_img" class="img " src="images/tbg-i投资流程/u0.svg"/>
+        <div id="u210_text" class="text ">
+          <p><span style="text-decoration:none;">三倍收益保障池</span></p><p><span style="text-decoration:none;">每日00:00进行分配</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (Connector) -->
+      <div id="u211" class="ax_default connector">
+        <img id="u211_seg0" class="img " src="images/三倍收益保障池分配流程/u211_seg0.svg" alt="u211_seg0"/>
+        <img id="u211_seg1" class="img " src="images/三倍收益保障池分配流程/u211_seg1.svg" alt="u211_seg1"/>
+        <div id="u211_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (Rectangle) -->
+      <div id="u212" class="ax_default flow_shape">
+        <div id="u212_div" class=""></div>
+        <div id="u212_text" class="text ">
+          <p><span style="text-decoration:none;">截止00:00的三倍保障池</span></p><p><span style="text-decoration:none;">余额乘以10%，得出本</span></p><p><span style="text-decoration:none;">次三倍保障应分配的金额</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (Connector) -->
+      <div id="u213" class="ax_default connector">
+        <img id="u213_seg0" class="img " src="images/三倍收益保障池分配流程/u213_seg0.svg" alt="u213_seg0"/>
+        <img id="u213_seg1" class="img " src="images/三倍收益保障池分配流程/u213_seg1.svg" alt="u213_seg1"/>
+        <div id="u213_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (Rectangle) -->
+      <div id="u214" class="ax_default flow_shape">
+        <div id="u214_div" class=""></div>
+        <div id="u214_text" class="text ">
+          <p><span style="text-decoration:none;">计算出所有收益</span></p><p><span style="text-decoration:none;">未满三倍的主账户</span></p><p><span style="text-decoration:none;">占本次分配的比例</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (Rectangle) -->
+      <div id="u215" class="ax_default paragraph">
+        <div id="u215_div" class=""></div>
+        <div id="u215_text" class="text ">
+          <p><span style="text-decoration:none;">三倍收益保障池分配的计算方法：</span></p><p><span style="text-decoration:none;"><br></span></p><p><span style="text-decoration:none;">1、每日截止00:00筛选出收益未满300UE的主账户；</span></p><p><span style="text-decoration:none;">2、所有主账户将300UE减去当前主账户收益，得出余额；</span></p><p><span style="text-decoration:none;">3、将所有计算余额相加得出总数，再将每个主账户的计算余额除以总计算余额，得出分配比例；</span></p><p><span style="text-decoration:none;">4、将截止00:00的三倍收益保障池余额乘以10%，得出本次分配的金额；</span></p><p><span style="text-decoration:none;">5、将本次分配的金额乘以每个主账户的比例，得出每个主账户应分配的金额；</span></p><p><span style="text-decoration:none;">6、将每个主账户应分配的金额在主账户的系统余额中增加。</span></p><p><span style="text-decoration:none;"><br></span></p><p><span style="text-decoration:none;">注：主账户总收益大于或等于300UE的主账户不再享有三倍保障金的分配。</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (Rectangle) -->
+      <div id="u216" class="ax_default flow_shape">
+        <div id="u216_div" class=""></div>
+        <div id="u216_text" class="text ">
+          <p><span style="text-decoration:none;">将本次三倍保障应分配</span></p><p><span style="text-decoration:none;">的金额乘以每个主账户</span></p><p><span style="text-decoration:none;">应得的比例，得出每个</span></p><p><span style="text-decoration:none;">主账户应得的金额</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (Connector) -->
+      <div id="u217" class="ax_default connector">
+        <img id="u217_seg0" class="img " src="images/三倍收益保障池分配流程/u217_seg0.svg" alt="u217_seg0"/>
+        <img id="u217_seg1" class="img " src="images/三倍收益保障池分配流程/u217_seg1.svg" alt="u217_seg1"/>
+        <div id="u217_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (Rectangle) -->
+      <div id="u218" class="ax_default flow_shape">
+        <div id="u218_div" class=""></div>
+        <div id="u218_text" class="text ">
+          <p><span style="text-decoration:none;">将每个主账户应分配的</span></p><p><span style="text-decoration:none;">三倍保障金额在其系统</span></p><p><span style="text-decoration:none;">余额中增加</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (Connector) -->
+      <div id="u219" class="ax_default connector">
+        <img id="u219_seg0" class="img " src="images/三倍收益保障池分配流程/u219_seg0.svg" alt="u219_seg0"/>
+        <img id="u219_seg1" class="img " src="images/三倍收益保障池分配流程/u219_seg1.svg" alt="u219_seg1"/>
+        <div id="u219_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+    </div>
+    <script src="resources/scripts/axure/ios.js"></script>
+  </body>
+</html>

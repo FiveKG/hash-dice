@@ -13,11 +13,11 @@ let network = {
 
 ;(async ()=> {
     try {
-        // getCurrencyBalance('tbgtokencoin', 'tbgfreepool', 'TBG')
+        // getCurrencyBalance(UE_TOKEN, 'dengderong', 'UE')
         // .then(res => console.error(res))
         // .catch(err => console.error(err));
 
-        // transfer(UE_TOKEN, UE_TOKEN, 'yujinsheng11', '10000.0000 TBG', 'memo', PRIVATE_KEY_TEST.split(","))
+        // transfer(UE_TOKEN, UE_TOKEN, 'dengderong', '1000000.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
         // .then(res => console.error(res))
         // .catch(err => console.error(err));
         const now = df.format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
@@ -28,7 +28,7 @@ let network = {
         const actionList = [];
         // 如果在不再交易时间内, 交易结束时，没有完成的订单全部撤销，资金原路退回
         const flag = df.isWithinRange(new Date(), startTime, endTime)
-        console.debug(flag);
+        // console.debug(flag);
 
         const signatureProvider = new JsSignatureProvider(PRIVATE_KEY_TEST.split(","));
         // @ts-ignore
@@ -57,9 +57,9 @@ let network = {
         const memo = `tbg_invest:${account}`
         // const resp = await transfer(UE_TOKEN, 'yujinsheng11', 'tbgfreepool', quantity, 'yujinsheng11,0.05,raise,4', PRIVATE_KEY_TEST.split(","))
         // const resp = await transfer(UE_TOKEN, account, 'tbgfreepool', '101.1400 UE', 'gametestuser,1.0114,buy,2', PRIVATE_KEY_TEST.split(","));
-        const resp = await transfer(TBG_TOKEN, 'yujinsheng11', 'tbgfreepool', '101.1400 TBG', 'yujinsheng11,1.0114,sell,100', PRIVATE_KEY_TEST.split(","));
+        // const resp = await transfer(TBG_TOKEN, 'yujinsheng11', 'tbgfreepool', '101.1400 TBG', 'yujinsheng11,1.0114,sell,100', PRIVATE_KEY_TEST.split(","));
         // const resp = await getTrxAction(WALLET_RECEIVER, 0)
-        console.debug(resp)
+        // console.debug(resp)
     } catch (err) {
         throw err;
     }
