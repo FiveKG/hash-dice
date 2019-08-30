@@ -87,6 +87,11 @@ import SaleableBalance from './pages/invitation2/SaleableBalance'
 import SaleableLimit from './pages/invitation2/SaleableLimit'
 import SignDetails from './pages/invitation2/SignDetails'
 
+import Otc from './pages/game/otc/Otc'
+import OtcGo from './pages/game/otc/OtcGo'
+import HaGo from './pages/game/ha/HaGo'
+import HaNine from './pages/game/ha/HaNine'
+
 Vue.use(Router)
 
 const router = new Router({
@@ -506,6 +511,27 @@ const router = new Router({
       path: '/signDetails',
       name: 'SignDetails',
       component: SignDetails,
+    },
+
+    {
+      path: '/otc',
+      name: 'Otc',
+      component: Otc,
+    },
+    {
+      path: '/otcGo',
+      name: 'OtcGo',
+      component: OtcGo,
+    },
+    {
+      path: '/haGo',
+      name: 'HaGo',
+      component: HaGo,
+    },
+    {
+      path: '/haNine',
+      name: 'HaNine',
+      component: HaNine,
     },
   ]
 })

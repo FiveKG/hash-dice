@@ -9,8 +9,8 @@
         <div class="content">
           <div style="position: relative;text-align: center;">
             <img class="ion_tbg" src="@/assets/img/tbg_selected.png"> 
-            <p style="font-weight:600;font-size:0.45rem;">Token · Blockchain · Game</p>
-            <p style="font-size:0.45rem;">全球区块链去中心化游戏应用平台</p>
+            <p class="font_weight_bold">Token · Blockchain · Game</p>
+            <p >全球区块链去中心化游戏应用平台</p>
             <p style="margin: .5rem 0 .1rem 0">
               <span class=" bold">{{airdrop_quantity}} </span>
               <span class=" bold gray">8000 </span>
@@ -21,13 +21,13 @@
             <div class="schedule_white"><div class="schedule_orange" :style="{ width: schedule + '%' }"></div></div>
             <p style="color:RGB(255,153,0);font-size:0.45rem;margin:.3rem 0;font-weight:500;">签到共空投 2,000,000 TBG，空投完即止</p>
             <div class="num_tbg">
-              <span style="font-size:0.45rem;">共获得奖励</span>
+              <span class="font_size_five">共获得奖励</span>
               <span style="padding:0 1.1rem;"></span>
-              <span style="font-weight:600;font-size:0.45rem;">{{income}}</span>
-              <span style="color:rgb(161, 161, 161);font-size:0.45rem;"> 1206 </span>
-              <span style="font-weight:600;font-size:0.45rem;">TBG</span>
+              <span style="font_weight_bold font_size_five ">{{income}}</span>
+              <span class="gray font_size_five"> 1206 </span>
+              <span class="font_weight_bold font_size_five ">TBG</span>
             </div>
-              <p style="color:RGB(255,153,0);font-size:0.45rem;margin-bottom:.3rem;font-weight:500;">签到奖励进入线性释放池释放</p>
+              <p style="color:RGB(255,153,0);margin-bottom:.3rem;font-weight:500;" class="font_size_five">签到奖励进入线性释放池释放</p>
           </div>
           <div style="padding:4px 0;background:RGB(228,228,228);"></div>
           <div class="asset_pool_header" > 
@@ -62,7 +62,14 @@ export default {
       income:'',
       schedule: '',
       items:[
-            
+            // {create_time:111111111111,reward:1111111111111,key:1},
+            // {create_time:111111111111,reward:1111111111111,key:2},
+            // {create_time:111111111111,reward:1111111111111,key:3},
+            // {create_time:111111111111,reward:1111111111111,key:4},
+            // {create_time:111111111111,reward:1111111111111,key:5},
+            // {create_time:111111111111,reward:1111111111111,key:6},
+            // {create_time:111111111111,reward:1111111111111,key:7},
+         
         ],
     }
   },
@@ -171,13 +178,25 @@ div{
 p{
   font-family: '微軟正黑體 Regular', '微軟正黑體';
   color: #000000;
-  font-size:0.45rem;
+  font-size:0.40rem;
 }    
+span{
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+}
+.font_A{
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+}
 .font_B{
-font-family: 'Bahnschrift Regular', 'Bahnschrift';
+  font-family: 'Bahnschrift Regular', 'Bahnschrift';
+}
+.font_size_five{
+  font-size: 0.40rem;
+}
+.font_weight_bold{
+  font-weight: 600;
 }
 .gray{
-    color: #BCBCBC;
+  color: #BCBCBC;
 }
 .bold{
   font-weight: bold;

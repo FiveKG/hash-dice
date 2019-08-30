@@ -8,8 +8,8 @@
         </div>
         <div class="content">
           <img class="ion_tbg" src="@/assets/img/tbg_selected.png"> 
-          <p style="font-weight:600;font-size:0.45rem;">Token · Blockchain · Game</p>
-          <p style="font-size:0.45rem;">全球区块链去中心化游戏应用平台</p>
+          <p class="font_weight_bold">Token · Blockchain · Game</p>
+          <p >全球区块链去中心化游戏应用平台</p>
           <!-- 有效资产包矿机 -->
           <div class="num_tbg" v-if="log">
             <span style="color:RGB(255,153,0);font-size:0.8rem;">74.6124 </span>
@@ -18,11 +18,11 @@
           </div>
           <!-- 已结束资产包矿机 -->
           <div class="num_tbg" v-if="!log">
-            <p style="font-size:0.45rem;">已挖矿至线性释放池</p>
-            <p style="font-size:0.45rem;font-weight:600;">74.6124 1206</p>
-            <p style="font-size:0.45rem;font-weight:600;">TBG</p>
+            <p >已挖矿至线性释放池</p>
+            <p style="padding-bottom: 0.1rem;" class="font_weight_bold">74.6124 1206</p>
+            <p class="font_weight_bold">TBG</p>
         </div>
-          <p style="color:RGB(255,153,0);font-size:0.45rem;padding-bottom: .3rem;">收益需收取才可至线性释放池释放</p>
+          <p style="color:RGB(255,153,0);padding-bottom: .3rem;">收益需收取才可至线性释放池释放</p>
         </div>
         <div class="asset_pool"> 
           <div class="asset_pool_select"> 
@@ -80,7 +80,7 @@
 <script>
 
 import MyPage from '@/components/MyPage'
-import {effectiveAssets,overAssets,assetMiningCharge} from '@/servers/invitation';
+import {effectiveAssets,overAssets,assetMiningCharge,isBind} from '@/servers/invitation';
 import axios from 'axios';
 
 
@@ -140,11 +140,12 @@ export default {
         },
   },
   created(){
-      // console.log(this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]);
+      console.log(this.$store.state.wallet.localFile.wallets.slice());
+      console.log(this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]);
       //获取有效矿机
       effectiveAssets({account_name:"tbtestuser1"}).then(res => {
+        console.log('bindReferrer',res)
         if (res.code === 1) {
-        // console.log('bindReferrer',res.data.mining_info)
         this.start_mined=res.data.mining_info;
         this.mining_count=res.data.mining_count;
         this.mined_count=res.data.mined_count;
@@ -153,10 +154,13 @@ export default {
       })
       // 获取结束矿机
       overAssets({account_name:"tbtestuser1"}).then(res => {
+        console.log('bindReferrer',res);
         if (res.code === 1) {
-        console.log('bindReferrer',res.data)
         this.over_mined=res.data.mining_info;
         }
+      })
+       isBind({account_name:"tbtestuser1"}).then(res => {
+        console.log(res)
       })
     
   },
@@ -164,13 +168,6 @@ export default {
 </script>
 
 <style scoped>
-p{
-  font-family: '微軟正黑體 Regular', '微軟正黑體';
-  color: #000000;
-}    
-div{
-  background: #fff;
-}
 .asset_pool{
   background-color: #fff;
   height: 100%;
@@ -298,6 +295,20 @@ div{
   /* flex-wrap: nowrap;        是否换行 */
   /* justify-content: space-around;  对齐 */
 /* style=" bottom: 0;position:fixed; "固定 */
+p{
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+  color: #000000;
+  font-size: 0.4rem;
+}
+span{
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+}    
+div{
+  background: #fff;
+}
+.font_weight_bold{
+  font-weight: 600;
+}
 .close_mining{
   position: relative;
   top:.3rem;

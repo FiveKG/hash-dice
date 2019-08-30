@@ -38,9 +38,9 @@ export default {
     return {
       log:true,
       items:[
-          //  {create_time:'1111-11-11',
-          //  release_type:'首次购买推荐收益'
-          //  ,amount:'+ 11111',balance:'1,111.11191'},
+           {create_time:'1111-11-11',
+           release_type:'首次购买推荐收益'
+           ,amount:'+ 11111',balance:'1,111.11191'},
         ],
     }
   },
@@ -125,6 +125,14 @@ div{
   vertical-align: middle;
 }
 
+p{
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+  color: #000000;
+  font-size:0.40rem;
+}    
+span{
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+}
 .font_fine{
   font-weight: 400;
 }

@@ -9,14 +9,14 @@
         <div class="content">
           <div style="position: relative;text-align: center;">
             <img class="ion_tbg" src="@/assets/img/tbg_selected.png"> 
-            <p style="font-weight:600;font-size:0.45rem;">Token · Blockchain · Game</p>
-            <p style="font-size:0.45rem;">全球区块链去中心化游戏应用平台</p>
+            <p class="font_weight_bold">Token · Blockchain · Game</p>
+            <p>全球区块链去中心化游戏应用平台</p>
             <div class="num_tbg">
-              <span style="font-size:0.45rem;">可售余额</span>
+              <span >可售余额</span>
               <span style="padding:0 1.1rem;"></span>
-              <span style="font-weight:600;font-size:0.45rem;">24.6124</span>
-              <span style="color:rgb(161, 161, 161);font-size:0.45rem;"> {{balance}} </span>
-              <span style="font-weight:600;font-size:0.45rem;">TBG</span>
+              <span class="font_weight_bold">24.6124</span>
+              <span style="color:rgb(161, 161, 161);"> {{balance}} </span>
+              <span class="font_weight_bold">TBG</span>
             </div>
               <p style="color:RGB(255,153,0);font-size:0.45rem;margin-bottom:.3rem;">可售余额由线性释放池释放获得</p>
           </div>
@@ -28,10 +28,10 @@
               <span style="width:25%;">余额</span>
           </div>
           <div class="asset_pool_data" v-for="item in items" :key='item.key'>
-            <div class="asset_pool_data_item" style="width:25%;"><p>{{item.create_time}}</p></div>
-            <div class="asset_pool_data_item" style="width:25%;"><p class="font_fine">{{item.info}}</p></div>
-            <div class="asset_pool_data_item" style="width:25%;"><p :class="{font_red:item.amount<0}">{{item.amount}}</p><p class="font_silver">11111</p></div>
-            <div class="asset_pool_data_item" style="width:25%;"><p>{{item.balance}}</p><p class="font_silver">11111</p></div>
+            <div class="asset_pool_data_item" style="width:25%;"><p style="font-size: 0.38rem;" >{{item.create_time}}</p></div>
+            <div class="asset_pool_data_item" style="width:25%;"><p style="font-size: 0.38rem;" class="font_fine">{{item.info}}</p></div>
+            <div class="asset_pool_data_item" style="width:25%;"><p style="font-size: 0.38rem;" :class="{font_red:item.amount<0}">{{item.amount}}</p><p  style="font-size: 0.38rem;" class="font_silver">11111</p></div>
+            <div class="asset_pool_data_item" style="width:25%;"><p style="font-size: 0.38rem;" >{{item.balance}}</p><p  style="font-size: 0.38rem;" class="font_silver">11111</p></div>
           </div>
         </div>
       </div>
@@ -100,13 +100,6 @@ export default {
 </script>
 
 <style scoped>
-div{
-  background: #fff;
-}
-p{
-  font-family: '微軟正黑體 Regular', '微軟正黑體';
-  color: #000000;
-}    
 .header{
   position: fixed;
   width: 100%;
@@ -142,9 +135,9 @@ p{
 .num_tbg{
   border: 3px solid RGB(228,228,228);
   border-radius:7px;
-  padding: 30px 0;
+  padding: 20px 0;
   margin: 25px 30px;
-
+  font-size: 0.4rem;
 }
 .asset_pool_header{
   border: 1px solid RGB(228,228,228);
@@ -161,12 +154,32 @@ p{
 }
 .asset_pool_data_item{
   text-align: center;
-  font-size: 30px;
   display:inline-block;
   font-weight:600;
   vertical-align: middle;
 }
 
+
+div{
+  background: #fff;
+}
+p{
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+  color: #000000;
+  font-size:0.4rem;
+} 
+span{
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+}
+.font_B{
+  font-family: 'Bahnschrift Regular', 'Bahnschrift';
+}
+.font_size_five{
+  font-size: 0.40rem;
+}
+.font_weight_bold{
+  font-weight: 600;
+}
 .font_fine{
   font-weight: 400;
 }

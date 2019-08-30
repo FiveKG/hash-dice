@@ -9,12 +9,12 @@
         <div class="content">
           <div style="position: relative;text-align: center;">
             <img class="ion_tbg" src="@/assets/img/tbg_selected.png"> 
-            <p style="font-weight:600;font-size:0.45rem;">Token · Blockchain · Game</p>
-            <p style="font-size:0.45rem;">全球区块链去中心化游戏应用平台</p>
+            <p style="font-weight:600;" class="font_size_five">Token · Blockchain · Game</p>
+            <p class="font_size_five">全球区块链去中心化游戏应用平台</p>
             <div class="num_tbg">
-              <span style="font-size:0.45rem;">可售余额</span>
+              <span class="font_size_five">可售余额</span>
               <span style="padding:0 2rem;"></span>
-              <span style="font-weight:600;font-size:0.45rem;">6124 TBG</span>
+              <span style="font-weight:600;" class="font_size_five">6124 TBG</span>
             </div>
               <p style="color:RGB(255,153,0);font-size:0.45rem;margin-bottom:.3rem;">可售额度由买入资产包获得</p>
           </div>
@@ -27,7 +27,7 @@
           </div>
           <div class="asset_pool_data" v-for="item in items" :key='item.key'>
             <div class="asset_pool_data_item" style="width:25%;"><p>{{item.create_time}}</p></div>
-            <div class="asset_pool_data_item" style="width:25%;"><p class="">{{item.info}}</p></div>
+            <div class="asset_pool_data_item" style="width:25%;"><p class="">{{item.info}}</p><p></p></div>
             <div class="asset_pool_data_item" style="width:25%;"><p :class="{font_red:item.amount<0}">{{item.amount}}</p></div>
             <div class="asset_pool_data_item" style="width:25%;"><p>{{item.balance}}</p></div>
           </div>
@@ -98,13 +98,6 @@ export default {
 </script>
 
 <style scoped>
-div{
-  background: #fff;
-}
-p{
-  font-family: '微軟正黑體 Regular', '微軟正黑體';
-  color: #000000;
-}    
 .header{
   position: fixed;
   width: 100%;
@@ -163,6 +156,22 @@ p{
   display:inline-block;
   font-weight:600;
   vertical-align: middle;
+}
+
+
+div{
+  background: #fff;
+}
+p{
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+  color: #000000;
+  font-size: 0.40rem;
+}    
+span{
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+}
+.font_size_five{
+  font-size: 0.40rem;
 }
 /* 
     position: absolute;
