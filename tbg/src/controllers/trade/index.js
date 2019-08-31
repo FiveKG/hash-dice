@@ -9,5 +9,6 @@ module.exports = {
     "raiseBuy": require("./raiseBuy.js"),
     "sellAssets": require("./sellAssets.js"),
     "sellAssetsHistory": require("./sellAssetsHistory.js"),
-    "sellList": require("./sellList.js")
+    "sellList": require("./sellList.js"),
+    "raiseList": require("./raiseList.js")
 }

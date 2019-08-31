@@ -23,6 +23,9 @@ const { format } = require("date-fns");
  */
 async function raiseAirdrop(data) {
     try {
+        const updateTradeSql = `
+            UPDATE trade SET state = $1, finished_time = $2, trx_amount = $3 WHERE id = $4
+        `
         // 获取用户私募的资产信息
         const { accountName, price } = data;
         const tradeInfo = await getTradeInfoHistory({ "tradeType": OPT_CONSTANTS.RAISE, "accountName": accountName, orderBy: "ASC", state: "create" });
@@ -170,7 +173,8 @@ async function raiseAirdrop(data) {
             const trLogId = generate_primary_key();
             const remark = `user ${ accountName } at ${ finishTime } done raise`;
             // 更新交易状态
-            await updateTrade(client, trId, "finished", finishTime);
+            // await updateTrade(client, trId, "finished", finishTime);
+            await client.query(updateTradeSql, [ "finished", finishTime, amount, trId ]);
             await insertTradeLog(client, trLogId, trId, OPT_CONSTANTS.RAISE, amount.toNumber(), remark, price, amount.mul(price).toNumber(), finishTime);
             // 更新用户状态
             await updateAccountState(client, accountState,accountName);

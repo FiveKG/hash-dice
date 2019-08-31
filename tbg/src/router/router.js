@@ -92,6 +92,8 @@ router.get("/pools/pk", pools.pk);
 router.get("/trade/raise_buy", trade.getRaiseInfo);
 // 全球合伙人私募
 router.post("/trade/global_raise_buy", trade.raiseBuy);
+// 私募交易列表
+router.get("/trade/raise_list", trade.raiseList);
 // 获取普通买入交易信息 
 router.get("/trade/buy_assets", trade.getBuyAssetsInfo);
 // 买入资产包 

@@ -1,26 +1,18 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/trade/sellList.js": "卖出交易列表" });
+const logger = require("../../common/logger.js").child({ "@controllers/trade/raiseList.js": "私募交易列表" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getTradeInfoHistory } = require("../../models/trade");
 const { pool } = require("../../db");
 const { Decimal } = require("decimal.js");
 
-// 卖出交易列表
-async function sellList(req, res, next) {
+// 私募交易列表
+async function raiseList(req, res, next) {
     try {
         const reqDate = await inspect_req_data(req);
-        let tmpStr = ``
-        // 根据挂单时间进行筛选
-        if (!!reqDate.order_time) {
-            tmpStr = `current_timestamp - create_time > interval '5 hours'`;
-        } else {
-            tmpStr = `current_timestamp - create_time < interval '5 hours'`;
-        }
         const sql = `SELECT * 
                         FROM trade 
-                        WHERE trade_type = 'sell'  
-                        AND state = 'wait'
-                        AND ${ tmpStr }
+                        WHERE trade_type = 'raise'  
+                        AND state = 'finished'
                         ORDER BY create_time DESC`;
         logger.debug(sql);
         const { rows } = await pool.query(sql)
@@ -36,9 +28,9 @@ async function sellList(req, res, next) {
         });
         res.send(resData);
     } catch (err) {
-        logger.error("request sellList error, the error stock is %O", err);
+        logger.error("request raiseList error, the error stock is %O", err);
         throw err
     }
 }
 
-module.exports = sellList;
+module.exports = raiseList;

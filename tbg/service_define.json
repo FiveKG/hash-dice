@@ -873,6 +873,28 @@
             }
         },
         {
+            "name" : "私募交易列表",
+            "summary": "",
+            "remark": [],
+            "isFunctionPoint" : true,
+            "url" : "/trade/raise_list",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "create_time": { "type": "dateTime",  "is_require": true,  "desc": "私募时间" },
+                    "price": { "type": "number",  "is_require": true,  "desc": "私募价格" },
+                    "amount": { "type": "number",  "is_require": true, "desc": "私募资产数量" },
+                    "transaction": { "type": "number",  "is_require": true, "desc": "成交数量" }
+                }
+            }
+        },
+        {
             "name" : "全球合伙人私募",
             "summary": "",
             "remark": [
@@ -979,7 +1001,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-
+                "order_time": { "type": "boolean",  "is_require": true,  "desc": "挂单时间" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -1055,7 +1077,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-
+                "order_time": { "type": "boolean",  "is_require": true,  "desc": "挂单时间" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
