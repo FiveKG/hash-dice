@@ -30,18 +30,17 @@ async function incomeGain(req, res, next) {
         let detailArr = []
         let resDate = get_status(1);
         let incomeMap = await redis.hgetall(`tbg:income:${ accountName }`);
-        // console.log("incomeMap: ", incomeMap);
         // 一键收取全部收益
         if (incomeType === "all") {
             for (let key in incomeMap) {
                 await startGain(incomeMap, key);
             }
-            await redis.del(`income:${ accountName }`);
+            await redis.del(`tbg:income:${ accountName }`);
         } else {
             // 删掉收取过的数据，重新赋值
             await startGain(incomeMap, incomeType);
-            await redis.hdel(`income:${ accountName }`, incomeType);
-            incomeMap = await redis.hgetall(`income:${ accountName }`);
+            await redis.hdel(`tbg:income:${ accountName }`, incomeType);
+            incomeMap = await redis.hgetall(`tbg:income:${ accountName }`);
             const result = await startParse(incomeMap);
             detailArr.push(result);
         }
@@ -74,32 +73,37 @@ async function startGain(incomeMap, incomeType) {
     if (!incomeJsonIfy) {
         return;
     }
-    const client = await pool.connect();
+    const trxList = [];
     try {
-        // console.log("incomeJsonIfy: ", incomeJsonIfy);
         let incomeArr = JSON.parse(incomeJsonIfy);
         for (let item of incomeArr) {
             const accountName = item.account_name;
             let changeAmount = new Decimal(item.change_amount);
             let rows = await getUserBalance(accountName);
-            // console.log("item: ", item);
             const createTime = df.format(item.create_time, "YYYY-MM-DD HH:mm:ssZ");
-            // 收取收益
-            await client.query("BEGIN");
-            const repeat_currency = await updateBalance(client, accountName, changeAmount);
-            await insertBalanceLog(client, accountName, changeAmount.toFixed(8), rows.amount, item.op_type, { "symbol": UE_TOKEN_SYMBOL }, item.remark, createTime)
-            await client.query("COMMIT");
-
+            const repeat_currency = await updateBalance(pool, accountName, changeAmount);
+            trxList.push([accountName, changeAmount.toFixed(8), rows.amount, item.op_type, { "symbol": UE_TOKEN_SYMBOL }, item.remark, createTime]);
             // 如果复投资产大于投资额,自动复投生成一个子账号
             if (new Decimal(repeat_currency).gte(BALANCE_CONSTANTS.BASE_RATE)) {
                 await userInvestment(BALANCE_CONSTANTS.BASE_RATE, accountName, `user ${ accountName } repeat ${ BALANCE_CONSTANTS.BASE_RATE } UE`)
             }
         }
+        const client = await pool.connect();
+        try {
+            // 收取收益
+            await client.query("BEGIN");
+            await Promise.all(trxList.map(it => {
+                insertBalanceLog(client, ...it)
+            }))
+            await client.query("COMMIT");
+        } catch (err) {
+            await client.query("ROLLBACK");
+            throw err;
+        } finally {
+            await client.release();
+        }
     } catch (err) {
-        await client.query("ROLLBACK");
         throw err;
-    } finally {
-        await client.release();
     }
 }
 

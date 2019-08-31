@@ -16,6 +16,7 @@ async function getStaticSortIncome(accountName, limit, page) {
                 FROM balance_log 
                 WHERE account_name = $1
                 AND op_type = $2
+                AND extra->>'symbol' = 'UE'
                 ORDER BY create_time DESC
                 LIMIT $3
                 OFFSET $4
