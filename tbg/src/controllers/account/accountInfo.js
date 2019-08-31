@@ -9,7 +9,7 @@ async function accountInfo(req, res, next) {
         let reqData = await inspect_req_data(req);
         logger.debug(`the param of accountInfo is: %j`, reqData);
         let rows = await getAccountInfo(reqData.account_name);
-        logger.debug(`the account invest code is %j`, rows);
+        logger.debug(`the account information is %j`, rows);
         if (!rows) {
             return res.send(get_status(1001, "this account does not exists"));
         }
