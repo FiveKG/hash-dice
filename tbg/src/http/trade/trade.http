@@ -1,0 +1,62 @@
+### 获取全球合伙人私募信息
+GET http://localhost:9527/trade/raise_buy
+
+### 获取普通买入交易信息
+GET http://localhost:9527/trade/buy_assets
+
+### 买入交易列表
+GET http://localhost:9527/trade/raise_list
+
+### 资产包买入记录
+GET http://localhost:9527/trade/buy_assets_history?account_name=yujinsheng11
+
+### 买入交易列表
+GET http://localhost:9527/trade/buy_list?order_time=true
+
+### 资产包买入记录
+GET http://localhost:9527/trade/buy_assets_history?account_name=yujinsheng11
+
+### raise
+POST http://localhost:9527/trade/global_raise_buy
+Content-Type: application/json
+
+{
+    "account_name": "yujinsheng11",
+    "price": "0.500",
+    "assets_package_id": 4
+}
+
+### buy
+POST http://localhost:9527/trade/user_buy_assets
+Content-Type: application/json
+
+{
+    "account_name": "gametestuser",
+    "price": "1.0114",
+    "assets_package_id": 2
+}
+
+### sell
+POST http://localhost:9527/trade/user_sell_assets
+Content-Type: application/json
+
+{
+    "account_name": "yujinsheng11",
+    "amount": "100",
+    "income": "80.9120",
+    "price": "1.0114",
+    "sell_fee": "20.2280",
+    "destroy": "0.61"
+}
+
+### 获取普通卖出交易信息
+GET http://localhost:9527/trade/sell_assets?account_name=yujinsheng11
+
+### 卖出交易列表
+GET http://localhost:9527/trade/sell_list?order_time=true
+
+### 资产包卖出记录
+GET http://localhost:9527/trade/sell_history?account_name=yujinsheng11
+
+### 卖出交易列表
+GET http://localhost:9527/trade/price

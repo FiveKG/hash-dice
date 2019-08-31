@@ -6,6 +6,7 @@ const { getTradeInfoHistory } = require("../../models/trade");
 const { getAssetsInfoById } = require("../../models/asset");
 const df = require("date-fns");
 const { Decimal } = require("decimal.js");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 
 // 有效资产包矿机
 async function mining(req, res, next) {
@@ -19,11 +20,12 @@ async function mining(req, res, next) {
         }
 
         // 找出已经完成交易的订单
-        const tradeInfo = await getTradeInfoHistory({ "tradeType": "buy", "accountName": accountName, "state": "finished", orderBy: "ASC" });
+        const tradeInfo = await getTradeInfoHistory({ "tradeType": OPT_CONSTANTS.BUY, "accountName": accountName, "state": "finished", orderBy: "ASC" });
         let resData = get_status(1);
         // 从交易完成是开始计算挖矿时间
         const apIds = tradeInfo.map(it => it.extra.ap_id);
         const assetsInfo = await getAssetsInfoById(apIds);
+        logger.debug("assetsInfo: ", assetsInfo);
         const assetsMap = new Map();
         for (const val of assetsInfo) {
             assetsMap.set(val.id, val);
@@ -32,29 +34,29 @@ async function mining(req, res, next) {
         let minedCount = 0;
         let miningCount = 0;
         const miningInfo = [];
-        let minedAmount = new Decimal(0)
+        let minedAmount = new Decimal(0);
         const now = new Date();
         for (const val of tradeInfo) {
             const assets = assetsMap.get(val.extra.ap_id);
-            // 如果时差大于 0, 说明还在挖矿，否则已经结束
             const diffTime = df.differenceInHours(now, val.finished_time);
             const presetDays = assets.preset_days;
             const minedIncome = assets.mining_multiple * assets.amount;
-            const perHourMining = new Decimal(minedIncome).div(presetDays);
-            if (diffTime > 0) {
+            const perHourMining = new Decimal(minedIncome).div(presetDays).div(24);
+            // 如果时差小于总挖矿时间，说明还在挖矿，否则已经结束
+            if (diffTime < presetDays * 24) {
                 miningCount++;
                 const tmpObj = {
                     mining_id: val.id,
-                    amount: assets.amount,
-                    per_hour_mining: perHourMining, 
-                    mined_income: perHourMining.mul(diffTime).toFixed(4),
+                    amount: new Decimal(assets.amount).toNumber(),
+                    per_hour_mining: perHourMining.toFixed(4), 
+                    mining_income: perHourMining.mul(diffTime).toFixed(4),
                     mining_time: diffTime,
                     total_time: presetDays * 24
                 }
-                minedAmount.add(tmpObj.mined_income);
+                minedAmount = minedAmount.add(tmpObj.mining_income);
                 miningInfo.push(tmpObj);
             } else {
-                minedAmount.add(assets.mining_multiple * assets.amount);
+                minedAmount = minedAmount.add(assets.mining_multiple * assets.amount);
                 minedCount++;
             }
         }

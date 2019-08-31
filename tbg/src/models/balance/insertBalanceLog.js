@@ -16,7 +16,7 @@ async function insertBalanceLog(client, accountName, changeAmount, currentBalanc
     try {
         let sql = `
             INSERT INTO 
-                balance_log(account_name, change_amount, current_balance, op_type, extra， remark, create_time)
+                balance_log(account_name, change_amount, current_balance, op_type, extra, remark, create_time)
                 VALUES($1, $2, $3, $4, $5, $6, $7);
         `
         const opts = [ accountName, changeAmount, currentBalance, opType, extra, remark, now ]

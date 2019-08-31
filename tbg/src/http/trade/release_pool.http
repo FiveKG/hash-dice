@@ -1,0 +1,5 @@
+### 线性释放池资料
+GET http://localhost:9527/release_pool/account?account_name=yujinsheng11
+
+### 线性释放池明细
+GET http://localhost:9527/release_pool/detail?account_name=yujinsheng11

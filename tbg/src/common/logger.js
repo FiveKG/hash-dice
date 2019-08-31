@@ -1,6 +1,6 @@
 //@ts-check
 var option = {
-    "name": "lucky-money",
+    "name": "tbg",
     "base": {
     
     }

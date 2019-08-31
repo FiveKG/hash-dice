@@ -1,0 +1,2074 @@
+﻿body {
+  margin:0px;
+  background-image:none;
+  position:static;
+  left:auto;
+  width:1088px;
+  margin-left:0;
+  margin-right:0;
+  text-align:left;
+}
+.form_sketch {
+  border-color:transparent;
+  background-color:transparent;
+}
+#base {
+  position:absolute;
+  z-index:0;
+}
+#u772 {
+  border-width:0px;
+  position:absolute;
+  left:55px;
+  top:76px;
+  width:1033px;
+  height:258px;
+}
+#u773_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:145px;
+  height:48px;
+}
+#u773 {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:145px;
+  height:48px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u773 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u773_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u774_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:188px;
+  height:48px;
+}
+#u774 {
+  border-width:0px;
+  position:absolute;
+  left:145px;
+  top:0px;
+  width:188px;
+  height:48px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u774 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u774_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u775_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:110px;
+  height:48px;
+}
+#u775 {
+  border-width:0px;
+  position:absolute;
+  left:333px;
+  top:0px;
+  width:110px;
+  height:48px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u775 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u775_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u776_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:48px;
+}
+#u776 {
+  border-width:0px;
+  position:absolute;
+  left:443px;
+  top:0px;
+  width:148px;
+  height:48px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u776 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u776_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u777_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:48px;
+}
+#u777 {
+  border-width:0px;
+  position:absolute;
+  left:591px;
+  top:0px;
+  width:147px;
+  height:48px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u777 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u777_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u778_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:48px;
+}
+#u778 {
+  border-width:0px;
+  position:absolute;
+  left:738px;
+  top:0px;
+  width:148px;
+  height:48px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u778 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u778_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u779_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:48px;
+}
+#u779 {
+  border-width:0px;
+  position:absolute;
+  left:886px;
+  top:0px;
+  width:147px;
+  height:48px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u779 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u779_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u780_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:145px;
+  height:30px;
+}
+#u780 {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:48px;
+  width:145px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u780 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u780_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u781_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:188px;
+  height:30px;
+}
+#u781 {
+  border-width:0px;
+  position:absolute;
+  left:145px;
+  top:48px;
+  width:188px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u781 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u781_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u782_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:110px;
+  height:30px;
+}
+#u782 {
+  border-width:0px;
+  position:absolute;
+  left:333px;
+  top:48px;
+  width:110px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u782 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u782_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u783_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u783 {
+  border-width:0px;
+  position:absolute;
+  left:443px;
+  top:48px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u783 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u783_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u784_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u784 {
+  border-width:0px;
+  position:absolute;
+  left:591px;
+  top:48px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u784 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u784_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u785_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u785 {
+  border-width:0px;
+  position:absolute;
+  left:738px;
+  top:48px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u785 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u785_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u786_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u786 {
+  border-width:0px;
+  position:absolute;
+  left:886px;
+  top:48px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u786 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u786_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u787_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:145px;
+  height:30px;
+}
+#u787 {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:78px;
+  width:145px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u787 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u787_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u788_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:188px;
+  height:30px;
+}
+#u788 {
+  border-width:0px;
+  position:absolute;
+  left:145px;
+  top:78px;
+  width:188px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u788 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u788_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u789_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:110px;
+  height:30px;
+}
+#u789 {
+  border-width:0px;
+  position:absolute;
+  left:333px;
+  top:78px;
+  width:110px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u789 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u789_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u790_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u790 {
+  border-width:0px;
+  position:absolute;
+  left:443px;
+  top:78px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u790 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u790_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u791_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u791 {
+  border-width:0px;
+  position:absolute;
+  left:591px;
+  top:78px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u791 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u791_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u792_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u792 {
+  border-width:0px;
+  position:absolute;
+  left:738px;
+  top:78px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u792 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u792_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u793_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u793 {
+  border-width:0px;
+  position:absolute;
+  left:886px;
+  top:78px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u793 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u793_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u794_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:145px;
+  height:30px;
+}
+#u794 {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:108px;
+  width:145px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u794 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u794_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u795_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:188px;
+  height:30px;
+}
+#u795 {
+  border-width:0px;
+  position:absolute;
+  left:145px;
+  top:108px;
+  width:188px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u795 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u795_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u796_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:110px;
+  height:30px;
+}
+#u796 {
+  border-width:0px;
+  position:absolute;
+  left:333px;
+  top:108px;
+  width:110px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u796 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u796_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u797_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u797 {
+  border-width:0px;
+  position:absolute;
+  left:443px;
+  top:108px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u797 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u797_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u798_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u798 {
+  border-width:0px;
+  position:absolute;
+  left:591px;
+  top:108px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u798 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u798_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u799_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u799 {
+  border-width:0px;
+  position:absolute;
+  left:738px;
+  top:108px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u799 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u799_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u800_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u800 {
+  border-width:0px;
+  position:absolute;
+  left:886px;
+  top:108px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u800 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u800_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u801_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:145px;
+  height:30px;
+}
+#u801 {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:138px;
+  width:145px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u801 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u801_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u802_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:188px;
+  height:30px;
+}
+#u802 {
+  border-width:0px;
+  position:absolute;
+  left:145px;
+  top:138px;
+  width:188px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u802 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u802_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+  visibility:hidden;
+}
+#u803_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:110px;
+  height:30px;
+}
+#u803 {
+  border-width:0px;
+  position:absolute;
+  left:333px;
+  top:138px;
+  width:110px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u803 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u803_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+  visibility:hidden;
+}
+#u804_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u804 {
+  border-width:0px;
+  position:absolute;
+  left:443px;
+  top:138px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u804 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u804_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+  visibility:hidden;
+}
+#u805_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u805 {
+  border-width:0px;
+  position:absolute;
+  left:591px;
+  top:138px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u805 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u805_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+  visibility:hidden;
+}
+#u806_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u806 {
+  border-width:0px;
+  position:absolute;
+  left:738px;
+  top:138px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u806 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u806_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+  visibility:hidden;
+}
+#u807_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u807 {
+  border-width:0px;
+  position:absolute;
+  left:886px;
+  top:138px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u807 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u807_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+  visibility:hidden;
+}
+#u808_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:145px;
+  height:30px;
+}
+#u808 {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:168px;
+  width:145px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u808 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u808_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u809_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:188px;
+  height:30px;
+}
+#u809 {
+  border-width:0px;
+  position:absolute;
+  left:145px;
+  top:168px;
+  width:188px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u809 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u809_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u810_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:110px;
+  height:30px;
+}
+#u810 {
+  border-width:0px;
+  position:absolute;
+  left:333px;
+  top:168px;
+  width:110px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u810 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u810_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u811_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u811 {
+  border-width:0px;
+  position:absolute;
+  left:443px;
+  top:168px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u811 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u811_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u812_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u812 {
+  border-width:0px;
+  position:absolute;
+  left:591px;
+  top:168px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u812 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u812_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u813_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u813 {
+  border-width:0px;
+  position:absolute;
+  left:738px;
+  top:168px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u813 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u813_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u814_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u814 {
+  border-width:0px;
+  position:absolute;
+  left:886px;
+  top:168px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u814 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u814_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u815_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:145px;
+  height:30px;
+}
+#u815 {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:198px;
+  width:145px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u815 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u815_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u816_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:188px;
+  height:30px;
+}
+#u816 {
+  border-width:0px;
+  position:absolute;
+  left:145px;
+  top:198px;
+  width:188px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u816 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u816_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u817_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:110px;
+  height:30px;
+}
+#u817 {
+  border-width:0px;
+  position:absolute;
+  left:333px;
+  top:198px;
+  width:110px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u817 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u817_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u818_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u818 {
+  border-width:0px;
+  position:absolute;
+  left:443px;
+  top:198px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u818 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u818_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u819_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u819 {
+  border-width:0px;
+  position:absolute;
+  left:591px;
+  top:198px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u819 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u819_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u820_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u820 {
+  border-width:0px;
+  position:absolute;
+  left:738px;
+  top:198px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u820 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u820_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u821_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u821 {
+  border-width:0px;
+  position:absolute;
+  left:886px;
+  top:198px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u821 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u821_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u822_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:145px;
+  height:30px;
+}
+#u822 {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:228px;
+  width:145px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u822 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u822_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u823_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:188px;
+  height:30px;
+}
+#u823 {
+  border-width:0px;
+  position:absolute;
+  left:145px;
+  top:228px;
+  width:188px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u823 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u823_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u824_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:110px;
+  height:30px;
+}
+#u824 {
+  border-width:0px;
+  position:absolute;
+  left:333px;
+  top:228px;
+  width:110px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u824 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u824_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u825_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u825 {
+  border-width:0px;
+  position:absolute;
+  left:443px;
+  top:228px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u825 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u825_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u826_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u826 {
+  border-width:0px;
+  position:absolute;
+  left:591px;
+  top:228px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u826 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u826_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u827_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:148px;
+  height:30px;
+}
+#u827 {
+  border-width:0px;
+  position:absolute;
+  left:738px;
+  top:228px;
+  width:148px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u827 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u827_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u828_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:147px;
+  height:30px;
+}
+#u828 {
+  border-width:0px;
+  position:absolute;
+  left:886px;
+  top:228px;
+  width:147px;
+  height:30px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  text-align:center;
+}
+#u828 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 2px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u828_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u829_div {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:204px;
+  height:22px;
+  background:inherit;
+  background-color:rgba(255, 255, 255, 0);
+  border:none;
+  border-radius:0px;
+  -moz-box-shadow:none;
+  -webkit-box-shadow:none;
+  box-shadow:none;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  color:#0D0D0D;
+}
+#u829 {
+  border-width:0px;
+  position:absolute;
+  left:55px;
+  top:44px;
+  width:204px;
+  height:22px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  color:#0D0D0D;
+}
+#u829 .text {
+  position:absolute;
+  align-self:flex-start;
+  padding:0px 0px 0px 0px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u829_text {
+  border-width:0px;
+  white-space:nowrap;
+  text-transform:none;
+}
+#u830_div {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:664px;
+  height:22px;
+  background:inherit;
+  background-color:rgba(255, 255, 255, 0);
+  border:none;
+  border-radius:0px;
+  -moz-box-shadow:none;
+  -webkit-box-shadow:none;
+  box-shadow:none;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  color:#0D0D0D;
+}
+#u830 {
+  border-width:0px;
+  position:absolute;
+  left:55px;
+  top:388px;
+  width:664px;
+  height:22px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  color:#0D0D0D;
+}
+#u830 .text {
+  position:absolute;
+  align-self:flex-start;
+  padding:0px 0px 0px 0px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u830_text {
+  border-width:0px;
+  white-space:nowrap;
+  text-transform:none;
+}
+#u831_div {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:476px;
+  height:22px;
+  background:inherit;
+  background-color:rgba(255, 255, 255, 0);
+  border:none;
+  border-radius:0px;
+  -moz-box-shadow:none;
+  -webkit-box-shadow:none;
+  box-shadow:none;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  color:#0D0D0D;
+}
+#u831 {
+  border-width:0px;
+  position:absolute;
+  left:55px;
+  top:350px;
+  width:476px;
+  height:22px;
+  display:flex;
+  font-family:'微軟正黑體 Regular', '微軟正黑體';
+  font-weight:400;
+  font-style:normal;
+  font-size:17px;
+  color:#0D0D0D;
+}
+#u831 .text {
+  position:absolute;
+  align-self:flex-start;
+  padding:0px 0px 0px 0px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u831_text {
+  border-width:0px;
+  white-space:nowrap;
+  text-transform:none;
+}

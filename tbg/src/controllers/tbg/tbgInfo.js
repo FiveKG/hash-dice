@@ -4,7 +4,7 @@ const { get_status, inspect_req_data } = require("../../common/index.js");
 const { AIRDROP } = require("../../common/constant/tbgAllocateRate");
 const { TBG_TOKEN_SYMBOL, TBG_TOKEN } = require("../../common/constant/eosConstants");
 const { getCurrencyStats } = require("../../job/getTrxAction.js");
-const { getSystemLogInfo } = require("../../models/systemOpLog");
+const { getAllBalanceLog } = require("../../models/balanceLog");
 const { Decimal } = require("decimal.js");
 
 // TBG 概况
@@ -17,9 +17,9 @@ async function tbgInfo(req, res, next) {
         // max_supply ~ 1.0000 TBG, 先拆分，拿到数量
         const maxSupply = new Decimal(max_supply.split(" ")[0]);
         // 查询空投记录
-        const systemOpLogInfo = await getSystemLogInfo(TBG_TOKEN);
+        const logInfo = await getAllBalanceLog(TBG_TOKEN_SYMBOL);
         let detail = [];
-        if (systemOpLogInfo.length === 0) {
+        if (logInfo.length === 0) {
             detail = AIRDROP.map(it => {
                 return {
                     "airdrop_type": it.name,
@@ -30,7 +30,7 @@ async function tbgInfo(req, res, next) {
             })
         } else {
             detail = AIRDROP.map(it => {
-                const quantity = systemOpLogInfo.find(q => q.op_type === it.id);
+                const quantity = logInfo.find(q => q.op_type === it.id);
                 const amount = maxSupply.mul(it.rate);
                 return {
                     "airdrop_type": it.name,

@@ -3,6 +3,7 @@ const logger = require("../../common/logger.js").child({ "@controllers/income/in
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getInviteIncome, getGroupIncome, getUserBalance } = require("../../models/balance");
 const { Decimal } = require("decimal.js");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 
 // 直接推荐收益
 async function invite(req, res, next) {
@@ -34,11 +35,11 @@ async function invite(req, res, next) {
         if (groupIncome) {
             for (let i = 0; i < groupIncome.length; i++) {
                 let item = groupIncome[i];
-                if (item.op_type === "invite income") {
+                if (item.op_type === OPT_CONSTANTS.INVITE) {
                     referIncome = referIncome.add(item.total);
-                } else if (item.op_type === "sort income") {
+                } else if (item.op_type === OPT_CONSTANTS.SORT) {
                     sortIncome = sortIncome.add(item.total);
-                } else if (item.op_type === "mode income") {
+                } else if (item.op_type === OPT_CONSTANTS.MODE) {
                     modeIncome = modeIncome.add(item.total);
                 } else {
                     otherIncome = otherIncome.add(item.total);

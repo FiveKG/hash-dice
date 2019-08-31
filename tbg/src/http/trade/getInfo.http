@@ -1,5 +1,0 @@
-### 获取全球合伙人私募信息
-GET http://localhost:9527/trade/raise_buy
-
-### 获取普通买入交易信息
-GET http://localhost:9527/trade/buy_assets

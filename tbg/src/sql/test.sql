@@ -144,3 +144,19 @@ AS (VALUES (50, 1.3, 2, 500, 4, 'common'),
 )
 SELECT amount, saleable_multiple, mining_multiple, preset_days, release_multiple, amount_type
         FROM new_values;
+
+
+SELECT (SELECT count(1) as count FROM referrer r
+                        JOIN account a ON r.account_name = a.account_name
+                        AND a.state != 0
+                    ) AS count, *
+                FROM account
+
+select account_name 
+    from account 
+    where account_name != 'yujinsheng11'
+    and account_type = 'general'
+    order by random() limit 1;
+
+
+SELECT * FROM trade WHERE account_name = 'gametestuser' AND trade_type != 'sell' ORDER BY create_time DESC;

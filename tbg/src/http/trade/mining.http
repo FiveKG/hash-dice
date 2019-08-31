@@ -1,0 +1,17 @@
+### 有效资产包矿机
+GET http://localhost:9527/mine_pool/mining?account_name=yujinsheng11
+
+### 已结束资产包矿机
+GET http://localhost:9527/mine_pool/mined?account_name=yujinsheng11
+
+### 资产包挖矿详情
+GET http://localhost:9527/mine_pool/detail?account_name=yujinsheng11&mining_id=9f7ad3daa5056108
+
+### raise
+POST http://localhost:9527/mine_pool/collect
+Content-Type: application/json
+
+{
+    "account_name": "yujinsheng11",
+    "mining_id": "9f7ad3daa5056108"
+}

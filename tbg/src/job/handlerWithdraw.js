@@ -56,8 +56,8 @@ async function handlerWithdraw(accountName, symbol, amount) {
                 } else {
                     tokenType = TBG_TOKEN;
                 }
-                logger.debug(tokenType, DISPENSE_ACCOUNT, accountName, quantity, memo, [PRIVATE_KEY_TEST]);
-                await handlerTransfer(tokenType, DISPENSE_ACCOUNT, accountName, quantity, memo, [PRIVATE_KEY_TEST]);
+                logger.debug(tokenType, DISPENSE_ACCOUNT, accountName, quantity, memo, PRIVATE_KEY_TEST.split(","));
+                await handlerTransfer(tokenType, DISPENSE_ACCOUNT, accountName, quantity, memo, PRIVATE_KEY_TEST.split(","));
             } else {
                 await client.query("ROLLBACK");
                 //提现出错，代币符号不符。

@@ -4,22 +4,24 @@
 // 参与 TBG1 所需 UE 额度
 const BASE_AMOUNT = "100";
 // TBG1 收款账户
-const WALLET_RECEIVER = "uegametoken";
+const WALLET_RECEIVER = "tbgjoin";
 // TBG1 出款账户
-const DISPENSE_ACCOUNT = "uegametoken";
+const DISPENSE_ACCOUNT = "tbgjoin";
 // EOS token 合约账户
 const EOS_TOKEN = "eosio.token";
 const EOS_TOKEN_SYMBOL = "EOS"
 // UE token 合约账户
-const UE_TOKEN = "uegametoken";
+const UE_TOKEN = "uetokencoin";
 const UE_TOKEN_SYMBOL = "UE"
 // TBG token 合约账户
-const TBG_TOKEN = "tbgametoken"
+const TBG_TOKEN = "tbgtokencoin"
 const TBG_TOKEN_SYMBOL = "TBG"
+
 // 节点信息
-const END_POINT = "http://192.168.1.149:8888"
+const END_POINT = "http://localhost:8888"
 // 私钥
-const PRIVATE_KEY_TEST = "5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo"
+const PRIVATE_KEY_TEST = "5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h,5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo,5KSzppBW7LcwVQ4hA1AQP4vZYWq1uEv4EQnZ5yz1eu41eLgrLK2,5JRiAXpyd5TW5REvLYd35FkrJSMjFfiUtrwrCNpChHFMVNnRDwB,5JAW6eWS4ADjwCr76xCvmPefknzhFg33f4haL5dbuiB5WoW79tQ,5JiaokGm1A7kyLq92YrQjp42Fr7Vqs52NBquCYiuU8DxKURkhfu,5KbQQbR83HFMPPaKCY4GPVBtNZZW4t6nNxtPEWkVPUHMWxpQLzS,5K7h5xxZNCfq6ujRmLWgCHHQKf4gAuKYAU8yDFRDwvkAN3scPki,5K5sRqqp3XebvjMmK1TYBFiSAd6XbwLeJa9L3CxWBMiWcSGCsDG"
+
 
 /**
  * @type { Constant }

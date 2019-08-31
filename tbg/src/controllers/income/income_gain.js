@@ -4,11 +4,13 @@ const logger = require("../../common/logger.js").child({ "@controllers/income/in
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const BALANCE_CONSTANTS = require("../../common/constant/balanceConstants.js");
 const { getUserBalance, updateBalance, insertBalanceLog } = require("../../models/balance/index");
+const { TBG_TOKEN_SYMBOL, UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const userInvestment = require("../../businessLogic/account/userInvestment.js")
 const { Decimal } = require("decimal.js");
 const { redis } = require("../../common");
 const { startParse } = require("../../common/parseIncomeData");
 const df = require("date-fns");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 
 // 收取收益
 async function incomeGain(req, res, next) {
@@ -17,7 +19,10 @@ async function incomeGain(req, res, next) {
         logger.debug(`the param is: %j`, reqData);
         let accountName = reqData.account_name;
         let incomeType = reqData.income_type;
-        const incomeTypeList = [ "all", "invite", "bingo", "pk", "safe", "holder", "game", "sort", "mode" ];
+        const incomeTypeList = [ 
+            "all", OPT_CONSTANTS.INVITE, OPT_CONSTANTS.BINGO, OPT_CONSTANTS.PK, 
+            OPT_CONSTANTS.PROTECTION, OPT_CONSTANTS.HOLDER, OPT_CONSTANTS.GAME, OPT_CONSTANTS.SORT, OPT_CONSTANTS.MODE
+        ];
         if (!incomeTypeList.includes(incomeType)) {
             return res.send(get_status(2002, "request params value is invalid"));
         }
@@ -37,7 +42,8 @@ async function incomeGain(req, res, next) {
             await startGain(incomeMap, incomeType);
             await redis.hdel(`income:${ accountName }`, incomeType);
             incomeMap = await redis.hgetall(`income:${ accountName }`);
-            detailArr = await startParse(incomeMap);
+            const result = await startParse(incomeMap);
+            detailArr.push(result);
         }
 
         let rows = await getUserBalance(accountName);
@@ -70,18 +76,18 @@ async function startGain(incomeMap, incomeType) {
     }
     const client = await pool.connect();
     try {
-        console.log("incomeJsonIfy: ", incomeJsonIfy);
+        // console.log("incomeJsonIfy: ", incomeJsonIfy);
         let incomeArr = JSON.parse(incomeJsonIfy);
         for (let item of incomeArr) {
             const accountName = item.account_name;
             let changeAmount = new Decimal(item.change_amount);
             let rows = await getUserBalance(accountName);
-            console.log("item: ", item);
+            // console.log("item: ", item);
             const createTime = df.format(item.create_time, "YYYY-MM-DD HH:mm:ssZ");
             // 收取收益
             await client.query("BEGIN");
             const repeat_currency = await updateBalance(client, accountName, changeAmount);
-            await insertBalanceLog(client, accountName, changeAmount.toFixed(8), rows.amount, item.op_type, {}, item.remark, createTime)
+            await insertBalanceLog(client, accountName, changeAmount.toFixed(8), rows.amount, item.op_type, { "symbol": UE_TOKEN_SYMBOL }, item.remark, createTime)
             await client.query("COMMIT");
 
             // 如果复投资产大于投资额,自动复投生成一个子账号

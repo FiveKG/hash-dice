@@ -10,7 +10,7 @@ async function getPkAccount() {
         let sql = `
             select referrer_name, count(referrer_name) as invite_count 
                 from referrer 
-                where length(account_name) = 12 and referrer_name != '' 
+                where account_name !~ '-' and referrer_name != '' 
                 group by referrer_name 
                 order by invite_count desc limit 10;
         `

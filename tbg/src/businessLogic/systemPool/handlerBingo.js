@@ -5,6 +5,8 @@ const { BINGO_POOL } = require("../../common/constant/accountConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const { getBingoAccountList, updateSystemAmount } = require("../../models/systemPool");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
+const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { Decimal } = require("decimal.js");
 const logger = require("../../common/logger.js");
 const storeIncome = require("../../common/storeIncome.js");
@@ -25,10 +27,16 @@ async function handlerPk() {
         }
 
         let bingoPoolAmount = new Decimal(rows.pool_amount);
+        if (bingoPoolAmount.eq(0)) {
+            return;
+        }
         // 本次分配的金额
         let distrEnable = bingoPoolAmount.mul(INCOME_CONSTANT.BINGO_ALLOCATE_RATE / INCOME_CONSTANT.BASE_RATE);
         let bingoAccountList = await getBingoAccountList();
-        console.log("bingoAccountList: ", bingoAccountList)
+        if (bingoAccountList.length === 0) {
+            return;
+        }
+        logger.log("bingoAccountList: ", bingoAccountList)
         for (let i = 0; i< bingoAccountList.length; i++){
             let item = bingoAccountList[i]
             let rate = 0;
@@ -38,24 +46,23 @@ async function handlerPk() {
             } else {
                 rate = INCOME_CONSTANT.BINGO_INCOME_OTHER / INCOME_CONSTANT.BASE_RATE / (bingoAccountList.length - 1);
             }
-            let opType = `bingo income`;
             let remark = `account ${ item.account_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
             let now = new Date();
             let data = {
                 "account_name": item.account_name,
                 "change_amount": distrEnable.mul(rate),
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-                "op_type": opType,
+                "op_type": OPT_CONSTANTS.BINGO,
                 "remark": remark
             }
-            await storeIncome(item.account_name, "bingo", data);
+            await storeIncome(item.account_name, OPT_CONSTANTS.BINGO, data);
         };
 
         let changeAmount = new Decimal(-distrEnable);
         let opType = `allocating ${ BINGO_POOL }`;
         let remark = `allocating ${ BINGO_POOL }, minus ${ distrEnable }`;
-        await updateSystemAmount(client, BINGO_POOL, changeAmount, rows.pool_amount);
-        await insertSystemOpLog(client, changeAmount, rows.pool_amount, {}, opType, remark, "now()");
+        await updateSystemAmount(client, BINGO_POOL, changeAmount, rows.pool_amount, UE_TOKEN_SYMBOL);
+        await insertSystemOpLog(client, changeAmount.toNumber(), rows.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: BINGO_POOL }, opType, remark, "now()");
         await client.query("COMMIT");
         logger.debug(`handler ${ BINGO_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {

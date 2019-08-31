@@ -14,7 +14,7 @@ async function insertBalance(client, accountName) {
                 VALUES($1, $2, $3);
         `
         const opts = [ generate_primary_key(), accountName, "now()" ]
-        console.debug("the sql is %s, the values is %O", sql, opts);
+        // console.debug("the sql is %s, the values is %O", sql, opts);
         await client.query(sql, opts);
     } catch (err) {
         console.error("insert data to balance error, the error stock is %O", err);

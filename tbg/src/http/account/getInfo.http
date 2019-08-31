@@ -1,0 +1,2 @@
+### get account information
+GET http://localhost:9527/account/info?account_name=yujinsheng11

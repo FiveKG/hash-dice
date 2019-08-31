@@ -3,6 +3,7 @@ const { getStaticMode } = require("../../models/account");
 const { Decimal } = require("decimal.js");
 const { BASE_RATE, MODE_INCOME_RATE} = require("../../common/constant/investConstant.js");
 const MODE_CONSTANT = require("../../common/constant/staticModeConstants.js");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const logger = require("../../common/logger.js");
 const storeIncome = require("../../common/storeIncome.js");
 const { getSystemAccountInfo } = require("../../models/systemPool");
@@ -37,21 +38,20 @@ async function staticMode(client, amount, subAccount) {
         const subAccountInfo = await getMainAccountBySub(modeList);
         // 三三静态收益分配
         for (let i = 1; i < subAccountInfo.length; i++) {
-            const rate = setRate(1);
+            const rate = setRate(i);
             const availableIncome = modeEnable.mul(rate);
             const mainAccount = subAccountInfo[i].main_account;
-            const opType = `mode income`;
             const remark = `subAccount ${ subAccount }, income ${ availableIncome }, level ${ i }`;
             const now = new Date();
             const data = {
                 "account_name": mainAccount,
                 "change_amount": availableIncome,
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-                "op_type": opType,
+                "op_type": OPT_CONSTANTS.MODE,
                 "remark": remark
             }
             // 将收益暂存，等待用户收取
-            await storeIncome(mainAccount, "mode", data);
+            await storeIncome(mainAccount, OPT_CONSTANTS.MODE, data);
             distributed = distributed.add(availableIncome);
         }
 
@@ -61,7 +61,7 @@ async function staticMode(client, amount, subAccount) {
             const systemAccount = await getSystemAccountInfo();
             // 减去已经发放的
             const last = modeEnable.minus(distributed);
-            await allocateSurplusAssets(client, systemAccount, modeEnable, last, "mode")
+            await allocateSurplusAssets(client, systemAccount, modeEnable, last, OPT_CONSTANTS.MODE)
         }
     } catch (err) {
         logger.error("allocating static mode income error, the error stock is %O", err);

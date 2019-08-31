@@ -3,15 +3,14 @@ const { Decimal } = require("decimal.js");
 
 /**
  * 
- * @param { any[] } detailArr  
  * @param { String } incomeJsonIfy
  * @param { String } info 
  */
-async function parseIncomeData(detailArr, incomeJsonIfy, info) {
+async function parseIncomeData(incomeJsonIfy, info) {
+    let detailArr = []
     let incomeArr = JSON.parse(incomeJsonIfy);
     let income = new Decimal(0);
     incomeArr.forEach(item => {
-        console.log(item);
         income = income.add(item.change_amount);
     });
     let data = {
@@ -25,7 +24,8 @@ async function parseIncomeData(detailArr, incomeJsonIfy, info) {
 async function startParse(incomeMap) {
     let detailArr = []
     for (let key in incomeMap) {
-        await parseIncomeData(detailArr, incomeMap[key], key);
+        const result = await parseIncomeData(incomeMap[key], key);
+        detailArr.push(result);
         // let info = ``;
         // if (key === "bingo") {
         //     info = "Bingo奖金";

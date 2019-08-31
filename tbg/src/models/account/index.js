@@ -13,5 +13,6 @@ module.exports = {
     "randomGetAccount": require("./randomGetAccount.js"),
     "insertAccount": require("./insertAccount.js"),
     "updateAccountState": require("./updateAccountState.js"),
-    "getAccountMemberLevel": require("./getAccountMemberLevel.js")
+    "getAccountMemberLevel": require("./getAccountMemberLevel.js"),
+    "getGlobalAccount": require("./getGlobalAccount.js")
 }

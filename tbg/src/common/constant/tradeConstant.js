@@ -29,8 +29,8 @@ const TRADE_ORDER_RATE = 30;
 // TBG 拟定开盘价 1.0000 0000 UE
 const OPENING_PRICE = 1;
 // TBG每日价格上涨, 每日随机上涨 0.005 - 0.015 UE
-const MIN_RAISE_PRICE = 0.005;
-const MAX_RAISE_PRICE = 0.015;
+const MIN_RISE_PRICE = 0.005;
+const MAX_RISE_PRICE = 0.015;
 // 私募单价 当前单价的 50%
 const RAISE_PRICE = 50;
 
@@ -53,8 +53,8 @@ const CONSTANT = {
     "DESTROY": DESTROY,
     "TRADE_ORDER_RATE": TRADE_ORDER_RATE,
     "OPENING_PRICE": OPENING_PRICE,
-    "MIN_RAISE_PRICE":MIN_RAISE_PRICE,
-    "MAX_RAISE_PRICE":MAX_RAISE_PRICE,
+    "MIN_RISE_PRICE":MIN_RISE_PRICE,
+    "MAX_RISE_PRICE":MAX_RISE_PRICE,
     "RAISE_PRICE":RAISE_PRICE,
     "OPENING_PRICE_KEY": OPENING_PRICE_KEY
 }
@@ -74,8 +74,8 @@ module.exports = CONSTANT
  * @property { number } DESTROY 线性释放池中销毁比例
  * @property { number } TRADE_ORDER_RATE 卖单买单比例
  * @property { number } OPENING_PRICE TBG 拟定开盘价 1.0000 0000 UE
- * @property { number } MIN_RAISE_PRICE TBG每日价格上涨最小额度
- * @property { number } MAX_RAISE_PRICE TBG每日价格上涨最大额度
+ * @property { number } MIN_RISE_PRICE TBG每日价格上涨最小额度
+ * @property { number } MAX_RISE_PRICE TBG每日价格上涨最大额度
  * @property { number } RAISE_PRICE  私募单价 当前单价的 50%
  * @property { string } OPENING_PRICE_KEY 开盘价 redis key
  */
