@@ -23,10 +23,10 @@ async function showAccountNameByCode(req, res, next) {
         }
 
         let selectAccountNameSql = `
-            select account_name from account where refer_code = ${ investCode };
+            select account_name from account where refer_code = $1;
         `
         logger.debug(`find the account_name by invitation code`);
-        let { rows: [ accountName ] } = await pool.query(selectAccountNameSql);
+        let { rows: [ accountName ] } = await pool.query(selectAccountNameSql, [ investCode ]);
         if (!accountName) {
             return res.send(get_status(1001, "this account does not exists"));    
         }
