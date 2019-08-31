@@ -1,5 +1,6 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
+const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 
 /**
  * 获取系统用户信息
@@ -8,9 +9,9 @@ const { pool } = require("../../db/index.js");
 async function getOneAccount(changeType) {
     try {
         let selectSystemAccountSql = `
-            select pool_amount from system_pools where pool_type = $1;
+            select pool_amount from system_pools where pool_type = $1 AND pool_symbol = $2;
         `
-        let selectResult = await pool.query(selectSystemAccountSql, [ changeType ]);
+        let selectResult = await pool.query(selectSystemAccountSql, [ changeType, UE_TOKEN_SYMBOL ]);
         return  selectResult.rows[0];
     } catch (err) {
         throw err;
