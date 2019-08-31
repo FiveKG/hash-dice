@@ -88,6 +88,8 @@ router.get("/pools/safe", pools.safe);
 router.get("/pools/pk", pools.pk);
 
 /***************************  trade  ***********************************/
+// 获取交易价格
+router.get("/trade/price", trade.getPrice);
 // 获取全球合伙人私募信息
 router.get("/trade/raise_buy", trade.getRaiseInfo);
 // 全球合伙人私募
@@ -147,5 +149,8 @@ router.post("/user_check_in", tbg.checkIn);
 /***************************  tbg  ***********************************/
 // TBG 概况
 router.get("/tbg/info", tbg.tbgInfo);
+
+// TBG 销毁数量
+router.get("/tbg/destroy", tbg.destroy);
 
 module.exports = router

@@ -57,3 +57,6 @@ GET http://localhost:9527/trade/sell_list?order_time=true
 
 ### 资产包卖出记录
 GET http://localhost:9527/trade/sell_history?account_name=yujinsheng11
+
+### 卖出交易列表
+GET http://localhost:9527/trade/price
