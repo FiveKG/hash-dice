@@ -2,13 +2,12 @@
 const { redis } = require("../common");
 const { pool } = require("../db/index.js");
 const logger = require("../common/logger.js").child({ "@src/job/handlerWithdraw.js": "user withdraw" });
-const { userWithdraw } = require("../models/asset");
-const { getUserBalance } = require("../models/balance");
+const { getUserBalance, updateWithdrawEnable, insertBalanceLog } = require("../models/balance");
 const { insertAccountOp } = require("../models/accountOp");
 const handlerTransfer = require("./handlerTransfer.js");
 const { Decimal } = require("decimal.js");
 const { format } = require("date-fns");
-const { EOS_TOKEN, TBG_TOKEN, DISPENSE_ACCOUNT, PRIVATE_KEY_TEST } = require("../common/constant/eosConstants.js");
+const { UE_TOKEN, TBG_TOKEN, DISPENSE_ACCOUNT, PRIVATE_KEY_TEST, UE_TOKEN_SYMBOL, TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 
 /**
  * 处理提现
@@ -27,15 +26,14 @@ async function handlerWithdraw(accountName, symbol, amount) {
         logger.warn(warnStr);  
         return;
     }
+    let rows = await getUserBalance(accountName);
+    if (!rows) {
+        logger.debug("this account does not exists");
+        return;
+    }
     let client = await pool.connect();
     await client.query("BEGIN");
     try {
-        let rows = await getUserBalance(accountName);
-        if (!rows) {
-            logger.debug("this account does not exists");
-            return;
-        }
-
         let userAmount = new Decimal(rows.amount);
         logger.debug("user balance is ", userAmount);
         if (userAmount.lessThan(amount)) {
@@ -43,16 +41,19 @@ async function handlerWithdraw(accountName, symbol, amount) {
             return;
         }
         let changeAmount = new Decimal(-amount);
+        let currentBalance = changeAmount.add(userAmount).toNumber();
         let remark = `user ${ accountName } withdraw ${ amount } ${ symbol }`;
-        await userWithdraw(client, accountName, changeAmount, 'withdraw', remark);
+        await updateWithdrawEnable(client, accountName, changeAmount.toNumber());
+        await insertBalanceLog(client, accountName, changeAmount.toNumber(), currentBalance, 'withdraw', { "symbol": UE_TOKEN_SYMBOL }, remark, 'now()');
         await insertAccountOp(client, accountName, 'withdraw', remark);
+        logger.debug("changeAmount ", changeAmount);
         try {
-            if (symbol === "UE" || symbol === "TBG") {
+            if (symbol === UE_TOKEN_SYMBOL || symbol === TBG_TOKEN_SYMBOL) {
                 let quantity = `${ amount.toFixed(4) } ${ symbol }`;
                 let memo = `user withdraw`;
                 let tokenType = ``;
-                if (symbol === "UE") {
-                    tokenType = EOS_TOKEN;
+                if (symbol === UE_TOKEN_SYMBOL) {
+                    tokenType = UE_TOKEN;
                 } else {
                     tokenType = TBG_TOKEN;
                 }

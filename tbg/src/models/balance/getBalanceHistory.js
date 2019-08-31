@@ -14,6 +14,7 @@ async function getBalanceHistory(accountName) {
                 FROM balance_log 
                 WHERE account_name = $1 
                 AND op_type = $2
+                AND extra->>'symbol' = 'UE'
                 ORDER BY create_time DESC;
         `
         let selectResult = await pool.query(selectSql, [ accountName, OPT_CONSTANTS.WITHDRAW ]);

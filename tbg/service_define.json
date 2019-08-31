@@ -22,7 +22,10 @@
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
-                "data": {}
+                "data": {
+                    "wallet_receiver": { "type": "text",  "is_require": true,  "desc": "tbg1 收款账户" },
+                    "trade_receiver": { "type": "text",  "is_require": true,  "desc": "tbg2 收款账户" }
+                }
             }
         },
         {
@@ -105,7 +108,7 @@
             "summary": "",
             "remark": [
                 "未激活状态为 0",
-                "0 -> 未激活 10 -> 参与 tbg1 20 -> 参与 tbg2"
+                "是否激活 0 -> 未激活, 10 -> 参与 tbg1, 20 -> 参与 tbg2, 30 -> tbg1 && tbg2"
             ],
             "isFunctionPoint" : true,
             "url" : "/account/is_activated",
@@ -120,7 +123,7 @@
                 "data": {
                     "type": "object", "desc": "",
                     "properties": {
-                        "is_activated": { "type": "number",  "is_require": true,  "desc": "用户等级 未激活（1） 黄金（2） 钻石（3）" }
+                        "is_activated": { "type": "number",  "is_require": true,  "desc": "是否激活 0 -> 未激活, 10 -> 参与 tbg1, 20 -> 参与 tbg2, 30 -> tbg1 && tbg2" }
                     }
                 }
             }
@@ -154,7 +157,8 @@
             "summary": "",
             "remark": [
                 "导入钱包后，绑定推荐人",
-                "设置推荐码，不指定的话 默认 000000, 系统自动分配一个存在的邀请号码设置关系"
+                "设置推荐码，不指定的话 默认 000000, 系统自动分配一个存在的邀请号码设置关系",
+                "申请全球合伙人随机推荐码为 W00000"
             ],
             "isFunctionPoint" : true,
             "url" : "/account/bind_referrer",
@@ -163,48 +167,6 @@
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
                 "refer_code": { "type": "string",  "is_require": true,  "desc": "推荐号", "default": "000000" }
-            },
-            "res": {
-                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
-                "desc": { "type": "string" ,"desc": "" },
-                "data": {}
-            }
-        },
-        {
-            "name" : "投资 UE, 参与 TBG 1",
-            "summary": "",
-            "remark": [
-                "投资必须有上级，没有要先添加",
-                "从 token 中获取账户名",
-                "投资 -> 转帐给合约帐号"
-            ],
-            "isFunctionPoint" : true,
-            "url" : "/account/self_invest",
-            "type" : "post",
-            "requireRole" : [ "*" ],
-            "req": {
-                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "amount": { "type": "decimal",  "is_require": true,  "desc": "投资的 UE 金额" }
-            },
-            "res": {
-                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
-                "desc": { "type": "string" ,"desc": "" },
-                "data": {}
-            }
-        },
-        {
-            "name" : "帮朋友投资 UE, 参与 TBG 1",
-            "summary": "",
-            "remark": [
-
-            ],
-            "isFunctionPoint" : true,
-            "url" : "/account/friend_invest",
-            "type" : "post",
-            "requireRole" : [ "*" ],
-            "req": {
-                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "friendAccountName": { "type": "text",  "is_require": true,  "desc": "帮助投资的 UE 帐号" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -249,7 +211,7 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "amount": { "type": "decimal",  "is_require": true,  "desc": "要提现的金额" },
+                "amount": { "type": "text",  "is_require": true,  "desc": "要提现的金额" },
                 "symbol": { "type": "text",  "is_require": true,  "desc": "货币符号"  }
             },
             "res": {
@@ -537,8 +499,8 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
-                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+                "page": { "type": "text", "is_require": false, "desc": "页码"},
+                "limit": { "type": "text", "is_require": false, "desc": "页码大小" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -572,8 +534,8 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
-                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+                "page": { "type": "text", "is_require": false, "desc": "页码"},
+                "limit": { "type": "text", "is_require": false, "desc": "页码大小" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -608,8 +570,8 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
-                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+                "page": { "type": "text", "is_require": false, "desc": "页码"},
+                "limit": { "type": "text", "is_require": false, "desc": "页码大小" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -643,8 +605,8 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
-                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+                "page": { "type": "text", "is_require": false, "desc": "页码"},
+                "limit": { "type": "text", "is_require": false, "desc": "页码大小" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -670,8 +632,8 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
-                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+                "page": { "type": "text", "is_require": false, "desc": "页码"},
+                "limit": { "type": "text", "is_require": false, "desc": "页码大小" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -697,8 +659,8 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
-                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+                "page": { "type": "text", "is_require": false, "desc": "页码"},
+                "limit": { "type": "text", "is_require": false, "desc": "页码大小" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -792,8 +754,8 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
-                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+                "page": { "type": "number", "is_require": false, "desc": "页码"},
+                "limit": { "type": "number", "is_require": false, "desc": "页码大小" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -818,8 +780,8 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
-                "limit": { "type": "number", "is_require": false, "desc": "页码大小", "default": 10 }
+                "page": { "type": "number", "is_require": false, "desc": "页码"},
+                "limit": { "type": "number", "is_require": false, "desc": "页码大小" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,

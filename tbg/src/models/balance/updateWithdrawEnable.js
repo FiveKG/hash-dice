@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@models/asset/userWithdraw.js": "用户提现" });
+const logger = require("../../common/logger.js").child({ "@models/balance/userWithdraw.js": "用户提现" });
 
 /**
  * 用户提现
@@ -15,7 +15,7 @@ async function userWithdraw(client, accountName, changeAmount) {
                 where account_name = $2;
         `
         logger.info("update personal amount");
-        await client.query(updateAmountSql, [ accountName, changeAmount ]);
+        await client.query(updateAmountSql, [ changeAmount, accountName ]);
         logger.info(`update '${ accountName }' amount ok`);
     } catch (err) {
         throw err;
