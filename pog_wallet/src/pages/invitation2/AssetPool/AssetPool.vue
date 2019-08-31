@@ -110,6 +110,7 @@ export default {
           this.$router.go(-1)
        },
        orderDetails(id) {
+         console.log(11111111111112,id);
           this.$router.push({
           name: 'MiningDetails',
           params: {
@@ -140,11 +141,11 @@ export default {
         },
   },
   created(){
-      console.log(this.$store.state.wallet.localFile.wallets.slice());
-      console.log(this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]);
+      // console.log(22222222222222222222222,this.$store.state.wallet.localFile.wallets.slice());
+      // console.log(33333333333333333333,this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]);
       //获取有效矿机
-      effectiveAssets({account_name:"tbtestuser1"}).then(res => {
-        console.log('bindReferrer',res)
+      effectiveAssets({account_name:"yujinsheng11"}).then(res => {
+        console.log('111111111111111111111111',res)
         if (res.code === 1) {
         this.start_mined=res.data.mining_info;
         this.mining_count=res.data.mining_count;
@@ -153,15 +154,13 @@ export default {
         }
       })
       // 获取结束矿机
-      overAssets({account_name:"tbtestuser1"}).then(res => {
+      overAssets({account_name:"yujinsheng11"}).then(res => {
         console.log('bindReferrer',res);
         if (res.code === 1) {
         this.over_mined=res.data.mining_info;
         }
       })
-       isBind({account_name:"tbtestuser1"}).then(res => {
-        console.log(res)
-      })
+  
     
   },
 }

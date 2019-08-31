@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // var baseURL = 'http://172.81.224.11/api';
 // var baseURL = 'http://192.168.1.141:9527';
-var baseURL = 'http://192.168.1.152:9527';
+var baseURL = 'http://192.168.1.135:9527';
 
 const xhr = axios.create({
     baseURL,
@@ -206,6 +206,12 @@ const withdrawHistory = (reqData) => {
     return getData(url, data);
 }
 
+// 获取账号类型
+const getType= (reqData) => {
+    const url = '/account/info';
+    const data = reqData;
+    return getData(url, data);
+}
 //有效资产包矿机
 const effectiveAssets= (reqData) => {
     const url = '/mine_pool/mining';
@@ -294,6 +300,7 @@ export {
     friendInvest,
     withdrawHistory,
 
+    getType,
     effectiveAssets,
     overAssets,
     assetMiningDetails,

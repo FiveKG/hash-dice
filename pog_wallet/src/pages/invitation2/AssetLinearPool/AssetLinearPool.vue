@@ -65,7 +65,7 @@ export default {
   created(){
       // console.log('this',this);
       
-      LinearReleasePool({account_name:"tbgtestuser1"}).then(res => {
+      LinearReleasePool({account_name:"yujinsheng11"}).then(res => {
         if (res.code === 1) {
         console.log('bindReferrer',res.data)
         this.pool_data=res.data;

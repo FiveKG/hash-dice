@@ -68,16 +68,18 @@ export default {
     }
   },
   created() {
-    this.reqParams.account = this.$route.query.account
+    // this.reqParams.account = this.$route.query.account
+    this.reqParams.account = "yujinsheng11";
   },
   methods: {
     // 验证密码
     async verifyPassword() {
-      const seed = await PasswordService.encrypt(this.password)
-      const wallets = this.$store.state.wallet.localFile.wallets
-      const current = wallets.find(ele => ele.accountNames[0] === this.reqParams.account)
-      const privateKey = CryptoAES.decrypt(current.privateKey,seed)
+      const seed = await PasswordService.encrypt(this.password);
+      const wallets = this.$store.state.wallet.localFile.wallets;
+      const current = wallets.find(ele => ele.accountNames[0] === this.reqParams.account);
+      const privateKey = CryptoAES.decrypt(current.privateKey,seed);
       return privateKey
+      // return '5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h';
     },
     async goPay(privateKey) {
       if (privateKey) {
@@ -85,7 +87,10 @@ export default {
         try {
           const config = await this.getConfig()
           const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
-          await eos.transfer(this.reqParams.account, config.wallet_receiver, `0.0001 EOS`, `tbg_invest:${this.reqParams.account}`, opts)
+          // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+          const adm = await eos.contract('uetokencoin')
+          const trx = await adm.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+          console.log(111111111111111111,trx);
           return true
         } catch (error) {
           console.log(error)
@@ -140,12 +145,12 @@ export default {
     },
     async clickConfirm() {
       if (this.reqParams.friendAccountName) {
-        const res = await this.friendInvest()
-        if (res === 1) {
-          this.$toast('投资成功')
-        } else {
+        // const res = await this.friendInvest()
+        // if (res === 1) {
+        //   this.$toast('投资成功')
+        // } else {
           this.actionSheetVisible = true
-        }
+        // }
       }
     },
     back() {

@@ -38,9 +38,9 @@ export default {
     return {
       log:true,
       items:[
-           {create_time:'1111-11-11',
-           release_type:'首次购买推荐收益'
-           ,amount:'+ 11111',balance:'1,111.11191'},
+          //  {create_time:'1111-11-11',
+          //  release_type:'首次购买推荐收益'
+          //  ,amount:'+ 11111',balance:'1,111.11191'},
         ],
     }
   },
@@ -51,13 +51,13 @@ export default {
   },
   created(){
     // console.log('this',this);
-       LinearReleaseDetail({account_name:"tbgtestuser1"}).then(res => {
+       LinearReleaseDetail({account_name:"yujinsheng11"}).then(res => {
          if (res.code === 1) {
             console.log('bindReferrer',res.data)
             for(var i=0;i<res.data.length;i++){
               if(res.data[i].amount>0){
                 switch (res.data[i].release_type) {
-                    case 1:res.data[i].release_type='买入200TBG';break;
+                    case 'bind':res.data[i].release_type='买入200TBG';break;
                     case 2:res.data[i].release_type='绑定';break;
                     case 3:res.data[i].release_type='参与TBG-I';break;
                     case 4:res.data[i].release_type='签到';break;

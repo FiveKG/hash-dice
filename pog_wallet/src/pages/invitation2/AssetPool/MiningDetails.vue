@@ -45,7 +45,7 @@ export default {
        },
        async charges() {
           try {
-            const res = await assetMiningCharge({account_name:"tbtestuser1",mining_id:this.$route.params.mining_id})
+            const res = await assetMiningCharge({account_name:"yujinsheng11",mining_id:this.$route.params.mining_id})
             // console.log('withdrawHistory',res)
             if (res.code === 1) {
               console.log('withdrawHistory',res.data)
@@ -57,10 +57,10 @@ export default {
   },
   created(){
     // console.log('this',this);
-    console.log(11111111111111111111111111111,this.$route.params.mining_id);
-    assetMiningDetails({account_name:"tbtestuser1",mining_id:this.$route.params.mining_id}).then(res => {
+    // console.log(11111111111111111111111111111,this.$route.params.mining_id);
+    assetMiningDetails({account_name:"yujinsheng11",mining_id:this.$route.params.mining_id}).then(res => {
+      console.log('bindReferrer',res)
         if (res.code === 1) {
-        console.log('bindReferrer',res.data)
         this.mining_data=res.data;
         }
       })

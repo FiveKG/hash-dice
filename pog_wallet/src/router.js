@@ -79,6 +79,7 @@ import ShareholderPool from './pages/invitation/ShareholderPool'
 import FivePool from './pages/invitation/FivePool'
 import PkPool from './pages/invitation/PkPool'
 
+import TradingCenter from './pages/invitation2/TradingCenter/TradingCenter'
 import AssetPool from './pages/invitation2/AssetPool/AssetPool'
 import MiningDetails from './pages/invitation2/AssetPool/MiningDetails'
 import AssetLinearPool from './pages/invitation2/AssetLinearPool/AssetLinearPool'
@@ -477,6 +478,11 @@ const router = new Router({
       component: PogSearchToken,
     },
 
+    {
+      path: '/tradingCenter',
+      name: 'TradingCenter',
+      component: TradingCenter,
+    },
     {
       path: '/assetPool',
       name: 'AssetPool',

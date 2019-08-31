@@ -8,7 +8,7 @@ import Eos from 'eosjs'
 
 const config = {
     chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f', // 32 byte (64 char) hex string
-    httpEndpoint: 'http://192.168.1.152:8888',
+    httpEndpoint: 'http://192.168.1.135:8888',
     expireInSeconds: 60
 }
 
