@@ -26,6 +26,32 @@
             }
         },
         {
+            "name" : "获取当前用户的信息",
+            "summary": "",
+            "remark": [
+                "获取当前用户的信息"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/info",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "account_name": { "type": "text",  "is_require": true,  "desc": "获取到的帐号名称" },
+                        "account_type": { "type": "text",  "is_require": true,  "desc": "帐号类型" },
+                        "refer_code": { "type": "text",  "is_require": true,  "desc": "推荐号" }
+                    }
+                }
+            }
+        },
+        {
             "name" : "根据填写的邀请码显示出帐号名称",
             "summary": "",
             "remark": [
@@ -1153,7 +1179,9 @@
                     "per_hour_mining": { "type": "string",  "is_require": true, "desc": "每小时挖矿收益" },
                     "mined": { "type": "number",  "is_require": true, "desc": "当前资产包挖矿收益" },
                     "collect_amount": { "type": "sting",  "is_require": true,  "desc": "可收取数量" },
-                    "state": { "type": "boolean",  "is_require": true,  "desc": "可收取状态, 未满 24H 不可收取" }
+                    "state": { "type": "boolean",  "is_require": true,  "desc": "可收取状态, 未满 24H 不可收取" },
+                    "mining_time": { "type": "dateTime",  "is_require": true,  "desc": "已挖矿时间" },
+                    "total_time": { "type": "dateTime",  "is_require": true,  "desc": "挖矿产币时间" }
                 }
             }
         },

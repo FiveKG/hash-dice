@@ -45,7 +45,7 @@ async function detail(req, res, next) {
         }
         let resData = get_status(1);
         resData["data"] = {
-            "amount": assetsInfo[0].amount,
+            "amount": new Decimal(assetsInfo[0].amount).toNumber(),
             "per_hour_mining": perHourMining.toFixed(4),
             "mined": perHourMining.mul(diffTime).toFixed(8),
             "mining_time": diffTime,

@@ -47,8 +47,8 @@ async function mining(req, res, next) {
                 miningCount++;
                 const tmpObj = {
                     mining_id: val.id,
-                    amount: assets.amount,
-                    per_hour_mining: perHourMining, 
+                    amount: new Decimal(assets.amount).toNumber(),
+                    per_hour_mining: perHourMining.toFixed(4), 
                     mining_income: perHourMining.mul(diffTime).toFixed(4),
                     mining_time: diffTime,
                     total_time: presetDays * 24

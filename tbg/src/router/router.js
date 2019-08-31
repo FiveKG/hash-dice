@@ -27,6 +27,10 @@ router.get("/account/is_activated", account.is_activated);
 router.get("/account/is_bind", account.is_bind);
 // 邀请绑定
 router.post("/account/bind_referrer", account.bind_referrer);
+
+// 获取当前用户的信息
+router.get("/account/info", account.accountInfo);
+
 // 投资 UE, 参与 TBG 1
 // router.post("/account/self_invest", account.self_invest);
 // 帮朋友投资 UE, 参与 TBG 1
