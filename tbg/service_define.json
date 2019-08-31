@@ -211,7 +211,7 @@
             "requireRole" : [ "*" ],
             "req": {
                 "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
-                "amount": { "type": "decimal",  "is_require": true,  "desc": "要提现的金额" },
+                "amount": { "type": "text",  "is_require": true,  "desc": "要提现的金额" },
                 "symbol": { "type": "text",  "is_require": true,  "desc": "货币符号"  }
             },
             "res": {
