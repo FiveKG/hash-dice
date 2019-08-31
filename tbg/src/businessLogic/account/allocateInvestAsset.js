@@ -72,8 +72,14 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
             await insertSystemOpLog(client, income.toNumber(), item.pool_amount, { "symbol": UE_TOKEN_SYMBOL, "aid": item.pool_type }, opType, remark, "now()");
             await updateSystemAmount(client, item.pool_type, income, item.pool_amount, UE_TOKEN_SYMBOL);
         }
+
+        // 判断是否参加过 tbg2
+        let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1;
+        if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1) {
+            accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2
+        }
         // 更新用户状态为激活
-        await updateAccountState(client, ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1, accountName);
+        await updateAccountState(client, accountState, accountName);
         // 生成子账号
         await addSubAccount(client, accountName, newSubAccount, referrerAccountList);
         // 记录用户操作日志
