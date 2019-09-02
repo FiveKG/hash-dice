@@ -9,7 +9,7 @@ const { Decimal } = require("decimal.js");
 async function balanceInfo(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param is %J: `, reqData);
+        logger.debug(`the param is %j: `, reqData);
         let rows = await getUserBalance(reqData.account_name);
         if (!rows) {
             return res.send(get_status(1001, "this account does not exists"));

@@ -218,13 +218,13 @@
                     "type": "object", "desc": "",
                     "properties": {
                         "withdraw_enable": { "type": "decimal",  "is_require": true,  "desc": "可提现的 UE 金额" },
-                        "withdraw_enable_rage": { "type": "decimal",  "is_require": true,  "desc": "可提现余额占总收益比例" },
+                        "withdraw_enable_rate": { "type": "decimal",  "is_require": true,  "desc": "可提现余额占总收益比例" },
                         "repeat_currency": { "type": "decimal",  "is_require": true,  "desc": "复投余额" },
-                        "repeat_currency_rage": { "type": "decimal",  "is_require": true,  "desc": "复投余额占总收益比例" },
+                        "repeat_currency_rate": { "type": "decimal",  "is_require": true,  "desc": "复投余额占总收益比例" },
                         "lotto_currency": { "type": "decimal",  "is_require": true,  "desc": "全球彩彩码" },
-                        "lotto_currency_rage": { "type": "decimal",  "is_require": true,  "desc": "全球彩彩码占总收益比例" },
+                        "lotto_currency_rate": { "type": "decimal",  "is_require": true,  "desc": "全球彩彩码占总收益比例" },
                         "game_currency": { "type": "decimal",  "is_require": true,  "desc": "游戏筹码" },
-                        "game_currency_rage": { "type": "decimal",  "is_require": true,  "desc": "游戏筹码占总收益比例" }
+                        "game_currency_rate": { "type": "decimal",  "is_require": true,  "desc": "游戏筹码占总收益比例" }
                     }
                 }
             }
@@ -1014,7 +1014,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "order_time": { "type": "boolean",  "is_require": true,  "desc": "挂单时间" }
+                
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -1090,7 +1090,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "order_time": { "type": "boolean",  "is_require": true,  "desc": "挂单时间" }
+                
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -1480,6 +1480,34 @@
                         "type": "objectArray", "desc": "额度详情",
                         "properties": {
                             "destroy_amount": { "type": "number",  "is_require": true,  "desc": "销毁数量" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "系统公告",
+            "summary": "",
+            "remark": [
+                "首页显示"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/tbg/system_notification",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "system_notification": {
+                        "type": "objectArray", "desc": "额度详情",
+                        "properties": {
+                            "create_time": { "type": "number",  "is_require": true,  "desc": "时间" },
+                            "title": { "type": "number",  "is_require": true,  "desc": "标题" },
+                            "description": { "type": "number",  "is_require": true,  "desc": "详情" }
                         }
                     }
                 }

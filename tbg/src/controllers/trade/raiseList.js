@@ -21,7 +21,7 @@ async function raiseList(req, res, next) {
         resData["data"] = rows.map(it => {
             return {
                 "create_time": it.create_time,
-                "price": it.price,
+                "price": new Decimal(it.price).toFixed(4),
                 "amount": new Decimal(it.amount).toNumber(),
                 "transaction": new Decimal(it.trx_amount).toNumber()
             }

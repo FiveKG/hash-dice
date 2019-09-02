@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/trade/destroy.js": "TBG 概况" });
+const logger = require("../../common/logger.js").child({ "@controllers/tbg/destroy.js": "TBG 概况" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { AIRDROP } = require("../../common/constant/tbgAllocateRate");
 const { TBG_TOKEN_SYMBOL, TBG_TOKEN } = require("../../common/constant/eosConstants");
@@ -16,10 +16,12 @@ async function destroy(req, res, next) {
         const { [TBG_TOKEN_SYMBOL]: { max_supply, supply } } = await getCurrencyStats(TBG_TOKEN, TBG_TOKEN_SYMBOL);
         // max_supply ~ 1.0000 TBG, 先拆分，拿到数量
         const maxSupply = new Decimal(max_supply.split(" ")[0]);
-        const destroyAmount = maxSupply.minus(supply.split(" ")[0]);
+        const supplyAmount = new Decimal(supply.split(" ")[0]);
+        const destroyAmount = maxSupply.minus(supplyAmount);
         let resData = get_status(1);
         resData["data"] = {
-            "destroy_amount": destroyAmount.toFixed(8)
+            "destroy_amount": destroyAmount.toFixed(8),
+            "surplus_amount": supplyAmount.toFixed(8)
         }
         res.send(resData);
     } catch (err) {

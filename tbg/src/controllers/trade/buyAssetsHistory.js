@@ -3,6 +3,7 @@ const logger = require("../../common/logger.js").child({ "@controllers/trade/buy
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountInfo } = require("../../models/account");
 const { getTradeInfoHistory } = require("../../models/trade");
+const { Decimal } = require("decimal.js");
 
 // 资产包买入记录
 async function buyAssetsHistory(req, res, next) {
@@ -20,8 +21,8 @@ async function buyAssetsHistory(req, res, next) {
         resData["data"] = tradeInfo.map(it => {
             return {
                 "create_time": it.create_time,
-                "price": it.price,
-                "amount": it.amount,
+                "price": new Decimal(it.price).toFixed(4),
+                "amount": new Decimal(it.amount).toNumber(),
                 "options": it.state
             }
         })
