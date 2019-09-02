@@ -44,6 +44,8 @@ router.get("/account/investment_index", account.investment_index);
 // router.post("/account/set_invitation", account.generate_refer_code);
 
 /***************************  balance  ***********************************/
+// 收益分配
+router.get("/balance/balance_alloc", balance.balanceAllocInfo);
 // 提现信息
 router.get("/balance/balance_info", balance.balance_info);
 // 提现
