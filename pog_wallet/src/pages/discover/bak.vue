@@ -11,7 +11,7 @@
       <swiper class="swiper_box" dots-position="center" dots-class="dots" loop auto :list="swiperList" @on-click-list-item="clickSwiper" height="180px"></swiper>
       <v-ons-row class="list_title">热门推荐</v-ons-row>
       <v-ons-row class="hot_dapp">
-        <v-ons-col class="dapp_item" v-for="item in hotDapp" @click="clickHot(item)">
+        <v-ons-col class="dapp_item" v-for="(item, index) in hotDapp" :key="index" @click="clickHot(item)">
           <img class="dapp_logo" :src="item.logo_url" v-if="item.logo_url">
           <span class="dapp_name" v-if="item.name">{{item.name}}</span>
         </v-ons-col>

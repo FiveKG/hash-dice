@@ -266,10 +266,33 @@ const CheckIn= (reqData) => {
     const data = reqData;
     return getData(url, data);
 }
+//交易价格
+const getTradePrice= (reqData) => {
+    const url = '/trade/price';
+    const data = reqData;
+    return getData(url, data);
+}
+
+//TBG销毁数量
+const getDestory= (reqData) => {
+    const url = '/tbg/destroy';
+    const data = reqData;
+    return getData(url, data);
+}
+const getBalanceAlloc = (reqData) => {
+    const url = '/balance/balance_alloc';
+    const data = reqData;
+    return getData(url, data);
+}
+//系统公告
+const getSystemNtf= (reqData) => {
+    const url = '/tbg/system_notification';
+    const data = reqData;
+    return getData(url, data);
+}
 
 
-
-export {
+export default{
     getConfig,
     setInvitation,
     getInvitation,
@@ -310,4 +333,8 @@ export {
     SaleableBalance,
     SaleableAmount,
     CheckIn,
+    getTradePrice,
+    getDestory,
+    getBalanceAlloc,
+    getSystemNtf
 }
