@@ -1039,7 +1039,8 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "amount": { "type": "text", "is_require": false, "desc": "卖出资产数量" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -1052,7 +1053,10 @@
                     "one_trx": { "type": "string",  "is_require": true, "desc": "单次最高可卖数量" },
                     "day_trx": { "type": "string",  "is_require": true, "desc": "每日最高可卖数量" },
                     "trx_day_count": { "type": "string",  "is_require": true, "desc": "每日最多可卖次数" },
-                    "level": { "type": "sting",  "is_require": true,  "desc": "会员等级" }
+                    "level": { "type": "sting",  "is_require": true,  "desc": "会员等级" },
+                    "sell_fee_amount": { "type": "string",  "is_require": true, "desc": "手续费" },
+                    "destroy_amount": { "type": "string",  "is_require": true, "desc": "销毁额度" },
+                    "income": { "type": "sting",  "is_require": true,  "desc": "实收额度" }
                 }
             }
         },
@@ -1403,9 +1407,11 @@
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "check_in": { "type": "boolean",  "is_require": true,  "desc": "签到是否已经签到" },
-                    "income": { "type": "number",  "is_require": true,  "desc": "签到获得奖励" },
-                    "detail": { "type": "array", "is_require": true, "desc": "额度详情" }
+                    "type": "objectArray", "desc": "额度详情",
+                        "properties": {
+                            "income": { "type": "number",  "is_require": true,  "desc": "签到获得奖励" },
+                            "is_check": { "type": "dateTime",  "is_require": true,  "desc": "是否签到" }
+                        }
                 }
             }
         },
