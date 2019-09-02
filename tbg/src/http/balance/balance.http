@@ -15,3 +15,6 @@ Content-Type: application/json
 
 ### 提现历史
 GET http://localhost:9527/balance/withdraw_history?account_name=yujinsheng11
+
+### 提现历史
+GET http://localhost:9527/balance/balance_alloc?account_name=yujinsheng11

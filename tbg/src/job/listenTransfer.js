@@ -13,6 +13,7 @@ logger.debug(`handlerTransferActions running...`);
 const INVEST_LOCK = `tbg:lock:invest`;
 let count = 1;
 scheduleJob("*/1 * * * * *", begin);
+// 如果中途断开，再次启动时计数到 10 以后清除缓存
 async function begin() {
     try {
         const investLock = await redis.get(INVEST_LOCK);
