@@ -1039,7 +1039,8 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "amount": { "type": "text", "is_require": false, "desc": "卖出资产数量" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
