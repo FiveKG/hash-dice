@@ -155,4 +155,8 @@ router.get("/tbg/info", tbg.tbgInfo);
 // TBG 销毁数量
 router.get("/tbg/destroy", tbg.destroy);
 
+// 系统公告
+router.get("/tbg/system_notification", tbg.notification);
+
+
 module.exports = router

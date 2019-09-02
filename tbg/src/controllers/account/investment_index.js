@@ -54,7 +54,7 @@ async function investmentIndex(req, res, next) {
         resDate["data"] = {
             "account_name": reqData.account_name,
             "sub_account_count": subAccountList.length,
-            "total_income": userBalance.toFixed(4),
+            "total_income": userBalance.toFixed(8),
             "last_invest": bingoLastInvest,
             "other_invest": bingoOtherInvest,
             "bingo_countdown": df.format(dayEnd, "x"),
