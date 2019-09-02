@@ -56,7 +56,11 @@ declare namespace DB {
         "account_name": string,
         "change_amount": number,
         "current_balance": number,
-        "extra": object,
+        "extra": {
+            "symbol": string,
+            "tr_id": string,
+            "op_type": string
+        },
         "op_type": string,
         "remark": string,
         "create_time": Date,
@@ -65,6 +69,7 @@ declare namespace DB {
     interface SystemPools {
          "id": string,
          "pool_type": string,
+         "pool_symbol": string,
          "pool_amount": number,
     }
 

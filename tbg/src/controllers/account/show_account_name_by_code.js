@@ -2,6 +2,7 @@
 const { pool } = require("../../db");
 const logger = require("../../common/logger.js").child({ "@controllers/account/show_account_name_by_code.js": "显示邀请邀请码对应帐号" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
+const { ACCOUNT_TYPE, INVITE_CODE, INVITE_CODE_KEY } = require("../../common/constant/accountConstant.js");
 
 // 显示邀请邀请码对应帐号
 async function showAccountNameByCode(req, res, next) {
@@ -12,7 +13,7 @@ async function showAccountNameByCode(req, res, next) {
         let investCode = reqData.refer_code;
         let account_name = "";
         let resDate = get_status(1);
-        if (investCode === "000000" || investCode === "W00000") {
+        if (investCode === INVITE_CODE.GENERAL || investCode === INVITE_CODE.GLOBAL) {
             account_name = "系统将随机分配您的邀请人"
             resDate["data"] = {
                 account_name: account_name
@@ -22,10 +23,10 @@ async function showAccountNameByCode(req, res, next) {
         }
 
         let selectAccountNameSql = `
-            select account_name from account where refer_code = ${ investCode };
+            select account_name from account where refer_code = $1;
         `
         logger.debug(`find the account_name by invitation code`);
-        let { rows: [ accountName ] } = await pool.query(selectAccountNameSql);
+        let { rows: [ accountName ] } = await pool.query(selectAccountNameSql, [ investCode ]);
         if (!accountName) {
             return res.send(get_status(1001, "this account does not exists"));    
         }

@@ -3,6 +3,7 @@ const logger = require("../../common/logger.js").child({ "@controllers/income/st
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getStaticModeIncome, getGroupIncome, getUserBalance } = require("../../models/balance");
 const { Decimal } = require("decimal.js");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 
 // 三三排位收益详情
 async function staticMode(req, res, next) {
@@ -33,11 +34,11 @@ async function staticMode(req, res, next) {
         if (groupIncome) {
             for (let i = 0; i < groupIncome.length; i++) {
                 let item = groupIncome[i];
-                if (item.op_type === "invite income") {
+                if (item.op_type === OPT_CONSTANTS.INVITE) {
                     referIncome = referIncome.add(item.total);
-                } else if (item.op_type === "sort income") {
+                } else if (item.op_type === OPT_CONSTANTS.SORT) {
                     sortIncome = sortIncome.add(item.total);
-                } else if (item.op_type === "mode income") {
+                } else if (item.op_type === OPT_CONSTANTS.MODE) {
                     modeIncome = modeIncome.add(item.total);
                 } else {
                     otherIncome = otherIncome.add(item.total);

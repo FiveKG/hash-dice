@@ -1,0 +1,8 @@
+###
+GET http://localhost:9527/tbg/info
+
+###
+GET http://localhost:9527/tbg/destroy
+
+###
+GET http://localhost:9527/tbg/system_notification

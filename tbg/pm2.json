@@ -4,57 +4,105 @@
             "name"        : "tbgService",
             "script"      : "./tbg_service.js",
             "watch"       : false,
-            "cwd"         : "../../15_tbg_service/tbg",
-            "error_file"  : "/home/yujinsheng/logs/tbgService-err.log",
-            "out_file"    : "/home/yujinsheng/logs/tbgService-out.log"
+            "cwd"         : "./",
+            "error_file"  : "../logs/tbgService-err.log",
+            "out_file"    : "../logs/tbgService-out.log"
         },
         {
-            "name"        : "beginListenAction",
-            "script"      : "./beginListenAction.js",
+            "name"        : "listenTransfer",
+            "script"      : "./listenTransfer.js",
             "watch"       : false,
-            "cwd"         : "../../15_tbg_service/tbg/src/job",
-            "error_file"  : "/home/yujinsheng/logs/beginListenAction-err.log",
-            "out_file"    : "/home/yujinsheng/logs/beginListenAction-out.log"
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/listenTransfer-err.log",
+            "out_file"    : "../../../logs/listenTransfer-out.log"
         },
         {
-            "name"        : "mqWithdraw",
-            "script"      : "./mqWithdraw.js",
+            "name"        : "mqHandler",
+            "script"      : "./mqHandler.js",
             "watch"       : false,
-            "cwd"         : "../../15_tbg_service/tbg/src/job",
-            "error_file"  : "/home/yujinsheng/logs/mqWithdraw-err.log",
-            "out_file"    : "/home/yujinsheng/logs/mqWithdraw-out.log"
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/mqHandler-err.log",
+            "out_file"    : "../../../logs/mqHandler-out.log"
         },
         {
             "name"        : "bonusBingo",
             "script"      : "./bonusBingo.js",
             "watch"       : false,
-            "cwd"         : "../../15_tbg_service/tbg/src/job",
-            "error_file"  : "/home/yujinsheng/logs/bonusBingo-err.log",
-            "out_file"    : "/home/yujinsheng/logs/bonusBingo-out.log"
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/bonusBingo-err.log",
+            "out_file"    : "../../../logs/bonusBingo-out.log"
         },
         {
             "name"        : "bonusPK",
             "script"      : "./bonusPK.js",
             "watch"       : false,
-            "cwd"         : "../../15_tbg_service/tbg/src/job",
-            "error_file"  : "/home/yujinsheng/logs/bonusPK-err.log",
-            "out_file"    : "/home/yujinsheng/logs/bonusPK-out.log"
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/bonusPK-err.log",
+            "out_file"    : "../../../logs/bonusPK-out.log"
         },
         {
             "name"        : "bonusSafe",
             "script"      : "./bonusSafe.js",
             "watch"       : false,
-            "cwd"         : "../../15_tbg_service/tbg/src/job",
-            "error_file"  : "/home/yujinsheng/logs/bonusSafe-err.log",
-            "out_file"    : "/home/yujinsheng/logs/bonusSafe-out.log"
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/bonusSafe-err.log",
+            "out_file"    : "../../../logs/bonusSafe-out.log"
         },
         {
             "name"        : "bonusHolder",
             "script"      : "./bonusHolder.js",
             "watch"       : false,
-            "cwd"         : "../../15_tbg_service/tbg/src/job",
-            "error_file"  : "/home/yujinsheng/logs/bonusHolder-err.log",
-            "out_file"    : "/home/yujinsheng/logs/bonusHolder-out.log"
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/bonusHolder-err.log",
+            "out_file"    : "../../../logs/bonusHolder-out.log"
+        },
+        {
+            "name"        : "listenTrade",
+            "script"      : "./listenTrade.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/listenTrade-err.log",
+            "out_file"    : "../../../logs/listenTrade-out.log"
+        },
+        {
+            "name"        : "adjustPrice",
+            "script"      : "./adjustPrice.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/adjustPrice-err.log",
+            "out_file"    : "../../../logs/adjustPrice-out.log"
+        },
+        {
+            "name"        : "releaseAssets",
+            "script"      : "./releaseAssets.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/releaseAssets-err.log",
+            "out_file"    : "../../../logs/releaseAssets-out.log"
+        },
+        {
+            "name"        : "checkInAirdrop",
+            "script"      : "./checkInAirdrop.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/checkInAirdrop-err.log",
+            "out_file"    : "../../../logs/checkInAirdrop-out.log"
+        },
+        {
+            "name"        : "mining",
+            "script"      : "./mining.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/mining-err.log",
+            "out_file"    : "../../../logs/mining-out.log"
+        },
+        {
+            "name"        : "wringTrade",
+            "script"      : "./wringTrade.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/wringTrade-err.log",
+            "out_file"    : "../../../logs/wringTrade-out.log"
         }
     ]
 }

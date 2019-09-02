@@ -12,6 +12,7 @@ async function getGroupIncome(accountName) {
             SELECT op_type, account_name, sum(change_amount) AS total
                 FROM balance_log 
                 WHERE account_name = $1
+                AND extra->>'symbol' = 'UE'
                 GROUP BY op_type, account_name;
         `
         let selectResult = await pool.query(selectSql, [ accountName ]);

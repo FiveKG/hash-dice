@@ -1,21 +1,20 @@
 // @ts-check
-const { pool } = require("../../db/index.js");
-const logger = require("../../common/logger.js").child({ "@src/models/account/userInvestment.js": "user investment EOS" });
+const { pool, psTbg1, psBind, psTshIncome } = require("../../db/index.js");
+const logger = require("../../common/logger.js").child({ "@src/businessLogic/account/allocateInvestAsset.js": "allocate invest asset" });
 const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const ACCOUNT_RATE = require("../../common/constant/accountRate.js");
 const ACCOUNT_CONSTANT = require("../../common/constant/accountConstant.js");
-const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
-const BALANCE_CONSTANT = require("../../common/constant/balanceConstants");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { updateSystemAmount, getSystemAccountInfo } = require("../../models/systemPool");
-const { allocateSurplusAssets } = require("../systemPool")
+const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const { insertAccountOp } = require("../../models/accountOp");
 const addSubAccount = require("./addSubAccount.js");
-const { updateRepeatBalance } = require("../../models/balance");
-const { getAllParentLevel, updateAccountState, getAccountInfo } = require("../../models/account");
-const storeIncome = require("../../common/storeIncome.js");
-const df = require("date-fns");
+const { getAllParentLevel, updateAccountState, getAccountInfo, getGlobalAccount } = require("../../models/account")
+const handleRepeat = require("./handleRepeat.js");
+const investAirdrop = require("./investAirdrop.js");
+const investReward = require("./investReward.js");
 
 /**
  * 用户投资
@@ -26,8 +25,6 @@ const df = require("date-fns");
  */
 async function allocateInvestAsset(amount, accountName, newSubAccount, userInvestmentRemark) {
     let investAmount = new Decimal(amount);
-    // 直接推荐奖励
-    let referIncome = investAmount.mul(INVEST_CONSTANT.REFER_INCOME_RATE / INVEST_CONSTANT.BASE_RATE);
     let client = await pool.connect();
     await client.query("BEGIN");
     try {
@@ -39,69 +36,73 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
             throw Error("没有推荐关系，请先设置推荐关系，检查数据是否正确");
         }
 
+        let psBindData = {};
+        let psTbg1Data = {};
+        let psTshIncomeData = {};
         const accountInfo = await getAccountInfo(accountName);
-        let accountOpType = "investment";
-        // 如果之前参加过,则是复投
-        if (accountInfo.state === 10 || accountInfo.state === 30) {
-            accountOpType = "repeat";
-            userInvestmentRemark = `user ${ accountName } repeat ${ BALANCE_CONSTANT.BASE_RATE } UE`
-            await updateRepeatBalance(client, accountName, BALANCE_CONSTANT.BASE_RATE);
+        let accountOpType = OPT_CONSTANTS.INVITE;
+        // 如果之前参加过,则是复投, 复投全球合伙人可得复投额度的 1%, 全球合伙人的推荐人可得复投额度的 0.5%
+        if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1 || accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2) {
+            accountOpType = OPT_CONSTANTS.REPEAT;
+            // 用户复投
+            const globalAccountInfo = await getGlobalAccount(ACCOUNT_CONSTANT.ACCOUNT_TYPE.GLOBAL, referrerAccountList);
+            const globalAccount = globalAccountInfo.account_name;
+            psTshIncomeData = await handleRepeat(client, accountInfo, globalAccount, userInvestmentRemark);
+        } else {
+            // 第一次投资，可以获得参与 tbg1 空投，新用户空投 100，推荐人空投 50, 只空投前 300,000 个UE账号
+            // 如果新用户是在绑定后 48h 内投资的，还可获得绑定空投，新用户空投 20，推荐人空投 10, 只空投前 100,000 个UE账号
+            const { bindData, tbg1Data, tshIncomeData } = await investAirdrop(client, accountName, accountInfo.create_time);
+            psBindData = bindData;
+            psTbg1Data = tbg1Data;
+            psTshIncomeData = tshIncomeData;
         }
-        // 分配直接推荐奖金
-        let count = 1;
-        let distributed = new Decimal(0);
-        for (const referrer of referrerAccountList) {
-            if (referrer === '' || referrer === accountName) {
-                continue;
-            }
-            const rate = setRate(count);
-            const income = referIncome.mul(rate);
-            distributed.add(income);
-            // 增加推荐人的 amount
-            let referIncomeRemark = `${ userInvestmentRemark }, referrer ${ referrer } add ${ income } UE currency`
-            let now = new Date();
-            let data = {
-                "account_name": referrer,
-                "change_amount": income,
-                "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-                "op_type": "invite income",
-                "remark": referIncomeRemark
-            }
-            // 存入 redis，待用户点击的时候再收取
-            await storeIncome(referrer, "invite", data);
-            if (count === 9) {
-                return;
-            } else {
-                count++;
-            }
-        }
-        count = null;
 
         // 获取系统账户
         let systemAccount = await getSystemAccountInfo();
-        logger.debug("systemAccount: ", systemAccount);
-        if (systemAccount.length < 8) {
-            logger.debug(`lack of system account`);
-            throw Error(`lack of system account`);
-        }
-        // 分配剩余的收益
-        await allocateSurplusAssets(client, systemAccount, referIncome, distributed, "referrer");
+        // logger.debug("systemAccount: ", systemAccount);
+        // 分配直接推荐奖金
+        await investReward(client, amount, accountName, referrerAccountList, systemAccount, userInvestmentRemark);
+
         // 更新系统池的额度
         for (const item of systemAccount) {
             const income = investAmount.mul(ACCOUNT_RATE.accountRate[item.pool_type] / INVEST_CONSTANT.BASE_RATE);
-            const opType = `user investment`;
-            const remark = `user investment, add ${ item.pool_type } amount`
-            logger.debug("income: %O, item: %O", income, item, ACCOUNT_RATE.accountRate[item.pool_type], INVEST_CONSTANT.BASE_RATE);
-            await insertSystemOpLog(client, income, item.pool_amount, {}, opType, remark, "now()");
-            await updateSystemAmount(client, item.pool_type, income, item.pool_amount);
+            const opType = OPT_CONSTANTS.INVITE;
+            const remark = `user ${ accountName } participate in tbg_1, add ${ item.pool_type } amount`
+            // logger.debug("income: %O, item: %O", income, item, ACCOUNT_RATE.accountRate[item.pool_type], INVEST_CONSTANT.BASE_RATE);
+            await insertSystemOpLog(client, income.toNumber(), item.pool_amount, { "symbol": UE_TOKEN_SYMBOL, "aid": item.pool_type }, opType, remark, "now()");
+            await updateSystemAmount(client, item.pool_type, income, item.pool_amount, UE_TOKEN_SYMBOL);
+        }
+
+        // 判断是否参加过 tbg2
+        let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1;
+        if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1) {
+            accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2
         }
         // 更新用户状态为激活
-        await updateAccountState(client, ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1, accountName);
+        await updateAccountState(client, accountState, accountName);
         // 生成子账号
         await addSubAccount(client, accountName, newSubAccount, referrerAccountList);
         // 记录用户操作日志
         await insertAccountOp(client, accountName, accountOpType, userInvestmentRemark);
         await client.query("COMMIT");
+
+        // 发送绑定和参与 tbg1 的消息
+        if (Object.keys(psTbg1Data).length !== 0) {
+            await psTbg1.pub(psTbg1Data);
+            logger.debug(`publish tbg1 message, psTbg1Data: %j`, psTbg1Data);
+        }
+        
+        // 超过 48h 未投资，不空投
+        if (Object.keys(psBindData).length !== 0) {
+            await psBind.pub(psBindData);
+            logger.debug(`publish bind message, psBindData: %j`, psBindData);
+        }
+
+        // 分配剩余的资产，发送到 tshincome 处理
+        if (Object.keys(psTshIncomeData).length !== 0) {
+            await psTshIncome.pub(psTshIncomeData);
+            logger.debug(`publish tshincome message, psTshIncomeData: %j`, psTshIncomeData);
+        }
     } catch (err) {
         logger.error("allocate user investment assets error, the error stock is %O", err);
         await client.query("ROLLBACK");
@@ -109,32 +110,6 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
     } finally {
         await client.release();
     }
-}
-
-/**
- * 设置分配比例
- * @param { number } position 
- */
-function setRate(position) {
-    if (position === 1) {
-        return INCOME_CONSTANT.REFER_FIRST_LEVEL / INCOME_CONSTANT.BASE_RATE;
-    } else if (position === 2) {
-        return INCOME_CONSTANT.REFER_SECOND_LEVEL / INCOME_CONSTANT.BASE_RATE;
-    } else if (position === 3) {
-        return INCOME_CONSTANT.REFER_THIRD_LEVEL / INCOME_CONSTANT.BASE_RATE;
-    } else if (position === 4) {
-        return INCOME_CONSTANT.REFER_FOURTH_LEVEL / INCOME_CONSTANT.BASE_RATE;
-    } else if (position === 5) {
-        return INCOME_CONSTANT.REFER_FIFTH_LEVEL / INCOME_CONSTANT.BASE_RATE;
-    } else if (position === 6) {
-        return INCOME_CONSTANT.REFER_SIXTH_LEVEL / INCOME_CONSTANT.BASE_RATE;
-    } else if (position === 7) {
-        return INCOME_CONSTANT.REFER_SEVENTH_LEVEL / INCOME_CONSTANT.BASE_RATE;
-    } else if (position === 8) {
-        return INCOME_CONSTANT.REFER_EIGHTH_LEVEL / INCOME_CONSTANT.BASE_RATE;
-    } else if (position === 9) {
-        return INCOME_CONSTANT.REFER_NINTH_LEVEL / INCOME_CONSTANT.BASE_RATE;
-    } 
 }
 
 module.exports = allocateInvestAsset

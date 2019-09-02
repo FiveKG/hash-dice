@@ -1,5 +1,6 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 
 /**
  * 获取用户的提现历史
@@ -12,10 +13,11 @@ async function getBalanceHistory(accountName) {
             SELECT change_amount, create_time 
                 FROM balance_log 
                 WHERE account_name = $1 
-                AND op_type = 'withdraw' 
+                AND op_type = $2
+                AND extra->>'symbol' = 'UE'
                 ORDER BY create_time DESC;
         `
-        let selectResult = await pool.query(selectSql, [ accountName ]);
+        let selectResult = await pool.query(selectSql, [ accountName, OPT_CONSTANTS.WITHDRAW ]);
         return  selectResult.rows;
     } catch (err) {
         throw err;

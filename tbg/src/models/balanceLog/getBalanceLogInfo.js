@@ -8,6 +8,7 @@ const logger = require("../../common/logger");
  * @property { String } accountName
  * @property { string } [trId]
  * @property { string } [opType]
+ * @property { string } [symbol]
  */
 
 /**
@@ -17,7 +18,7 @@ const logger = require("../../common/logger");
  */
 async function getBalanceLogInfo(params) {
     try {
-        const { accountName, trId, opType } = params;
+        const { accountName, trId, opType, symbol } = params;
         const opts = [];
         const values = [];
 
@@ -27,8 +28,13 @@ async function getBalanceLogInfo(params) {
         }
         
         if (!!trId) {
-            opts.push(trId);
-            values.push(`extra ->> 'tr_id' = $${ opts.length }`)
+            opts.push(trId.split(","));
+            values.push(`extra ->> 'tr_id' = any($${ opts.length })`)
+        } 
+
+        if (!!symbol) {
+            opts.push(symbol);
+            values.push(`extra ->> 'symbol' = $${ opts.length }`)
         } 
 
         if (!!opType) {

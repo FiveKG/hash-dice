@@ -21,7 +21,9 @@ async function insertTrade(client, id, accountName, tradeType, apId, amount, trx
             INSERT INTO trade(id, account_name, trade_type, extra, amount, trx_amount, price, state, create_time, finished_time)
                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
         `
-        await client.query(sql, [ id, accountName, tradeType, apId, amount, trx_amount, price, state, create_time, finished_time ]);
+        const opts = [ id, accountName, tradeType, apId, amount, trx_amount, price, state, create_time, finished_time ];
+        logger.debug(sql, opts);
+        await client.query(sql, opts);
     } catch (err) {
         logger.error("insert data to trade error, the error stock is %O", err);
         throw err;

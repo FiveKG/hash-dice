@@ -16,7 +16,7 @@ const logger = require("../../common/logger.js").child({ "@models/trade/insertTr
 async function insertTradeLog(client, id, tr_id, trade_type, amount, memo, price, volume, create_time) {
     try {
         const sql = `
-            INSERT INTO trade_log(id, account_name, trade_type, extra, amount, price, state, create_time)
+            INSERT INTO trade_log(id, tr_id, trade_type, amount, memo, price, volume, create_time)
                 VALUES($1, $2, $3, $4, $5, $6, $7, $8);
         `
         await client.query(sql, [ id, tr_id, trade_type, amount, memo, price, volume, create_time]);

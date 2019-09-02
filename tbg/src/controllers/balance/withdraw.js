@@ -1,5 +1,4 @@
 // @ts-check
-const { pool } = require("../../db");
 const logger = require("../../common/logger.js").child({ "@controllers/balance/withdraw.js": "user withdraw" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getUserBalance } = require("../../models/balance");
@@ -29,7 +28,7 @@ async function withdraw(req, res, next) {
 
         const withdrawData = {
             "account_name": accountName,
-            "amount": amount.tonumber(),
+            "amount": amount.toNumber(),
             "symbol": reqData.symbol
         };
         logger.debug(`发布提现消息, withdrawData: %j`, withdrawData);

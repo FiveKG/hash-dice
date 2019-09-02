@@ -5,7 +5,7 @@ const logger = require("../../common/logger.js").child({ "@models/trade/getTrade
 /**
  * @typedef { object } TradeTrx
  * @property { string } [ accountName ] 用户账户名
- * @property { String } tradeType 资产包类型
+ * @property { String } tradeType 交易类型
  * @property { String } [ state ] 交易状态
  * @property { String } orderBy 排序类型
  */
@@ -36,7 +36,7 @@ async function getTradeInfoHistory(params) {
 
         if (!!state) {
             opts.push(state);
-            values.push(`state = ${ opts.length }`);
+            values.push(`state = $${ opts.length }`);
         }
 
         const sql = `

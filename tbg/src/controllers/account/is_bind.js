@@ -16,7 +16,7 @@ async function isBind(req, res, next) {
                 where r.account_name = '${ reqData.account_name }';
         `
         let { rows } = await pool.query(selectSql);
-        logger.debug(`the account info is %j`, rows[0]);
+        logger.debug(`the account info is %O`, rows[0]);
         if (!rows[0]) {
             return res.send(get_status(1001, "this account does not exists"));
         }

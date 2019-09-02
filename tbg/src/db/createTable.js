@@ -89,12 +89,14 @@ async function createTable() {
         comment on column balance_log.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS system_pools(
             id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
-            pool_type TEXT UNIQUE NOT NULL DEFAULT '',
+            pool_type TEXT NOT NULL DEFAULT '',
+            pool_symbol TEXT NOT NULL DEFAULT '',
             pool_amount NUMERIC (20, 8) NOT NULL DEFAULT 0
         );
         comment on table system_pools is '系统奖池表';
         comment on column system_pools.id is '系统奖池表的 id';
         comment on column system_pools.pool_type is '奖池的类型';
+        comment on column system_pools.pool_symbol is '奖池的货币符号';
         comment on column system_pools.pool_amount is '奖池的金额';
         CREATE TABLE IF NOT EXISTS system_op_log(
             id serial PRIMARY KEY UNIQUE NOT NULL,
@@ -127,7 +129,7 @@ async function createTable() {
         comment on column account_op.remark is '备注';
         comment on column account_op.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS trade(
-            id serial PRIMARY KEY UNIQUE NOT NULL,
+            id TEXT PRIMARY KEY UNIQUE NOT NULL,
             account_name TEXT NOT NULL DEFAULT '',
             trade_type TEXT NOT NULL DEFAULT '',
             extra JSON NOT NUll DEFAULT '{}'::JSONB,
@@ -149,7 +151,7 @@ async function createTable() {
         comment on column trade.state is '状态';
         comment on column trade.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS trade_log(
-            id serial PRIMARY KEY UNIQUE NOT NULL,
+            id TEXT PRIMARY KEY UNIQUE NOT NULL,
             tr_id TEXT NOT NULL DEFAULT '',
             trade_type TEXT NOT NULL DEFAULT '',
             amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
@@ -168,7 +170,7 @@ async function createTable() {
         comment on column trade_log.memo is '成交金额';
         comment on column trade_log.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS tbg_balance(
-            id serial PRIMARY KEY UNIQUE NOT NULL,
+            id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
             account_name TEXT NOT NULL DEFAULT '',
             release_amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
             sell_amount NUMERIC (20, 8) NOT NULL DEFAULT 0,

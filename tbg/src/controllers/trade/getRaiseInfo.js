@@ -3,7 +3,7 @@ const logger = require("../../common/logger.js").child({ "@controllers/trade/get
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const asset = require("../../models/asset");
 const { redis } = require("../../common");
-const { OPENING_PRICE_KEY, RAISE_PRICE, BASE_RATE } = require("../../common/constant/tradeConstant.js");
+const { OPENING_PRICE_KEY, RAISE_PRICE, BASE_RATE, OPENING_PRICE } = require("../../common/constant/tradeConstant.js");
 const { Decimal } = require("decimal.js");
 
 // 获取全球合伙人私募信息
@@ -23,7 +23,7 @@ async function getRaiseInfo(req, res, next) {
             }
         });
         // 获取开盘价格
-        const openingPrice = await redis.get(OPENING_PRICE_KEY);
+        const openingPrice = await redis.get(OPENING_PRICE_KEY) || OPENING_PRICE;
         resData.data = {
             "price": new Decimal(openingPrice).toNumber(),
             "raise_price": new Decimal(openingPrice).mul(RAISE_PRICE / BASE_RATE).toFixed(4),

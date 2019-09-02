@@ -2,9 +2,9 @@
 #Description:  create key pairs
 shopt -s expand_aliases
 # 钱包密码应为使用时的那个密码
-alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5JcqsSvTea4Z5GrZpvhfuCZZuABYNwxBdzovKJgMGoSqP4BFKi7'
+alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5J6pxhZNj2GZMLc77eMkYpEWxp6ReZwQmPrS7g7ty7nLiiup2Vn'
 alias cleos='docker exec -it nodeos /usr/bin/cleos -u http://localhost:8888 --wallet-url unix:///root/eosio-wallet/keosd.sock'
-UE_TOKEN_ACCOUNT=eosio.token
+UE_TOKEN_ACCOUNT=uetokencoin
 
 # 生成 EOS 账号
 function genEosAccountName() {
@@ -14,6 +14,7 @@ function genEosAccountName() {
     # printf "NUM_SEQ: $NUM_SEQ\n"
     i=1
     accountName=''
+    flag=0
     while [ "$i" -le "$LENGTH" ]
     do
         # 随机取一个字符
@@ -22,9 +23,13 @@ function genEosAccountName() {
         # 不以点和数字开头的账号
         if [[ ${ACCOUNT_NAME[1]} == "." ]] || [[ ${ACCOUNT_NAME[1]} == [[:digit:]] ]]
         then
-            # printf "ACCOUNT_NAME[1]: ${ACCOUNT_NAME[1]}\n"
-            unset ACCOUNT_NAME[1]
-            continue
+            # printf "ACCOUNT_NAME[12]: ${ACCOUNT_NAME[12]}\n"
+            unset ACCOUNT_NAME[12]
+        # 最后一个符号不能为点
+        elif [[ ${ACCOUNT_NAME[12]} == "." ]];
+        then
+            # printf "ACCOUNT_NAME[12]: ${ACCOUNT_NAME[12]}\n"
+            unset ACCOUNT_NAME[12]
         else
             let "i=i+1"
         fi
@@ -53,17 +58,28 @@ function blukImportKey() {
                 # 将账号信息重定向到文件
                 printf "private: $line\n" >> keyPairs
                 # 导入私钥
-                line | cleos wallet import --private-key=$line
+                cleos wallet import --private-key=$line
             else
                 printf "public: $line\n" >> keyPairs
                 printf "accountName: $accountName\n" >> keyPairs
                 # 创建账号
                 cleos create account eosio $accountName $line $line
                 # 转帐
-                cleos transfer $UE_TOKEN_ACCOUNT $accountName '10000.0000 UE' -p $UE_TOKEN_ACCOUNT
+                quantity='10000.0000 UE'
+                cleos push action $UE_TOKEN_ACCOUNT transfer "[\"${UE_TOKEN_ACCOUNT}\",\"${accountName}\",\"${quantity}\",\"recharger\"]" -p $UE_TOKEN_ACCOUNT
             fi
             count=$(($count + 1))
         done
+    done
+}
+
+# 给测试账户充值
+function recharger() {
+    quantity='10000.0000 UE'
+    for account in `grep -o '[0-5a-z\.]\{12,\}' keyPairs`
+    do
+        printf "$account\t"
+        cleos push action $UE_TOKEN_ACCOUNT transfer "[\"${UE_TOKEN_ACCOUNT}\",\"${account}\",\"${quantity}\",\"recharger\"]" -p $UE_TOKEN_ACCOUNT
     done
 }
 
@@ -71,3 +87,5 @@ function blukImportKey() {
 unlock
 # 生成一批测试账号，同时导入私钥
 blukImportKey
+
+# recharger

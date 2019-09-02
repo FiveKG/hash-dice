@@ -13,5 +13,6 @@ module.exports = {
     "insertBalanceLog": require("./insertBalanceLog.js"),
     "insertBalance": require("./insertBalance.js"),
     "updateBalance": require("./updateBalance.js"),
-    "updateRepeatBalance": require("./updateRepeatBalance.js")
+    "updateRepeatBalance": require("./updateRepeatBalance.js"),
+    "updateWithdrawEnable": require("./updateWithdrawEnable.js"),
 }

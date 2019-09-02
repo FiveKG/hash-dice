@@ -1,14 +1,21 @@
 // @ts-check
-const { JsonRpc } = require("eosjs");
-const fetch = require("node-fetch");
-const { WALLET_RECEIVER, END_POINT, TBG_TOKEN, TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
+const { Api, JsonRpc } = require('eosjs');
+const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
+const fetch = require('node-fetch');                                // node only
+const { TextDecoder, TextEncoder } = require('util');               // node only
+const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN, UE_TOKEN } = require("../common/constant/eosConstants.js");
 
-async function getTrxAction(actionSeq) {
+/**
+ * 
+ * @param { string } accountName 
+ * @param { number } actionSeq 
+ */
+async function getTrxAction(accountName, actionSeq) {
     try {
         // @ts-ignore
         const rpc = new JsonRpc(END_POINT, { fetch });
-        const resp = await rpc.history_get_actions(WALLET_RECEIVER, actionSeq, 9);
-        console.debug("resp: ", resp);
+        const resp = await rpc.history_get_actions(accountName, actionSeq, 9);
+        // console.debug("resp: ", resp.actions);
         return resp.actions;
     } catch (err) {
         throw err;
@@ -52,10 +59,84 @@ async function getCurrencyBalance(code, account, symbol) {
     }
 }
 
-getCurrencyBalance(TBG_TOKEN, TBG_TOKEN, TBG_TOKEN_SYMBOL).then().catch(err => console.error(err));
+/**
+ * 获取用户代币资产
+ * @param { string } transactionId 交易 id
+ */
+async function getTransaction(transactionId) {
+    try {
+        // @ts-ignore
+        const rpc = new JsonRpc(END_POINT, { fetch });
+    
+
+
+        const resp = rpc.history_get_transaction("d4688e098ce71b685fc1cdc80d33ecf7e87138aa6a90b495c3063c969816e834");
+        
+        return resp;
+    } catch (err) {
+        throw err;
+    }
+}
+
+/**
+ * 
+ * @param { String[] } privateKeyList 私钥数组
+ */
+async function newApi(privateKeyList) {
+    try {
+        const signatureProvider = new JsSignatureProvider(privateKeyList);
+        // @ts-ignore
+        const rpc = new JsonRpc(END_POINT, { fetch });
+        // @ts-ignore
+        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
+        return api;
+    } catch (err) {
+        throw err;
+    }
+}
+
+/**
+ * 转帐
+ * @param { String } tokenContract 代币合约用户
+ * @param { String } from 转帐用户
+ * @param { String } to 收款人
+ * @param { String } quantity  额度
+ * @param { String } memo 备注
+ * @param { String[] } privateKeyList 私钥数组
+ */
+async function transfer(tokenContract, from, to, quantity, memo, privateKeyList) {
+    try {
+        let api = await newApi(privateKeyList);
+        let actions = {
+            actions: [{
+              account: tokenContract,
+              name: "transfer",
+              authorization: [{
+                actor: from,
+                permission: 'active',
+              }],
+              data: {
+                from: from,
+                to: to,
+                quantity: quantity,
+                memo: memo,
+              }
+            }]
+          }
+        const result = await api.transact(actions, {
+            blocksBehind: 3,
+            expireSeconds: 30,
+          });
+
+          return result;
+    } catch (err) {
+        throw err;
+    }
+}
 
 module.exports = {
     getTrxAction,
     getCurrencyStats,
-    getCurrencyBalance
+    getCurrencyBalance,
+    getTransaction
 }

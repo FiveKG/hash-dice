@@ -3,6 +3,7 @@ const { pool } = require("../../db");
 
 /**
  * 获取用户的邀请码
+ * @param { string } accountName
  * @returns { Promise<any> }
  */
 async function getInviteCode(accountName) {

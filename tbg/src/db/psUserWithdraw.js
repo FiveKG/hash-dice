@@ -1,13 +1,12 @@
 // @ts-check
 const logger = require("../common/logger.js").child({"@": "publish - subscribe user withdraw"});
 const getAmqpChannel = require("./amqp.js");
-
-const USER_WITHDRAW = "userWithdraw"
+const { WITHDRAW } = require("../common/constant/optConstants.js");
 
 async function publish(data) {
     try {
-        let channel = await getAmqpChannel(USER_WITHDRAW);
-        await channel.sendToQueue(USER_WITHDRAW, Buffer.from(JSON.stringify(data)));
+        let channel = await getAmqpChannel(WITHDRAW);
+        await channel.sendToQueue(WITHDRAW, Buffer.from(JSON.stringify(data)));
     } catch (err) {
         throw err;
     }
@@ -15,9 +14,9 @@ async function publish(data) {
 
 async function subscribe(callback) {
     try {
-        let channel = await getAmqpChannel(USER_WITHDRAW);
-        channel.consume(USER_WITHDRAW, msg => {
-            logger.debug("subscribe userWithdraw message: ", msg);
+        let channel = await getAmqpChannel(WITHDRAW);
+        channel.consume(WITHDRAW, msg => {
+            // logger.debug("subscribe userWithdraw message: ", msg);
             if (msg !== null) {
                 callback(msg.content.toString());
                 channel.ack(msg);
@@ -28,16 +27,7 @@ async function subscribe(callback) {
     }
 }
 
-const userWithdraw = {
+module.exports = {
     "pub": publish,
     "sub": subscribe
-  }
-  
-  module.exports = userWithdraw;
-  
-  /**
-   * @typedef UserRechargeMessage
-   * @property {string} account_name 账号
-   * @property {number} amount 提现数量
-   * @property {string} symbol 代币符号
-   */
+};

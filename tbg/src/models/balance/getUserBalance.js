@@ -4,7 +4,7 @@ const { pool } = require("../../db/index.js");
 /**
  * 获取用户的资产额度
  * @param { String } accountName
- * @returns { Promise<any> }
+ * @returns { Promise<DB.Balance> }
  */
 async function getUserBalance(accountName) {
     try {

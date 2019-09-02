@@ -1,5 +1,6 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 
 /**
  * 获取用户的分红收入记录
@@ -14,12 +15,13 @@ async function getSafeIncome(accountName, limit, page) {
             SELECT create_time, change_amount, remark 
                 FROM balance_log 
                 WHERE account_name = $1
-                AND op_type = 'safe income'
+                AND op_type = $2
+                AND extra->>'symbol' = 'UE'
                 ORDER BY create_time DESC
-                LIMIT $2
-                OFFSET $3;
+                LIMIT $3
+                OFFSET $4;
         `
-        const opts = [ accountName, limit, (page - 1) * limit ]
+        const opts = [ accountName, OPT_CONSTANTS.PROTECTION, limit, (page - 1) * limit ]
         let selectResult = await pool.query(selectSql, opts);
         return  selectResult.rows;
     } catch (err) {

@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@src/models/account/userInvestment.js": "user investment" });
+const logger = require("../../common/logger.js").child({ "@src/businessLogic/account/userInvestment.js": "user investment" });
 const { getUserSubAccount } = require("../../models/subAccount");
 const allocateInvestAsset = require("./allocateInvestAsset.js");
 const calIncome = require("./calIncome.js");

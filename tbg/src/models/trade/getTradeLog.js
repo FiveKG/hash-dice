@@ -4,18 +4,23 @@ const logger = require("../../common/logger.js").child({ "@models/trade/getTrade
 
 /**
  * 获取交易日志信息
- * @param { String } amountType 资产包类型
+ * @param { String } tradeType 交易类型，买或者买
+ * @param { string } tradeState 交易状态
  * @returns { Promise<DB.Trade_log[]> }
  */
-async function getTradeLog(amountType) {
+async function getTradeLog(tradeType, tradeState) {
     try {
         const sql = `
-            SELECT * FROM trade_log WHERE amount_type = $1
+            SELECT * FROM trade_log 
+                WHERE trade_type = $1 
+                AND state  = $2 
+                ORDER BY create_time DESC
+
         `
-        const { rows } = await pool.query(sql, [ amountType ]);
+        const { rows } = await pool.query(sql, [ tradeType, tradeState ]);
         return rows;
     } catch (err) {
-        logger.error("get trade info error, the error stock is %O", err);
+        logger.error("get trade log info error, the error stock is %O", err);
         throw err;
     }
 }

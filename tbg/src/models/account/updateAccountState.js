@@ -4,6 +4,7 @@ const logger = require("../../common/logger.js");
 /**
  * 更新用户状态
  * @param { any } client
+ * @param { number } state
  * @param { String } accountName
  */
 async function updateAccountState(client, state, accountName) {

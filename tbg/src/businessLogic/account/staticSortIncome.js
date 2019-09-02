@@ -3,10 +3,10 @@ const logger = require("../../common/logger");
 const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
+const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { allocateSurplusAssets } = require("../systemPool");
 const { getSystemAccountInfo } = require("../../models/systemPool");
 const { getMainAccountBySub } = require("../../models/subAccount/index.js");
-const { getStaticSortIncomeByMain } = require("../../models/balanceLog/index.js");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
 const { redis } = require("../../common/index.js");
@@ -74,43 +74,43 @@ async function handleStaticSort(client, sortEnable, sortList, flag) {
     const accountNameList = Array.from(new Set(mainAccountList.map(item => item.main_account)));
     logger.debug("mainAccountList: %O, accountNameList: %O", mainAccountList, accountNameList);
     // 查找主帐户的收益信息
-    const mainAccountIncomeInfo = await getStaticSortIncomeByMain(accountNameList);
-    logger.debug("mainAccountIncomeInfo: %O", mainAccountIncomeInfo);
     for (let i = 0; i < mainAccountList.length; i++) {
         const mainAccount = mainAccountList[i];
         const mainAccountName = mainAccount.main_account;
         logger.debug("handleStaticSort: ", mainAccount);
-        const opType = `sort income`;
         const remark = `subAccount ${ mainAccount.sub_account_name }, income ${ avg.toFixed(8) }`;
         const now = new Date();
         const data = {
             "account_name": mainAccountName,
             "change_amount": avg,
             "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-            "op_type": opType,
+            "op_type": OPT_CONSTANTS.SORT,
             "remark": remark
         }
         // 将获取的收益添加到 redis
-        await storeIncome(mainAccountName, "sort", data);
+        await storeIncome(mainAccountName, OPT_CONSTANTS.SORT, data);
         // 获取加子账号的收益
         const incomeKey = `tbg:subAccountSort:${ mainAccount.sub_account_name }`;
         const subAccountIncome = await redis.get(incomeKey);
-        // 继续累加子账号的收益
-        const amount = new Decimal(subAccountIncome).add(avg.toFixed(8));            
-        // 低于出线额度的用户可分配奖金
-        if (amount.lessThan(INCOME_CONSTANT.SORT_OUT_LINE)) {
-            await redis.set(incomeKey, amount.toFixed(8));
-        } else {
-            // 超过出线额度的，从 redis 中清掉
-            await redis.del(incomeKey);
+        if (!!subAccountIncome) {
+            // 继续累加子账号的收益
+            const amount = new Decimal(subAccountIncome).add(avg.toFixed(8));            
+            // 低于出线额度的用户可分配奖金
+            if (amount.lessThan(INCOME_CONSTANT.SORT_OUT_LINE)) {
+                await redis.set(incomeKey, amount.toFixed(8));
+            } else {
+                // 超过出线额度的，从 redis 中清掉
+                await redis.del(incomeKey);
+            }
         }
     }
     
+    // 如果还有剩余
     if (flag) {
         // 系统账户
         let systemAccount = await getSystemAccountInfo();
         let last = sortEnable.minus(avg);
-        await allocateSurplusAssets(client, systemAccount, sortEnable, last, "sort");
+        await allocateSurplusAssets(client, systemAccount, sortEnable, last, OPT_CONSTANTS.SORT);
     }
 }
 

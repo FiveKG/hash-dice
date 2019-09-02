@@ -12,8 +12,8 @@ async function getAssetsInfoById(id) {
         const sql = `
             SELECT * FROM assets_package WHERE id = any($1)
         `
-        const { rows: assetsInfo } = await pool.query(sql, [ [ id ] ]);
-        return assetsInfo;
+        const { rows } = await pool.query(sql, [ id ]);
+        return rows;
     } catch (err) {
         logger.error("get assets_package info error, the error stock is %O", err);
         throw err;
