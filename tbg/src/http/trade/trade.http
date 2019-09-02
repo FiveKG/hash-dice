@@ -50,7 +50,7 @@ Content-Type: application/json
 }
 
 ### 获取普通卖出交易信息
-GET http://localhost:9527/trade/sell_assets?account_name=yujinsheng11
+GET http://localhost:9527/trade/sell_assets?account_name=yujinsheng11&amount=80
 
 ### 卖出交易列表
 GET http://localhost:9527/trade/sell_list?order_time=true
