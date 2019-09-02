@@ -215,50 +215,6 @@
             { "name": "create_time" , "type": "dateTime" , "dblength": "0", "dftValue": "now()", "summary": "参与的时间" ,  "isPrimary": false , "remark": ""},
             { "name": "amount" , "type": "int" , "dblength": "0", "dftValue": "0", "summary": "获取到的积分数量" ,  "isPrimary": false , "remark": ""}
           ]
-        },
-        {
-          "tableName": "otc_coin_account", "tableDesc": "OTC 交易数字货币账户", "primaryKey": "","group": "法币交易",
-          "fields": [
-            { "name": "otc_coin_account_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": "otc账户id"} , 
-            { "name": "account_id"      , "type": "text"    , "dblength": "36" , "dftValue": "''" , "summary": "账户id", "isPrimary": false, "remark": ""}, 
-            { "name": "coin_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "币种id" ,  "isPrimary": false , "remark": ""} , 
-            { "name": "balance" , "type": "decimal(32,8)" , "dblength": "", "dftValue": "0", "summary": "余额" ,  "isPrimary": false , "remark": ""}
-          ]
-        },
-        {
-          "tableName": "otc_coin_account_freeze", "tableDesc": "OTC 交易数字货币账户", "primaryKey": "","group": "法币交易",
-          "fields": [
-            { "name": "ocaf_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": "otc账户id"} , 
-            { "name": "account_id"      , "type": "text"    , "dblength": "36" , "dftValue": "''" , "summary": "账户id", "isPrimary": false, "remark": ""}, 
-            { "name": "coin_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "币种id" ,  "isPrimary": false , "remark": ""} , 
-            { "name": "otc_coin_account_id" , "type": "text" , "dblength": "", "dftValue": "''", "summary": "冗余的OTC交易数字货币账户id" ,  "isPrimary": false , "remark": ""},
-            { "name": "freeze_time" , "type": "dateTime" , "dblength": "0", "dftValue": "now()", "summary": "冻结的时间" ,  "isPrimary": false , "remark": ""},
-            { "name": "amount" , "type": "decimal(32,8)" , "dblength": "0", "dftValue": "0", "summary": "冻结的数量" ,  "isPrimary": false , "remark": ""},
-            { "name": "otc_freeze_type" , "type": "text" , "dblength": "50", "dftValue": "''", "summary": "冻结类型. transfer_in|transfer_out|trade " ,  "isPrimary": false , "remark": ""},
-            { "name": "relate_id" , "type": "text" , "dblength": "50", "dftValue": "''", "summary": "相关的订单id" ,  "isPrimary": false , "remark": ""},
-            { "name": "is_freezed" , "type": "bool" , "dblength": "0", "dftValue": "true", "summary": "当前是否冻结" ,  "isPrimary": false , "remark": ""},
-            { "name": "deadline_time" , "type": "dateTime" , "dblength": "0", "dftValue": "now()", "summary": "此记录处理的截止时间" ,  "isPrimary": false , "remark": ""}
-          ]
-        },
-        {
-          "tableName": "otc_coin_account_log", "tableDesc": "OTC 交易数字货币账户 日志(自动)", "primaryKey": "","group": "法币交易",
-          "fields": [
-            { "name": "ocal_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": "otc账户id"} , 
-            { "name": "otc_coin_account_id" , "type": "text" , "dblength": "", "dftValue": "''", "summary": "OTC交易数字货币账户id" ,  "isPrimary": false , "remark": ""},
-            { "name": "log_time" , "type": "dateTime" , "dblength": "0", "dftValue": "now()", "summary": "日志创建的时间" ,  "isPrimary": false , "remark": ""},
-            { "name": "before_balance" , "type": "decimal(32,8)" , "dblength": "0", "dftValue": "0", "summary": "账户变化前的数量" ,  "isPrimary": false , "remark": ""},
-            { "name": "after_balance" , "type": "decimal(32,8)" , "dblength": "0", "dftValue": "0", "summary": "账户变化后的数量" ,  "isPrimary": false , "remark": ""}
-          ]
-        },
-        {
-          "tableName": "otc_coin_account_biz_log", "tableDesc": "OTC 交易数字货币账户 日志(手动)", "primaryKey": "","group": "法币交易",
-          "fields": [
-            { "name": "ocabl_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": "otc账户id"} , 
-            { "name": "otc_coin_account_id" , "type": "text" , "dblength": "32", "dftValue": "''", "summary": "OTC交易数字货币账户id" ,  "isPrimary": false , "remark": ""},
-            { "name": "log_time" , "type": "dateTime" , "dblength": "0", "dftValue": "now()", "summary": "日志创建的时间" ,  "isPrimary": false , "remark": ""},
-            { "name": "otc_coin_account_op_type" , "type": "text" , "dblength": "50", "dftValue": "''", "summary": "OTC交易数字货币变化的类型" ,  "isPrimary": false , "remark": ""},
-            { "name": "amount" , "type": "decimal(32,8)" , "dblength": "0", "dftValue": "0", "summary": "账户变化的数量，正负" ,  "isPrimary": false , "remark": ""}
-          ]
         }
     ]
 }
