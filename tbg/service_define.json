@@ -1053,7 +1053,10 @@
                     "one_trx": { "type": "string",  "is_require": true, "desc": "单次最高可卖数量" },
                     "day_trx": { "type": "string",  "is_require": true, "desc": "每日最高可卖数量" },
                     "trx_day_count": { "type": "string",  "is_require": true, "desc": "每日最多可卖次数" },
-                    "level": { "type": "sting",  "is_require": true,  "desc": "会员等级" }
+                    "level": { "type": "sting",  "is_require": true,  "desc": "会员等级" },
+                    "sell_fee_amount": { "type": "string",  "is_require": true, "desc": "手续费" },
+                    "destroy_amount": { "type": "string",  "is_require": true, "desc": "销毁额度" },
+                    "income": { "type": "sting",  "is_require": true,  "desc": "实收额度" }
                 }
             }
         },
