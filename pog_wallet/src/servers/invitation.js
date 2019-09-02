@@ -206,12 +206,84 @@ const withdrawHistory = (reqData) => {
     return getData(url, data);
 }
 
+
+
 // 获取账号类型
 const getType= (reqData) => {
     const url = '/account/info';
     const data = reqData;
     return getData(url, data);
 }
+// 获取全球合伙人私募信息
+const partnerPlacement= (reqData) => {
+    const url = '/trade/raise_buy';
+    const data = reqData;
+    return getData(url, data);
+}
+// 私募交易列表
+const PlacementTransactionList= (reqData) => {
+    const url = '/trade/raise_list';
+    const data = reqData;
+    return getData(url, data);
+}
+// 正常和合伙人历史买入列表数据
+const getSellHistoryList= (reqData) => {
+    const url = '/trade/buy_assets_history';
+    const data = reqData;
+    return getData(url, data);
+}
+// 全球合伙人私募
+const globalPartnerPlacement = (reqData) => {
+    const url = '/trade/global_raise_buy';
+    const data = reqData;
+    return postData(url, data);
+}
+// 买入资产
+const buyAsset = (reqData) => {
+    const url = '/trade/user_buy_assets';
+    const data = reqData;
+    return postData(url, data);
+}
+// 卖出资产
+const sellAsset = (reqData) => {
+    const url = '/trade/user_sell_assets';
+    const data = reqData;
+    return postData(url, data);
+}
+// 获取普通买入交易信息
+const getGeneralBuy = (reqData) => {
+    const url = '/trade/buy_assets';
+    const data = reqData;
+    return getData(url, data);
+}
+// 买入交易列表
+const normalTransactionList = (reqData) => {
+    const url = '/trade/buy_list';
+    const data = reqData;
+    return getData(url, data);
+}
+// 获取普通卖出交易信息
+const getGeneralSell = (reqData) => {
+    const url = '/trade/sell_assets';
+    const data = reqData;
+    return getData(url, data);
+}
+// 卖出交易列表
+const sellTransactionList = (reqData) => {
+    const url = '/trade/sell_list';
+    const data = reqData;
+    return getData(url, data);
+}
+// 资产包卖出记录
+const getSellList = (reqData) => {
+    const url = '/trade/sell_history';
+    const data = reqData;
+    return getData(url, data);
+}
+
+
+
+
 //有效资产包矿机
 const effectiveAssets= (reqData) => {
     const url = '/mine_pool/mining';
@@ -301,6 +373,18 @@ export {
     withdrawHistory,
 
     getType,
+    partnerPlacement,
+    PlacementTransactionList,
+    getSellHistoryList,
+    getGeneralBuy,
+    normalTransactionList,
+    getGeneralSell,
+    sellTransactionList,
+    getSellList,
+    globalPartnerPlacement,
+    buyAsset,
+    sellAsset,
+
     effectiveAssets,
     overAssets,
     assetMiningDetails,
