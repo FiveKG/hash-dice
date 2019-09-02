@@ -802,7 +802,7 @@
             }
         },
         {
-            "name" : "私募交易列表",
+            "name" : "获取当前交易价格",
             "summary": "",
             "remark": [],
             "isFunctionPoint" : true,
@@ -810,7 +810,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                
+                "TBG 首页，参与 TBG2 后，在首页显示的价格"
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,

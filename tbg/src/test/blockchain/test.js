@@ -1,65 +1,52 @@
 // @ts-check
-const { redis } = require("../../common");
 const { Api, JsonRpc } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
 const fetch = require('node-fetch');                                // node only
 const { TextDecoder, TextEncoder } = require('util');               // node only
-const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN, UE_TOKEN, WALLET_RECEIVER } = require("../../common/constant/eosConstants.js");
-const df = require("date-fns");
 const { scheduleJob } = require("node-schedule");
 let network = {
     main_net: "https://nodes.get-scatter.com"
 }
+// TBG1 收款账户
+const WALLET_RECEIVER = "tbgjoin";
+// TBG1 出款账户
+const DISPENSE_ACCOUNT = "tbgjoin";
+// EOS token 合约账户
+const EOS_TOKEN = "eosio.token";
+const EOS_TOKEN_SYMBOL = "EOS"
+// UE token 合约账户
+const UE_TOKEN = "uetokencoin";
+const UE_TOKEN_SYMBOL = "UE"
+// TBG token 合约账户
+const TBG_TOKEN = "tbgtokencoin"
+const TBG_TOKEN_SYMBOL = "TBG"
+// 节点信息
+const END_POINT = "http://localhost:8888"
+// 私钥
+const PRIVATE_KEY_TEST = "5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h,5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo,5KSzppBW7LcwVQ4hA1AQP4vZYWq1uEv4EQnZ5yz1eu41eLgrLK2,5JRiAXpyd5TW5REvLYd35FkrJSMjFfiUtrwrCNpChHFMVNnRDwB,5JAW6eWS4ADjwCr76xCvmPefknzhFg33f4haL5dbuiB5WoW79tQ,5JiaokGm1A7kyLq92YrQjp42Fr7Vqs52NBquCYiuU8DxKURkhfu,5KbQQbR83HFMPPaKCY4GPVBtNZZW4t6nNxtPEWkVPUHMWxpQLzS,5K7h5xxZNCfq6ujRmLWgCHHQKf4gAuKYAU8yDFRDwvkAN3scPki,5K5sRqqp3XebvjMmK1TYBFiSAd6XbwLeJa9L3CxWBMiWcSGCsDG"
+
 
 ;(async ()=> {
     try {
-        // getCurrencyBalance(UE_TOKEN, 'dengderong', 'UE')
-        // .then(res => console.error(res))
-        // .catch(err => console.error(err));
-
-        // transfer(UE_TOKEN, UE_TOKEN, 'dengderong', '1000000.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
-        // .then(res => console.error(res))
-        // .catch(err => console.error(err));
-        const now = df.format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
-        const dayStart = df.startOfDay(now);
-        const startTime = df.addHours(dayStart, 10);
-        const endTime = df.addHours(dayStart, 21);
-        const trxList = [];
-        const actionList = [];
-        // 如果在不再交易时间内, 交易结束时，没有完成的订单全部撤销，资金原路退回
-        const flag = df.isWithinRange(new Date(), startTime, endTime)
-        // console.debug(flag);
-
         const signatureProvider = new JsSignatureProvider(PRIVATE_KEY_TEST.split(","));
         // @ts-ignore
         const rpc = new JsonRpc(END_POINT, { fetch });
         // @ts-ignore
         const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
-        // scheduleJob("* * * * * *", async () => {
-            
-        // });
-        // const head_block_num = await rpc.get_info(); 
-        // const id = await rpc.get_block(head_block_num.head_block_num);
-        // console.debug("head_block_num: %O, id: %O", head_block_num.head_block_time, id);
 
-        // while (true) {
-        //     await sleep(500);
-        //     const { head_block_num, head_block_time } = await rpc.get_info();
-        //     const { id, timestamp } = await rpc.get_block(head_block_num);
-        //     console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
-        // }
+        // 获取区块链信息
+        const { head_block_num, head_block_time } = await rpc.get_info();
+        // 根据当前区块获取到时间戳和交易 id
+        const { id, timestamp } = await rpc.get_block(head_block_num);
+        console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
 
-        
-        const account = 'gametestuser'
-        const amount = "10000.0000"
-        const symbol = "UE"
-        const quantity = `${amount} ${symbol}`
-        const memo = `tbg_invest:${account}`
-        // const resp = await transfer(UE_TOKEN, 'yujinsheng11', 'tbgfreepool', quantity, 'yujinsheng11,0.05,raise,4', PRIVATE_KEY_TEST.split(","))
-        // const resp = await transfer(UE_TOKEN, account, 'tbgfreepool', '101.1400 UE', 'gametestuser,1.0114,buy,2', PRIVATE_KEY_TEST.split(","));
-        // const resp = await transfer(TBG_TOKEN, 'yujinsheng11', 'tbgfreepool', '101.1400 TBG', 'yujinsheng11,1.0114,sell,100', PRIVATE_KEY_TEST.split(","));
-        // const resp = await getTrxAction(WALLET_RECEIVER, 0)
-        // console.debug(resp)
+        getCurrencyBalance(UE_TOKEN, 'dengderong', 'UE')
+        .then(res => console.error(res))
+        .catch(err => console.error(err));
+
+        // transfer(UE_TOKEN, UE_TOKEN, 'dengderong', '1000000.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
+        // .then(res => console.error(res))
+        // .catch(err => console.error(err));
     } catch (err) {
         throw err;
     }
@@ -140,11 +127,7 @@ async function getTransaction(transactionId) {
     try {
         // @ts-ignore
         const rpc = new JsonRpc(END_POINT, { fetch });
-    
-
-
         const resp = rpc.history_get_transaction("d4688e098ce71b685fc1cdc80d33ecf7e87138aa6a90b495c3063c969816e834");
-        
         return resp;
     } catch (err) {
         throw err;

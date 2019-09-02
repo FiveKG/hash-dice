@@ -44,13 +44,15 @@ async function wringTrade() {
                 return;
             }
             for (const info of tradeInfo) {
+                const tradeTime = df.format(now, "YYYY-MM-DD : HH:mm:ssZ");
+                const tradeMemo = 'trade close, cancel trade order';
                 trxList.push({
                     sql: updateTradeSql,
-                    values: [ "cancel", info.trade_type, now, info.id ]
-                })
+                    values: [ "cancel", tradeTime, 0, info.id ]
+                });
                 trxList.push({
                     sql: insertTradeLogSql,
-                    values: [ generate_primary_key(), info.id, info.trade_type, info.amount, 'trade close, cancel trade order', info.price, info.amount * info.price, df.format(now, "YYYY-MM-DD : HH:mm:ssZ") ]
+                    values: [ generate_primary_key(), info.id, info.trade_type, info.amount, tradeMemo, info.price, info.amount * info.price, tradeTime ]
                 });
             }
         } else {
