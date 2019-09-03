@@ -15,7 +15,7 @@
                 <div class="bot">TBG</div>
             </div>
         </div>
-        <div class="checkin-link">
+        <div class="checkin-link" @click="jumpSignDetails">
             签到奖励明细 >
         </div>
     </div>
@@ -43,6 +43,13 @@ export default {
             })
         })
     },
+     methods: {
+        jumpSignDetails() {        //跳转签到奖励明细
+          this.$router.push({
+          name: 'SignDetails',
+        })
+       },
+    }
 }
 </script>
 

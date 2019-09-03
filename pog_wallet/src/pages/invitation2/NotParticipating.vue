@@ -74,7 +74,7 @@
         <div class="select-wrap">
             <div class="ipt_layout" style="box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);border: none;background: rgb(255, 255, 255);">
                 <div>
-                <span style="font-size: .45rem;color: #1E1E1E;">我的邀请专页</span>
+                <span style="font-size: .45rem;color: #1E1E1E;" @click="jumpMyInvitationPage">我的邀请专页</span>
                 </div>
             </div>
         </div>
@@ -87,7 +87,7 @@
           </div>
           <!-- 下拉部分 -->
           <div class="select-toggle" ref="slt-1" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
-              <div class="select-item" v-for="(item, index) in MyTeamItem" :key="index">{{item.text}}</div>
+              <div class="select-item" v-for="(item, index) in MyTeamItem" :key="index" @click="jumpMyTeam(index)">{{item.text}}</div>
           </div>
         </div>
       </div>
@@ -118,10 +118,13 @@
             </span>
           </div>
           <div class="child-account_content">
-              <div class="child-account_left">
+              <div class="child-account_left" @click="jumpSubAccount">
                 子账号数量：
                 <span>{{sub_account.total_sub_account}}</span>
               </div>
+              <!-- <div class="child-account_left" @click="">
+                <span>参与TBG-I</span>
+              </div> -->
               <div @click="navigateTo('HelpFriend')" class="child-account_right">
                 帮助投资伙伴
               </div>
@@ -149,7 +152,7 @@
               规则>
             </span>
           </div>
-          <div class="income_content">
+          <div class="income_content" @click="jumpProfit">
             <div class="income_content_inner">
               <span>总计</span>
               <span>{{total_income}} UE</span>
@@ -168,7 +171,7 @@
             </span>
           </div>
           <div class="ensure_content">
-            <div @click='navigateTo(item.url)' v-for="(item, index) in ensure" :key="index" class="ensure_content_inner">
+            <div @click='navigateTo(item.url)' v-for="(item, index) in ensure" :key="index" class="ensure_content_inner" >
               <span class="top">{{item.top}}</span>
               <span class="mid">{{item.mid}}</span>
               <span class="bot">{{item.bot}}</span>
@@ -271,7 +274,7 @@
               规则>
             </span>
           </div>
-          <div class="content">
+          <div class="content" @click="jumpAssetPool">
               
               <div class="left">
                 <img class="people"  src="@/assets/img/u6712.gif" alt="">
@@ -294,7 +297,7 @@
               规则>
             </span>
           </div>
-          <div class="content clear">
+          <div class="content clear" @click="jumpAssetLinearPool">
             <div class="left">释放池余额</div>
             <div class="right">2,492.5160 <span> 0210 </span> TBG</div>
           </div>
@@ -314,14 +317,14 @@
 
           <div class="content">
 
-            <div class="item">
+            <div class="item" @click="jumpSaleableBalance">
                 <p>可售余额</p>
                 <p>197.2660 <span>0000</span></p>
                 <p>TBG</p>
             </div>
 
-            <div class="item">
-                <p>可售余额</p>
+            <div class="item" @click="jumpSaleableLimit">
+                <p>可售额度</p>
                 <p>197.2660 <span>0000</span></p>
                 <p>TBG</p>
             </div>
@@ -358,6 +361,7 @@ export default {
                 total_income: '',
                 selected_ipt:false,
                 tbg:0,
+                account_type:'',     //账号类型
                 system_ntf:[],
                 MyInvitationItem: [
                   { text: '普通用户', value: 'OrdinaryUsers' },
@@ -433,7 +437,7 @@ export default {
       CheckIn
     },
     created(){
-        this.account_name = this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]
+        this.account_name = this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];
         api.isActive({
           account_name: this.account_name
         }).then(res => {
@@ -486,8 +490,12 @@ export default {
         })
         api.getSystemNtf().then(res => {
           this.system_ntf = res.data.system_notification
-                    console.log(this.system_ntf)
-
+          // console.log(this.system_ntf)
+        })
+        api.getType({account_name:this.account_name}).then(res => {    //获取当前用户的信息
+          if(res.code){
+            console.log(11111111111111111,res.data);
+            }
         })
     },
     beforeDestroy() {
@@ -536,7 +544,58 @@ export default {
                   // do something
               }
           }, 1000)
-      }
+      },
+      //跳转路由
+      jumpSaleableBalance() {        //跳转可售余额
+          this.$router.push({ 
+          name: 'SaleableBalance',
+        })
+       },
+      jumpSaleableLimit() {        //跳转可售额度
+          this.$router.push({
+          name: 'SaleableLimit',
+        })
+       },
+      jumpAssetLinearPool() {     //跳转TBG线性释放池
+          this.$router.push({
+          name: 'AssetLinearPool',
+        })
+       },
+      jumpAssetPool() {         //跳转TBG资产包矿池
+          this.$router.push({
+          name: 'AssetPool',
+        })
+       },
+      jumpMyTeam(index) {
+        if(index==0){       //跳转我的团队---普通用户
+          this.$router.push({
+            name: 'MyTeam',
+        })
+        }else{               //跳转我的团队---全球合伙人
+
+        }
+       },
+      jumpMyInvitationPage() {
+        let Judge=0;        //判断普通用户--全球合伙人
+        if(Judge==0){       //跳转我的邀请专页---普通用户
+          this.$router.push({
+            name: 'MyInvitationPage',
+        })
+        }else{               //跳转我的邀请专页---全球合伙人
+
+        }
+       },
+      jumpSubAccount() {         //跳转 子账号
+          this.$router.push({
+          name: 'SubAccount',
+        })
+       },
+      jumpProfit() {         //跳转 TBG-1收益
+          this.$router.push({
+          name: 'Profit',
+        })
+       },
+
     },
 }
 </script>

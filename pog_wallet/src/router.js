@@ -78,6 +78,9 @@ import BingoPool from './pages/invitation/BingoPool'
 import ShareholderPool from './pages/invitation/ShareholderPool'
 import FivePool from './pages/invitation/FivePool'
 import PkPool from './pages/invitation/PkPool'
+import UnBind from './pages/invitation/UnBind'
+import IsBind from './pages/invitation/IsBind'
+import IndexT from './pages/invitation/Index'
 
 import TradingCenter from './pages/invitation2/TradingCenter/TradingCenter'
 import AssetPool from './pages/invitation2/AssetPool/AssetPool'
@@ -482,6 +485,21 @@ const router = new Router({
       path: '/tradingCenter',
       name: 'TradingCenter',
       component: TradingCenter,
+    },
+    {
+      path: '/unBind',
+      name: 'UnBind',
+      component: UnBind,
+    },
+    {
+      path: '/isBind',
+      name: 'IsBind',
+      component: IsBind,
+    },
+    {
+      path: '/indexT',
+      name: 'IndexT',
+      component: IndexT,
     },
     {
       path: '/assetPool',
