@@ -9,6 +9,7 @@ const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { Decimal } = require("decimal.js");
 const logger = require("../../common/logger.js");
+const { redis } = require("../../common");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
 
@@ -36,6 +37,14 @@ async function handlerPk() {
         if (bingoAccountList.length === 0) {
             return;
         }
+
+        // 获取当前的期数
+        let periods = await redis.get(`tbg:periods:${BINGO_POOL}`);
+        let currPeriods = 1
+        if(!!periods) {
+            currPeriods = parseInt(periods);
+        }
+        
         logger.log("bingoAccountList: ", bingoAccountList)
         for (let i = 0; i< bingoAccountList.length; i++){
             let item = bingoAccountList[i]
@@ -53,17 +62,19 @@ async function handlerPk() {
                 "change_amount": distrEnable.mul(rate),
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
                 "op_type": OPT_CONSTANTS.BINGO,
+                "extra": { "symbol": UE_TOKEN_SYMBOL, periods: currPeriods },
                 "remark": remark
             }
             await storeIncome(item.account_name, OPT_CONSTANTS.BINGO, data);
         };
 
         let changeAmount = new Decimal(-distrEnable);
-        let opType = `allocating ${ BINGO_POOL }`;
+        let opType = OPT_CONSTANTS.BINGO;
         let remark = `allocating ${ BINGO_POOL }, minus ${ distrEnable }`;
         await updateSystemAmount(client, BINGO_POOL, changeAmount, rows.pool_amount, UE_TOKEN_SYMBOL);
-        await insertSystemOpLog(client, changeAmount.toNumber(), rows.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: BINGO_POOL }, opType, remark, "now()");
+        await insertSystemOpLog(client, changeAmount.toNumber(), rows.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: BINGO_POOL, periods: currPeriods }, opType, remark, "now()");
         await client.query("COMMIT");
+        await redis.set(`tbg:periods:${BINGO_POOL}`, currPeriods + 1);
         logger.debug(`handler ${ BINGO_POOL } pool over, ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ss")}`);
     } catch (err) {
         await client.query("ROLLBACK");

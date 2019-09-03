@@ -82,7 +82,7 @@ async function startGain(incomeMap, incomeType) {
             let rows = await getUserBalance(accountName);
             const createTime = df.format(item.create_time, "YYYY-MM-DD HH:mm:ssZ");
             const repeat_currency = await updateBalance(pool, accountName, changeAmount);
-            trxList.push([accountName, changeAmount.toFixed(8), rows.amount, item.op_type, { "symbol": UE_TOKEN_SYMBOL }, item.remark, createTime]);
+            trxList.push([accountName, changeAmount.toFixed(8), rows.amount, item.op_type, item.extra, item.remark, createTime]);
             // 如果复投资产大于投资额,自动复投生成一个子账号
             if (new Decimal(repeat_currency).gte(BALANCE_CONSTANTS.BASE_RATE)) {
                 await userInvestment(BALANCE_CONSTANTS.BASE_RATE, accountName, `user ${ accountName } repeat ${ BALANCE_CONSTANTS.BASE_RATE } UE`)

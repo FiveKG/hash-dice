@@ -1,6 +1,7 @@
 // @ts-check
 const sleep = require("../../job/sleep.js");
 const { getSafeAccountList } = require("../../models/systemPool");
+const { getBalanceLogByTerm } = require("../../models/balanceLog");
 const { redis } = require("../../common");
 const { pool } = require("../../db");
 
@@ -40,6 +41,9 @@ function getInfo(a, b, c, d, e) {
     const str = "cb1528298aa9c3a6d4d047e14701c06f1fdc3b9982ab5dead0a3336e13d07064";
     const reg = /[\d]+/
     const res = reg.test(str);
+
+    const balanceLog = await getBalanceLogByTerm({ opType: "sort", "symbol": "UE"});
+    console.debug(balanceLog)
 
     // let safeAccountList = await getSafeAccountList();
     // for (const info of safeAccountList) {

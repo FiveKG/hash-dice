@@ -59,7 +59,7 @@ const SAFE_ALLOCATE_RATE = 10;
 // bingo 奖金池每天分配占比
 const BINGO_ALLOCATE_RATE = 70;
 // 股东分红奖金池每天分配占比
-const SHAREHOLDERS_ALLOCATE_RATE = "0.00233215";
+const SHAREHOLDERS_ALLOCATE_RATE = 10;
 
 /**
  * @type { Constant }

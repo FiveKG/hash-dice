@@ -758,9 +758,37 @@
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "enable_quantity": { "type": "decimal",  "is_require": true,  "desc": "TBG 可售数量" },
-                    "rate": { "type": "decimal",  "is_require": true,  "desc": "1 TBG 可分红比例" },
-                    "total": { "type": "decimal",  "is_require": true,  "desc": "用户分红累计收入" },
+                    "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                    "dividend_enable": { "type": "decimal",  "is_require": true,  "desc": "本期 TBG 分红额" },
+                    "bonus": { "type": "decimal",  "is_require": true,  "desc": "1 TBG 可分红比例" },
+                    "quantity": { "type": "decimal",  "is_require": true,  "desc": "分红池余额" },
+                    "issue": { "type": "decimal",  "is_require": true,  "desc": "累计已发放股东分红" },
+                    "dividend_rate": { "type": "number",  "is_require": true,  "desc": "本期分红比例" }
+                }
+            }
+        },
+        {
+            "name" : "我的分红",
+            "summary": "",
+            "remark": [
+                "查看我的分红"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/pools/my_dividend",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                    "sell_amount": { "type": "decimal",  "is_require": true,  "desc": "TBG 可售数量" },
+                    "bonus": { "type": "decimal",  "is_require": true,  "desc": "1 TBG 可分红额度" },
+                    "dividend_enable": { "type": "decimal",  "is_require": true,  "desc": "当前用户可分红" },
+                    "dividend": { "type": "decimal",  "is_require": true,  "desc": "用户分红累计收入" },
                     "detail": { 
                         "type": "array",  "is_require": true,  "desc": "分红明细",
                         "properties": {

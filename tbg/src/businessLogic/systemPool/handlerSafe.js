@@ -85,13 +85,14 @@ async function handlerSafe() {
                 "change_amount": distrEnable.mul(rate),
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
                 "op_type": OPT_CONSTANTS.PROTECTION,
+                "extra": { "symbol": UE_TOKEN_SYMBOL },
                 "remark": remark
             }
             await storeIncome(item.account_name, OPT_CONSTANTS.PROTECTION, data);
         }
 
         let changeAmount = new Decimal(-distrEnable);
-        let opType = `allocating ${ SAFE_POOL }`;
+        let opType = OPT_CONSTANTS.PROTECTION;
         let remark = `allocating ${ SAFE_POOL }, minus ${ distrEnable }`;
         await updateSystemAmount(client, SAFE_POOL, changeAmount, rows.pool_amount, UE_TOKEN_SYMBOL);
         await insertSystemOpLog(client, changeAmount.toNumber(), rows.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: SAFE_POOL }, opType, remark, "now()");

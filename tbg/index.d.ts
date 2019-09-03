@@ -59,7 +59,8 @@ declare namespace DB {
         "extra": {
             "symbol": string,
             "tr_id": string,
-            "op_type": string
+            "op_type": string,
+            "periods": number
         },
         "op_type": string,
         "remark": string,

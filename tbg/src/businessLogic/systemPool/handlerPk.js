@@ -47,13 +47,14 @@ async function handlerPk() {
                 "change_amount": distrEnable.mul(rate),
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
                 "op_type": OPT_CONSTANTS.PK,
+                "extra": { "symbol": UE_TOKEN_SYMBOL },
                 "remark": remark
             }
             await storeIncome(item.referrer_name, OPT_CONSTANTS.PK, data);
         }
 
         let changeAmount = new Decimal(-distrEnable);
-        let opType = `allocating ${ PK_POOL }`;
+        let opType = OPT_CONSTANTS.PK;
         let remark = `allocating ${ PK_POOL }, minus ${ distrEnable }`;
         await updateSystemAmount(client, PK_POOL, changeAmount, rows.pool_amount, UE_TOKEN_SYMBOL);
         await insertSystemOpLog(client, changeAmount.toNumber(), rows.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: PK_POOL }, opType, remark, "now()");

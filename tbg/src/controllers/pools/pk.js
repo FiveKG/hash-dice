@@ -32,10 +32,16 @@ async function pk(req, res, next) {
         let pkAccountList = await getPkAccountList();
         let detail = pkAccountList.map((item, idx) => {
             let rate = setRate(idx);
+            // let obj = {}
+            // if (idx < 4) {
+            const obj = {
+                    percentage: `${ rate }%`
+                }
+            // }
             return {
                 "account_name": item.referrer_name,
                 "sub_account": item.invite_count,
-                "percentage": `${ rate }%`,
+                ...obj,
                 "bonus": distrEnable.mul(rate).toFixed(4)
             }
         })

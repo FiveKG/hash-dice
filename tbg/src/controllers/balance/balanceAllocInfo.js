@@ -12,10 +12,16 @@ async function balanceAllocInfo(req, res, next) {
         logger.debug(`the param is %j: `, reqData);
         let rows = await getUserBalance(reqData.account_name);
         if (!rows) {
-            return res.send(get_status(1001, "this account does not exists"));
+            rows = {
+                amount: 0,
+                withdraw_enable: 0,
+                repeat_currency: 0,
+                lotto_currency: 0,
+                game_currency: 0
+            }
+            // return res.send(get_status(1001, "this account does not exists"));
         }
         let resData = get_status(1);
-        let amount = new Decimal(rows.amount);
         let withdrawEnable = new Decimal(rows.withdraw_enable);
         resData["data"] = {
             "withdraw_enable": withdrawEnable.toFixed(8),

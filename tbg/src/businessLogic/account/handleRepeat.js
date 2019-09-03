@@ -44,6 +44,7 @@ async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRe
             "change_amount": globalChangeAmount,
             "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
             "op_type": accountOpType,
+            "extra": { "symbol": UE_TOKEN_SYMBOL },
             "remark": globalMemo
         }
         // 存入 redis，待用户点击的时候再收取
@@ -71,6 +72,7 @@ async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRe
                 "change_amount": changeAmount,
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
                 "op_type": accountOpType,
+                "extra": { "symbol": UE_TOKEN_SYMBOL },
                 "remark": memo
             }
             // 存入 redis，待用户点击的时候再收取

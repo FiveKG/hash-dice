@@ -4,6 +4,7 @@ const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
+const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 const { allocateSurplusAssets } = require("../systemPool");
 const { getSystemAccountInfo } = require("../../models/systemPool");
 const { getMainAccountBySub } = require("../../models/subAccount/index.js");
@@ -85,6 +86,7 @@ async function handleStaticSort(client, sortEnable, sortList, flag) {
             "change_amount": avg,
             "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
             "op_type": OPT_CONSTANTS.SORT,
+            "extra": { "symbol": UE_TOKEN_SYMBOL },
             "remark": remark
         }
         // 将获取的收益添加到 redis

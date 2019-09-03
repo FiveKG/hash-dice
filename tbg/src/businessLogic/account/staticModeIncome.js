@@ -4,6 +4,7 @@ const { Decimal } = require("decimal.js");
 const { BASE_RATE, MODE_INCOME_RATE} = require("../../common/constant/investConstant.js");
 const MODE_CONSTANT = require("../../common/constant/staticModeConstants.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
+const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 const logger = require("../../common/logger.js");
 const storeIncome = require("../../common/storeIncome.js");
 const { getSystemAccountInfo } = require("../../models/systemPool");
@@ -48,6 +49,7 @@ async function staticMode(client, amount, subAccount) {
                 "change_amount": availableIncome,
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
                 "op_type": OPT_CONSTANTS.MODE,
+                "extra": { "symbol": UE_TOKEN_SYMBOL },
                 "remark": remark
             }
             // 将收益暂存，等待用户收取

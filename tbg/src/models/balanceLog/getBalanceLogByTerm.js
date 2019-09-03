@@ -36,7 +36,7 @@ async function getBalanceLogByTerm(params) {
         `
 
         const { rows: [ { total } ] } = await pool.query(selectSql, opts);
-        return  total;
+        return  !!total ? total : 0;
     } catch (err) {
         logger.error("query balance_log error, the error stock is %O", err);
         throw err;

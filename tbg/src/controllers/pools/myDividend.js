@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/pools/bingo.js": "bingo pool" });
+const logger = require("../../common/logger.js").child({ "@controllers/pools/myDividend.js": "我的分红" });
 const { get_status, inspect_req_data, redis } = require("../../common/index.js");
 const { SHAREHOLDERS_ALLOCATE_RATE } = require("../../common/constant/incomeConstant.js");
 const { getAccountMemberLevel } = require("../../models/account");
@@ -13,20 +13,15 @@ const { getBalanceLogByTerm, getBalanceLogInfo } = require("../../models/balance
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const df = require("date-fns");
 
-// shareholders 奖池详情
-async function shareholdersAmount(req, res, next) {
+// 我的分红
+async function myDividend(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
         let resData = get_status(1);
         
         let holderAmount = await getShareholdersAmount();
-        let holderHistory = await getHolderHistory();
-        if (!holderAmount || !holderHistory) {
+        if (!holderAmount) {
             return res.send(get_status(1010, "shareholders pool does not exists"));
-        }
-
-        if (!holderHistory.issue) {
-            holderHistory.issue = 0;
         }
         // 获取当前的期数
         let periods = await redis.get(`tbg:periods:${SHAREHOLDERS_POOL}`);
@@ -34,35 +29,46 @@ async function shareholdersAmount(req, res, next) {
         if(!!periods) {
             currPeriods = parseInt(periods);
         }
-
+        // 获取用户的 tbg 可售数量
+        let tbgBalance = await getTbgBalanceInfo(reqData.account_name);
+        let sellAmount = new Decimal(0);
+        if (!!tbgBalance) {
+            sellAmount = sellAmount.add(tbgBalance.sell_amount);
+        }
+        const balanceLogInfo = await getBalanceLogInfo({ accountName: reqData.account_name, opType: OPT_CONSTANTS.HOLDER, symbol: UE_TOKEN_SYMBOL })
         let holderPoolAmount = new Decimal(holderAmount.pool_amount);
-        
         // 本次分配的金额
         let distrEnable = holderPoolAmount.mul(INCOME_CONSTANT.SHAREHOLDERS_ALLOCATE_RATE).div(INCOME_CONSTANT.BASE_RATE);
         let holderAccountList = await getHolderAccountList();
-        logger.debug("holderPoolAmount: ,distrEnable: ", holderPoolAmount, distrEnable);
-        logger.debug("holderAccountList: ", holderAccountList)
         if (holderAccountList.length === 0) {
             return;
         }
         // 计算每个 TBG 可以分配多少个额度
         const total = holderAccountList.map(it => it.sell_amount).reduce((pre, curr) => Number(pre) + Number(curr));
         const bonus = distrEnable.div(total);
+        let dividendAmount = new Decimal(0);
+        const detail = balanceLogInfo.map(it => {
+            dividendAmount = dividendAmount.add(it.change_amount);
+            return {
+                "create_time": it.create_time,
+                "issue": it.extra.periods,
+                "income": new Decimal(it.change_amount).toFixed(8)
+            }
+        })
 
-        let issue = new Decimal(holderHistory.issue).abs();
         resData["data"] = {
             periods: currPeriods,
-            dividend_enable: distrEnable.toFixed(4),
+            sell_amount: sellAmount.toFixed(8),
             bonus: bonus.toFixed(8),
-            quantity: holderPoolAmount.toFixed(4),
-            issue: issue.toFixed(4),
-            dividend_rate: INCOME_CONSTANT.SHAREHOLDERS_ALLOCATE_RATE
+            dividend: dividendAmount.toFixed(8),
+            dividend_enable: sellAmount.mul(bonus).toFixed(8),
+            detail: detail,
         };
         res.send(resData);
     } catch (err) {
-        logger.error("request shareholdersAmount error, the error stock is %O", err);
+        logger.error("request myDividend error, the error stock is %O", err);
         throw err;
     }
 }
 
-module.exports = shareholdersAmount;
+module.exports = myDividend;

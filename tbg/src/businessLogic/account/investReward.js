@@ -4,6 +4,7 @@ const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
+const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
 const { allocateSurplusAssets } = require("../systemPool")
@@ -41,6 +42,7 @@ async function investReward(client, amount, accountName, referrerAccountList, sy
                 "change_amount": income,
                 "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
                 "op_type": OPT_CONSTANTS.INVITE,
+                "extra": { "symbol": UE_TOKEN_SYMBOL },
                 "remark": referIncomeRemark
             }
             // 存入 redis，待用户点击的时候再收取

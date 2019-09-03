@@ -84,6 +84,8 @@ router.post("/income/income_gain", income.income_gain);
 router.get("/pools/bingo", pools.bingo);
 // 股东分红池
 router.get("/pools/shareholders", pools.shareholders);
+// 我的分红
+router.get("/pools/my_dividend", pools.myDividend);
 // 三倍收益保障池
 router.get("/pools/safe", pools.safe);
 // 直接推荐 pk 池
