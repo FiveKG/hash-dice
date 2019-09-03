@@ -335,7 +335,7 @@ const SaleableAmount= (reqData) => {
 }
 //签到奖励明细
 const CheckIn= (reqData) => {
-    const url = '/check_in';
+    const url = '/check_in/detail';
     const data = reqData;
     return getData(url, data);
 }

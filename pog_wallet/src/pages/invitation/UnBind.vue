@@ -64,6 +64,7 @@
 
 <script>
 import { getCodeByAccount,bindReferrer } from '@/servers/invitation';
+import api from '@/servers/invitation'
 
 export default {
   props: ['keyboardVal','account'],
@@ -72,7 +73,8 @@ export default {
       showDialog: false,
       loading: false,
       parentType: '',
-      parentAccount: ''
+      parentAccount: '',
+
     }
   },
   watch: {
@@ -102,14 +104,20 @@ export default {
     clickConfirm() {
       this.showDialog = false
       this.loading = true
-      bindReferrer({account_name: this.account,refer_code: this.keyboardVal.join('')}).then(res => {
-        console.log('bindReferrer',res)
-        if (res.code === 1) {
-          this.loading = false
-          this.$toast('绑定成功')
-          this.$emit('bind', true)
-        }
-      })
+      console.log(22222222,this.account,this.keyboardVal.join(''));
+       api.bindReferrer({
+          account_name: this.account,refer_code:this.keyboardVal.join('')
+        }).then(res => {
+            console.log('bindReferrer',res)
+          if (res.code === 1) {
+            this.$router.push({
+                  name: 'NotParticipating',
+                })
+            this.loading = false
+            this.$toast('绑定成功')
+            this.$emit('bind', true)
+          }
+        })
     },
     clickBind() {
       if (this.keyboardVal[5] && this.parentType !== 'error') {
@@ -121,7 +129,11 @@ export default {
     },
     clickInput() {
       this.$emit('showKeyboard', true)
-    }
+    },
+    
+  },
+   created() {
+    
   },
 }
 </script>

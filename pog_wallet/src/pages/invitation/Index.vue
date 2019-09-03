@@ -115,7 +115,8 @@ export default {
     initData() {
       const localFile = this.$store.state.wallet.localFile
       // this.account = this.$store.state.wallet.assets.account
-      this.account = localFile.invitationAccount
+      this.accodunt = localFile.invitationAccount
+      this.account = this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];
       const wallets = localFile.wallets
       for (const item of wallets) {
         if (item.chain === 'eos') {

@@ -118,9 +118,12 @@
             </span>
           </div>
           <div class="child-account_content">
-              <div class="child-account_left" @click="jumpSubAccount">
+              <div class="child-account_left" @click="jumpSubAccount" v-if="subAccountQuantity">
                 子账号数量：
                 <span>{{sub_account.total_sub_account}}</span>
+              </div>
+              <div class="child-account_left" style="background: orange;" @click="jumpQuantityTbg" v-if="!subAccountQuantity">
+                参与TBG
               </div>
               <!-- <div class="child-account_left" @click="">
                 <span>参与TBG-I</span>
@@ -228,19 +231,15 @@
                   </div>
                   <!-- 下拉部分 -->
                   <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
-                      <div class="select-item" v-for="(item, index) in MyInvitationItem" :key="index">{{item.text}}</div>
+                      <div class="select-item" @click="jumpnormal()">普通用户</div>
+                      <div class="select-item" @click="jumpglobal()">全球合作伙伴</div>
                   </div>
                 </div>
                 <div class="select-wrap">
-                  <div @click='switchData(3)' class="ipt_layout" style="box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);border: none;background: rgb(255, 255, 255);">
+                  <div @click='jumpTwoSell' class="ipt_layout" style="box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);border: none;background: rgb(255, 255, 255);">
                       <div>
                       <span style="font-size: .45rem;color: #1E1E1E;">卖出TBG</span>
                       </div>
-                      <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;"> 
-                  </div>
-                  <!-- 下拉部分 -->
-                  <div class="select-toggle" ref="slt-3" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
-                      <div class="select-item" v-for="(item, index) in MyInvitationItem" :key="index">{{item.text}}</div>
                   </div>
                 </div>
               </div>
@@ -319,13 +318,13 @@
 
             <div class="item" @click="jumpSaleableBalance">
                 <p>可售余额</p>
-                <p>197.2660 <span>0000</span></p>
+                <p>{{Balance}} </p>
                 <p>TBG</p>
             </div>
 
             <div class="item" @click="jumpSaleableLimit">
                 <p>可售额度</p>
-                <p>197.2660 <span>0000</span></p>
+                <p>{{Amount}} </p>
                 <p>TBG</p>
             </div>
 
@@ -338,10 +337,31 @@
           </div>
 
           <div class="item">
-              <p>295.2500 0000 TBG</p>
+              <p>{{Quantity}}TBG</p>
           </div>
       </div>
     </div>
+
+<v-ons-action-sheet
+        :visible.sync="actionSheetVisible"
+        cancelable
+        style="background: rgba(0,0,0,0.5);"
+      >
+        <div class="action_layout">
+          <div class="btn_active" @click="showDialog = true">支付</div>
+        </div>
+      </v-ons-action-sheet>
+      <v-ons-dialog
+        modifier="width_pwd"
+        cancelable
+        style="background-color: rgba(0, 0, 0, .5);z-index: 10000;"
+        :visible.sync="showDialog">
+        <m-dialog v-model="password" v-on:confirm="handleConfirm" v-on:cancel="handleCancel"></m-dialog>
+      </v-ons-dialog>
+      <v-ons-modal :visible="loading" >
+        <loading></loading>
+      </v-ons-modal>
+   
 
   </div>
  
@@ -350,6 +370,14 @@
 <script>
 import CheckIn from './CheckIn'
 import api from '@/servers/invitation'
+import {Decimal} from 'decimal.js'
+
+import MyPage from '@/components/MyPage'
+import MDialog from '@/components/MDialog'
+import PasswordService from '@/services/PasswordService'
+import CryptoAES from '@/util/CryptoAES'
+import eos from '@/plugins/eos'
+import { friendInvest,getConfig } from '@/servers/invitation';
 
 export default {
     data(){
@@ -361,7 +389,23 @@ export default {
                 total_income: '',
                 selected_ipt:false,
                 tbg:0,
+
                 account_type:'',     //账号类型
+                Balance:0,      //余额
+                Amount:1,       //额度
+                Quantity:0,     //可售数量
+                subAccountQuantity:true,  //子账号数量切换
+
+                //区块链转站
+                reqParams: {
+                  account: '',
+                  friendAccountName: ''
+                },
+                password: '',
+                actionSheetVisible: false,
+                showDialog: false,
+                loading: false,
+
                 system_ntf:[],
                 MyInvitationItem: [
                   { text: '普通用户', value: 'OrdinaryUsers' },
@@ -434,20 +478,42 @@ export default {
         }
     },
     components: {
-      CheckIn
+      CheckIn,
+      MDialog
     },
     created(){
         this.account_name = this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];
+        //判断是否激活
+        api.isBind({
+          account_name: this.account_name
+        }).then(res => {
+          if (res.code==1){
+            console.log(22222222222222,res.data)
+            if(res.data.is_bind==true){
+            return 
+            }else{
+              this.$router.push({
+                  name: 'IndexT',
+                })
+            }
+          }
+        })
+        //
+
+
+
         api.isActive({
           account_name: this.account_name
         }).then(res => {
           switch(res.data.is_activated){
             case 0:
-              this.atv_text = '未激活';break;
+              this.atv_text = '未激活';this.subAccountQuantity=false;break;
             case 10:
-              this.atv_text = '已激活';break;
+              this.atv_text = '已激活';this.subAccountQuantity=true;break;
             case 20:
-              this.atv_text = '已激活';break;
+              this.atv_text = '已激活';this.subAccountQuantity=false;break;
+            case 30:
+              this.subAccountQuantity=true;;break;
           }
         })
         api.getTradePrice().then(res => {
@@ -494,9 +560,16 @@ export default {
         })
         api.getType({account_name:this.account_name}).then(res => {    //获取当前用户的信息
           if(res.code){
-            console.log(11111111111111111,res.data);
+            this.account_type=res.data.account_type;
             }
         })
+        this.availableQuantity();     //可售数量
+
+
+
+
+
+
     },
     beforeDestroy() {
       clearInterval(this._binggotimer);
@@ -545,6 +618,19 @@ export default {
               }
           }, 1000)
       },
+
+      availableQuantity(){    //可售数量
+        api.SaleableBalance({account_name:this.account_name}).then(res => {
+          if (res.code === 1) {
+            this.Balance=res.data.saleable_amount;
+          }})
+        api.SaleableAmount({account_name:this.account_name}).then(res => {
+          if (res.code === 1) {
+            this.Amount=res.data.saleable_balance;
+          }}).then(() =>{
+          this.Balance>this.Amount?this.Quantity=this.Amount:this.Quantity=this.Balance;
+          })        
+        },
       //跳转路由
       jumpSaleableBalance() {        //跳转可售余额
           this.$router.push({ 
@@ -595,7 +681,141 @@ export default {
           name: 'Profit',
         })
        },
+       jumpTwoSell() {    //TBG-2 卖出TBG
+          this.$router.push({
+          name: 'TradingCenter',
+          params: {
+            buySell: false
+          }
+        })
+       },
+       jumpglobal() {    //跳转全球合伙人私募
+          this.$router.push({     
+          name: 'TradingCenter',
+          params: {
+            buyPartner: 2
+          }
+        })
+       },
+       jumpnormal(){      //跳转普通买入
+         this.$router.push({
+          name: 'TradingCenter',
+          params: {
+            buyPartnerT: 1
+          }
+        })
+       },
+       jumpQuantityTbg(){
+         this.clickConfirm(); 
+       },
+    
 
+
+
+        //区块链转站
+        // 验证密码
+        async verifyPassword() {
+          const seed = await PasswordService.encrypt(this.password);
+          const wallets = this.$store.state.wallet.localFile.wallets;
+          const current = wallets.find(ele => ele.accountNames[0] === this.reqParams.account);
+          const privateKey = CryptoAES.decrypt(current.privateKey,seed);
+          return privateKey
+          // return '5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h';
+        },
+        async clickConfirm() {   //显示密码
+              this.actionSheetVisible = true;
+        },
+        async goPay(privateKey,quantity,memo ) {
+          if (privateKey) {
+            this.showDialog = false
+            try {
+              const config = await this.getConfig()
+              const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
+              // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+              const adm = await eos.contract('tbgjoin')
+              // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
+              const trx = await adm.transfer(this.reqParams.account, config.trade_receiver, quantity, memo, opts)
+              console.log(11221111,trx);
+              return true
+            } catch (error) {
+              console.log(error)
+              error = JSON.parse(error)
+              if (error.error.code == 3050003) {
+                this.$toast(this.$t('common.overdrawn_balance'))
+              }
+              if (error.error.code == 3080004) {
+                this.$toast('CPU资源受限')
+              }
+              return false
+            }
+          } else {
+            this.$toast(this.$t('common.wrong_pwd'))
+          }
+        },
+        async sellgoPay(privateKey,quantity,memo ) {
+          if (privateKey) {
+            this.showDialog = false
+            try {
+              const config = await this.getConfig()
+              const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
+              // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+              const adm = await eos.contract('tbgjoin')
+              // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
+              const trx = await adm.transfer(this.reqParams.account, config.trade_receiver, quantity, memo, opts)
+              console.log(11221111,trx);
+              return true
+            } catch (error) {
+              console.log(error)
+              error = JSON.parse(error)
+              if (error.error.code == 3050003) {
+                this.$toast(this.$t('common.overdrawn_balance'))
+              }
+              if (error.error.code == 3080004) {
+                this.$toast('CPU资源受限')
+              }
+              return false
+            }
+          } else {
+            this.$toast(this.$t('common.wrong_pwd'))
+          }
+        },
+        async friendInvest() {
+          try {
+            const res = await friendInvest()
+            return res.code
+          } catch (error) {
+            console.log(error)
+          }
+        },
+        async getConfig() {
+          try {
+            const res = await getConfig()
+            if (res.code === 1) {
+              console.log('getConfig',res)
+              return res.data
+            }
+          } catch (error) {
+            console.log(error)
+          }
+        },
+        async handleConfirm() {
+          this.loading = true
+          const privateKey = await this.verifyPassword()
+          if (privateKey) {
+            const res = await this.goPay(privateKey)
+            if (res) this.$toast('投资成功')
+            this.loading = false
+            this.showDialog = false
+            this.actionSheetVisible = false
+
+          } else {
+            this.$toast(this.$t('common.wrong_pwd'))
+            this.loading = false
+          }
+        },
+        handleCancel() {
+          this.showDialog = false
+        },
     },
 }
 </script>
@@ -1055,4 +1275,20 @@ export default {
       font-size:0.4rem;
   }
  
+
+/*确认密码*/
+.action_layout {
+  background-color: #fff;
+  padding: 35px 50px;
+}
+.btn_active {
+  background-color: #ff8e05;
+  color: #fff;
+  text-align: center;
+  padding: 30px;
+  border-radius: 10px;
+  font-size: 36px;
+  font-weight: bold;
+}
+
 </style>

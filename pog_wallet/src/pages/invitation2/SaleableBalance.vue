@@ -14,7 +14,6 @@
             <div class="num_tbg">
               <span >可售余额</span>
               <span style="padding:0 1.1rem;"></span>
-              <span class="font_weight_bold">24.6124</span>
               <span style="color:rgb(161, 161, 161);"> {{balance}} </span>
               <span class="font_weight_bold">TBG</span>
             </div>
@@ -42,7 +41,8 @@
 
 <script>
 import MyPage from '@/components/MyPage'
-import {SaleableBalance,} from '@/servers/invitation';
+import api from '@/servers/invitation'
+
 
 
 export default {
@@ -67,13 +67,13 @@ export default {
   },
   created(){
     // console.log('this',this);
-    SaleableBalance({account_name:"tbgtestuser1"}).then(res => {
+    api.SaleableBalance({account_name:this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]}).then(res => {
       if (res.code === 1) {
             console.log('bindReferrer',res)
             // for(var i=0;i<res.data.length;i++){
-            //   if(res.data[i].amount>0){
-            //     switch (res.data[i].release_type) {
-            //         case 1:res.data[i].release_type='买入200TBG';break;
+              //   if(res.data[i].amount>0){
+                //     switch (res.data[i].release_type) {
+                  //         case 1:res.data[i].release_type='买入200TBG';break;
             //         case 2:res.data[i].release_type='绑定';break;
             //         case 3:res.data[i].release_type='参与TBG-I';break;
             //         case 4:res.data[i].release_type='签到';break;
@@ -91,7 +91,7 @@ export default {
             //     }
             //   }
             // }
-            this.balance=res.data.saleable_balance;
+            this.balance=res.data.saleable_amount;
             this.items=res.data.properties;
         }
       })

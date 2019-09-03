@@ -80,8 +80,10 @@
 <script>
 
 import MyPage from '@/components/MyPage'
-import {effectiveAssets,overAssets,assetMiningCharge,isBind} from '@/servers/invitation';
 import axios from 'axios';
+import api from '@/servers/invitation'
+import {effectiveAssets,overAssets,assetMiningCharge,isBind} from '@/servers/invitation'
+
 
 
 export default {
@@ -95,6 +97,7 @@ export default {
         mining_count:'',
         mined_count:'',
         mined_amount:'',
+        accountName:'',
         start_mined:[
                     // {amount:1,per_hour_mining:1,mining_time:1,mining_income:1,mining_id:1},
                     // {amount:1,per_hour_mining:1,mining_time:1,mining_income:1,mining_id:1},
@@ -143,9 +146,14 @@ export default {
   created(){
       // console.log(22222222222222222222222,this.$store.state.wallet.localFile.wallets.slice());
       // console.log(33333333333333333333,this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]);
+      this.accountName=this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];
+      api.effectiveAssets({
+          account_name: this.accountName
+        }).then(res => {
+          
+        })
       //获取有效矿机
-      effectiveAssets({account_name:"yujinsheng11"}).then(res => {
-        console.log('111111111111111111111111',res)
+      effectiveAssets({account_name:this.accountName}).then(res => {
         if (res.code === 1) {
         this.start_mined=res.data.mining_info;
         this.mining_count=res.data.mining_count;
@@ -160,7 +168,7 @@ export default {
         this.over_mined=res.data.mining_info;
         }
       })
-  
+
     
   },
 }

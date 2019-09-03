@@ -398,6 +398,28 @@
               </div>
             </div>
         </div>
+
+      <!-- 确定 -->
+      <v-ons-action-sheet
+        :visible.sync="actionSheetVisible"
+        cancelable
+        style="background: rgba(0,0,0,0.5);"
+      >
+        <div class="action_layout">
+          <div class="btn_active" @click="showDialog = true">支付</div>
+        </div>
+      </v-ons-action-sheet>
+      <v-ons-dialog
+        modifier="width_pwd"
+        cancelable
+        style="background-color: rgba(0, 0, 0, .5);z-index: 10000;"
+        :visible.sync="showDialog">
+        <m-dialog v-model="password" v-on:confirm="handleConfirm" v-on:cancel="handleCancel"></m-dialog>
+      </v-ons-dialog>
+      <v-ons-modal :visible="loading" >
+        <loading></loading>
+      </v-ons-modal>
+
      </div>
      </slot>
     </vpage>
@@ -407,6 +429,7 @@
 import MyPage from '@/components/MyPage'
 import {getType,partnerPlacement,PlacementTransactionList,getSellHistoryList,getGeneralBuy,normalTransactionList,getGeneralSell,sellTransactionList,getSellList,
 globalPartnerPlacement,buyAsset,sellAsset} from '@/servers/invitation';
+import api from '@/servers/invitation'
 
 import { format, parse } from 'date-fns'
 import {Decimal} from 'decimal.js'
@@ -495,7 +518,7 @@ export default {
   },
   methods: {
       //区块链转站
-            // 验证密码
+        // 验证密码
         async verifyPassword() {
           const seed = await PasswordService.encrypt(this.password);
           const wallets = this.$store.state.wallet.localFile.wallets;
@@ -503,6 +526,9 @@ export default {
           const privateKey = CryptoAES.decrypt(current.privateKey,seed);
           return privateKey
           // return '5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h';
+        },
+        async clickConfirm() {   //显示密码
+              this.actionSheetVisible = true;
         },
         async goPay(privateKey,quantity,memo ) {
           if (privateKey) {
@@ -586,6 +612,7 @@ export default {
             this.loading = false
             this.showDialog = false
             this.actionSheetVisible = false
+
           } else {
             this.$toast(this.$t('common.wrong_pwd'))
             this.loading = false
@@ -594,16 +621,7 @@ export default {
         handleCancel() {
           this.showDialog = false
         },
-        async clickConfirm() {
-          if (this.reqParams.friendAccountName) {
-            // const res = await this.friendInvest()
-            // if (res === 1) {
-            //   this.$toast('投资成功')
-            // } else {
-              this.actionSheetVisible = true
-            // }
-          }
-        },
+
 
        back() {
           this.$router.go(-1)
@@ -637,7 +655,8 @@ export default {
           this.normalPrice=new Decimal(this.buynormalPrice.price).mul(new Decimal(this.buynormalData[this.normalSelect].amount)).toFixed(4)
        },
        sendGlobalPartnerPlacement() {  //全球合伙人私募
-          globalPartnerPlacement({account_name:this.id,price:this.buyPartnerPrice.raise_price,assets_package_id:this.buyPartnerData[this.globalSelect].id}).then(res => {   
+            this.clickConfirm(); 
+          api.globalPartnerPlacement({account_name:this.id,price:this.buyPartnerPrice.raise_price,assets_package_id:this.buyPartnerData[this.globalSelect].id}).then(res => {   
             if (res.code === 1) {
                let privateKey=this.verifyPassword(); 
                let memo=this.id+','+this.buyPartnerPrice.raise_price+','+'raise'+','+this.buyPartnerData[this.globalSelect].id
@@ -648,17 +667,19 @@ export default {
           })
        },
        sendBuyAsset() {  //买入资产
-          buyAsset({account_name:this.id,price:(this.buynormalPrice.price)+'',assets_package_id:this.buynormalData[this.normalSelect].id}).then(res => {   
-            if (res.code === 1) {
-               let privateKey=this.verifyPassword(); 
-               let memo=this.id+','+this.buynormalPrice.price+','+'buy'+','+this.buynormalData[this.normalSelect].id
-               let normalPrice=new Decimal(this.normalPrice).toFixed(4)+' UE'   
-               this.goPay(privateKey,normalPrice,memo);
+          api.buyAsset({account_name:this.id,price:(this.buynormalPrice.price)+'',assets_package_id:this.buynormalData[this.normalSelect].id}).then(res => {   
+            if (res.code === 1) {   
+               this.clickConfirm();       
+              //  let privateKey=this.verifyPassword(); 
+              //  let memo=this.id+','+this.buynormalPrice.price+','+'buy'+','+this.buynormalData[this.normalSelect].id
+              //  let normalPrice=new Decimal(this.normalPrice).toFixed(4)+' UE'
+              //  this.goPay(privateKey,normalPrice,memo);  
               }
           })
        },
        sendSellAsset() {  //卖出资产
-          sellAsset({account_name:this.id,price:(this.sellData.price)+'',amount:this.sellingPrice,sell_fee:this.handlingFee,destroy:this.destroy,income:this.actualHarvest}).then(res => {   
+            this.clickConfirm(); 
+          api.sellAsset({account_name:this.id,price:(this.sellData.price)+'',amount:this.sellingPrice,sell_fee:this.handlingFee,destroy:this.destroy,income:this.actualHarvest}).then(res => {   
             if (res.code === 1) {
               let privateKey=this.verifyPassword(); 
                let memo=this.id+','+this.sellData.price+','+'sell'+','+this.sellingPrice
@@ -674,6 +695,12 @@ export default {
   },
   created(){
     // console.log(33333333333333333333,this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]);
+    //路由跳转判断
+    if(this.$route.params.buySell==false){this.buySell=this.$route.params.buySell;}
+    if(this.$route.params.buyPartner==2){this.buyPartner=true;}    
+    if(this.$route.params.buyPartnerT==1){this.buyPartner=false;} 
+       
+
     this.id=this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];   //初始化ID
      
     this.reqParams.account = this.id;   //转站
@@ -685,20 +712,20 @@ export default {
           this.normalPrice=new Decimal(this.buynormalPrice.price).mul(new Decimal(this.buynormalData[this.normalSelect].amount)).toFixed(4)//初始化正常资产包总价
     }, 1000);
 
-    getType({account_name:this.id}).then(res => {    // 获取账号类型
+    api.getType({account_name:this.id}).then(res => {    // 获取账号类型
         if (res.code === 1) {
-            res.data.account_type=="global"?this.buyPartner=true:this.buyPartner=false;
+            // res.data.account_type=="global"?this.buyPartner=true:this.buyPartner=false;
         }
       })
     //全球合伙人
-    partnerPlacement({account_name:this.id}).then(res => {    // 获取全球合伙人私募信息
+    api.partnerPlacement({account_name:this.id}).then(res => {    // 获取全球合伙人私募信息
         if (res.code === 1) {
             this.buyPartnerPrice.price=res.data.price;
             this.buyPartnerPrice.raise_price=res.data.raise_price;
             this.buyPartnerData=res.data.assets_info;
         }
       })
-    PlacementTransactionList().then(res => {    // 私募交易列表
+    api.PlacementTransactionList().then(res => {    // 私募交易列表
         if (res.code === 1) {
             for(let i=0;i<res.data.length;i++){
               res.data[i].create_time=format(new Date(res.data[i].create_time), 'YYYY-MM-DD')
@@ -706,7 +733,7 @@ export default {
             this.buyPartnerListData=res.data;
         }
       })
-    getSellHistoryList({account_name:this.id}).then(res => {    // 正常和全球合伙人资产包买入记录
+    api.getSellHistoryList({account_name:this.id}).then(res => {    // 正常和全球合伙人资产包买入记录
         if (res.code === 1) {
           for(let i=0;i<res.data.length;i++){
               res.data[i].create_time=format(new Date(res.data[i].create_time), 'YYYY-MM-DD')
@@ -715,7 +742,7 @@ export default {
         }
       })
     //正常交易  
-    getGeneralBuy({account_name:this.id}).then(res => {    // 获取普通买入交易信息
+    api.getGeneralBuy({account_name:this.id}).then(res => {    // 获取普通买入交易信息
         if (res.code === 1) {
             this.buynormalPrice.price=res.data.price;
             let[first_buy,first_buys] = res.data.first_buy.split(',');
@@ -727,7 +754,7 @@ export default {
             this.buynormalData=res.data.assets_info;
         }
       })
-    normalTransactionList().then(res => {    // 私募交易列表
+    api.normalTransactionList().then(res => {    // 私募交易列表
         if (res.code === 1) {
           for(let i=0;i<res.data.length;i++){
             res.data[i].create_time=format(new Date(res.data[i].create_time), 'YYYY-MM-DD')
@@ -736,7 +763,7 @@ export default {
         }
       })
     //卖出
-    getGeneralSell({account_name:this.id}).then(res => {    // 获取卖出交易信息
+    api.getGeneralSell({account_name:this.id}).then(res => {    // 获取卖出交易信息
         if (res.code === 1) {
           this.sellData=res.data;
           // sell_time
@@ -745,7 +772,7 @@ export default {
             this.sellPrice.first_buys=first_buys;
         }
       })
-    sellTransactionList().then(res => {    // 卖出的买入交易列表
+    api.sellTransactionList().then(res => {    // 卖出的买入交易列表
         if (res.code === 1) {
           for(let i=0;i<res.data.length;i++){
             res.data[i].create_time=format(new Date(res.data[i].create_time), 'YYYY-MM-DD')
@@ -753,7 +780,7 @@ export default {
             this.sellListData=res.data;
         }
       })
-    getSellList({account_name:this.id}).then(res => {    // 卖出的买入交易列表
+    api.getSellList({account_name:this.id}).then(res => {    // 卖出的买入交易列表
         if (res.code === 1) {
           for(let i=0;i<res.data.length;i++){
             res.data[i].create_time=format(new Date(res.data[i].create_time), 'YYYY-MM-DD')
@@ -816,8 +843,20 @@ export default {
   vertical-align: middle;
 }
 
-
-
+/*确认密码*/
+.action_layout {
+  background-color: #fff;
+  padding: 35px 50px;
+}
+.btn_active {
+  background-color: #ff8e05;
+  color: #fff;
+  text-align: center;
+  padding: 30px;
+  border-radius: 10px;
+  font-size: 36px;
+  font-weight: bold;
+}
 
 
 

@@ -23,7 +23,7 @@
             <div class="num_tbg">
               <span class="font_size_five">共获得奖励</span>
               <span style="padding:0 1.1rem;"></span>
-              <span style="font_weight_bold font_size_five ">{{income}}</span>
+              <span class="font_weight_bold font_size_five">{{income}}</span>
               <span class="gray font_size_five"> 1206 </span>
               <span class="font_weight_bold font_size_five ">TBG</span>
             </div>
@@ -47,7 +47,7 @@
 
 <script>
 import MyPage from '@/components/MyPage'
-import {CheckIn,} from '@/servers/invitation';
+import api from '@/servers/invitation'
 
 
 export default {
@@ -79,17 +79,17 @@ export default {
        },
   },
   created(){
-    console.log('this1111111111',this.account);
-    // CheckIn({account_name:"tbgtestuser1"}).then(res => {
-    //   if (res.code === 1) {
-    //         console.log('bindReferrer',res)
-    //         this.airdrop_amount=res.data.airdrop_amount;
-    //         this.airdrop_quantity=res.data.airdrop_quantity;
-    //         this.income=res.data.income;
-    //         this.items=res.data.properties;
-    //         this.schedule=(res.data.airdrop_quantity/res.data.airdrop_amount)*100;
-    //     }
-    //   })
+    // console.log('this1111111111',this.account);
+    api.CheckIn({account_name:this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]}).then(res => {
+      if (res.code === 1) {
+            console.log('bindReferrer',res);
+            this.airdrop_amount=res.data.airdrop_amount;
+            this.airdrop_quantity=res.data.airdrop_quantity;
+            this.income=res.data.income;
+            this.items=res.data.detail;
+            this.schedule=(res.data.airdrop_quantity/res.data.airdrop_amount)*100;
+        }
+      })
 
   }
 }
