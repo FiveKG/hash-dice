@@ -9,9 +9,9 @@
 
         <!-- 新游戏上线公告 -->
         <ul class="online">
-          <li><span>新游戏上线公告</span> <span>2019-06-15</span></li>
-          <li><span>新游戏上线公告</span> <span>2019-06-15</span></li>
-          <li><span>新游戏上线公告</span> <span>2019-06-15</span></li>
+          <li v-for="(item,index) in list" :key="index">
+            <span>{{item.title}}</span> <span>{{item.create_time}}</span>
+          </li>
         </ul>
 
   
@@ -21,14 +21,27 @@
 </template>
 
 <script type="text/ecmascript-6">
+import api from '@/servers/invitation'
+
 export default {
    data() {
        return {
+          list:[]
        }
+   },
+   created(){
+      this.getList()
+      console.log(9999999999,this.list)
    },
   methods:{
       goback(){
           this.$router.go(-1)
+      },
+      getList(){
+        api.getSystemNtf().then(res =>{
+            this.list = res.data.system_notification
+          
+        })
       }
   }
 }
