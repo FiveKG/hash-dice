@@ -21,7 +21,14 @@ async function investmentIndex(req, res, next) {
         let pkPool = await getOneAccount(PK_POOL);
         let bingoPool = await getOneAccount(BINGO_POOL);
         if (!rows) {
-            return res.send(get_status(1001, "this account does not exists"));
+            rows = {
+                amount: 0,
+                withdraw_enable: 0,
+                repeat_currency: 0,
+                lotto_currency: 0,
+                game_currency: 0
+            }
+            // return res.send(get_status(1001, "this account does not exists"));
         }        
         if (!holderAmount) {
             return res.send(get_status(1010, "shareholders pool does not exists"));
