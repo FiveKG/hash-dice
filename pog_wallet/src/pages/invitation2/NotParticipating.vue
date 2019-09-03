@@ -23,8 +23,8 @@
         <span class="destroyed_txt1">   已销毁</span> 
         <span class="destroyed_txt2"> {{destroy_amount[0]}}.</span>     
         <span class="destroyed_txt3">{{destroy_amount[1]}}</span>
-        <span> TBG </span>
-        <span class="destroyed_txt4">></span>
+        <span @click="jumpDestruction()"> TBG </span>
+        <span @click="jumpDestruction()" class="destroyed_txt4">></span>
     </div> 
 
     <!-- 查看TBG旗下游戏 -->
@@ -41,7 +41,7 @@
        </div>
         <p>...</p>
     </div>
-
+    
     <!-- 在线客服 -->
     <div class="onlineService">
         <div class="item">
@@ -50,7 +50,7 @@
               <div v-if="system_ntf.length > 0" class="system_ntf_item">
                 <span>{{system_ntf[0].title}}</span>
                 <span>{{system_ntf[0].create_time}}</span>
-                <span>></span>
+                <span @click="jumpNotice()" >></span>
               </div>
             </div>
         </div>
@@ -137,7 +137,7 @@
       <div class="direction">
           <div class="content">
               <div class="left">
-                  <img src="@/assets/img/u6628.svg" alt="">
+                  <!-- <img src="@/assets/img/u6628.svg" alt=""> -->
               </div>
               <div class="right">  
                 全球区块链去中心化游戏平台，真正公平公正、透明可查、无法作假的区块链去中心化游戏是现在和未来的方向。
@@ -807,7 +807,6 @@ export default {
             this.loading = false
             this.showDialog = false
             this.actionSheetVisible = false
-
           } else {
             this.$toast(this.$t('common.wrong_pwd'))
             this.loading = false
@@ -816,6 +815,16 @@ export default {
         handleCancel() {
           this.showDialog = false
         },
+        jumpDestruction(){
+         this.$router.push({
+           name:'DestructionDetails'
+         })
+       },
+       jumpNotice(){
+         this.$router.push({
+           name:'Notice'
+         })
+       },
     },
 }
 </script>
