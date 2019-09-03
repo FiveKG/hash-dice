@@ -1,10 +1,6 @@
 // @ts-check
 const amqplib = require("amqplib");
 const logger = require("../common/logger.js").child({"@":"amqplib"});
-process.env.TBG_RABBIT_HOST = "172.17.0.4"
-process.env.TBG_RABBIT_PORT = "5672"
-process.env.TBG_RABBIT_USER = "mq_user"
-process.env.TBG_RABBIT_PASS = "pass_2018"
 const amqpOption = {
     protocol : "amqp",
     hostname : process.env.TBG_RABBIT_HOST,

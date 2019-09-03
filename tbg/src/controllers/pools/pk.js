@@ -5,6 +5,7 @@ const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
 const { PK_POOL } = require("../../common/constant/accountConstant.js");
 const { getPkAccountList, getOneAccount, getPkHistory } = require("../../models/systemPool");
 const { Decimal } = require("decimal.js");
+const df = require("date-fns");
 
 // bingo 奖池详情
 async function pk(req, res, next) {
@@ -46,11 +47,15 @@ async function pk(req, res, next) {
             }
         })
 
+        const now = new Date();
         resData["data"] = {
             current_amount: pkPoolAmount.toFixed(4),
-            issue: issue,
+            issue: new Decimal(issue).toFixed(4),
             total: pkPoolAmount.add(issue).toFixed(4),
-            detail: detail
+            detail: detail,
+            start_time: df.format(df.startOfWeek(now), "YYYY-MM-DD HH:mm:ssS"),
+            end_time: df.format(df.endOfWeek(now), "YYYY-MM-DD HH:mm:ssS"),
+            dividend_rate: INCOME_CONSTANT.REFER_PK_ALLOCATE_RATE
         };
         res.send(resData);
     } catch (err) {

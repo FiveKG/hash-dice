@@ -1,7 +1,6 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@controllers/pools/bingo.js": "bingo pool" });
 const { get_status, inspect_req_data, redis } = require("../../common/index.js");
-const { SHAREHOLDERS_ALLOCATE_RATE } = require("../../common/constant/incomeConstant.js");
 const { getAccountMemberLevel } = require("../../models/account");
 const { getShareholdersAmount, getHolderHistory, getHolderAccountList } = require("../../models/systemPool");
 const { Decimal } = require("decimal.js");
@@ -21,13 +20,15 @@ async function shareholdersAmount(req, res, next) {
         
         let holderAmount = await getShareholdersAmount();
         let holderHistory = await getHolderHistory();
-        if (!holderAmount || !holderHistory) {
+        if (!holderAmount) {
             return res.send(get_status(1010, "shareholders pool does not exists"));
         }
 
+        
         if (!holderHistory.issue) {
             holderHistory.issue = 0;
         }
+        logger.debug("holderHistory: ", holderHistory);
         // 获取当前的期数
         let periods = await redis.get(`tbg:periods:${SHAREHOLDERS_POOL}`);
         let currPeriods = 1
@@ -41,13 +42,15 @@ async function shareholdersAmount(req, res, next) {
         let distrEnable = holderPoolAmount.mul(INCOME_CONSTANT.SHAREHOLDERS_ALLOCATE_RATE).div(INCOME_CONSTANT.BASE_RATE);
         let holderAccountList = await getHolderAccountList();
         logger.debug("holderPoolAmount: ,distrEnable: ", holderPoolAmount, distrEnable);
-        logger.debug("holderAccountList: ", holderAccountList)
-        if (holderAccountList.length === 0) {
-            return;
+        logger.debug("holderAccountList: ", holderAccountList);
+        let bonus = new Decimal(0);
+        if (holderAccountList.length !== 0) {
+            // 计算每个 TBG 可以分配多少个额度
+            const total = holderAccountList.map(it => it.sell_amount).reduce((pre, curr) => Number(pre) + Number(curr));
+            bonus = distrEnable.div(total);
+        } else {
+            bonus = distrEnable;
         }
-        // 计算每个 TBG 可以分配多少个额度
-        const total = holderAccountList.map(it => it.sell_amount).reduce((pre, curr) => Number(pre) + Number(curr));
-        const bonus = distrEnable.div(total);
 
         let issue = new Decimal(holderHistory.issue).abs();
         resData["data"] = {

@@ -13,6 +13,9 @@ const { format } = require("date-fns");
 async function bindAirdrop(data) {
     try {
         const trxList = [];
+        if (!data.account) {
+            return;
+        }
         const dataList = [ data.account ]
         if (!!data.referrer) {
             dataList.push(data.referrer);

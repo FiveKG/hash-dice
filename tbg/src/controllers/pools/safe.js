@@ -4,6 +4,7 @@ const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getUserBalance } = require("../../models/balance");
 const { getSafeAmount, getSafeHistory } = require("../../models/systemPool");
 const { Decimal } = require("decimal.js");
+const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 
 // safe 奖池详情
 async function safe(req, res, next) {
@@ -12,9 +13,6 @@ async function safe(req, res, next) {
         let resData = get_status(1);
         let accountName = reqData.account_name
         let rows = await getUserBalance(accountName);
-        if (!rows) {
-            return res.send(get_status(1001, "this account does not exists"));
-        }
         let safePool = await getSafeAmount();
         let safeHistory = await getSafeHistory();
         if (!safePool || !safeHistory) {
@@ -31,7 +29,8 @@ async function safe(req, res, next) {
             current_amount: amount.toFixed(4),
             issue: issue,
             total: amount.add(issue).toFixed(4),
-            account_income: rows.amount,
+            account_income: !!rows ? new Decimal(rows.amount).toFixed(4) : new Decimal(0).toFixed(4),
+            dividend_rate: INCOME_CONSTANT.SAFE_ALLOCATE_RATE
         };
         res.send(resData);
     } catch (err) {

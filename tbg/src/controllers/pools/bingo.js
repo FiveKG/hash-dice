@@ -32,7 +32,7 @@ async function bingo(req, res, next) {
             "this_period_rate": `70%`,
             "last_invest_rate": `50%`,
             "this_period_bonus": bingoPoolAmount.toFixed(4),
-            "last_invest_account": bingoAccountList[0].account_name,
+            "last_invest_account": !!bingoAccountList[0] ? bingoAccountList[0].account_name : '',
             "last_invest_bonus": currentAmount.mul(INCOME_CONSTANT.BINGO_INCOME_FIRST / INCOME_CONSTANT.BASE_RATE).toFixed(4),
             "other_invest_bonus": currentAmount.mul(INCOME_CONSTANT.BINGO_INCOME_OTHER / INCOME_CONSTANT.BASE_RATE / 29).toFixed(4),
             "bonus_account": bingoAccountList.map(item => item.account_name),

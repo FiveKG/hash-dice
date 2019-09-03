@@ -822,6 +822,7 @@
                     "current_amount": { "type": "decimal",  "is_require": true,  "desc": "当前五倍收益保障池余额" },
                     "issue": { "type": "decimal",  "is_require": true,  "desc": "累计已经发放的五倍收益保障" },
                     "total": { "type": "decimal",  "is_require": true,  "desc": "五倍收益保障池累计收入" },
+                    "dividend_rate": { "type": "number",  "is_require": true,  "desc": "本期分红比例" },
                     "account_income": { "type": "decimal", "is_require": true, "desc": "我的主帐户收益" }
                 }
             }
@@ -848,6 +849,9 @@
                     "current_amount": { "type": "decimal",  "is_require": true,  "desc": "当前直接推荐 pk 池余额" },
                     "issue": { "type": "decimal",  "is_require": true,  "desc": "累计已经发放的 pk 奖池" },
                     "total": { "type": "decimal",  "is_require": true,  "desc": " pk 池累计收入" },
+                    "start_time": { "type": "dateTime",  "is_require": true,  "desc": "开始时间" },
+                    "end_time": { "type": "dateTime",  "is_require": true,  "desc": "结束时间" },
+                    "dividend_rate": { "type": "number",  "is_require": true,  "desc": "本期分红比例" },
                     "detail": {
                         "type": "objectArray", "desc": "股东分红收入明细",
                         "properties": {
@@ -1513,7 +1517,8 @@
                     "detail": {
                         "type": "objectArray", "desc": "额度详情",
                         "properties": {
-                            "destroy_amount": { "type": "number",  "is_require": true,  "desc": "销毁数量" }
+                            "destroy_amount": { "type": "number",  "is_require": true,  "desc": "销毁数量" },
+                            "surplus_amount": { "type": "number",  "is_require": true,  "desc": "剩余数量" }
                         }
                     }
                 }

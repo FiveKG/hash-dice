@@ -41,11 +41,15 @@ async function bindReferrer(req, res, next) {
             let { rows: [{ count }] } = await pool.query(sql, [ ACCOUNT_TYPE.GLOBAL ]);
             logger.debug("count: ", count);
             if (!count) {
-                return res.send(get_status(1021, "当前系统还没有全球合伙人，需有人成为全球合伙人后才可正常绑定"));
+                referrerName = '';
+                const tmp = await redis.spop(INVITE_CODE_KEY.GLOBAL);
+                referCode = `W${tmp}`
+                // return res.send(get_status(1021, "当前系统还没有全球合伙人，需有人成为全球合伙人后才可正常绑定"));
+            } else {
+                const rows = await randomGetAccount(accountName);
+                referrerName = rows.account_name;
+                referCode = await redis.spop(INVITE_CODE_KEY.GENERAL);
             }
-            const rows = await randomGetAccount(accountName);
-            referrerName = rows.account_name;
-            referCode = await redis.spop(INVITE_CODE_KEY.GENERAL);
         } else {
             // 全球合伙人
             // 全球合伙人的推荐人都为空，每个全球合伙人都位于最顶端，下方不能有其他全球合伙人
