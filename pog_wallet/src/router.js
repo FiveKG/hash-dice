@@ -90,6 +90,8 @@ import AssetLinearDetails from './pages/invitation2/AssetLinearPool/AssetLinearD
 import SaleableBalance from './pages/invitation2/SaleableBalance'
 import SaleableLimit from './pages/invitation2/SaleableLimit'
 import SignDetails from './pages/invitation2/SignDetails'
+import DestructionDetails from './pages/invitation2/DestructionDetails'
+import Notice from './pages/invitation2/Notice'
 
 import Otc from './pages/game/otc/Otc'
 import OtcGo from './pages/game/otc/OtcGo'
@@ -556,6 +558,16 @@ const router = new Router({
       path: '/haNine',
       name: 'HaNine',
       component: HaNine,
+    },
+    {
+      path: '/DestructionDetails',
+      name: 'DestructionDetails',
+      component: DestructionDetails,
+    },
+    {
+      path: '/Notice',
+      name: 'Notice',
+      component: Notice,
     },
   ]
 })
