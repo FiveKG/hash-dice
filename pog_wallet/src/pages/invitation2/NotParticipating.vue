@@ -705,7 +705,7 @@ export default {
           }
         })
        },
-       jumpQuantityTbg(){
+       jumpQuantityTbg(){   //子账号参与TBG
          this.clickConfirm(); 
        },
     

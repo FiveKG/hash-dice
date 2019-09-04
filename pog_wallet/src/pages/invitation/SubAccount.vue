@@ -57,6 +57,8 @@
 <script>
 import MyPage from '@/components/MyPage'
 import { subAccount } from '@/servers/invitation';
+import api from '@/servers/invitation';
+
 
 export default {
   components: {
@@ -72,7 +74,7 @@ export default {
   },
   created() {
     console.log(this.$route.query)
-    subAccount({account_name: this.$route.query.account}).then(res => {
+    api.subAccount({account_name: this.$route.query.account}).then(res => {
       console.log(res)
       if (res.code === 1) {
         this.subAccountTotal = res.data.total_sub_account

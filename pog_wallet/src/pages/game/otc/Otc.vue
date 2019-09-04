@@ -7,7 +7,7 @@
       <OtcAdviertisement v-else-if="selectTab === 'OtcAdviertisement'"></OtcAdviertisement>
 
       <div class="tabbar" ref="tabbar">
-        <div class="footer-item" :class="(selectTab === 'assets') || (selectTab === 'OtcTransaction') ? 'router-link-active':''" @click="clickTab('assets')">
+        <div class="footer-item" :class="(selectTab === 'assets') || (selectTab === 'OtcTransaction') ? 'router-link-active':''" @click="clickTab('OtcTransaction')">
           <i class="icon footerHomeIcon"></i>
           <p class="footer-title">ccc</p>
         </div>
@@ -27,7 +27,7 @@
 <script>
 import axios from 'axios'
 import ClientSocket from '@/socket/ClientSocket'
-import { getAdImg } from '@/servers';
+import { getAdImg } from '@/servers'
 
 import OtcTransaction from './OtcTransaction'
 import OtcOrder from './OtcOrder'
@@ -49,7 +49,8 @@ export default {
     }
   },
   created () {
-    this.initData()
+    // this.initData()
+    this.selectTab = 'OtcTransaction';
   },
   methods: {
     initData() {

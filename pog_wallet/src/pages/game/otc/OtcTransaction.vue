@@ -18,7 +18,7 @@
            <p style="line-height: 1.2rem;font-size: .5rem;color: #868686;">我要卖 UE</p>
            </div>
        </div>
-       <!-- <div class="" v-for="item in items" :key='item.key'> -->
+       <!-- <div class="" v-for="item in items" :key='item.key'> --> 
           <div class="otc_data">
             <div class="otc_data_left float_left" style="">
               <div><p class="font_b" style="font-size: .7rem;color: #000000;">amin2252255</p></div>
@@ -36,7 +36,7 @@
             </div>
           </div>
          <!-- </div> -->
-       
+
        <div style="width: 100%;height: 60px;"></div>
      </slot>
     </vpage>

@@ -99,6 +99,8 @@ import Otc from './pages/game/otc/Otc'
 import OtcGo from './pages/game/otc/OtcGo'
 import HaGo from './pages/game/ha/HaGo'
 import HaNine from './pages/game/ha/HaNine'
+import TreasureGo from './pages/game/treasure/TreasureGo'
+import TreasurePage from './pages/game/treasure/TreasurePage'
 
 Vue.use(Router)
 
@@ -546,6 +548,16 @@ const router = new Router({
       name: 'SignDetails',
       component: SignDetails,
     },
+    {
+      path: '/DestructionDetails',
+      name: 'DestructionDetails',
+      component: DestructionDetails,
+    },
+    {
+      path: '/Notice',
+      name: 'Notice',
+      component: Notice,
+    },
 
     {
       path: '/otc',
@@ -568,15 +580,17 @@ const router = new Router({
       component: HaNine,
     },
     {
-      path: '/DestructionDetails',
-      name: 'DestructionDetails',
-      component: DestructionDetails,
+      path: '/treasureGo',
+      name: 'TreasureGo',
+      component: TreasureGo,
     },
+   
     {
-      path: '/Notice',
-      name: 'Notice',
-      component: Notice,
+      path: '/treasurePage',
+      name: 'TreasurePage',
+      component: TreasurePage,
     },
+   
     
   ]
 })
