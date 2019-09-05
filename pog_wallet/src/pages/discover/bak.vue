@@ -40,6 +40,16 @@
                 </div>
               </div>
             </v-ons-col>
+             <v-ons-col>
+              <div class="type_item"  @click="gogame()">
+                <img src="">
+                <div class="type_detail">
+                  <div class="type_name">全球彩</div>
+                  <div class="summary">全球彩游戏</div>
+                </div>
+              </div>
+            </v-ons-col>
+
           </v-ons-row>
           <v-ons-row class="dapp_more" v-if="item.list.length > 5" @click="clickMore(index)">查看更多 <img src="@/assets/img/discover_arrow.png"> </v-ons-row>
         </swiper-item>
@@ -303,6 +313,10 @@ export default {
         }
       })
     },
+    gogame(){
+      this.$router.push('GlovalLotto')
+    }
+    
   },
   watch: {
     index(val) {
