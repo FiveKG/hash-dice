@@ -102,6 +102,11 @@ import HaNine from './pages/game/ha/HaNine'
 import TreasureGo from './pages/game/treasure/TreasureGo'
 import TreasurePage from './pages/game/treasure/TreasurePage'
 
+import GlovalLotto from './pages/game/qqc/GlovalLotto'
+import LottoGame from './pages/game/qqc/LottoGame'
+
+// import LottoGame from './pages/game/qqc/LottoGame'
+
 Vue.use(Router)
 
 const router = new Router({
@@ -589,6 +594,16 @@ const router = new Router({
       path: '/treasurePage',
       name: 'TreasurePage',
       component: TreasurePage,
+    },
+    {
+      path: '/GlovalLotto',
+      name: 'GlovalLotto',
+      component: GlovalLotto,
+    },
+    {
+      path: '/LottoGame',
+      name: 'LottoGame',
+      component: LottoGame,
     },
    
     

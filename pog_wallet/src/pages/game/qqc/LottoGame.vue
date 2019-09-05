@@ -146,7 +146,7 @@ export default {
   }
   .close{
     flex:1 1;
-    background:url("../../assets/img/uv1.png") no-repeat center center;
+    background:url("../../../assets/img/u102.png") no-repeat center center;
     background-size:.8rem .8rem;
   }
 
@@ -161,10 +161,11 @@ export default {
     flex-direction: column;
     overflow: scroll;
   }
+
   .wdclose{
     width:.6rem;
     height:.6rem;
-    background:url("../../assets/img/u102.png") no-repeat center center;
+    background:url("../../../assets/img/u102.png") no-repeat center center;
     background-size:1rem 1rem;
     position:absolute;
     right:.8rem;
