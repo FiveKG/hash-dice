@@ -11,13 +11,28 @@
             <div class="display_ib" style="width: 49.5%;height: 100%;"></div>
           </div>
         </div>
-        <div style=" width: 100%;height: 4.48rem;background: ;margin:0 0 1px 0;">
+        <!-- <div style=" width: 100%;height: 4.48rem;background: ;margin:0 0 1px 0;">
           <div style="width:80%;margin:0 5%;" v-for="(item,index) in items" :key='index'>
             <p class=" font_four p_A" style="line-height: .64rem;">{{item.num}}</p>
           </div>
-        </div>
+        </div> -->
+        <!-- 区块滚动 -->
+        <Row style="height: 180px;overflow: hidden;">
+            <transition-group name="list-complete" style="height:180px;" tag="div" >
+                <Row type="flex" style="padding:0 5px;font-size:14px;" class="list-complete-item" v-for="(item,index) in blockList" v-bind:key="item.timestamp">
+                    <Col style="color:#5b5774;">
+                        <div>{{item.block_num}}</div>
+                    </Col>
+                    <Col style="flex:1;padding: 0 20px;color:#5b5774;overflow: hidden;white-space: nowrap;text-overflow: ellipsis clip;font-family:Consolas, monaco, monospace;text-align:right;" >
+                        <div >...{{item.id}}<span :style="item.isReward ? 'color:green':''">{{item.last_id}}</span>
+                        </div>
+                    </Col>
+                    <Col style="color:#444150;">{{item.timestamp}}</Col>
+                </Row>
+            </transition-group>
+        </Row>
         <div style="height: 1.4rem;">
-          <div style="width:100%;height:.15rem;background: rgb(27, 27, 27);"></div>
+          <div style="width:100%;height:.15rem;background: rgb(27, 27, 27);"></div>  
           <div style="width:100%;height:1.1rem;">
             <div class="display_ib" style="width:33.3%;height:1.1rem;"><p @click="selectTwenty(1)" :class="{orange:twenty==1}" class=" font_five" style="line-height:1.1rem;text-align: center;">20x0.1</p></div>
             <div class="display_ib" style="width:33.3%;height:1.1rem;"><p @click="selectTwenty(2)" :class="{orange:twenty==2}" class=" font_five" style="line-height:1.1rem;text-align: center;">20x0.5</p></div>
@@ -222,5 +237,11 @@ span{
   font-family: '微軟正黑體 Regular', '微軟正黑體';
 }   
    
+
+
+/* 滚动样式    */
+.list-complete-item {
+  transition: all .5s;
+}
 
 </style>
