@@ -59,6 +59,15 @@
           <div class="btn1">随机投注</div>
           <div class="btn2">选号投注</div>
       </div>
+
+      <!-- 选项 -->
+      <div class="options">
+         <div class="btns">
+           <p class="all" @click="btnToggle(0)" :class="{'active':btnId == 0}">全部</p>
+           <p class="my" @click="btnToggle(1)" :class="{'active':btnId == 1}">我的</p>
+         </div>
+         
+      </div>
       
 
 
@@ -82,8 +91,6 @@
                 <span>规则</span>
             </v-ons-row>
          </div>
-            
-
       </v-ons-action-sheet> 
 
 
@@ -99,12 +106,16 @@ export default {
    data() {
        return {
           actionSheetVisible: false,
+          btnId:0,
          
        }
    },
    methods:{
      close(){
         this.$router.go(-2)
+     },
+     btnToggle(id){
+        this.btnId = id
      },
   
    },
@@ -330,10 +341,7 @@ export default {
     padding:.05rem 0 .25rem ;
   }
 
-  .test{
-    height:1rem;
-    background:#FF9900;
-  }
+  
 
   .display_ib{
   display: inline-block;
@@ -341,6 +349,7 @@ export default {
   .vertical_top{
   vertical-align: top;
 }
+
   .ukey{
     text-align:center;
     color:#BCBCBC;
@@ -348,14 +357,16 @@ export default {
     font-family: "Arial Normal", Arial;
     font-weight: 400;
     font-style: 700;
-    line-height: 1rem;
+    line-height: 1.2rem;
   }
   
+
   .bettingBtn{
     display: flex;
     box-sizing:border-box;
     padding: 0 .8rem;
     padding-bottom:1rem;
+    box-shadow: 0px 0.08rem 0.08rem rgba(0, 0, 0, 0.349019607843137);
   }
   .btn1, .btn2{
     flex:1 1;
@@ -369,5 +380,30 @@ export default {
   .btn1{
     margin-right: .3rem;
   }
+  
+  .btns{
+    display:flex;
+    text-align:center;
+    box-sizing:border-box;
+    padding:0 .12rem;
+    font-size:.45rem;
+    font-family: '微軟正黑體 Regular', '微軟正黑體';
+    font-weight: 400;
+    font-style: normal;
+    color: #5E5E5E;
+    line-height:1.5rem;
+    padding-top: .2rem;
+  }
+  .btns .active{
+    background-color: rgba(52, 52, 52, 1);
+    color: #FF9900;
+   }
+  .all, .my{
+    flex:1 1;
+    background-color:rgba(27, 27, 27, 1);
+    border-top-left-radius: .2rem;
+    border-top-right-radius: .2rem;
+  } 
+  
   
 </style>
