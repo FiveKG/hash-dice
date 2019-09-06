@@ -610,8 +610,7 @@ const router = new Router({
       name: 'LottoGame',
       component: LottoGame,
     },
-   
-    
+
   ]
 })
 

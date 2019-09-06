@@ -18,6 +18,59 @@
               </div>
           </div>
 
+      <!-- 文字下拉 -->
+        
+      <!-- 全球彩 -->
+      <div class="globalColor">
+         <div class="content">
+            <p class="small_t">全球彩</p>
+            <p class="big_t">全球彩</p>
+            <div class="openTime">00:35:23</div>
+            <p class="openPhase"># 50 期</p>
+            <p class="openNum">105,639.2700</p>
+            <p class="Company">UE</p>
+         </div>
+      </div>
+      
+      <!-- 按钮部分 -->
+      <div style="width: 80%;height: 1rem;margin: 0 auto;border-radius: 5px;background: rgb(54,54,54);">
+          <div class="display_ib vertical_top" style="width:1rem;height:1rem;">
+             <img style="width:50%;height:50%;margin: 25% 25%;" src="@/assets/invitation2/u7.png">
+          </div>
+          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);">
+              <p class=" font_five" style="line-height:1rem;text-align: center;">-</p>
+          </div>
+          <div class="display_ib vertical_top" style="width:1.8rem;height:1rem;">
+              <p class=" font_five orange" style="line-height:1rem;text-align: center;">1</p>
+          </div>
+          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);">
+              <p class=" font_five orange" style="line-height:1rem;text-align: center;">+</p>
+          </div>
+          <div class="display_ib vertical_top" style="width:3rem;height:1rem;">
+              <p class=" font_five" style="line-height:1rem;text-align: center;color: #E4E4E4;">@ 1 UE</p>
+          </div>
+      </div>
+
+      <!-- key -->
+      <p class="ukey">1 key = 0.1 UE</p>
+
+      <!-- 投注按钮 -->
+      <div class="bettingBtn">
+          <div class="btn1">随机投注</div>
+          <div class="btn2">选号投注</div>
+      </div>
+
+      <!-- 选项 -->
+      <div class="options">
+         <div class="btns">
+           <p class="all" @click="btnToggle(0)" :class="{'active':btnId == 0}">全部</p>
+           <p class="my" @click="btnToggle(1)" :class="{'active':btnId == 1}">我的</p>
+         </div>
+         
+      </div>
+      
+
+
       <!-- 更多下拉框 -->
       <v-ons-action-sheet
         :visible.sync="actionSheetVisible"
@@ -38,8 +91,6 @@
                 <span>规则</span>
             </v-ons-row>
          </div>
-            
-
       </v-ons-action-sheet> 
 
 
@@ -54,13 +105,19 @@ export default {
    name: '',
    data() {
        return {
-          actionSheetVisible: false
+          actionSheetVisible: false,
+          btnId:0,
+         
        }
    },
    methods:{
      close(){
         this.$router.go(-2)
-     }
+     },
+     btnToggle(id){
+        this.btnId = id
+     },
+  
    },
    mounted(){
      
@@ -78,6 +135,10 @@ export default {
    display:flex;
    flex-wrap:nowrap;
    align-items:center;
+   background-color: rgba(27, 27, 27, 1);
+   box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.349019607843137);
+   font-family: 'Arial Negreta', 'Arial Normal', 'Arial';
+   font-weight: 700;
  }
  .title_left{
    flex:1 1;
@@ -201,5 +262,148 @@ export default {
   }
 
 
+
+  .globalColor{
+    padding:1rem .8rem .6rem .8rem;
+  }
+
+  .globalColor .content{
+    border:0.02rem solid rgba(255,255,255,0.3);
+    border-radius:.1rem;
+    position:relative;
+    text-align:center;
+    padding-top:.8rem;
+
+  }
+  
+  .big_t, .small_t{
+    font-family: '微軟正黑體 Bold', '微軟正黑體 Regular', '微軟正黑體';
+  }
+  
+  .big_t{
+    background-color:rgba(40, 40, 40, 1);
+    height:1rem;
+    width:3.6rem;
+    color:rgba(148, 148, 148, 0.109803921568627);
+    position:absolute;
+    left:50%;
+     margin-left:-1.8rem;;
+    top:-0.25rem;
+    vertical-align: middle;
+    font-size:.9rem;
+    font-weight: 700;
+  }
+  .small_t{
+    height:1rem;
+    width:3rem;
+    color: #FF9900;;
+    position:absolute;
+    left:50%;
+    margin-left:-1.5rem;;
+    top:-0.25rem;
+    vertical-align: middle;
+    font-size:.75rem;
+    font-weight: 700;
+    z-index: 11;
+  }
+
+  .openTime{
+    font-size: .4rem;
+    color: #BCBCBC;
+    font-family: "Arial Normal", Arial;
+    font-weight: 400;
+    font-style: normal;
+    padding:.22rem 0 .12rem;
+  }
+
+  .openPhase{
+    font-weight: 400;
+    font-style: normal;
+    font-size: .4rem;
+    color: #BCBCBC;
+    font-family: '微軟正黑體 Regular', '微軟正黑體';
+  }
+  
+  .openNum{
+    font-family: 'Arial Rounded MT Bold', 'Arial Rounded MT';
+    font-weight: 700;
+    font-style: normal;
+    font-size: .7rem;
+    color: #FF9900;
+  }
+
+  .Company{
+    font-family: "Arial Normal", Arial;
+    font-weight: 400;
+    font-style: normal;
+    font-size: .4rem;
+    color: #BCBCBC;
+    padding:.05rem 0 .25rem ;
+  }
+
+  
+
+  .display_ib{
+  display: inline-block;
+}
+  .vertical_top{
+  vertical-align: top;
+}
+
+  .ukey{
+    text-align:center;
+    color:#BCBCBC;
+    font-size:.4rem;
+    font-family: "Arial Normal", Arial;
+    font-weight: 400;
+    font-style: 700;
+    line-height: 1.2rem;
+  }
+  
+
+  .bettingBtn{
+    display: flex;
+    box-sizing:border-box;
+    padding: 0 .8rem;
+    padding-bottom:1rem;
+    box-shadow: 0px 0.08rem 0.08rem rgba(0, 0, 0, 0.349019607843137);
+  }
+  .btn1, .btn2{
+    flex:1 1;
+    font-size:.45rem;
+    border:.02rem solid  rgba(255,255,255,0.3);
+    color:#FF9900;
+    text-align:center;
+    border-radius:.1rem;
+    line-height:1.2rem;
+  }
+  .btn1{
+    margin-right: .3rem;
+  }
+  
+  .btns{
+    display:flex;
+    text-align:center;
+    box-sizing:border-box;
+    padding:0 .12rem;
+    font-size:.45rem;
+    font-family: '微軟正黑體 Regular', '微軟正黑體';
+    font-weight: 400;
+    font-style: normal;
+    color: #5E5E5E;
+    line-height:1.5rem;
+    padding-top: .2rem;
+  }
+  .btns .active{
+    background-color: rgba(52, 52, 52, 1);
+    color: #FF9900;
+   }
+  .all, .my{
+    flex:1 1;
+    background-color:rgba(27, 27, 27, 1);
+    border-top-left-radius: .2rem;
+    border-top-right-radius: .2rem;
+  } 
+  
   
 </style>
