@@ -56,7 +56,7 @@
 
       <!-- 投注按钮 -->
       <div class="bettingBtn">
-          <div class="btn1">随机投注</div>
+          <div class="btn1" @click="randomBetting()">随机投注</div>
           <div class="btn2">选号投注</div>
       </div>
 
@@ -66,9 +66,25 @@
            <p class="all" @click="btnToggle(0)" :class="{'active':btnId == 0}">全部</p>
            <p class="my" @click="btnToggle(1)" :class="{'active':btnId == 1}">我的</p>
          </div>
-         
+      </div>  
+
+      <!-- 如果状态等于0 显示全部 -->
+      <div class="allList" v-if="btnId == 0">
+        <p v-for="(item,index) in openList" :key="index"><span># {{item.time}}</span>   <span>{{item.num}}</span>
+          <span>{{item.key}}</span> <img src="@/assets/img/invitation_profitarrow.png" alt="">
+        </p>
+      </div>
+
+
+      <!-- 如果状态等于1 显示我的 -->
+      <div class="myList" v-if="btnId == 1">
+        <p v-for="(item,index) in openList" :key="index"><span># {{item.time}}</span>   <span>{{item.num}}</span>
+          <span>{{item.key}}</span> <img src="@/assets/img/invitation_profitarrow.png" alt="">
+        </p>
       </div>
       
+      
+
 
 
       <!-- 更多下拉框 -->
@@ -94,8 +110,6 @@
       </v-ons-action-sheet> 
 
 
-
-
         </div>
     </ons-page>
 </template>
@@ -107,7 +121,16 @@ export default {
        return {
           actionSheetVisible: false,
           btnId:0,
-         
+          openList:[
+            {time:'50期',num:'09/03  11:43:10',key:'1 Key'},
+            {time:'51期',num:'09/03  21:43:10',key:'1 Key'},
+            {time:'52期',num:'09/03  12:43:10',key:'5 Key'},
+            {time:'52期',num:'09/03  11:43:10',key:'5 Key'},
+            {time:'52期',num:'09/03  01:43:10',key:'5 Key'},
+            {time:'53期',num:'09/03  01:43:10',key:'1 Key'},
+            {time:'54期',num:'09/03  11:43:10',key:'1 Key'},
+          ]
+            
        }
    },
    methods:{
@@ -117,7 +140,9 @@ export default {
      btnToggle(id){
         this.btnId = id
      },
-  
+     randomBetting(){
+        this.$toast('恭喜你！随机投注成功')
+     }
    },
    mounted(){
      
@@ -172,8 +197,6 @@ export default {
    border-radius:.09rem; 
    display:flex;
    position:relative;
-     
-   
  }
   .more{
     flex:1 1;
@@ -395,15 +418,50 @@ export default {
     padding-top: .2rem;
   }
   .btns .active{
-    background-color: rgba(52, 52, 52, 1);
+    background-color: rgba(27, 27, 27, 1);
     color: #FF9900;
    }
   .all, .my{
     flex:1 1;
-    background-color:rgba(27, 27, 27, 1);
+    background-color: #343434;
     border-top-left-radius: .2rem;
     border-top-right-radius: .2rem;
   } 
   
-  
+  .allList, .myList{
+      background-color:#1b1b1b;
+  }
+  .allList p, .myList p{
+      text-align:center;
+      line-height: 1.5rem;
+      font-size:.44rem;
+      font-family: '微軟正黑體 Regular', '微軟正黑體';
+      font-weight: 400;
+      font-style: normal;
+  }
+  .allList p span:nth-child(1), .myList p span:nth-child(1){
+     color:#BCBCBC;
+     padding-right:.7rem;
+    
+  }
+  .allList p span:nth-child(2), .myList p span:nth-child(2){
+     color:#BCBCBC;
+     padding-right:1rem;
+  }
+  .allList p span:nth-child(3), .myList p span:nth-child(3){
+     color:#BCBCBC;
+ 
+  }
+  .allList{
+    padding:.2rem 0;
+  }
+  .allList p img, .myList p img{
+    vertical-align: middle;
+    width:.5rem;
+    height:.5rem;
+  }
+
+  .my_toast{
+    top:50%;
+  }
 </style>

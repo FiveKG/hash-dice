@@ -17,15 +17,15 @@
           <i class="icon footerHomeIcon"></i>
           <p class="footer-title">{{$t('common.assets')}}</p>
         </div>
-        <!-- <div class="footer-item flex_center" :class="selectTab === 'invitation'? 'router-link-active':''" @click="clickTab('invitation')">
+        <div class="footer-item flex_center" :class="selectTab === 'invitation'? 'router-link-active':''" @click="clickTab('invitation')">
           <img class="ico_tbg" src="@/assets/img/tbg_selected.png" v-if="selectTab === 'invitation'">
           <img class="ico_tbg" src="@/assets/img/tbg.png" v-else>
-        </div> -->
+        </div>
 
-        <div class="footer-item flex_center" :class="selectTab === 'xx'? 'router-link-active':''" @click="clickTab('xx')">
+        <!-- <div class="footer-item flex_center" :class="selectTab === 'xx'? 'router-link-active':''" @click="clickTab('xx')">
           <img class="ico_tbg" src="@/assets/img/tbg_selected.png" v-if="selectTab === 'xx'">
           <img class="ico_tbg" src="@/assets/img/tbg.png" v-else>
-        </div>
+        </div> -->
 
 
         <div class="footer-item" :class="selectTab === 'discover'? 'router-link-active':''" @click="clickTab('discover')">
