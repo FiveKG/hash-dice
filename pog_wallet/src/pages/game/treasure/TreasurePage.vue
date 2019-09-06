@@ -3,7 +3,7 @@
      <slot>
        <div style="background-color: rgb(40,40,40);height:100%;width:100%;">
         <div class="head" style="background: rgb(27,27,27);">
-          <div class="float_left box"><img class="ion_tbg" src="@/assets/invitation2/u3.png"></div>
+          <div class="float_left box"><img  class="ion_tbg" src="@/assets/invitation2/u3.png"></div>
           <p class="float_left orange" style="font-size: .5rem;margin: 0.45rem 0 .45rem 0;">夺宝</p>
           <div class="float_right" style="width: 3rem;height: 1rem;border: 1px solid rgb(100,100,100);margin: .25rem .6rem .25rem 0;border-radius: 6px;">
             <div class="display_ib" style="width: 49.5%;height: 100%;"></div>
@@ -11,26 +11,16 @@
             <div class="display_ib" style="width: 49.5%;height: 100%;"></div>
           </div>
         </div>
-        <!-- <div style=" width: 100%;height: 4.48rem;background: ;margin:0 0 1px 0;">
-          <div style="width:80%;margin:0 5%;" v-for="(item,index) in items" :key='index'>
-            <p class=" font_four p_A" style="line-height: .64rem;">{{item.num}}</p>
-          </div>
-        </div> -->
         <!-- 区块滚动 -->
-        <Row style="height: 180px;overflow: hidden;">
-            <transition-group name="list-complete" style="height:180px;" tag="div" >
-                <Row type="flex" style="padding:0 5px;font-size:14px;" class="list-complete-item" v-for="(item,index) in blockList" v-bind:key="item.timestamp">
-                    <Col style="color:#5b5774;">
-                        <div>{{item.block_num}}</div>
-                    </Col>
-                    <Col style="flex:1;padding: 0 20px;color:#5b5774;overflow: hidden;white-space: nowrap;text-overflow: ellipsis clip;font-family:Consolas, monaco, monospace;text-align:right;" >
-                        <div >...{{item.id}}<span :style="item.isReward ? 'color:green':''">{{item.last_id}}</span>
-                        </div>
-                    </Col>
-                    <Col style="color:#444150;">{{item.timestamp}}</Col>
-                </Row>
-            </transition-group>
-        </Row>
+        <div class="recording"   >
+            <transition-group name="scroll" >
+              <div style="display:inline-block" class="row list-complete-item" v-for="item in items" :key='item.treasureKey'>
+                  <div class="display_ib" style="width: 23%;height: 100%;"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.block_num}}</p> </div>
+                  <div class="display_ib" style="width: 54%;height: 100%;"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.id}}</p></div>
+                  <div class="display_ib" style="width: 23%;height: 100%;"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.timestamp}}</p></div>
+              </div>
+            </transition-group> 
+        </div>
         <div style="height: 1.4rem;">
           <div style="width:100%;height:.15rem;background: rgb(27, 27, 27);"></div>  
           <div style="width:100%;height:1.1rem;">
@@ -46,7 +36,7 @@
             <p class="" style=" line-height: 1rem;text-align: center;font-size: .6rem;font-weight: 700;">夺宝 20x0.1</p>
           </div>
             <p class="Centered font_four p_A" style="margin: 25px auto 8px auto;"># 166 期</p>
-            <div class="schedule_white"><div class="schedule_orange" :style="{ width: schedule + '%' }"></div></div>
+            <div class="schedule_white"><div class="schedule_orange" :style="{ width: 80 + '%' }"></div></div>
             <div style="width:100%;margin-top:.3rem;">
               <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_four" style="text-align: center;">18 Key</p><p class=" font_four" style="text-align: center;">已投</p></div>
               <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_four" style="text-align: center;">18 Key</p><p class=" font_four" style="text-align: center;">总需</p></div>
@@ -93,10 +83,6 @@
           </div>
         </div>
         
-          
-
-      
-       
        </div>
      </slot>
     </vpage>
@@ -105,6 +91,12 @@
 
 <script>
 import MyPage from '@/components/MyPage'
+import { format, parse } from 'date-fns'
+import {Decimal} from 'decimal.js'
+
+//滚动区域
+import ClientSocket from '@/socket/scrollClientSocket'
+
 
 export default {
   components: {
@@ -112,6 +104,7 @@ export default {
    },
   data() {
     return {
+      treasureKey:1,  //滚动KEY
       twenty:1,      //模式选择  20*0.1为1  20*0.5为2  100*0.1为3
       allMy:true,   //区分我的 全部
       publicData:[   //公用界面数据
@@ -122,16 +115,13 @@ export default {
       ],
       publicMy:[    //公用我的
 
-      ],
-      items:[
-              {num:111,a:'# 163期',b:'待开奖',key:1},
-              {num:111,a:'# 163期',b:'幸运码：100006',key:2},
-              {num:111,a:'# 163期 - 中奖',b:'幸运码：100006',key:3},
-              {num:111,a:'# 163期',b:'幸运码：100006',key:4},
-              {num:111,a:'# 163期',b:'幸运码：100006',key:5},
-              {num:111,a:'# 163期',b:'幸运码：100006',key:6},
-              {num:111,a:'# 163期',b:'幸运码：100006',key:7},
       ],   
+      items:[    // 滚动
+              // {timestamp:"15:23:02.0",block_num:33283278,
+              //   id:'...'+"F7B195473D4F09BC8F1",treasureKey:1
+              //   }
+      ],   
+        
     }
   },
   methods: {
@@ -143,11 +133,101 @@ export default {
        },
        selectAllMy(index) {
          this.allMy=index;
-       }
+       },
+    //滚动区域
+    initSocket() {
+            ClientSocket.link().then(async connected => {
+                // console.log('link',connected)
+                if (connected) {
+                    try {
+                        let rewards = await ClientSocket.getReward({type:'less'})
+                        if (rewards.type === 'reward_history') {
+                            console.log(222,rewards)
+                            let record = rewards.result
+                            if (record) {
+                                let list = []
+                                for (let item of record) {
+                                    if (item.open_code) {
+                                        let second = format(parse(item.end_time), 'HH:mm') + ':00'
+                                        list.push({
+                                            session_id: item.session_id,
+                                            award_num: item.open_code.replace(/,/g,' '),
+                                            time: second
+                                        })
+                                    }
+                                }
+                                this.rewardRecord = list
+                                this.sessionId = parseInt(list[0].session_id) + 1
+                            }
+                        }
+                        const moreReward = await ClientSocket.getReward({type: 'more', page: this.page})
+                        if (moreReward.type === 'reward_history') {
+                            console.log(222,moreReward)
+                            if (moreReward.result) {
+                                for (let item of moreReward.result) {
+                                    if (item.open_code) {
+                                        let bigOrSmall,oddsOrEven
+                                        let numbers = item.open_code.split(',')
+                                        let lastNum = Number.parseInt(numbers[numbers.length - 1])
+                                        if (lastNum > 5) {
+                                            bigOrSmall = 'b'
+                                        } else {
+                                            bigOrSmall = 's'
+                                        }
+                                        if (lastNum % 2) {
+                                            oddsOrEven = 'o'
+                                        } else {
+                                            oddsOrEven = 'e'
+                                        }
+                                        this.lotteryRecords.push({
+                                            time: format(parse(item.end_time), 'MM/DD HH:mm'),
+                                            phase: item.session_id,
+                                            number: item.open_code.replace(/,/g,' '),
+                                            bigOrSmall: bigOrSmall,
+                                            oddsOrEven: oddsOrEven
+                                        })
+                                    }
+                                }
+                            }
+                        }
+                        // let betRecord = await ClientSocket.getBetRecord()
+                        // if (betRecord.result) {
+                        //     for (let item of betRecord.result) {
+                        //         this.betRecord.unshift({
+                        //             account_name: item.account_name,
+                        //             quantity: item.quantity.split(' ')[0],
+                        //             bet_id: item.session_id,
+                        //             bet_time: format(parse(item.create_time), 'HH:mm:ss')
+                        //         })
+                        //     }
+                        // }
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            })
+        },
+       
+        
+        
   },
+  watch: {
+        '$store.state.wallet.block': {
+            handler(newVal, oldVal) {
+                // console.log(12311111111111,this.$store.state.wallet.block);
+                // this.treasureKey+=1;
+                // this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
+                // id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey
+                // });
+                // this.items.splice(10);
+
+            }
+        },
+    },
   created(){
     // console.log('this',this);
-   
+    //滚动区域
+    this.initSocket();
   }
 }
 </script>
@@ -240,8 +320,28 @@ span{
 
 
 /* 滚动样式    */
-.list-complete-item {
+.recording{
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 4.48rem;
+  margin: 0 0 1px 0;
+}
+.row{
+  width: 100%;
+  height: 0.64rem;
+  position: relative;
+}
+.scroll-enter-active, .scroll-leave-active {
   transition: all .5s;
 }
+.scroll-enter, .scroll-leave-to{
+  transform: translateY(-30px);
+}
+.scroll-move{
+  transition:transform .5s;
+}
+
+
 
 </style>

@@ -101,6 +101,7 @@ import HaGo from './pages/game/ha/HaGo'
 import HaNine from './pages/game/ha/HaNine'
 import TreasureGo from './pages/game/treasure/TreasureGo'
 import TreasurePage from './pages/game/treasure/TreasurePage'
+import LotteryDetailsNoLottery from './pages/game/treasure/LotteryDetailsNoLottery'
 
 import GlovalLotto from './pages/game/qqc/GlovalLotto'
 import LottoGame from './pages/game/qqc/LottoGame'
@@ -589,11 +590,15 @@ const router = new Router({
       name: 'TreasureGo',
       component: TreasureGo,
     },
-   
     {
       path: '/treasurePage',
       name: 'TreasurePage',
       component: TreasurePage,
+    },
+    {
+      path: '/lotteryDetailsNoLottery',
+      name: 'LotteryDetailsNoLottery',
+      component: LotteryDetailsNoLottery,
     },
     {
       path: '/GlovalLotto',
