@@ -1,20 +1,21 @@
 module.exports = {
     "db" : {
-        "host"    : "172.17.0.5",
+        "host"    : "127.0.0.1",
         "database": "wallet_tbg_db",
         "user" : "wallet_tbg_user",
         "password" :  "pass_2019",
-        "port"    : 5432,
+        "port"    : 54321,
     },
     "redis": {
-        "host" : "172.17.0.2",
-        "port" : 6379 ,
-        "auth" : "redis_pass_2018"
+        "host" : "127.0.0.1",
+        "port" : "6380" ,
+        "auth" : "iueksefPOSDds123DW"
     },
     "rabbitmq": {
-        "host": "172.17.0.3",
+        "host": "172.18.0.2",
         "port" : 5672,
         "user" : "mq_user",
-        "pwd" : "pass_2019"
+        "pwd" : "pass_2018"
     }
+
 }

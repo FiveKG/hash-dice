@@ -13,6 +13,7 @@ unset TBG_RABBIT_PORT
 unset TBG_RABBIT_USER
 unset TBG_RABBIT_PASS
 
+
 export TBG_DB_HOST=127.0.0.1
 export TBG_DB_PORT=54321
 export TBG_DB_USER=wallet_tbg_user
@@ -20,7 +21,7 @@ export TBG_DB_PASS=pass_2019
 export TBG_DB_NAME=wallet_tbg_db
 
 export TBG_REDIS_HOST=127.0.0.1
-export TBG_REDIS_PORT=54321
+export TBG_REDIS_PORT=6380
 export TBG_REDIS_PASS=iueksefPOSDds123DW
 
 export TBG_RABBIT_HOST=172.18.0.2
