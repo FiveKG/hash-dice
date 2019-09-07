@@ -451,20 +451,18 @@ export default {
     created(){
         this.account_name = this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];
         //判断是否激活
-        api.isBind({
-          account_name: this.account_name
-        }).then(res => {
-          if (res.code==1){
-            console.log(22222222222222,res);
-            if(res.data.is_bind==true){
-            return 
-            }else{
-              this.$router.push({
-                  name: 'IndexT',
-                })
-            }
-          }
-        })
+        // api.isBind({account_name: this.account_name}).then(res => {
+        //   if (res.code==1){
+        //     console.log(22222222222222,res);
+        //     if(res.data.is_bind==true){
+        //     return 
+        //     }else{
+        //       this.$router.push({
+        //           name: 'IndexT',
+        //         })
+        //     }
+        //   }
+        // })
         //
 
         api.isActive({

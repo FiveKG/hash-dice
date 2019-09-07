@@ -111,22 +111,25 @@ export default {
     }
   },
   methods: {
-    clickConfirm() {
+    clickConfirm() {            
       this.showDialog = false
       this.loading = true
       console.log(22222222,this.account,this.keyboardVal.join(''));
-       api.bindReferrer({
-          account_name: this.account,refer_code:this.keyboardVal.join('')
-        }).then(res => {
+       api.bindReferrer({account_name: this.account,refer_code:this.keyboardVal.join('')}).then(res => {
             console.log('bindReferrer',res)
-          if (res.code === 1) {
+          if (res.code !== 1) {
             this.$router.push({
-                  name: 'NotParticipating',
+                  name: 'index',
+                  par: {
+                    xx: 'xx'
+                  }
                 })
             this.loading = false
             this.$toast('绑定成功')
-            this.$emit('bind', true)
+            // this.$emit('bind', true)
           }
+        }).catch(err =>{
+           console.log(err);
         })
     },
     clickBind() {

@@ -8,6 +8,7 @@
       <!-- <market v-else-if="selectTab === 'market'"></market> -->
       <invitation v-else-if="selectTab === 'invitation'"></invitation>
       <xx v-else-if="selectTab === 'xx' "></xx>
+      <Binding v-else-if="selectTab === 'Binding' "></Binding>
       <discover v-else-if="selectTab === 'discover'"></discover>
       <exchange v-else-if="selectTab === 'exchange'"></exchange>
       <me v-else-if="selectTab === 'me'"></me>
@@ -26,7 +27,6 @@
           <img class="ico_tbg" src="@/assets/img/tbg_selected.png" v-if="selectTab === 'xx'">
           <img class="ico_tbg" src="@/assets/img/tbg.png" v-else>
         </div>
-
 
         <div class="footer-item" :class="selectTab === 'discover'? 'router-link-active':''" @click="clickTab('discover')">
           <i class="icon footerDiscoverIcon"></i>
@@ -93,6 +93,10 @@ import ClientSocket from '@/socket/ClientSocket'
 import { getAdImg } from '@/servers';
 import xx from './invitation2/NotParticipating'
 
+import Binding from './invitation/Index'
+import api from '@/servers/invitation'
+
+
 export default {
   components: {
     Loading,
@@ -104,7 +108,8 @@ export default {
     Discover,
     Chat,
     Me,
-    xx
+    xx,
+    Binding
   },
   data () {
     return {
@@ -227,7 +232,9 @@ export default {
         this.type = selectedTab
         this.selectTab = selectedTab
       }
-      console.log('index-init',this.type,this.selectTab)
+      // console.log('index-init',this.type,this.selectTab)
+      //如果从绑定页面来，就跳转到主页面
+      if(!!this.$route.par&&this.$route.par.xx){this.selectTab='xx';}
     },
     clickTab(type) {
       if (type === 'invitation') {
@@ -252,7 +259,18 @@ export default {
         console.log('error', err)
         that.showExDialog = true
       }
-    }
+      if(type == 'xx'){  //如果未绑定跳转到绑定页面
+         api.isBind({account_name: this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]}).then(res => {
+          if (res.code==1){
+            if(res.data.is_bind==true){
+            return 
+            }else{
+                this.selectTab='Binding';
+            }
+          }
+        })
+      }
+    },
   },
   watch: {
     '$store.state.wallet.localFile.wallets'(newVal) {
