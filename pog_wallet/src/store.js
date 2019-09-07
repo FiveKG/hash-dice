@@ -10,7 +10,10 @@ export default new Vuex.Store({
       strict: true,
       namespaced: true,
       state: {
-        stack: []
+        stack: [],
+        
+      
+
       },
       mutations: {
         reset (state, page) {
@@ -47,7 +50,10 @@ export default new Vuex.Store({
         selectEthToken: {
           symbol: 'ETH'
         },
-        discoverSwiper: []
+        discoverSwiper: [],
+
+        //滚动区域
+        block: {},
       },
       mutations: {
         setSchemaChain(state, schemaChain) {
@@ -111,6 +117,10 @@ export default new Vuex.Store({
         },
         setSelectEthToken(state, selectEthToken) {
           state.selectEthToken = selectEthToken;
+        },
+         //滚动区域
+         setBlock(state, data) {
+          state.block = data;
         }
       }
     }

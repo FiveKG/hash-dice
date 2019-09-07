@@ -365,8 +365,8 @@
             <!-- 第四部分 -->
             <div style="  width: 100%;height: 30px;"></div>
             <div>
-                <span :class="{orange:sellList,font_silver:!sellList}" style="font-size: 0.45rem;margin:0 10%;" @click="logSelllList">当前买入列表</span>
-                <span :class="{orange:!sellList,font_silver:sellList}" style="font-size: 0.45rem;" @click="logSelllList">历史买入记录</span>
+                <span :class="{orange:sellList,font_silver:!sellList}" style="font-size: 0.45rem;margin:0 10%;" @click="logSelllList">当前卖出列表</span>
+                <span :class="{orange:!sellList,font_silver:sellList}" style="font-size: 0.45rem;" @click="logSelllList">历史卖出记录</span>
             </div>
             <div style="  width: 100%;height: 15px;"></div>
             <!-- 当前买入列表 -->
@@ -437,8 +437,8 @@ import {Decimal} from 'decimal.js'
 import MDialog from '@/components/MDialog'
 import PasswordService from '@/services/PasswordService'
 import CryptoAES from '@/util/CryptoAES'
-import eos from '@/plugins/eos'
-import { friendInvest,getConfig } from '@/servers/invitation';
+import eos from '@/plugins/pog'
+import serverApi from '@/servers/invitation';
 
 export default {
   components: {
@@ -506,16 +506,21 @@ export default {
       actionSheetVisible: false,
       showDialog: false,
       loading: false,
+      blockchainTransferStation:0,    //判断调用哪个区块链转站    1--全球合伙人私募    2--买入资产    3--卖出资产
     }
   },
- updated: function () {
-    //手续费
-    this.handlingFee=new Decimal(this.sellData.price).mul(new Decimal(this.sellingPrice)).mul(new Decimal(this.sellData.sell_fee_rate)).mul(new Decimal(0.01)).toFixed(4)
-    //销毁
-    this.destroy=new Decimal(this.sellData.price).mul(new Decimal(this.sellingPrice)).mul(new Decimal(this.sellData.destroy_rate)).mul(new Decimal(0.01)).toFixed(4)
-    //实收
-    this.actualHarvest=new Decimal(this.sellData.price).mul(new Decimal(this.sellingPrice)).sub(new Decimal(this.handlingFee)).toFixed(4)
-  },
+watch: {
+      sellingPrice: {
+          handler(newVal, oldVal) {
+            //手续费
+            this.handlingFee=new Decimal(this.sellData.price).mul(new Decimal(this.sellingPrice)).mul(new Decimal(this.sellData.sell_fee_rate)).mul(new Decimal(0.01)).toFixed(4);
+            //销毁
+            this.destroy=new Decimal(this.sellData.price).mul(new Decimal(this.sellingPrice)).mul(new Decimal(this.sellData.destroy_rate)).mul(new Decimal(0.01)).toFixed(4);
+            //实收
+            this.actualHarvest=new Decimal(this.sellData.price).mul(new Decimal(this.sellingPrice)).sub(new Decimal(this.handlingFee)).toFixed(4);
+          }
+      },
+},
   methods: {
       //区块链转站
         // 验证密码
@@ -527,8 +532,9 @@ export default {
           return privateKey
           // return '5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h';
         },
-        async clickConfirm() {   //显示密码
+        async clickConfirm(i) {   //显示密码
               this.actionSheetVisible = true;
+              this.blockchainTransferStation=i;
         },
         async goPay(privateKey,quantity,memo ) {
           if (privateKey) {
@@ -584,17 +590,9 @@ export default {
             this.$toast(this.$t('common.wrong_pwd'))
           }
         },
-        async friendInvest() {
-          try {
-            const res = await friendInvest()
-            return res.code
-          } catch (error) {
-            console.log(error)
-          }
-        },
         async getConfig() {
           try {
-            const res = await getConfig()
+            const res = await serverApi.getConfig()
             if (res.code === 1) {
               console.log('getConfig',res)
               return res.data
@@ -607,8 +605,22 @@ export default {
           this.loading = true
           const privateKey = await this.verifyPassword()
           if (privateKey) {
-            const res = await this.goPay(privateKey)
-            if (res) this.$toast('投资成功')
+            if(this.blockchainTransferStation==1){//全球合伙人
+               let memo=this.id+','+this.buyPartnerPrice.raise_price+','+'raise'+','+this.buyPartnerData[this.globalSelect].id
+               let globalPrice=new Decimal(this.globalPrice).toFixed(4)+' UE'   
+               this.goPay(privateKey,globalPrice,memo);
+               this.$toast('私募成功')
+            }else if(this.blockchainTransferStation==2){//买入
+               let memo=this.id+','+this.buynormalPrice.price+','+'buy'+','+this.buynormalData[this.normalSelect].id
+               let normalPrice=new Decimal(this.normalPrice).toFixed(4)+' UE'
+               this.goPay(privateKey,normalPrice,memo); 
+               this.$toast('买入成功')
+            }else if(this.blockchainTransferStation==3){//卖出
+               let memo=this.id+','+this.sellData.price+','+'sell'+','+this.sellingPrice
+               let sellingPrice=new Decimal(this.sellingPrice).toFixed(4)+' TBG'   
+               this.sellgoPay(privateKey,sellingPrice,memo);
+               this.$toast('卖出成功')
+            }
             this.loading = false
             this.showDialog = false
             this.actionSheetVisible = false
@@ -655,44 +667,33 @@ export default {
           this.normalPrice=new Decimal(this.buynormalPrice.price).mul(new Decimal(this.buynormalData[this.normalSelect].amount)).toFixed(4)
        },
        sendGlobalPartnerPlacement() {  //全球合伙人私募
-            this.clickConfirm(); 
           api.globalPartnerPlacement({account_name:this.id,price:this.buyPartnerPrice.raise_price,assets_package_id:this.buyPartnerData[this.globalSelect].id}).then(res => {   
             if (res.code === 1) {
-               let privateKey=this.verifyPassword(); 
-               let memo=this.id+','+this.buyPartnerPrice.raise_price+','+'raise'+','+this.buyPartnerData[this.globalSelect].id
-               let globalPrice=new Decimal(this.globalPrice).toFixed(4)+' UE'   
-               this.goPay(privateKey,globalPrice,memo);
-                
+               this.clickConfirm(1); 
+              }else if(res.code===1016){
+                this.$toast('已私募')
+              }else{
+                this.$toast('系统错误')
               }
           })
        },
        sendBuyAsset() {  //买入资产
           api.buyAsset({account_name:this.id,price:(this.buynormalPrice.price)+'',assets_package_id:this.buynormalData[this.normalSelect].id}).then(res => {   
             if (res.code === 1) {   
-               this.clickConfirm();       
-              //  let privateKey=this.verifyPassword(); 
-              //  let memo=this.id+','+this.buynormalPrice.price+','+'buy'+','+this.buynormalData[this.normalSelect].id
-              //  let normalPrice=new Decimal(this.normalPrice).toFixed(4)+' UE'
-              //  this.goPay(privateKey,normalPrice,memo);  
+               this.clickConfirm(2);       
               }
           })
        },
        sendSellAsset() {  //卖出资产
-            this.clickConfirm(); 
           api.sellAsset({account_name:this.id,price:(this.sellData.price)+'',amount:this.sellingPrice,sell_fee:this.handlingFee,destroy:this.destroy,income:this.actualHarvest}).then(res => {   
             if (res.code === 1) {
-              let privateKey=this.verifyPassword(); 
-               let memo=this.id+','+this.sellData.price+','+'sell'+','+this.sellingPrice
-               let sellingPrice=new Decimal(this.sellingPrice).toFixed(4)+' TBG'   
-               this.sellgoPay(privateKey,sellingPrice,memo);
+                this.clickConfirm(3); 
               }
                this.logPSellConfirm();
           })
        },
-       
 
-
-  },
+},
   created(){
     // console.log(33333333333333333333,this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]);
     //路由跳转判断
@@ -754,7 +755,7 @@ export default {
             this.buynormalData=res.data.assets_info;
         }
       })
-    api.normalTransactionList().then(res => {    // 私募交易列表
+    api.normalTransactionList().then(res => {    // 买入交易列表
         if (res.code === 1) {
           for(let i=0;i<res.data.length;i++){
             res.data[i].create_time=format(new Date(res.data[i].create_time), 'YYYY-MM-DD')

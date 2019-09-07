@@ -3,21 +3,26 @@
      <slot>
        <div style="background-color: rgb(40,40,40);height:100%;width:100%;">
         <div class="head" style="background: rgb(27,27,27);">
-          <div class="float_left box"><img class="ion_tbg" src="@/assets/invitation2/u3.png"></div>
+          <div class="float_left box"><img  class="ion_tbg" src="@/assets/invitation2/u3.png"></div>
           <p class="float_left orange" style="font-size: .5rem;margin: 0.45rem 0 .45rem 0;">夺宝</p>
           <div class="float_right" style="width: 3rem;height: 1rem;border: 1px solid rgb(100,100,100);margin: .25rem .6rem .25rem 0;border-radius: 6px;">
-            <div class="display_ib" style="width: 49.5%;height: 100%;"></div>
-            <div class="display_ib" style="width: 1%;height: 70%;background: rgb(100,100,100);vertical-align: super;"></div>
-            <div class="display_ib" style="width: 49.5%;height: 100%;"></div>
+            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="actionSheetVisible = true" style="width: 50%;height: 27%;margin: 25% 0px 0px 25%;" src="@/assets/invitation2/u8.png"></div>
+            <div class="display_ib" style="width: 1%;height: 70%;background: rgb(100,100,100);vertical-align: top;margin-top: 5%;"></div>
+            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="back" src="../../../assets/img/u102.png" style="width: 55%;height: 80%;margin: 6% 0 0 21%;"></div>
           </div>
         </div>
-        <div style=" width: 100%;height: 4.48rem;background: ;margin:0 0 1px 0;">
-          <div style="width:80%;margin:0 5%;" v-for="(item,index) in items" :key='index'>
-            <p class=" font_four p_A" style="line-height: .64rem;">{{item.num}}</p>
-          </div>
+        <!-- 区块滚动 -->
+        <div class="recording"   >
+            <transition-group name="scroll" >
+              <div style="display:inline-block" class="row list-complete-item" v-for="item in items" :key='item.treasureKey'>
+                  <div class="display_ib" style="width: 23%;height: 100%;"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.block_num}}</p> </div>
+                  <div class="display_ib" style="width: 54%;height: 100%;"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.id}}</p></div>
+                  <div class="display_ib" style="width: 23%;height: 100%;"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.timestamp}}</p></div>
+              </div>
+            </transition-group> 
         </div>
         <div style="height: 1.4rem;">
-          <div style="width:100%;height:.15rem;background: rgb(27, 27, 27);"></div>
+          <div style="width:100%;height:.15rem;background: rgb(27, 27, 27);"></div>  
           <div style="width:100%;height:1.1rem;">
             <div class="display_ib" style="width:33.3%;height:1.1rem;"><p @click="selectTwenty(1)" :class="{orange:twenty==1}" class=" font_five" style="line-height:1.1rem;text-align: center;">20x0.1</p></div>
             <div class="display_ib" style="width:33.3%;height:1.1rem;"><p @click="selectTwenty(2)" :class="{orange:twenty==2}" class=" font_five" style="line-height:1.1rem;text-align: center;">20x0.5</p></div>
@@ -31,7 +36,7 @@
             <p class="" style=" line-height: 1rem;text-align: center;font-size: .6rem;font-weight: 700;">夺宝 20x0.1</p>
           </div>
             <p class="Centered font_four p_A" style="margin: 25px auto 8px auto;"># 166 期</p>
-            <div class="schedule_white"><div class="schedule_orange" :style="{ width: schedule + '%' }"></div></div>
+            <div class="schedule_white"><div class="schedule_orange" :style="{ width: 80 + '%' }"></div></div>
             <div style="width:100%;margin-top:.3rem;">
               <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_four" style="text-align: center;">18 Key</p><p class=" font_four" style="text-align: center;">已投</p></div>
               <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_four" style="text-align: center;">18 Key</p><p class=" font_four" style="text-align: center;">总需</p></div>
@@ -78,7 +83,28 @@
           </div>
         </div>
         
- 
+        <!-- 下拉框 -->
+        <v-ons-action-sheet
+          :visible.sync="actionSheetVisible"
+          cancelable
+        >
+          <div class="selectwrap">
+              <div class="wdclose" @click="actionSheetVisible = false">
+              </div>
+              <v-ons-row class="selectrow" >
+                  <img class="people" src="@/assets/img/u9830.png" alt="">
+                  <span>eoscheshieos</span>
+                  <img class="pic" src="@/assets/img/u9827.png" alt="">
+                  <img class="pic" src="@/assets/img/u9825.png" alt="">
+              </v-ons-row>
+
+              <v-ons-row class="selectrow">
+                  <img class="rule" src="@/assets/img/u9832.png" alt="">
+                  <span>规则</span>
+              </v-ons-row>
+          </div>
+        </v-ons-action-sheet> 
+
        </div>
      </slot>
     </vpage>
@@ -87,6 +113,12 @@
 
 <script>
 import MyPage from '@/components/MyPage'
+import { format, parse } from 'date-fns'
+import {Decimal} from 'decimal.js'
+
+//滚动区域
+import ClientSocket from '@/socket/scrollClientSocket'
+
 
 export default {
   components: {
@@ -94,8 +126,10 @@ export default {
    },
   data() {
     return {
+      treasureKey:1,  //滚动KEY
       twenty:1,      //模式选择  20*0.1为1  20*0.5为2  100*0.1为3
       allMy:true,   //区分我的 全部
+      actionSheetVisible: false,   //下拉框
       publicData:[   //公用界面数据
 
       ],
@@ -104,32 +138,119 @@ export default {
       ],
       publicMy:[    //公用我的
 
-      ],
-      items:[
-              {num:111,a:'# 163期',b:'待开奖',key:1},
-              {num:111,a:'# 163期',b:'幸运码：100006',key:2},
-              {num:111,a:'# 163期 - 中奖',b:'幸运码：100006',key:3},
-              {num:111,a:'# 163期',b:'幸运码：100006',key:4},
-              {num:111,a:'# 163期',b:'幸运码：100006',key:5},
-              {num:111,a:'# 163期',b:'幸运码：100006',key:6},
-              {num:111,a:'# 163期',b:'幸运码：100006',key:7},
       ],   
+      items:[    // 滚动
+              // {timestamp:"15:23:02.0",block_num:33283278,
+              //   id:'...'+"F7B195473D4F09BC8F1",treasureKey:1
+              //   }
+      ],   
+        
     }
   },
   methods: {
        back() {
-          this.$router.go(-1)
+          this.$router.go(-2)
        },
        selectTwenty(index) {
          this.twenty=index;
        },
        selectAllMy(index) {
          this.allMy=index;
-       }
+       },
+    //滚动区域
+    initSocket() {
+            ClientSocket.link().then(async connected => {
+                // console.log('link',connected)
+                if (connected) {
+                    try {
+                        let rewards = await ClientSocket.getReward({type:'less'})
+                        if (rewards.type === 'reward_history') {
+                            console.log(222,rewards)
+                            let record = rewards.result
+                            if (record) {
+                                let list = []
+                                for (let item of record) {
+                                    if (item.open_code) {
+                                        let second = format(parse(item.end_time), 'HH:mm') + ':00'
+                                        list.push({
+                                            session_id: item.session_id,
+                                            award_num: item.open_code.replace(/,/g,' '),
+                                            time: second
+                                        })
+                                    }
+                                }
+                                this.rewardRecord = list
+                                this.sessionId = parseInt(list[0].session_id) + 1
+                            }
+                        }
+                        const moreReward = await ClientSocket.getReward({type: 'more', page: this.page})
+                        if (moreReward.type === 'reward_history') {
+                            console.log(222,moreReward)
+                            if (moreReward.result) {
+                                for (let item of moreReward.result) {
+                                    if (item.open_code) {
+                                        let bigOrSmall,oddsOrEven
+                                        let numbers = item.open_code.split(',')
+                                        let lastNum = Number.parseInt(numbers[numbers.length - 1])
+                                        if (lastNum > 5) {
+                                            bigOrSmall = 'b'
+                                        } else {
+                                            bigOrSmall = 's'
+                                        }
+                                        if (lastNum % 2) {
+                                            oddsOrEven = 'o'
+                                        } else {
+                                            oddsOrEven = 'e'
+                                        }
+                                        this.lotteryRecords.push({
+                                            time: format(parse(item.end_time), 'MM/DD HH:mm'),
+                                            phase: item.session_id,
+                                            number: item.open_code.replace(/,/g,' '),
+                                            bigOrSmall: bigOrSmall,
+                                            oddsOrEven: oddsOrEven
+                                        })
+                                    }
+                                }
+                            }
+                        }
+                        // let betRecord = await ClientSocket.getBetRecord()
+                        // if (betRecord.result) {
+                        //     for (let item of betRecord.result) {
+                        //         this.betRecord.unshift({
+                        //             account_name: item.account_name,
+                        //             quantity: item.quantity.split(' ')[0],
+                        //             bet_id: item.session_id,
+                        //             bet_time: format(parse(item.create_time), 'HH:mm:ss')
+                        //         })
+                        //     }
+                        // }
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            })
+        },
+       
+        
+        
   },
+  watch: {
+        '$store.state.wallet.block': {
+            handler(newVal, oldVal) {
+                // console.log(12311111111111,this.$store.state.wallet.block);
+                // this.treasureKey+=1;
+                // this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
+                // id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey
+                // });
+                // this.items.splice(10);
+
+            }
+        },
+    },
   created(){
     // console.log('this',this);
-   
+    //滚动区域
+    this.initSocket();
   }
 }
 </script>
@@ -166,8 +287,53 @@ export default {
   background:orange;
   border-radius: 20px;
 }
-
-
+/* 下拉框 */
+.selectwrap{
+  background-color: #fff;
+  min-height: 200px;
+  max-height: 100vh;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+}
+.wdclose{
+  width:.6rem;
+  height:.6rem;
+  background:url("../../../assets/img/u102.png") no-repeat center center;
+  background-size:1rem 1rem;
+  position:absolute;
+  right:.8rem;
+  top:.65rem;
+}
+.selectrow{
+  padding:.6rem;
+  align-items:center;
+  font-size:0.5rem;
+  font-family: "Bahnschrift Regular", Bahnschrift;
+  color:#FF9900;
+  font-weight: 400;
+}
+.selectrow span{
+  padding-right:1rem;
+}
+.pic{
+  width: .7rem;
+  height: .5rem;
+  padding-right:.5rem;
+}
+.people{
+  width:0.8rem;
+  height:0.8rem;
+  padding-right:.2rem;
+}
+.rule{
+  width:0.8rem;
+  height:0.8rem;
+  padding-right:.2rem;
+}
 
 
 
@@ -219,5 +385,31 @@ span{
   font-family: '微軟正黑體 Regular', '微軟正黑體';
 }   
    
+
+
+/* 滚动样式    */
+.recording{
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 4.48rem;
+  margin: 0 0 1px 0;
+}
+.row{
+  width: 100%;
+  height: 0.64rem;
+  position: relative;
+}
+.scroll-enter-active, .scroll-leave-active {
+  transition: all .5s;
+}
+.scroll-enter, .scroll-leave-to{
+  transform: translateY(-30px);
+}
+.scroll-move{
+  transition:transform .5s;
+}
+
+
 
 </style>
