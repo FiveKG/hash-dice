@@ -1,6 +1,6 @@
 {
-    "dbName" : "investment",
-    "dbUser" : "invest_db_user",
+    "dbName" : "wallet_tbg_db",
+    "dbUser" : "wallet_tbg_user",
     "dbPwd" :  "pass_2019",
     "schema": "public",
     "tables":[
@@ -129,7 +129,7 @@
                 { "name": "price",        "type": "decimal",  "dblength": "18,6", "dftValue": "0", "summary": "价格", "remark"  : "", "isPrimary": false }, 
                 { "name": "state",        "type": "text",     "dblength": "10",   "dftValue": "0", "summary": "交易状态", "remark"  : "create|wait|finished|cancel", "isPrimary": false },
                 { "name": "create_time",  "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间", "remark": "", "isPrimary": false },
-                { "name": "finished_time"       , "type": "dateTime"   , "dblength": "8" , "dftValue": "0" , "summary": "交易最后确认时间"   ,"isPrimary": false, "remark": ""}
+                { "name": "finished_time", "type": "dateTime"   , "dblength": "8" , "dftValue": "0" , "summary": "交易最后确认时间"   ,"isPrimary": false, "remark": ""}
             ]
         },
         {
@@ -177,43 +177,6 @@
             { "name": "g_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "游戏Id" ,  "isPrimary": false , "remark": "厂商id"} , 
             { "name": "coin_id" , "type": "text" , "dblength": "50", "dftValue": "''", "summary": "币种id" ,  "isPrimary": false , "remark": ""},
             { "name": "is_enable" , "type": "boolean" , "dblength": "0", "dftValue": "true", "summary": "是否启用" ,  "isPrimary": false , "remark": ""}
-          ]
-        },
-        {
-          "tableName": "account_game", "tableDesc": "用户参与的游戏", "primaryKey": "","group": "游戏",
-          "fields": [
-            { "name": "ag_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": ""} , 
-            { "name": "g_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "游戏Id" ,  "isPrimary": false , "remark": "厂商id"} , 
-            { "name": "account_id" , "type": "text" , "dblength": "50", "dftValue": "''", "summary": "用户id" ,  "isPrimary": false , "remark": ""},
-            { "name": "vender_account_id" , "type": "text" , "dblength": "0", "dftValue": "''", "summary": "用户在第三方系统里的账户id" ,  "isPrimary": false , "remark": ""}
-          ]
-        },
-        {
-          "tableName": "game_promotion", "tableDesc": "游戏推广", "primaryKey": "","group": "游戏",
-          "fields": [
-            { "name": "gp_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": "游戏推广id"} , 
-            { "name": "v_id" , "type": "text" , "dblength": "50", "dftValue": "''", "summary": "厂商id" ,  "isPrimary": false , "remark": ""},
-            { "name": "gc_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "游戏对应的币种的id" ,  "isPrimary": false , "remark": "厂商id"} , 
-            { "name": "title" , "type": "text" , "dblength": "200", "dftValue": "''", "summary": "推广的标题" ,  "isPrimary": false , "remark": ""} ,
-            { "name": "content" , "type": "text" , "dblength": "4000", "dftValue": "''", "summary": "推广的详细介绍文本，富文本形式" ,  "isPrimary": false , "remark": "厂商id"} ,  
-            { "name": "start_time" , "type": "dateTime" , "dblength": "0", "dftValue": "now()", "summary": "开始生效的时间" ,  "isPrimary": false , "remark": ""},
-            { "name": "end_time" , "type": "dateTime" , "dblength": "0", "dftValue": "now()", "summary": "停止生效的时间" ,  "isPrimary": false , "remark": ""},
-            { "name": "create_time" , "type": "dateTime" , "dblength": "0", "dftValue": "now()", "summary": "创建时间" ,  "isPrimary": false , "remark": ""},
-            { "name": "is_enable" , "type": "boolean" , "dblength": "0", "dftValue": "false", "summary": "是否启用" ,  "isPrimary": false , "remark": ""},
-            { "name": "total_amount" , "type": "int" , "dblength": "0", "dftValue": "1", "summary": "总共使用的数量" ,  "isPrimary": false , "remark": "1-1000. 越大，越前"},
-            { "name": "left_amount" , "type": "int" , "dblength": "0", "dftValue": "1", "summary": "当前剩余的数量" ,  "isPrimary": false , "remark": "1-1000. "},
-            { "name": "handsel_type" , "type": "text" , "dblength": "20", "dftValue": "fixed", "summary": "赠送类型，fixed 固定， random 随机 ，ladder 阶梯" ,  "isPrimary": false , "remark": ""} ,
-            { "name": "strategy" , "type": "json" , "dblength": "36", "dftValue": "''", "summary": "根据赠送类型，而结构不同的json." ,  "isPrimary": false , "remark": "fixed: { amount:80 } . random: { min : 10 , max:100 }  . ladder: [ { top:100 , amount:100 } ,{ top:1000 , amount: 80 } ]"}  
-          ]
-        },
-        {
-          "tableName": "account_promotion_log", "tableDesc": "用户参与推广的记录", "primaryKey": "","group": "游戏",
-          "fields": [
-            { "name": "apl_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": ""} , 
-            { "name": "account_id" , "type": "text" , "dblength": "50", "dftValue": "''", "summary": "用户id" ,  "isPrimary": false , "remark": ""},
-            { "name": "gp_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "游戏推广id" ,  "isPrimary": false , "remark": ""} , 
-            { "name": "create_time" , "type": "dateTime" , "dblength": "0", "dftValue": "now()", "summary": "参与的时间" ,  "isPrimary": false , "remark": ""},
-            { "name": "amount" , "type": "int" , "dblength": "0", "dftValue": "0", "summary": "获取到的积分数量" ,  "isPrimary": false , "remark": ""}
           ]
         }
     ]

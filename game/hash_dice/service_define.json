@@ -1,0 +1,58 @@
+{
+    "name" : "hash_dice",
+    "service_type" : "service",
+    "port":13022,
+    "summary" : [
+
+    ],
+    "apis" : [
+        {
+            "name" : "获取配置信息",
+            "summary": "",
+            "remark": [
+                "获取配置信息"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/config/get_config",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "wallet_receiver": { "type": "text",  "is_require": true,  "desc": "tbg1 收款账户" },
+                    "trade_receiver": { "type": "text",  "is_require": true,  "desc": "tbg2 收款账户" }
+                }
+            }
+        },
+        {
+            "name" : "获取当前用户的信息",
+            "summary": "",
+            "remark": [
+                "获取当前用户的信息"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/info",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "account_name": { "type": "text",  "is_require": true,  "desc": "获取到的帐号名称" },
+                        "account_type": { "type": "text",  "is_require": true,  "desc": "帐号类型" },
+                        "refer_code": { "type": "text",  "is_require": true,  "desc": "推荐号" }
+                    }
+                }
+            }
+        }
+    ]
+}

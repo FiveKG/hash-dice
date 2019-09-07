@@ -13,8 +13,17 @@ async function showAccountNameByCode(req, res, next) {
         let investCode = reqData.refer_code;
         let account_name = "";
         let resDate = get_status(1);
-        if (investCode === INVITE_CODE.GENERAL || investCode === INVITE_CODE.GLOBAL) {
+        if (investCode === INVITE_CODE.GENERAL) {
             account_name = "系统将随机分配您的邀请人"
+            resDate["data"] = {
+                account_name: account_name
+            }
+
+            return res.send(resDate);
+        }
+
+        if (investCode === INVITE_CODE.GLOBAL) {
+            account_name = "您绑定的是全球合伙人专用链接"
             resDate["data"] = {
                 account_name: account_name
             }

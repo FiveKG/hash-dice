@@ -11,7 +11,7 @@ GET http://localhost:9527/trade/raise_list
 GET http://localhost:9527/trade/buy_assets_history?account_name=yujinsheng11
 
 ### 买入交易列表
-GET http://localhost:9527/trade/buy_list?order_time=true
+GET http://localhost:9527/trade/buy_list
 
 ### 资产包买入记录
 GET http://localhost:9527/trade/buy_assets_history?account_name=yujinsheng11
@@ -22,7 +22,7 @@ Content-Type: application/json
 
 {
     "account_name": "yujinsheng11",
-    "price": "0.500",
+    "price": "0.507",
     "assets_package_id": 4
 }
 
@@ -31,8 +31,8 @@ POST http://localhost:9527/trade/user_buy_assets
 Content-Type: application/json
 
 {
-    "account_name": "gametestuser",
-    "price": "1.0114",
+    "account_name": "yujinsheng11",
+    "price": "1.014",
     "assets_package_id": 2
 }
 
@@ -43,17 +43,30 @@ Content-Type: application/json
 {
     "account_name": "yujinsheng11",
     "amount": "100",
-    "income": "80.9120",
-    "price": "1.0114",
-    "sell_fee": "20.2280",
+    "income": "89.2320",
+    "price": "1.014",
+    "sell_fee": "22.3080",
     "destroy": "0.61"
+}
+
+### sell
+POST http://localhost:9527/trade/user_sell_assets
+Content-Type: application/json
+
+{
+    "account_name": "gametestuser",
+    "amount": "80",
+    "income": "64.896",
+    "price": "1.014",
+    "sell_fee": "16.224",
+    "destroy": "4.9483"
 }
 
 ### 获取普通卖出交易信息
 GET http://localhost:9527/trade/sell_assets?account_name=yujinsheng11&amount=80
 
 ### 卖出交易列表
-GET http://localhost:9527/trade/sell_list?order_time=true
+GET http://localhost:9527/trade/sell_list
 
 ### 资产包卖出记录
 GET http://localhost:9527/trade/sell_history?account_name=yujinsheng11

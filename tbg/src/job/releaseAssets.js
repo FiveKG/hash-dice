@@ -37,7 +37,7 @@ async function releaseAssets() {
         // 查找所有用户的 TBG 资产
         const trxList = [];
         const releaseList = [];
-        const { rows: tbgBalanceInfo } = await pool.query("SELECT * FROM tbg_balance");
+        const { rows: tbgBalanceInfo } = await pool.query("SELECT * FROM tbg_balance where release_amount > 0");
         const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
         let sql = `
             INSERT INTO 
@@ -55,11 +55,11 @@ async function releaseAssets() {
         // 遍历会员，根据等级释放
         for (const info of tbgBalanceInfo) {
             const levelInfo = userMember(memberMap.get(info.account_name));
-            const tbgBalance = await getTbgBalanceInfo(info.account_name);
+            // const tbgBalance = await getTbgBalanceInfo(info.account_name);
             // 当前会员等级的释放比例
             const releaseRate = MEMBER_LEVEL_TRX[levelInfo.ID].RELEASE_RATE;
             // 释放池资产额度
-            const releaseAmount = new Decimal(tbgBalance.release_amount);
+            const releaseAmount = new Decimal(info.release_amount);
             // 可释放的额度
             const dayRelease = releaseAmount.mul(releaseRate);
             const remark = `user ${ info.account_name } at ${ now } release assets ${ dayRelease.toFixed(8) }, minus release_amount ${ dayRelease }`

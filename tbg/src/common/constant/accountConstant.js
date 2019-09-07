@@ -1,10 +1,5 @@
 // @ts-check
 
-// 最上层帐号
-const TOP_ACCOUNT = [
-    "system"
-]
-
 // 五倍收益保障池的帐号
 const SAFE_POOL = "safePool";
 // 三三静态的帐号
@@ -94,7 +89,6 @@ const CONSTANT = {
     "COMMUNITY_POOL": COMMUNITY_POOL,
     "DEV_OP_POOL": DEV_OP_POOL,
     "EOS_NAME_CONVENTIONS_CHAR": EOS_NAME_CONVENTIONS_CHAR,
-    "TOP_ACCOUNT": TOP_ACCOUNT,
     "ACCOUNT_ACTIVATED_TBG_1": ACCOUNT_ACTIVATED_TBG_1,
     "ACCOUNT_ACTIVATED_TBG_2": ACCOUNT_ACTIVATED_TBG_2,
     "ACCOUNT_ACTIVATED_TBG_1_AND_2": ACCOUNT_ACTIVATED_TBG_1_AND_2,
@@ -124,7 +118,6 @@ module.exports = CONSTANT
  * @property { string } COMMUNITY_POOL 社区帐号
  * @property { string } DEV_OP_POOL 开发维护的帐号
  * @property { string[] } EOS_NAME_CONVENTIONS_CHAR EOS 帐号约定字符
- * @property { Array<string> } TOP_ACCOUNT 最上层帐号
  * @property { number } ACCOUNT_ACTIVATED_TBG_1 账号参与 tbg1
  * @property { number } ACCOUNT_ACTIVATED_TBG_2 账号参与 tbg2
  * @property { number } ACCOUNT_ACTIVATED_TBG_1_AND_2 账号参与 tbg1 和 tbg2

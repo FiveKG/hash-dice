@@ -25,28 +25,34 @@ const END_POINT = "http://localhost:8888"
 // 私钥
 const PRIVATE_KEY_TEST = "5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h,5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo,5KSzppBW7LcwVQ4hA1AQP4vZYWq1uEv4EQnZ5yz1eu41eLgrLK2,5JRiAXpyd5TW5REvLYd35FkrJSMjFfiUtrwrCNpChHFMVNnRDwB,5JAW6eWS4ADjwCr76xCvmPefknzhFg33f4haL5dbuiB5WoW79tQ,5JiaokGm1A7kyLq92YrQjp42Fr7Vqs52NBquCYiuU8DxKURkhfu,5KbQQbR83HFMPPaKCY4GPVBtNZZW4t6nNxtPEWkVPUHMWxpQLzS,5K7h5xxZNCfq6ujRmLWgCHHQKf4gAuKYAU8yDFRDwvkAN3scPki,5K5sRqqp3XebvjMmK1TYBFiSAd6XbwLeJa9L3CxWBMiWcSGCsDG"
 
+const YU = "5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h"
+const GA = "5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo"
 
 ;(async ()=> {
     try {
-        const signatureProvider = new JsSignatureProvider(PRIVATE_KEY_TEST.split(","));
-        // @ts-ignore
-        const rpc = new JsonRpc(END_POINT, { fetch });
-        // @ts-ignore
-        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
+        // const signatureProvider = new JsSignatureProvider(PRIVATE_KEY_TEST.split(","));
+        // // @ts-ignore
+        // const rpc = new JsonRpc(END_POINT, { fetch });
+        // // @ts-ignore
+        // const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
 
-        // 获取区块链信息
-        const { head_block_num, head_block_time } = await rpc.get_info();
-        // 根据当前区块获取到时间戳和交易 id
-        const { id, timestamp } = await rpc.get_block(head_block_num);
-        console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
+        // // 获取区块链信息
+        // const { head_block_num, head_block_time } = await rpc.get_info();
+        // // 根据当前区块获取到时间戳和交易 id
+        // const { id, timestamp } = await rpc.get_block(head_block_num);
+        // console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
 
-        getCurrencyBalance(UE_TOKEN, 'dengderong', 'UE')
-        .then(res => console.error(res))
-        .catch(err => console.error(err));
-
-        // transfer(UE_TOKEN, UE_TOKEN, 'dengderong', '1000000.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
+        // getCurrencyBalance(UE_TOKEN, 'dengderong', 'UE')
         // .then(res => console.error(res))
         // .catch(err => console.error(err));
+
+        // transfer(TBG_TOKEN, 'gametestuser', "tbgfreepool", '81.1200 TBG', 'gametestuser,1.0140,sell,80', [ GA ])
+        // .then(res => console.error(res))
+        // .catch(err => console.error(err));
+
+        transfer(UE_TOKEN, 'yujinsheng11', "tbgfreepool", '101.4000 UE', 'yujinsheng11,1.0140,buy,2', [YU])
+        .then(res => console.error(res))
+        .catch(err => console.error(err));
     } catch (err) {
         throw err;
     }
@@ -162,7 +168,11 @@ async function newApi(privateKeyList) {
  */
 async function transfer(tokenContract, from, to, quantity, memo, privateKeyList) {
     try {
-        let api = await newApi(privateKeyList);
+        const signatureProvider = new JsSignatureProvider(privateKeyList);
+        // @ts-ignore
+        const rpc = new JsonRpc(END_POINT, { fetch });
+        // @ts-ignore
+        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         let actions = {
             actions: [{
               account: tokenContract,
@@ -182,7 +192,7 @@ async function transfer(tokenContract, from, to, quantity, memo, privateKeyList)
         const result = await api.transact(actions, {
             blocksBehind: 3,
             expireSeconds: 30,
-          });
+        });
 
           return result;
     } catch (err) {

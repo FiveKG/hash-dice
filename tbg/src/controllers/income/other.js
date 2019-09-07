@@ -41,6 +41,8 @@ async function other(req, res, next) {
                     sortIncome = sortIncome.add(item.total);
                 } else if (item.op_type === OPT_CONSTANTS.MODE) {
                     modeIncome = modeIncome.add(item.total);
+                } else if (item.op_type === OPT_CONSTANTS.REPEAT) {
+                    continue;
                 } else {
                     otherIncome = otherIncome.add(item.total);
                 }
@@ -70,7 +72,7 @@ async function other(req, res, next) {
             }
         });
         resData["data"] = {
-            total_income: new Decimal(userBalance.amount),
+            total_income: new Decimal(userBalance.amount).toFixed(8),
             refer_income: referIncome.toFixed(8),
             mode_income: sortIncome.toFixed(8),
             sort_income: modeIncome.toFixed(8),

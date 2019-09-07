@@ -82,19 +82,6 @@ cleos create account eosio tbgametoken EOS5aicTbGvPj2WHEmcN26aAuR5E5PmYYgr4M34NF
 cleos create account eosio tbtestuser1 EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw
 cleos create account eosio dengderong EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw
 
-cleos set contract eosio.token ./eosio.token
-cleos push action eosio.token create '["eosio.token", "1000000000.0000 EOS"]' -p eosio.token
-cleos push action eosio.token issue '["eosio.token", "1000000000.0000 EOS", "issue"]' -p eosio.token
-cleos set contract uegametoken ./eosio.token
-cleos push action uegametoken create '["uegametoken", "1000000000.0000 UE"]' -p uegametoken
-cleos push action uegametoken issue '["uegametoken", "1000000000.0000 UE", "issue"]' -p uegametoken
-cleos set contract tbgametoken ./eosio.token
-cleos push action tbgametoken create '["tbgametoken", "1000000000.0000 TBG"]' -p tbgametoken
-cleos push action tbgametoken issue '["tbgametoken", "1000000000.0000 TBG", "issue"]' -p tbgametoken
-cleos set contract gametestuser ./eosio.token
-cleos push action gametestuser create '["gametestuser", "10000.0000 TEST"]' -p gametestuser
-cleos push action gametestuser issue '["gametestuser", "10000.0000 TEST", "issue"]' -p gametestuser
-
 root@9270b9e8849b:/eosio# cleos create account eosio eosio.token EOS63n3ZaYyGkPP7xRsztJz9roxKdJMG4Go4jvEmc4L27bRMZ3gHV EOS63n3ZaYyGkPP7xRsztJz9roxKdJMG4Go4jvEmc4L27bRMZ3gHV
 executed transaction: 65dccc8711acdc0204ab0ced84e08f243194741434e947d93332977944bdc559  200 bytes  5628 us
 #         eosio <= eosio::newaccount            {"creator":"eosio","name":"eosio.token","owner":{"threshold":1,"keys":[{"key":"EOS63n3ZaYyGkPP7xRszt...

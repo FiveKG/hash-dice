@@ -1,0 +1,108 @@
+{
+    "apps": [
+        {
+            "name"        : "tbgService",
+            "script"      : "./tbg_service.js",
+            "watch"       : false,
+            "cwd"         : "./",
+            "error_file"  : "../logs/tbgService-err.log",
+            "out_file"    : "../logs/tbgService-out.log"
+        },
+        {
+            "name"        : "listenTransfer",
+            "script"      : "./listenTransfer.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/listenTransfer-err.log",
+            "out_file"    : "../../../logs/listenTransfer-out.log"
+        },
+        {
+            "name"        : "mqHandler",
+            "script"      : "./mqHandler.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/mqHandler-err.log",
+            "out_file"    : "../../../logs/mqHandler-out.log"
+        },
+        {
+            "name"        : "bonusBingo",
+            "script"      : "./bonusBingo.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/bonusBingo-err.log",
+            "out_file"    : "../../../logs/bonusBingo-out.log"
+        },
+        {
+            "name"        : "bonusPK",
+            "script"      : "./bonusPK.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/bonusPK-err.log",
+            "out_file"    : "../../../logs/bonusPK-out.log"
+        },
+        {
+            "name"        : "bonusSafe",
+            "script"      : "./bonusSafe.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/bonusSafe-err.log",
+            "out_file"    : "../../../logs/bonusSafe-out.log"
+        },
+        {
+            "name"        : "bonusHolder",
+            "script"      : "./bonusHolder.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/bonusHolder-err.log",
+            "out_file"    : "../../../logs/bonusHolder-out.log"
+        },
+        {
+            "name"        : "listenTrade",
+            "script"      : "./listenTrade.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/listenTrade-err.log",
+            "out_file"    : "../../../logs/listenTrade-out.log"
+        },
+        {
+            "name"        : "adjustPrice",
+            "script"      : "./adjustPrice.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/adjustPrice-err.log",
+            "out_file"    : "../../../logs/adjustPrice-out.log"
+        },
+        {
+            "name"        : "releaseAssets",
+            "script"      : "./releaseAssets.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/releaseAssets-err.log",
+            "out_file"    : "../../../logs/releaseAssets-out.log"
+        },
+        {
+            "name"        : "checkInAirdrop",
+            "script"      : "./checkInAirdrop.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/checkInAirdrop-err.log",
+            "out_file"    : "../../../logs/checkInAirdrop-out.log"
+        },
+        {
+            "name"        : "mining",
+            "script"      : "./mining.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/mining-err.log",
+            "out_file"    : "../../../logs/mining-out.log"
+        },
+        {
+            "name"        : "wringTrade",
+            "script"      : "./wringTrade.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/wringTrade-err.log",
+            "out_file"    : "../../../logs/wringTrade-out.log"
+        }
+    ]
+}

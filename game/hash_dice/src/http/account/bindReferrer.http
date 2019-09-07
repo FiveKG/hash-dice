@@ -1,0 +1,17 @@
+### bind referrer
+POST http://localhost:9527/account/bind_referrer
+Content-Type: application/json
+
+{
+    "account_name": "gametestuser",
+    "refer_code": "W00000"
+}
+
+#### 
+POST http://localhost:9527/account/bind_referrer
+Content-Type: application/json
+
+{
+    "account_name": "yujinsheng11",
+    "refer_code": "W00000"
+}

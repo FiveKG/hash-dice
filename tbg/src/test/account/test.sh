@@ -128,7 +128,7 @@ function addGlobal() {
 unlock
 # 绑定账号信息
 addGlobal
-bindReferrer
+# bindReferrer
 
 # 转账给收款人，参与 TBG-I
 # transfer

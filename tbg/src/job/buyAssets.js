@@ -1,5 +1,5 @@
 // @ts-check
-const { pool } = require("../db/index.js");
+const { pool, psBuyAssets } = require("../db/index.js");
 const logger = require("../common/logger.js").child({ "@src/job/buyAssets.js": "购买资产包" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
@@ -50,6 +50,13 @@ async function buyAssets(data) {
         } finally {
             await client.release();
         }
+        const buyData = {
+            "account_name": accountName,
+            "price":  price,
+            "trId": trxInfo.id,
+            "amount": trxInfo.amount
+        }
+        await psBuyAssets.pub(buyData);
     } catch (err) {
         logger.error("raise airdrop error, the error stock is %O", err);
         throw err;

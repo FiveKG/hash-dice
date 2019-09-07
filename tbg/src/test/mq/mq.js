@@ -8,7 +8,7 @@ const { psBind } = require("../../db");
         "a": "a",
         "b": [ 1, 2 , 3, 4 ]
     }
-    // await psBind.pub(data);
+    await psBind.pub(data);
     arr = data.b;
     console.debug(Object.values(obj).length);
 

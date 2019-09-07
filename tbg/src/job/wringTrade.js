@@ -10,6 +10,7 @@ const df = require("date-fns");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
 const buyAirdrop = require("./buyAirdrop.js");
+const buyAlloc = require("./buyAlloc");
 
 logger.debug(`wringTrade running...`);
 scheduleJob("* */5 * * * *", wringTrade);
@@ -27,10 +28,13 @@ async function wringTrade() {
         const endTime = df.addHours(dayStart, BUY_END_TIME);
         const trxList = [];
         const actionList = [];
+        const WAIT_STATE = "wait";
+        const CREATE_STATE = "create";
+        const FINISH_STATE = "finished";
         // 如果在不再交易时间内, 交易结束时，没有完成的订单全部撤销，资金原路退回
         if (!df.isWithinRange(now, startTime, endTime)) {
             const sql = `
-                SELECT * FROM trade WHERE state = 'wait' OR state = 'create' ORDER BY create_time DESC;
+                SELECT * FROM trade WHERE state = '${ WAIT_STATE }' OR state = '${ CREATE_STATE }' ORDER BY create_time DESC;
             `
             const updateTradeSql = `
                 UPDATE trade SET state = $1, finished_time = $2, trx_amount = $3 WHERE id = $4
@@ -43,16 +47,65 @@ async function wringTrade() {
             if (tradeInfo.length === 0) {
                 return;
             }
-            for (const info of tradeInfo) {
-                const tradeTime = df.format(now, "YYYY-MM-DD : HH:mm:ssZ");
-                const tradeMemo = 'trade close, cancel trade order';
+            // 交易结束时，未成交的买入订单, 由平台来撮合
+            const buyOrder = tradeInfo.filter(it => it.trade_type !== BUY && it.state === WAIT_STATE);
+            for (const info of buyOrder) {
+                // 待成交数量
+                const trxAmount = new Decimal(info.amount).minus(info.trx_amount);
+                const { queryList: trxList, actionsList } = await buyAlloc({ ...info, tradeOpType: FINISH_STATE, trxAmount: trxAmount });
+                trxList.push(...trxList);
+                actionList.push(...actionsList);
+            }
+
+            // 交易结束时，未成交的卖单，撤销，资金原路退回
+            const sellOrder = tradeInfo.filter(it => it.trade_type === SELL && it.state === WAIT_STATE);
+            for (const info of sellOrder) {
+                // 待成交数量
+                const trxAmount = new Decimal(info.amount).minus(info.trx_amount);
+                const tradeMemo = `trade close, pending transaction ${ trxAmount.toNumber() }, cancel trade order`;
                 trxList.push({
                     sql: updateTradeSql,
-                    values: [ "cancel", tradeTime, 0, info.id ]
+                    values: [ "cancel", 'now()', 0, info.id ]
                 });
+                const logId = generate_primary_key();
                 trxList.push({
                     sql: insertTradeLogSql,
-                    values: [ generate_primary_key(), info.id, info.trade_type, info.amount, tradeMemo, info.price, info.amount * info.price, tradeTime ]
+                    values: [ logId, info.id, info.trade_type, info.amount, tradeMemo, info.price, info.amount * info.price, 'now()' ]
+                });
+
+                // 将未成交的资金退回用户账户中
+                const trxMemo = `trade close at ${ df.format(new Date(), "YYYY-MM-DD : HH:mm:ssZ") }, return pending transaction ${ trxAmount.toNumber() }`;
+                actionList.push(
+                    {
+                        account: TBG_TOKEN_COIN,
+                        name: "transfer",
+                        authorization: [{
+                            actor: TBG_TOKEN_COIN,
+                            permission: 'active',
+                        }],
+                        data: {
+                            from: TBG_FREE_POOL,
+                            to: info.account_name,
+                            quantity: `${ trxAmount.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                            memo: trxMemo,
+                        }
+                    }
+                )
+            }
+
+            // 新创建的订单，直接撤销, create 状态时用户未转账，直接关闭
+            const newOrder = tradeInfo.filter(it => it.trade_type == CREATE_STATE);
+            for (const info of newOrder) {
+                const tradeTime = df.format(now, "YYYY-MM-DD : HH:mm:ssZ");
+                const tradeMemo = 'trade close, close trade order';
+                trxList.push({
+                    sql: updateTradeSql,
+                    values: [ "close", tradeTime, 0, info.id ]
+                });
+                const logId = generate_primary_key();
+                trxList.push({
+                    sql: insertTradeLogSql,
+                    values: [ logId, info.id, info.trade_type, info.amount, tradeMemo, info.price, info.amount * info.price, tradeTime ]
                 });
             }
         } else {
@@ -60,8 +113,8 @@ async function wringTrade() {
                 SELECT * FROM trade ORDER BY create_time DESC;
             `
             const { rows: tradeInfo } = await pool.query(sql);
-            const buyOrder = tradeInfo.filter(it => it.trade_type !== BUY && (it.state === "finished" || it.state === "wait"));
-            const sellOrder = tradeInfo.filter(it => it.trade_type === SELL && (it.state === "finished" || it.state === "wait"));
+            const buyOrder = tradeInfo.filter(it => it.trade_type !== BUY && (it.state === FINISH_STATE || it.state === WAIT_STATE));
+            const sellOrder = tradeInfo.filter(it => it.trade_type === SELL && (it.state === FINISH_STATE || it.state === WAIT_STATE));
             // 如果没有订单，不做处理
             if (tradeInfo.length === 0) {
                 return;
@@ -73,7 +126,7 @@ async function wringTrade() {
                 } else if (sellOrder.length === 0) {
                     // 如果没有卖单, 由平台来插单
                     const orderCount = Math.ceil(rate.mul(buyOrder.length).toNumber());
-                    const waitOrder = buyOrder.filter(it => it.state === "wait").splice(0, orderCount);
+                    const waitOrder = buyOrder.filter(it => it.state === WAIT_STATE).splice(0, orderCount);
                     const { actions, queryList } = await replenish(waitOrder);
                     actionList.push(...actions);
                     trxList.push(...queryList);
@@ -84,7 +137,7 @@ async function wringTrade() {
                         return;
                     } else {
                         const orderCount = Math.ceil(rate.minus(buyToSell).mul(buyOrder.length).toNumber());
-                        const waitOrder = buyOrder.filter(it => it.state === "wait").splice(0, orderCount);
+                        const waitOrder = buyOrder.filter(it => it.state === WAIT_STATE).splice(0, orderCount);
                         const { actions, queryList } = await replenish(waitOrder);
                         actionList.push(...actions);
                         trxList.push(...queryList);
@@ -140,22 +193,27 @@ async function replenish(waitOrder) {
             const trId = generate_primary_key();
             queryList.push({
                 sql: insertTradeSql,
-                values: [ trId, TBG_TOKEN_COIN, info.trade_type, info.extra, info.amount, info.amount, info.price, "finished", now, now ]
+                values: [ trId, TBG_TOKEN_COIN, info.trade_type, info.extra, info.amount, info.amount, info.price, "finished", 'now()', 'now()' ]
             });
             queryList.push({
                 sql: insertTradeLogSql,
-                values: [ generate_primary_key(), trId, info.trade_type, info.amount, memo, info.price, info.amount * info.price, now ]
+                values: [ generate_primary_key(), trId, info.trade_type, info.amount, memo, info.price, info.amount * info.price, 'now()' ]
             });
             // 修改用户的订单并记录日志
-            queryList.push({
-                sql: updateTradeSql,
-                values: [ "finished", now, info.amount, info.id ]
-            })
-            queryList.push({
-                sql: insertTradeLogSql,
-                values: [ generate_primary_key(), info.id, info.trade_type, info.amount, memo, info.price, info.amount * info.price, now ]
-            });
-            const { queryList: trxList, actionsList } = await buyAirdrop(info);
+            // queryList.push({
+            //     sql: updateTradeSql,
+            //     values: [ "finished", now, info.amount, info.id ]
+            // })
+            // queryList.push({
+            //     sql: insertTradeLogSql,
+            //     values: [ generate_primary_key(), info.id, info.trade_type, info.amount, memo, info.price, info.amount * info.price, now ]
+            // });
+            // const { queryList: trxList, actionsList } = await buyAirdrop(info);
+            // queryList.push(...trxList);
+            // tmpActions.push(...actionsList);
+            // 待成交数量
+            const trxAmount = new Decimal(info.amount).minus(info.trx_amount);
+            const { queryList: trxList, actionsList } = await buyAlloc({ ...info, tradeOpType: "finished", trxAmount: trxAmount });
             queryList.push(...trxList);
             tmpActions.push(...actionsList);
         }

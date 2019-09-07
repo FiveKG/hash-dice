@@ -17,13 +17,15 @@ async function isBind(req, res, next) {
         `
         let { rows } = await pool.query(selectSql);
         logger.debug(`the account info is %O`, rows[0]);
-        if (!rows[0]) {
-            return res.send(get_status(1001, "this account does not exists"));
+        let resDate = get_status(1);
+        let flag = true;
+        if (rows.length == 0) {
+            flag = false;
+            // return res.send(get_status(1001, "this account does not exists"));
         }
 
-        let resDate = get_status(1);
         resDate["data"] = {
-            is_bind: true
+            is_bind: flag
         }
 
         res.send(resDate);

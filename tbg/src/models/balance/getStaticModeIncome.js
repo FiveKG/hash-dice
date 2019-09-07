@@ -18,10 +18,8 @@ async function getStaticModeIncome(accountName, limit, page) {
                 AND op_type = $2
                 AND extra->>'symbol' = 'UE'
                 ORDER BY create_time DESC
-                LIMIT $3
-                OFFSET $4
         `
-        const opts = [ accountName, OPT_CONSTANTS.MODE, limit, (page - 1) * limit ]
+        const opts = [ accountName, OPT_CONSTANTS.MODE ]
         let selectResult = await pool.query(selectSql, opts);
         return  selectResult.rows;
     } catch (err) {

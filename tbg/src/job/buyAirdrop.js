@@ -27,7 +27,7 @@ async function buyAirdrop(data) {
                 balance_log(account_name, change_amount, current_balance, op_type, extra, remark, create_time)
                 VALUES($1, $2, $3, $4, $5, $6, $7);
         `
-        // 减去用户释放池资产，更新可售余额
+        // 更新用户可售余额
         const updateBalanceSql = `
             UPDATE tbg_balance 
                 SET release_amount = release_amount + $1, 
@@ -225,7 +225,7 @@ async function buyAirdrop(data) {
             queryList: trxList
         }
     } catch (err) {
-        logger.error("raise airdrop error, the error stock is %O", err);
+        logger.error("buy airdrop error, the error stock is %O", err);
         throw err;
     }
 }

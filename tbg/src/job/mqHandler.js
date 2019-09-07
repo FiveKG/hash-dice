@@ -7,6 +7,7 @@ const {
 } = require("../db");
 const handlerWithdraw = require("./handlerWithdraw.js");
 const handlerSellAssets = require("./handlerSellAssets.js");
+const handlerBuyAssets = require("./handlerBuyAssets.js");
 const bindAirdrop = require("./bindAirdrop");
 const tbg1Airdrop = require("./tbg1Airdrop");
 const tshIncomeAirdrop = require("./tshIncomeAirdrop");
@@ -18,17 +19,31 @@ psUserWithdraw.sub(async msg => {
         let result = JSON.parse(msg);
         await handlerWithdraw(result.account_name, result.symbol, result.amount);
     } catch (err) {
+        logger.error("psUserWithdraw error: ", err);
         throw err;
     }
 });
 
-// 卖出资产消息
+// 处理卖出资产消息
+psBuyAssets.sub(async msg => {
+    try {
+        let result = JSON.parse(msg);
+        logger.debug("psSellAssets result: %O", result);
+        await handlerBuyAssets(result);
+    } catch (err) {
+        logger.error("psBuyAssets error: ", err);
+        throw err;
+    }
+});
+
+// 处理卖出资产消息
 psSellAssets.sub(async msg => {
     try {
         let result = JSON.parse(msg);
         logger.debug("psSellAssets result: %O", result);
         await handlerSellAssets(result);
     } catch (err) {
+        logger.error("psSellAssets error: ", err);
         throw err;
     }
 });
@@ -40,6 +55,7 @@ psBind.sub(async msg => {
         logger.debug("psBind result: %O", result);
         await bindAirdrop(result);
     } catch (err) {
+        logger.error("psBind error: ", err);
         throw err;
     }
 });
@@ -52,6 +68,7 @@ psTbg1.sub(async msg => {
         logger.debug("psTbg1 result: %O", result);
         await tbg1Airdrop(result);
     } catch (err) {
+        logger.error("psTbg1 error: ", err);
         throw err;
     }
 });
@@ -63,6 +80,7 @@ psGame.sub(async msg => {
         let result = JSON.parse(msg);
         logger.debug("psGame result: %O", result);
     } catch (err) {
+        logger.error("psGame error: ", err);
         throw err;
     }
 });
@@ -76,6 +94,7 @@ psTshIncome.sub(async msg => {
         // 监听到消息，就从收款账户转钱到股东账户
         await tshIncomeAirdrop(result);
     } catch (err) {
+        logger.error("psTshIncome error: ", err);
         throw err;
     }
 });
@@ -87,6 +106,7 @@ psTrx.sub(async msg => {
         logger.debug("psTrx result: %O", result);
         await trxAction(result);
     } catch (err) {
+        logger.error("psTrx error: ", err);
         throw err;
     }
 })

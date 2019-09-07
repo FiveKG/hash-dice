@@ -1,0 +1,26 @@
+### get account information
+GET http://localhost:9527/account/info?account_name=yujinsheng11
+
+### get config
+GET http://localhost:9527/config/get_config
+
+### get account information
+GET http://localhost:9527/account/show_account_name_by_code?refer_code=W96448
+
+### get account information
+GET http://localhost:9527/account/invest_code?account_name=yujinsheng11
+
+### get account information
+GET http://localhost:9527/account/is_activated?account_name=yujinsheng11
+
+### get account information
+GET http://localhost:9527/account/is_bind?account_name=yujinsheng11
+
+### get account information
+GET http://localhost:9527/account/sub_account?account_name=yujinsheng11
+
+### get account information
+GET http://localhost:9527/account/level?account_name=yujinsheng11
+
+### get account information
+GET http://localhost:9527/account/investment_index?account_name=yujinsheng11
