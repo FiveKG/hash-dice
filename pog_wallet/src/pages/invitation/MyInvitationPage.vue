@@ -37,16 +37,17 @@
           </div>
         </div>
         <div style="width:100%;height:.3rem"></div>
-        <P class="Centered" style="font-size: 23px;color: rgb(0, 0, 0);">全球合伙人推荐码</P>
+        <P v-if="account_type" class="Centered" style="font-size: 23px;color: rgb(0, 0, 0);">全球合伙人推荐码</P>
+        <P v-if="!account_type" class="Centered" style="font-size: 23px;color: rgb(0, 0, 0);">推荐码</P>
         <div style="width:100%;height:.3rem"></div>
-        <P class="font_b Centered" style="font-size: 23px;color: rgb(0, 0, 0);">W  5  2  3  0  1</P>
+        <P class="font_b Centered" style="font-size: 23px;color: rgb(0, 0, 0);">{{invest_code[0]}}  {{invest_code[1]}}  {{invest_code[2]}}  {{invest_code[3]}}  {{invest_code[4]}}  {{invest_code[5]}}</P>
         <div style="width:100%;height:.3rem"></div>
         <div style="width:80%;margin:0 10%;">
-          <div class="display_ib vertical_top " style="width:20%;"><div style="width: 1.15rem;height: 1.12rem;margin:0 auto;"><img style="width: 100%;height: 100%;" src="@/assets/invitation2/u5.png" alt=""><p class="Centered">TBG</p></div></div>
+          <div class="display_ib vertical_top " style="width:20%;"><div class="invite_icon" style=""><img style="width: 90%;height: 65%;margin: 17.5% 5%;" src="@/assets/img/tbg_selected.png" alt=""></div><p class="Centered">TBG</p></div>
           <div class="display_ib vertical_top " style="width:20%;"><P style=" font-size: 1rem;color: orange;" class="Centered">+</P></div>
-          <div class="display_ib vertical_top " style="width:20%;"><div style="width: 1.15rem;height: 1.12rem;margin:0 auto;"><img style="width: 100%;height: 100%;" src="@/assets/invitation2/u5.png" alt=""><p class="Centered">TBG</p></div></div>
+          <div class="display_ib vertical_top " style="width:20%;"><div class="invite_icon"  style="background-color: #6699CC;"><img style="width: 90%;height: 80%;margin: 10% 5%;" src="@/assets/invitation2/u9.png" alt=""></div><p class="Centered">小鲸公链</p></div>
           <div class="display_ib vertical_top " style="width:20%;"><P style=" font-size: 1rem;color: orange;" class="Centered">+</P></div>
-          <div class="display_ib vertical_top " style="width:20%;"><div style="width: 1.15rem;height: 1.12rem;margin:0 auto;"><img style="width: 100%;height: 100%;" src="@/assets/invitation2/u5.png" alt=""><p class="Centered">TBG</p></div></div>
+          <div class="display_ib vertical_top " style="width:20%;"><div class="invite_icon"  style="background-color: #737373;"><img style="width: 90%;height: 80%;margin: 14% 10%;" src="@/assets/invitation2/u10.svg" alt=""></div><p class="Centered">UE</p></div>
         </div>
 
       </div>
@@ -57,6 +58,8 @@
 <script>
 import MyPage from '@/components/MyPage'
 import QrcodeVue from 'qrcode.vue'
+import api from '@/servers/invitation'
+
 
 export default {
   components: {
@@ -65,14 +68,33 @@ export default {
   },
   data() {
     return {
-      qrcode: 'jsdfhbjsnkl'
+      qrcode: 'jsdfhbjsnkl',
+      account_name:'',
+      account_type:true,
+      invest_code:[],
     }
   },
   methods: {
     back() {
       this.$router.go(-1)
-    }
+    },
+    digitize(n) {
+        return (n + "").split("").map(Number);
+    }         
   },
+  created(){
+      this.account_name = this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];
+      api.getType({account_name:this.account_name}).then(res => {    // 获取账号类型
+            if (res.code === 1) {
+                res.data.account_type=="global"?this.account_type=true:this.account_type=false;
+            }
+          })
+      api.getInvitation({account_name:this.account_name}).then(res => {    // 获取邀请码
+            if (res.code === 1) {
+                this.invest_code=this.digitize(res.data.invest_code);
+            }
+          })
+  }
 }
 </script>
 
@@ -136,6 +158,13 @@ export default {
 .games_group img{
   width: 11vw;
   height: 11vw;
+}
+.invite_icon{
+    width: 1.3rem;
+    height: 1.3rem;margin:0 auto;
+    background-color: #fff;
+    border-radius: 0.13333rem;
+    box-shadow: 0 0 0.06667rem #c9c9c9;
 }
 
 .Centered{

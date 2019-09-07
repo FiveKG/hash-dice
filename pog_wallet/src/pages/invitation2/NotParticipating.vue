@@ -48,9 +48,9 @@
         <div class="games_group" @click="navigateTo('DappList')">
           <div class="games_group_inner">
             <div class="games_item_wrap"><img src="../../assets/invitation2/u1.png" alt=""><span>全球彩</span></div>
-            <div class="games_item_wrap"><img src="../../assets/invitation2/u1.png" alt=""><span>好运红包</span></div>
+            <div class="games_item_wrap"><img src="../../assets/invitation2/u2.svg" alt=""><span>好运红包</span></div>
             <div class="games_item_wrap"><img src="../../assets/invitation2/u3.png" alt=""><span>夺宝</span></div>
-            <div class="games_item_wrap"><img src="../../assets/invitation2/u1.png" alt=""><span>哈希骰子</span></div>
+            <div class="games_item_wrap"><img src="../../assets/invitation2/u4.svg" alt=""><span>哈希骰子</span></div>
             <div class="games_item_wrap"><img src="../../assets/invitation2/u5.png" alt=""><span>哈希分分彩</span></div>
             <div class="games_item_wrap"><img src="../../assets/invitation2/u6.png" alt=""><span>ha666</span></div>
           </div>
@@ -455,7 +455,7 @@ export default {
           account_name: this.account_name
         }).then(res => {
           if (res.code==1){
-            console.log(22222222222222,res.data)
+            console.log(22222222222222,res);
             if(res.data.is_bind==true){
             return 
             }else{
@@ -466,8 +466,6 @@ export default {
           }
         })
         //
-
-
 
         api.isActive({
           account_name: this.account_name
