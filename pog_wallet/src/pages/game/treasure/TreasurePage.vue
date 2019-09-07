@@ -6,9 +6,9 @@
           <div class="float_left box"><img  class="ion_tbg" src="@/assets/invitation2/u3.png"></div>
           <p class="float_left orange" style="font-size: .5rem;margin: 0.45rem 0 .45rem 0;">夺宝</p>
           <div class="float_right" style="width: 3rem;height: 1rem;border: 1px solid rgb(100,100,100);margin: .25rem .6rem .25rem 0;border-radius: 6px;">
-            <div class="display_ib" style="width: 49.5%;height: 100%;"></div>
-            <div class="display_ib" style="width: 1%;height: 70%;background: rgb(100,100,100);vertical-align: super;"></div>
-            <div class="display_ib" style="width: 49.5%;height: 100%;"></div>
+            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="actionSheetVisible = true" style="width: 50%;height: 27%;margin: 25% 0px 0px 25%;" src="@/assets/invitation2/u8.png"></div>
+            <div class="display_ib" style="width: 1%;height: 70%;background: rgb(100,100,100);vertical-align: top;margin-top: 5%;"></div>
+            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="back" src="../../../assets/img/u102.png" style="width: 55%;height: 80%;margin: 6% 0 0 21%;"></div>
           </div>
         </div>
         <!-- 区块滚动 -->
@@ -83,6 +83,28 @@
           </div>
         </div>
         
+        <!-- 下拉框 -->
+        <v-ons-action-sheet
+          :visible.sync="actionSheetVisible"
+          cancelable
+        >
+          <div class="selectwrap">
+              <div class="wdclose" @click="actionSheetVisible = false">
+              </div>
+              <v-ons-row class="selectrow" >
+                  <img class="people" src="@/assets/img/u9830.png" alt="">
+                  <span>eoscheshieos</span>
+                  <img class="pic" src="@/assets/img/u9827.png" alt="">
+                  <img class="pic" src="@/assets/img/u9825.png" alt="">
+              </v-ons-row>
+
+              <v-ons-row class="selectrow">
+                  <img class="rule" src="@/assets/img/u9832.png" alt="">
+                  <span>规则</span>
+              </v-ons-row>
+          </div>
+        </v-ons-action-sheet> 
+
        </div>
      </slot>
     </vpage>
@@ -107,6 +129,7 @@ export default {
       treasureKey:1,  //滚动KEY
       twenty:1,      //模式选择  20*0.1为1  20*0.5为2  100*0.1为3
       allMy:true,   //区分我的 全部
+      actionSheetVisible: false,   //下拉框
       publicData:[   //公用界面数据
 
       ],
@@ -126,7 +149,7 @@ export default {
   },
   methods: {
        back() {
-          this.$router.go(-1)
+          this.$router.go(-2)
        },
        selectTwenty(index) {
          this.twenty=index;
@@ -264,8 +287,53 @@ export default {
   background:orange;
   border-radius: 20px;
 }
-
-
+/* 下拉框 */
+.selectwrap{
+  background-color: #fff;
+  min-height: 200px;
+  max-height: 100vh;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+}
+.wdclose{
+  width:.6rem;
+  height:.6rem;
+  background:url("../../../assets/img/u102.png") no-repeat center center;
+  background-size:1rem 1rem;
+  position:absolute;
+  right:.8rem;
+  top:.65rem;
+}
+.selectrow{
+  padding:.6rem;
+  align-items:center;
+  font-size:0.5rem;
+  font-family: "Bahnschrift Regular", Bahnschrift;
+  color:#FF9900;
+  font-weight: 400;
+}
+.selectrow span{
+  padding-right:1rem;
+}
+.pic{
+  width: .7rem;
+  height: .5rem;
+  padding-right:.5rem;
+}
+.people{
+  width:0.8rem;
+  height:0.8rem;
+  padding-right:.2rem;
+}
+.rule{
+  width:0.8rem;
+  height:0.8rem;
+  padding-right:.2rem;
+}
 
 
 

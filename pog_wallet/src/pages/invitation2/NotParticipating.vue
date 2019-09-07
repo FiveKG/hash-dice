@@ -1,204 +1,194 @@
 <template>
   <div class="wrap">
     <!-- 头部信息 -->
-    <div class="top-info">
-      <h2>{{account_name}}</h2>
-      <span> {{atv_text}} > </span>
+    <div class="head-info jc_sb-al_c">
+      <div class="head-user flx_default">
+        <img class="head-user_avatar" src="../../assets/invitation2/avatar.jpg" alt="">
+        <span>{{account_name}}</span>
+        <span>{{atv_text}}</span>
+        <img class="head-user_arrow" src="@/assets/img/u28.png">
+      </div>
+      <img class="head-serve" src="../../assets/invitation2/head-serve.png" alt="">
     </div>
-    
 
     <!-- 全球区块链去中心化游戏应用平台 -->
-    <div class="log">
-       <img src="../../../public/img/u482.svg" alt="">
-       <p class="log_title"> 
-          <span >Token ●</span>
-          <span> Blockchain ●</span>
-          <span> Game</span>
-       </p>
-       <p class="log_txt">全球区块链去中心化游戏应用平台</p>
-    </div>
-
-    <!-- 已销毁部分 -->
-    <div class="destroyed">
-        <span class="destroyed_txt1">   已销毁</span> 
-        <span class="destroyed_txt2"> {{destroy_amount[0]}}.</span>     
-        <span class="destroyed_txt3">{{destroy_amount[1]}}</span>
-        <span @click="jumpDestruction()"> TBG </span>
-        <span @click="jumpDestruction()" class="destroyed_txt4">></span>
-    </div> 
+    <div class="banner-wrap jc_c-al_c">
+      <div class="banner fd_cln jc_sa-al_c">
+        <div class="top jc_c-al_c">
+          <div class="top_logo jc_c-al_c">
+            <img src="../../../public/img/u482.svg" alt="">
+          </div>
+          <div class="top_right fd_cln">
+            <span>Token · Blockchain · Game</span>
+            <span>全球区块链去中心化游戏应用平台</span>
+          </div>
+        </div>
+        <div class="destroyed jc_c-al_c">
+          <span>已销毁</span> 
+          <div class="destroyed_txt" v-if="destroy_amount.length>0">
+            <span class="destroyed_txt1"> {{destroy_amount[0]}}.</span>     
+            <span class="destroyed_txt2">{{destroy_amount[1][0]}}</span>
+            <span class="destroyed_txt3"> {{destroy_amount[1][1]}}</span>
+          </div>
+          <span>TBG</span>
+        </div>
+        <div @click="jumpDestruction()" class="banner-detail_btn">
+          查看详情
+        </div>
+      </div>
+    </div>    
 
     <!-- 查看TBG旗下游戏 -->
-    <div class="games">
-       <p class="games_title">查看 TBG 旗下游戏</p>
-       <div class="games_group" @click="navigateTo('DappList')">
-         <img src="../../assets/invitation2/u1.png" alt="">
-         <img src="../../assets/invitation2/u2.svg" alt="">
-         <img src="../../assets/invitation2/u3.png" alt="">
-         <img src="../../assets/invitation2/u4.svg" alt="">
-         <img src="../../assets/invitation2/u5.png" alt="">
-         <img src="../../assets/invitation2/u6.png" alt="">
-         <span>></span>
-       </div>
-        <p>...</p>
+    <div class="games fd_cln">
+      <div class="section-head jc_sb-al_c">
+        <span>TBG旗下游戏</span>
+        <span @click="navigateTo('DappList')">查看全部</span>
+      </div>
+      <div class="games-bar">
+        <div class="games_group" @click="navigateTo('DappList')">
+          <div class="games_group_inner">
+            <div class="games_item_wrap"><img src="../../assets/invitation2/u1.png" alt=""><span>全球彩</span></div>
+            <div class="games_item_wrap"><img src="../../assets/invitation2/u1.png" alt=""><span>好运红包</span></div>
+            <div class="games_item_wrap"><img src="../../assets/invitation2/u3.png" alt=""><span>夺宝</span></div>
+            <div class="games_item_wrap"><img src="../../assets/invitation2/u1.png" alt=""><span>哈希骰子</span></div>
+            <div class="games_item_wrap"><img src="../../assets/invitation2/u5.png" alt=""><span>哈希分分彩</span></div>
+            <div class="games_item_wrap"><img src="../../assets/invitation2/u6.png" alt=""><span>ha666</span></div>
+          </div>
+        </div>
+      </div>
     </div>
     
     <!-- 在线客服 -->
-    <div class="onlineService">
-        <div class="item">
-            <img src="../../../public/img/u5098.png" alt="">
-            <div class="system_ntf">
-              <div v-if="system_ntf.length > 0" class="system_ntf_item">
-                <span>{{system_ntf[0].title}}</span>
-                <span>{{system_ntf[0].create_time}}</span>
-                <span @click="jumpNotice()" >></span>
-              </div>
-            </div>
+    <div class="broadcast-wrap">
+      <div class="broadcast jc_sb-al_c">
+        <img class="broadcast_img" src="../../assets/invitation2/broadcast.png" alt="">
+        <div class="broadcast_info">
+          <span v-if="system_ntf.length > 0">{{system_ntf[0].title}}</span>
         </div>
-        <div class="item">
-           <img src="../../../public/img/u5100.svg" alt="">
-           在线<br/>客服
-        </div>
+        <span @click="jumpNotice()">查看更多</span>
+      </div>
     </div>
 
     <!-- 我的团队 -->
-    <div class="myteam">
-      <div class="title clear">
-        <span class="left">
-          我的团队
-        </span>
-        <span class="right">
-          规则>
-        </span>
+    <div class="team">
+      <div class="section-head jc_sb-al_c">
+        <span>我的团队</span>
+        <span>规则</span>
       </div>
-      <div class="select-content">
-        <div class="select-wrap">
-            <div class="ipt_layout" style="box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);border: none;background: rgb(255, 255, 255);">
-                <div>
-                <span style="font-size: .45rem;color: #1E1E1E;" @click="jumpMyInvitationPage">我的邀请专页</span>
-                </div>
-            </div>
+      <div class="team-select flx_default">
+        <div @click="jumpMyInvitationPage" class="left al_c">
+          <img src="../../assets/invitation2/invite.png" alt="">
+          <span>我的邀请专页</span>
         </div>
-        <div class="select-wrap">
-          <div @click='switchData(1)' class="ipt_layout" style="box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);border: none;background: rgb(255, 255, 255);">
-              <div>
-              <span style="font-size: .45rem;color: #1E1E1E;">我的团队</span>
-              </div>
-              <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;"> 
-          </div>
-          <!-- 下拉部分 -->
-          <div class="select-toggle" ref="slt-1" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
-              <div class="select-item" v-for="(item, index) in MyTeamItem" :key="index" @click="jumpMyTeam(index)">{{item.text}}</div>
-          </div>
+        <div @click="jumpMyTeam(0)" class="right al_c">
+          <img src="../../assets/invitation2/team.png" alt="">
+          <span>我的团队</span>
         </div>
       </div>
     </div>
 
     <!-- TBG 1 - 2 -->
-    <div class="tbg-bar-warp">
+    <div class="tbg-bar-wrap">
       <div class="tbg-bar">
-        <div @click="tbgToggle(0)" class="tbg-bar_item" :class="{'active': tbg === 0}">
+        <div @click="tbgToggle(1)" class="tbg-bar_item" :class="{'active': tbg === 1}">
           TBG-I
         </div>
-        <div @click="tbgToggle(1)" class="tbg-bar_item" :class="{'active': tbg === 1}">
+        <div @click="tbgToggle(0)" class="tbg-bar_item" :class="{'active': tbg === 0}">
           TBG-II
         </div>
       </div>
     </div>
 
     <!-- TBG-I标签页 -->
-    <div v-if='tbg === 0'>
+    <div class="tag-page" v-if='tbg === 0'>
       <!-- 子账号 -->
-      <div class="orePool child-account">
-          <div class="title clear">
-            <span class="left">
-              投资与子账号
-            </span>
-            <span class="right">
-              规则>
-            </span>
+      <div class="child-account">
+        <div class="section2-head jc_sb-al_c">
+          <span>投资与子账号</span>
+          <span>规则</span>
+        </div>
+        <div class="child-account_items jc_sa-al_c">
+          <div @click="jumpSubAccount" class="account_item_left">
+            <div class="acc-img_wrap">
+              <img src="../../assets/invitation2/child-acc.png" alt="">
+              <span class="child-acc_amount">{{sub_account.total_sub_account || 0}}</span>
+            </div>
+            <p>子账号</p>
           </div>
-          <div class="child-account_content">
-              <div class="child-account_left" @click="jumpSubAccount" v-if="subAccountQuantity">
-                子账号数量：
-                <span>{{sub_account.total_sub_account}}</span>
-              </div>
-              <div class="child-account_left" style="background: orange;" @click="jumpQuantityTbg" v-if="!subAccountQuantity">
-                参与TBG
-              </div>
-              <!-- <div class="child-account_left" @click="">
-                <span>参与TBG-I</span>
-              </div> -->
-              <div @click="navigateTo('HelpFriend')" class="child-account_right">
-                帮助投资伙伴
-              </div>
+          <div @click="navigateTo('HelpFriend')" class="account_item_right">
+            <div class="acc-img_wrap">
+              <img src="../../assets/invitation2/assist-fri.png" alt="">
+            </div>
+            <p>帮助伙伴</p>
           </div>
+        </div>
       </div>
+
       <!-- 全球区块链去中心化游戏平台 -->
-      <div class="direction">
-          <div class="content">
-              <div class="left">
-                  <!-- <img src="@/assets/img/u6628.svg" alt=""> -->
-              </div>
-              <div class="right">  
-                全球区块链去中心化游戏平台，真正公平公正、透明可查、无法作假的区块链去中心化游戏是现在和未来的方向。
-              </div>
+      <div class="common-wrap">
+        <div class="intro common-box al_c">
+          <div class="left jc_sb-al_c">
+            <img src="@/assets/img/u6628.svg" alt="">
           </div>
+          <div class="right">  
+            共同建设全球区块链去中心化游戏社区，
+            购买 TBG 资产包即挖矿，参与游戏获空
+            投，持有 TBG 享股东分红。
+          </div>
+        </div>
       </div>
 
       <!-- TBG-I 收益 -->
-      <div class="orePool income">
-          <div class="title clear">
-            <span class="left">
-              TBG-I 收益
-            </span>
-            <span class="right">
-              规则>
-            </span>
-          </div>
-          <div class="income_content" @click="jumpProfit">
-            <div class="income_content_inner">
-              <span>总计</span>
-              <span>{{total_income}} UE</span>
+      <div>
+        <div class="section2-head jc_sb-al_c">
+          <span>TBG-I收益</span>
+          <span>规则</span>
+        </div>
+        <div class="common-wrap">
+          <div class="common-box jc_sb-al_c">
+            <span>总计</span>
+            <div class="common-number">
+              <span>{{total_income[0]}} </span>
+              <span style="color: #FF9900;">{{total_income[1]}}</span>
+              <span> UE</span>
             </div>
           </div>
+        </div>
       </div>
 
       <!-- 奖金和保障 -->
-      <div class="orePool ensure">
-          <div class="title clear">
-            <span class="left">
-              奖金及保障池
-            </span>
-            <span class="right">
-              规则>
-            </span>
-          </div>
-          <div class="ensure_content">
+      <div>
+        <div class="section2-head jc_sb-al_c">
+          <span>奖金以及保障池</span>
+          <span>规则</span>
+        </div>
+        <div class="common-wrap">
+          <div class="common-box ensure_content">
             <div @click='navigateTo(item.url)' v-for="(item, index) in ensure" :key="index" class="ensure_content_inner" >
               <span class="top">{{item.top}}</span>
               <span class="mid">{{item.mid}}</span>
               <span class="bot">{{item.bot}}</span>
             </div>
           </div>
+        </div>
       </div>
 
       <!-- 收入分配 -->
-      <div class="orePool distribution">
-          <div class="title clear">
-            <span class="left">
-              收益分配
+      <div>
+        <div class="section2-head jc_sb-al_c">
+          <span>收益分配</span>
+          <span>规则</span>
+        </div>
+        <div class="common-wrap distribution_content">
+          <div @click='navigateTo(item.url)' v-for="(item, index) in distribution" :key="index" class="distribution_content_inner">
+            <span class="top">{{item.top}}</span>
+            <span class="mid">
+              <span>{{item.mid[0]}}</span>
+              <span style="color: #868686;"> {{item.mid[1]}}</span>
             </span>
-            <span class="right">
-              规则>
-            </span>
+            <span class="bot">{{item.bot}}</span>
           </div>
-          <div class="distribution_content">
-            <div @click='navigateTo(item.url)' v-for="(item, index) in distribution" :key="index" class="distribution_content_inner">
-              <span class="top">{{item.top}}</span>
-              <span class="mid">{{item.mid}}</span>
-              <span class="bot">{{item.bot}}</span>
-            </div>
-          </div>
+        </div>
       </div>
     </div>
 
@@ -206,139 +196,116 @@
     <!-- TBG-II标签页 -->
     <div v-if="tbg === 1">
       <!-- 交易中心 -->
-      <div class="orePool">
-          <div class="title clear">
-            <span class="left">
-              交易中心
-            </span>
-            <span class="right">
-              规则>
-            </span>
+      <div>
+        <div class="section2-head jc_sb-al_c">
+          <span>交易中心</span>
+          <span>规则</span>
+        </div>
+        <div class="exchange-content">
+          <div class="exchange-left">
+            <span>当前TBG价格</span>
+            <span>{{trade_price}}</span>
+            <span>UE</span>
           </div>
-          <div class="exchange-content">
-              <div class="exchange-left">
-                <span>当前TBG价格</span>
-                <span>{{trade_price}}</span>
-                <span>UE</span>
+          <div class="exchange-right">
+            <div class="select-wrap">
+              <div @click='switchData(2)' class="ipt_layout">
+                  <div>
+                  <span style="font-size: .45rem;color: rgb(236,90,91);">买入TBG</span>
+                  </div>
+                  <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;"> 
               </div>
-              <div class="exchange-right">
-                <div class="select-wrap">
-                  <div @click='switchData(2)' class="ipt_layout" style="box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);border: none;background: rgb(255, 255, 255);">
-                      <div>
-                      <span style="font-size: .45rem;color: #1E1E1E;">买入TBG</span>
-                      </div>
-                      <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;"> 
-                  </div>
-                  <!-- 下拉部分 -->
-                  <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
-                      <div class="select-item" @click="jumpnormal()">普通用户</div>
-                      <div class="select-item" @click="jumpglobal()">全球合作伙伴</div>
-                  </div>
-                </div>
-                <div class="select-wrap">
-                  <div @click='jumpTwoSell' class="ipt_layout" style="box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);border: none;background: rgb(255, 255, 255);">
-                      <div>
-                      <span style="font-size: .45rem;color: #1E1E1E;">卖出TBG</span>
-                      </div>
-                  </div>
-                </div>
+              <!-- 下拉部分 -->
+              <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
+                  <div class="select-item" @click="jumpnormal()">普通用户</div>
+                  <div class="select-item" @click="jumpglobal()">全球合作伙伴</div>
               </div>
+            </div>
+            <div class="select-wrap">
+              <div @click='jumpTwoSell' class="ipt_layout">
+                  <div>
+                  <span style="font-size: .45rem;color: #0099CC;">卖出TBG</span>
+                  </div>
+              </div>
+            </div>
           </div>
+        </div>
       </div>
 
       <!-- 全球区块链去中心化游戏平台 -->
-      <div class="direction">
-          <div class="content">
-              <div class="left">
-                  <img src="@/assets/img/u6628.svg" alt="">
-              </div>
-              <div class="right">  
-                共同建设全球区块链去中心化游戏社区，
-                购买 TBG 资产包即挖矿，参与游戏获空
-                投，持有 TBG 享股东分红。
-              </div>
+      <div class="common-wrap">
+        <div class="intro common-box al_c">
+          <div class="left jc_sb-al_c">
+            <img src="@/assets/img/u5094.svg" alt="">
           </div>
-            
+          <div class="right">  
+            全球区块链去中心化游戏平台，真正公平公正、透明可查、无法作假的区块链去中心化游戏是现在和未来的方向。
+          </div>
+        </div>
       </div>
 
       <!-- qiandao -->
       <check-in></check-in>
+
       <!-- TBG资产包矿池 -->
-      <div class="orePool">
-          <div class="title clear">
-            <span class="left">
-              TBG资产包矿池
-            </span>
-            <span class="right">
-              规则>
-            </span>
+      <div>
+        <div class="section2-head jc_sb-al_c">
+          <span>TBG资产包矿池</span>
+          <span>规则</span>
+        </div>
+        <div class="common-wrap" @click="jumpAssetPool">
+          <div class="common-box resource jc_sb-al_c">
+            <img src="@/assets/img/u6712.gif" alt="">
+            <div class="resource-info">
+              <p>当前有效资产包</p>
+              <p>1,954.2532 <span>0000</span> TBG</p>
+            </div>
           </div>
-          <div class="content" @click="jumpAssetPool">
-              
-              <div class="left">
-                <img class="people"  src="@/assets/img/u6712.gif" alt="">
-                </div>
-              <div class="right">
-                  <p>当前有效资产包</p>
-                  <p>1,954.2532 <span>0000</span> TBG</p>
-              </div>
-          </div>
+        </div>
       </div>
 
 
-     <!--  TBG线性释放池 -->
-      <div class="releasePool">
-          <div class="title clear">
-            <span class="left">
-              TBG线性释放池
-            </span>
-            <span class="right">
-              规则>
-            </span>
+        <!--  TBG线性释放池 -->
+      <div>
+        <div class="section2-head jc_sb-al_c">
+          <span>TBG线性释放池</span>
+          <span>规则</span>
+        </div>
+        <div class="common-wrap">
+          <div class="common-box jc_sb-al_c">
+            <span>释放池余额</span>
+            <div class="common-number">
+              <span>2,492.5160 </span>
+              <span style="color: #FF9900;">0210</span>
+              <span> TBG</span>
+            </div>
           </div>
-          <div class="content clear" @click="jumpAssetLinearPool">
-            <div class="left">释放池余额</div>
-            <div class="right">2,492.5160 <span> 0210 </span> TBG</div>
-          </div>
+        </div>
       </div>
 
       <!-- TBG 可售池 -->
-      <div class="bonus">
-          <div class="title clear">
-            <span class="left">
-              TBG 可售池
-            </span>
-            <span class="right">
-              规则>
-            </span>
+      <div>
+        <div class="section2-head jc_sb-al_c">
+          <span>TBG 可售池</span>
+          <span>规则</span>
+        </div>
+        <div class="common-wrap distribution_content">
+          <div class="distribution_content_inner" @click="jumpSaleableBalance">
+            <p class="top">可售余额</p>
+            <p class="mid">{{Balance}} </p>
+            <p class="bot">TBG</p>
           </div>
 
-
-          <div class="content">
-
-            <div class="item" @click="jumpSaleableBalance">
-                <p>可售余额</p>
-                <p>{{Balance}} </p>
-                <p>TBG</p>
-            </div>
-
-            <div class="item" @click="jumpSaleableLimit">
-                <p>可售额度</p>
-                <p>{{Amount}} </p>
-                <p>TBG</p>
-            </div>
-
+          <div class="distribution_content_inner" @click="jumpSaleableLimit">
+            <p class="top">可售额度</p>
+            <p class="mid">{{Amount}} </p>
+            <p class="bot">TBG</p>
           </div>
-      </div>
-
-      <div class="container-common can-sell">
-          <div class="item">
-              <p>可售数量</p>
+          <div class="distribution_content_inner">
+            <p class="top">可售数量</p>
+            <p class="mid">{{Quantity}}TBG</p>
           </div>
-
-          <div class="item">
-              <p>{{Quantity}}TBG</p>
-          </div>
+        </div>
       </div>
     </div>
 
@@ -376,8 +343,8 @@ import MyPage from '@/components/MyPage'
 import MDialog from '@/components/MDialog'
 import PasswordService from '@/services/PasswordService'
 import CryptoAES from '@/util/CryptoAES'
-import eos from '@/plugins/eos'
-import { friendInvest,getConfig } from '@/servers/invitation';
+import eos from '@/plugins/pog'
+import serverApi from '@/servers/invitation'; //getConfig
 
 export default {
     data(){
@@ -394,7 +361,7 @@ export default {
                 Balance:0,      //余额
                 Amount:1,       //额度
                 Quantity:0,     //可售数量
-                subAccountQuantity:true,  //子账号数量切换
+                subAccountQuantity:false,  //子账号数量切换
 
                 //区块链转站
                 reqParams: {
@@ -717,7 +684,7 @@ export default {
         async verifyPassword() {
           const seed = await PasswordService.encrypt(this.password);
           const wallets = this.$store.state.wallet.localFile.wallets;
-          const current = wallets.find(ele => ele.accountNames[0] === this.reqParams.account);
+          const current = wallets.find(ele => ele.accountNames[0] === this.account_name );
           const privateKey = CryptoAES.decrypt(current.privateKey,seed);
           return privateKey
           // return '5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h';
@@ -725,16 +692,18 @@ export default {
         async clickConfirm() {   //显示密码
               this.actionSheetVisible = true;
         },
-        async goPay(privateKey,quantity,memo ) {
+        async goPay(privateKey) {
           if (privateKey) {
             this.showDialog = false
             try {
-              const config = await this.getConfig()
-              const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
+              const config = await this.getConfig();
+              console.log(3333333333333,config);
+              console.log(44444444444444,privateKey);
+              const opts = { authorization:[`${this.account_name }@active`], keyProvider: privateKey }
               // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
-              const adm = await eos.contract('tbgjoin')
+              const adm = await eos.contract('uetokencoin')
               // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
-              const trx = await adm.transfer(this.reqParams.account, config.trade_receiver, quantity, memo, opts)
+              const trx = await adm.transfer(this.account_name , config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.account_name }`, opts)
               console.log(11221111,trx);
               return true
             } catch (error) {
@@ -750,46 +719,11 @@ export default {
             }
           } else {
             this.$toast(this.$t('common.wrong_pwd'))
-          }
-        },
-        async sellgoPay(privateKey,quantity,memo ) {
-          if (privateKey) {
-            this.showDialog = false
-            try {
-              const config = await this.getConfig()
-              const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
-              // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
-              const adm = await eos.contract('tbgjoin')
-              // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
-              const trx = await adm.transfer(this.reqParams.account, config.trade_receiver, quantity, memo, opts)
-              console.log(11221111,trx);
-              return true
-            } catch (error) {
-              console.log(error)
-              error = JSON.parse(error)
-              if (error.error.code == 3050003) {
-                this.$toast(this.$t('common.overdrawn_balance'))
-              }
-              if (error.error.code == 3080004) {
-                this.$toast('CPU资源受限')
-              }
-              return false
-            }
-          } else {
-            this.$toast(this.$t('common.wrong_pwd'))
-          }
-        },
-        async friendInvest() {
-          try {
-            const res = await friendInvest()
-            return res.code
-          } catch (error) {
-            console.log(error)
           }
         },
         async getConfig() {
           try {
-            const res = await getConfig()
+            const res = await serverApi.getConfig()
             if (res.code === 1) {
               console.log('getConfig',res)
               return res.data
@@ -830,20 +764,447 @@ export default {
 </script>
 
 <style scoped>
-  /* 系统公告 */
-  .system_ntf{
-    flex-grow: 1;
-  }
-  .system_ntf_item{
+  .wrap{
+    /* background: rgb(228, 147, 147); */
+    padding-bottom: 2.6rem;
+}
+.head-info{
+    padding-top: constant(safe-area-inset-top);
+    padding-right: constant(safe-area-inset-right);
+    padding-left: constant(safe-area-inset-left);
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-left: env(safe-area-inset-left);
+}
+.head-user {
+    padding: .5rem;
+}
+.head-user>.head-user_avatar{
+    width: .9rem;
+    border-radius: 50%;
+    margin-right: .3rem;
+}
+.head-user>span:nth-of-type(1){
+    font-size: .4rem;
+    font-weight: bold;
+    margin-right: .2rem;
+}
+.head-user>span:nth-of-type(2){
+    font-size: .3rem;
+
+}
+.head-user>.head-user_arrow {
+    width: .4rem;
+    transform: rotate(-90deg);
+}
+.head-serve {
+    margin-right: .5rem;
+    width: .7rem;
+}
+
+/* banner */
+.banner-wrap {
+    width: 100vw;
+}
+.banner {
+    background: url('../../assets//invitation2/banner-bg.png') no-repeat;
+    width: 90vw;
+    height: 54vw;
+    background-size: 100% 100%;
+    font-family: 'Bahnschrift Regular', 'Bahnschrift';
+    box-shadow: 0 .1rem .4rem rgba(30, 76, 155, 0.877);
+    border-radius: .6rem;
+    padding: .3rem 0;
+    box-sizing: border-box;
+}
+.banner>.top {
+    color: aliceblue;
+}
+.top_logo {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: .2rem;
+    background-color: #fff;
+    margin-right: .4rem;
+}
+.top_logo>img {
+    width: 100%;
+}
+.top_right>span:nth-of-type(1) {
+    color: rgba(255, 255, 255, 0.692);
+}
+.top_right>span:nth-of-type(2) {
+    font-size: .4rem;
+    margin-top: .15rem;
+}
+
+.destroyed{
+    font-family: 'Bahnschrift Regular';
+    font-size:0.45rem;
+    color: #fff;
+}
+.destroyed>*{
+    margin-right: .2rem;
+}
+.destroyed_txt{
+    font-weight: bold;
+    font-size: .52rem;
+}
+.destroyed_txt1{
+    color: #FF9900;
+}
+.destroyed_txt2{
+    color: #fff;
+}
+.destroyed_txt3{
+    color:#BCBCBC;
+}
+
+.banner-detail_btn{
+    line-height: 2.2em;
+    font-size: .35rem;
+    padding: 0 .5rem;
+    border-radius: 1em;
+    color: rgb(30, 76, 155);
+    background: #fff;
+    font-weight: bold;
+}
+
+/* games */
+.games {
+}
+.section-head {
+    padding: .5rem;
+}
+.section-head>span:nth-of-type(1) {
+    font-size: .6rem;
+}
+.section-head>span:nth-of-type(2) {
+    color: #1D4997;
+}
+.games-bar{
+    position: relative;
+    width: 100%;
+    height: 3rem;
+    box-sizing: border-box;
+    /* padding-left: .5rem; */
+    overflow: hidden;
+}
+
+.games_group{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    box-sizing: content-box;
+    /* padding: 0 .5rem; */
+}
+.games_group_inner{
     display: flex;
     justify-content: space-between;
-    padding-right: .3rem;
-  }
-  .system_ntf_item>span:nth-of-type(3){
-    color:#bcbcbc;
-  }
-  /* 交易中心 */
-  .exchange-content{
+    height: 100%;
+    width: auto;
+    padding: 0 2rem 0 .5rem;
+    box-sizing: content-box;
+}
+.games_item_wrap {
+    flex-shrink: 0;
+    flex-basis: 1.8rem;
+    margin-right: .4rem;
+    position: relative;
+}
+.games_item_wrap img{
+    width: 1.8rem;
+    height: 1.8rem;
+    box-shadow: 0 .2rem .2rem rgba(156, 156, 156, 0.267);
+    border-radius: .15rem;
+}
+.games_item_wrap>span{
+    display: inline-block;
+    text-align: center;
+    font-size: .3rem;
+    color: rgba(0, 0, 0, 0.795);
+    bottom: -.3rem;
+    white-space: nowrap;
+    width: 100%;
+    margin-top: .25rem;
+}
+
+
+/* broadcast */
+.broadcast-wrap {
+    padding: .5rem;
+}
+.broadcast {
+    padding: .4rem;
+    border-radius: .3rem;
+    background-color: #fff;
+}
+.broadcast>span {
+    color: #1D4997;
+    font-size: .3rem;
+}
+.broadcast_img {
+    width: .8rem;
+    margin-right: .4rem;
+}
+.broadcast_info {
+    font-size: .5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-right: .4rem;
+    color: rgba(0, 0, 0, 0.514);
+    /* max-width: 45%; */
+    flex: 1;
+}
+
+/* myteam */
+.team-select{
+    padding: .5rem;
+}
+.team-select>.left{
+    margin-right: .4rem;
+    box-shadow: 0 0 .2rem rgba(236,90,91,.8);
+    background: linear-gradient(to right,rgba(236,90,91,.8),rgb(236,90,91));
+}
+.team-select>.right{
+    box-shadow: 0 0 .2rem rgb(37, 85, 162);
+    background: linear-gradient(to right,rgb(62, 114, 198) ,rgb(37, 85, 162));
+}
+.team-select>.left, .team-select>.right{
+    border-radius: .2rem;
+    flex: 1;
+    padding: .7rem 0 .7rem .6rem;
+    font-size: .35rem;
+    color: rgba(255, 255, 255, 0.925);
+}
+.team-select>.left>img, .team-select>.right>img{
+    width: .8rem;
+    margin-right: .3rem;
+}
+
+/* TBG-select-bar */
+.tag-page {
+    border-top-left-radius: .5rem;
+    border-top-right-radius: .5rem;
+    background-color: #fff;
+}
+.tbg-bar-wrap {
+    padding: .3rem .5rem;
+}
+.tbg-bar{
+    display: flex;
+}
+.tbg-bar_item {
+    margin-right: 1.2rem;
+    text-align: center;
+    line-height: 1.3rem;
+    position: relative;
+    font-size: .45rem;
+    color: #BCBCBC;
+    transition: all .3s;
+}
+.tbg-bar_item::after {
+    position: absolute;
+    content: '';
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: .4rem;
+    height: .15rem;
+    border-radius: .08rem;
+}
+.tbg-bar>.active{
+    font-size: .6rem;
+    color: rgb(29, 29, 29);
+}
+.tbg-bar>.active::after{
+    background: #1D4997;
+}
+
+/* TBG */
+.section2-head {
+    padding: .5rem;
+}
+.section2-head>span:nth-of-type(1) {
+    font-size: .45rem;
+    font-weight: bold;
+}
+.section2-head>span:nth-of-type(2) {
+    color: #1D4997;
+}
+.common-box {
+    padding: .4rem .3rem;
+    background: rgb(248, 249, 255);
+    border-radius: .3rem;
+    box-sizing: border-box；
+}
+.common-wrap {
+    padding: .5rem;
+}
+
+/* child-account */
+.account_item_left,.account_item_right {
+    width: 1.8rem;
+}
+.account_item_left > p,.account_item_right > p {
+    text-align: center;
+    padding: .2rem 0;
+}
+.account_item_left>.acc-img_wrap::after{
+    box-shadow: 0 .2rem .4rem rgba(236,90,91,.8);
+}
+.account_item_right>.acc-img_wrap::after {
+    box-shadow: 0 .2rem .4rem #1D4997;
+}
+.acc-img_wrap,.acc-img_wrap {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+.acc-img_wrap::after,.acc-img_wrap::after {
+    position: absolute;
+    content: '';
+    z-index: -1;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+    left: 50%;
+    top: 50%;
+}
+.acc-img_wrap>img,.acc-img_wrap>img {
+    width: 100%;
+}
+.child-acc_amount {
+    position: absolute;
+    background: #FF9900;
+    border-radius: 50%;
+    width: .6rem;
+    height: .6rem;
+    top: 0;
+    right: -.2rem;
+    border: .05rem solid #fff;
+    color: #fff;
+    font-weight: bold;
+    box-shadow: 0 0 .2rem #BCBCBC;
+    text-align: center;
+    line-height: .6rem;
+}
+
+/* intro */
+.intro>.left{
+    width: 1.8rem;
+    background: #fff;
+    padding: .2rem 0;
+    border-radius: .3rem;
+    margin-right: .4rem;
+}
+.intro>.left>img{
+    width: 100%;
+}
+.intro>.right{
+    flex: 1;
+    font-size: .4rem;
+    color: rgb(100, 100, 100);
+}
+
+/* income */
+.common-number{
+    font-size: .5rem;
+    color: rgb(236,90,91);
+}
+
+ /* 奖金和保障 */
+.ensure_content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.ensure_content_inner {
+    width: 32%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: .3rem 0;
+    margin: .3rem 0;
+    position: relative;
+}
+.ensure_content>div:nth-child(2)::after,
+.ensure_content>div:nth-child(2)::before,
+.ensure_content>div:nth-child(5)::before,
+.ensure_content>div:nth-child(5)::after{
+    position: absolute;
+    content: '';
+    width: .03rem;
+    height: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #BCBCBC;
+}
+.ensure_content>div:nth-child(2)::before,
+.ensure_content>div:nth-child(5)::before{
+    left: -.02rem;
+}
+.ensure_content>div:nth-child(2)::after,
+.ensure_content>div:nth-child(5)::after{
+    right: -.02rem;
+}
+.ensure_content>div:nth-child(n+4) .mid {
+    color: rgb(41, 41, 41);
+}
+.ensure_content_inner>.top{
+    font-size: .3rem;
+    color: rgb(109, 109, 109);
+    font-weight: 400;
+}
+.ensure_content_inner>.bot {
+    font-size: .35rem;
+    font-weight: bold;
+    line-height: .5rem;
+}
+.ensure_content_inner>.mid {
+    font-size: .45rem;
+    color: rgb(236,90,91);
+    font-weight: bold;
+    padding: .15rem 0;
+}
+
+/* 分配 */
+.distribution_content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.distribution_content_inner {
+    flex: 1 45%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);
+    margin: .2rem 0;
+    background: rgb(248, 249, 255);
+    border-radius: .3rem;
+    padding: .4rem 0;
+}
+.distribution_content_inner>.top{
+    color: rgb(73, 73, 73);
+}
+.distribution_content_inner>.bot {
+    font-size: .37rem;
+    color: #0D0D0D;
+    font-weight: bold;
+}
+.distribution_content_inner>.mid {
+    font-size: .5rem;
+    padding: .2rem 0;
+    font-weight: bold;
+    /* color: #FF9900; */
+}
+
+/* 交易中心 */
+.exchange-content{
     display: flex;
     justify-content: space-between;
   }
@@ -855,217 +1216,15 @@ export default {
     flex-grow: 1;
     font-size: .4rem;
     padding: .3rem 0;
-    border: 2px solid rgb(233, 233, 233);
-    border-radius: 4px;
+    background-color: rgb(248, 249, 255);
+    border-radius: .3rem;
     margin: .2rem;
   }
   .exchange-left>span:nth-of-type(2){
-    color: #FF9900;
+    color: rgb(236,90,91);
   }
   .exchange-right{
     flex-grow: 1;
-  }
-  /* 奖金和保障 */
-  .ensure_content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
-  .ensure_content_inner {
-    width: 30%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: .3rem 0;
-    box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);
-    margin: .2rem 0;
-  }
-  .ensure_content_inner>.top,.ensure_content_inner>.bot {
-    font-size: .3rem
-  }
-  .ensure_content_inner>.mid {
-    font-size: .4rem;
-    color: #FF9900;
-  }
-
-  /* 分配 */
-  .distribution_content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
-  .distribution_content_inner {
-    width: 45%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: .3rem 0;
-    box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);
-    margin: .2rem 0;
-  }
-  .distribution_content_inner>.top,.distribution_content_inner>.bot {
-    font-size: .3rem
-  }
-  .distribution_content_inner>.mid {
-    font-size: .4rem;
-    /* color: #FF9900; */
-  }
-
-
-  .can-sell {
-    display: flex;
-    justify-content: space-between;
-    padding: .3rem .4rem;
-    font-size: .4rem;
-  }
-  /* 公共样式 */
-  .wrap{
-        font-family: '微軟正黑體 Regular', '微軟正黑體';
-        margin-bottom:2rem;
-  }
-  .clear{
-    overflow: hidden;
-    zoom:1;
-  }
-  .clear:after{
-     content:"";
-     clear:both;
-     display:block;
-     height:0;
-     overflow:hidden;
-     visibility:hidden;
-  }
-   .title{
-    width:100%;
-    height:1.3rem;
-    line-height: 1.3rem;
-    border-bottom:1px solid rgba(242, 242, 242, 1);;
-  }
-  .title .left{
-    font-size:0.5rem;
-    font-weight:bold;
-    float:left;
-    padding-left:0.3rem;
-  }
-  .title .right{
-    font-size:0.35rem;
-    float:right;
-    padding-right:0.3rem;
-  }
-
-   /* 内容样式 */
-
-  .top-info{
-    text-align:center;
-    padding:0.2rem 0;
-  }
-  .top-info h2{
-    font-family: 'Bahnschrift Regular', 'Bahnschrift';
-    font-weight: 400;
-    margin:0;
-    padding:0.1rem 0;
-    font-style: normal;
-    font-size: 0.5rem;
-    color: #A1A1A1;
-  }
-  .top-info span{
-    color:#9c9c9c;
-    font-size:0.4rem;
-    padding-bottom: .2rem;
-  }
-
-
-  .log{
-    text-align:center;
-    background-color:#fff;
-    width:100%;
-    padding:0.5rem 0;
-    color:#333;
-    margin-bottom:0.04rem;
-  }
-  .log_title{
-    padding:0.2rem 0;
-    font-size:0.43rem;
-    font-family: 'Bahnschrift Regular', 'Bahnschrift';
-  }
-  .log_txt{
-    font-size:0.45rem;
-  }
-
-
-  .games{
-    padding:0.5rem 0;
-    background-color:#fff;
-    margin-bottom:0.04rem;
-    text-align:center;
-  }
-  .games_title{
-    font-size:0.43rem;
-  }
-  .games_group{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: .2rem 1rem;
-  }
-  .games_group img{
-    width: 11vw;
-    height: 11vw;
-  }
-
-  .destroyed{
-     padding:0.5rem 0;
-     margin-bottom:0.04rem;
-     background-color:#fff;
-     text-align:center;
-     font-family: 'Bahnschrift Regular';
-     font-size:0.5rem;
-  }
-  .destroyed_txt1{
-    font-family: '微軟正黑體 Regular', '微軟正黑體';
-    font-size:0.4rem;
-    padding-left:0.3rem;
-  }
-  .destroyed_txt2{
-    color: #FF9900;
-  }
-  .destroyed_txt3{
-    color: #BCBCBC;
-  }
-  .destroyed_txt4{
-    color:#b1b1b1;
-  }
-
-
-  .onlineService{
-    background: #fff;
-    display:flex;
-    flex-wrap:nowrap;
-    box-sizing:border-box;
-    width:100%;
-  }
-  .onlineService .item:nth-child(1){
-    flex:7.5 7.5;
-    display:flex;
-    align-items:center;
-    font-size:0.37rem;
-    border-right:1px solid #efeff4;
-    /* justify-content:center; */
-  }
-  .onlineService .item:nth-child(2){
-    flex:2.5 2.5;
-    display:flex;
-    align-items:center;
-    font-size:0.37rem;
-    justify-content:center;
-    padding-right:0.1rem;
-  }
-  .pd2{
-    padding-right:0.2rem;
-  }
-  .myteam{
-     background:#fff;
-     margin-top:0.35rem;
   }
   .select-content {
     display: flex;
@@ -1085,219 +1244,102 @@ export default {
     font-size: .4rem;
   }
   .ipt_layout {
-      border-radius: 0.08rem;
+      border-radius: .2rem;
       height: 1.2rem;
-      width: 100%;
-      border: 2px solid RGB(228,228,228);
+      width: auto;
       display: flex;
       flex-wrap: nowrap;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
-      padding: 0 15px;
+      padding-left: 1rem;
+      margin: .15rem .15rem;
       box-sizing: border-box;
+      background-color: rgb(248, 249, 255);
   }
-  .tbg-bar-wrap {
-    padding: .3rem;
-  }
-  .tbg-bar{
-    display: flex;
-    justify-content: space-between;
-    background: #fff;
-    height: 1rem;
-  }
-  .tbg-bar_item {
-    flex: 0 50%;
-    text-align: center;
-    line-height: 1rem;
-    position: relative;
-  }
-  .tbg-bar_item::after {
-    position: absolute;
-    content: '';
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: .8rem;
-    height: 5px;
-  }
-  .tbg-bar>.active{
+
+/* 矿产资源包 */
+.resource>img{
+    width: 3rem;
+}
+.resource-info{
+    flex: 1;
+}
+.resource-info>p:nth-of-type(1){
+    font-size: .6rem;
+    font-weight: bold;
+}
+.resource-info>p:nth-of-type(2){
+    color: rgb(236,90,91);
+    font-weight: bold;
+    font-size: .5rem;
+}
+.resource-info>p:nth-of-type(2)>span{
     color: #FF9900;
-  }
-  .tbg-bar>.active::after{
-    background: #FF9900;
-  }
- 
-
-.child-account_content{
-  display: flex;
-  padding: .4rem;
-}
-.child-account_left,.child-account_right{
-  flex-grow: 1;
-  text-align: center;
-  box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);
-  padding: .5rem;
-  font-size: .4rem;
-}
-.child-account_right{
-  margin-left: .4rem;
-}
-.income_content{
-  padding: .2rem .2rem .6rem .2rem;
-}
-.income_content_inner{
-  display: flex;
-  justify-content: space-between;
-  padding: .4rem .2rem;
-  font-size: .4rem;
-  box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);
 }
 
-
-
-
-
-
-.container-common {
-  background:#fff;
-  margin-top:0.35rem;
-}
-
-.orePool{
-  background:#fff;
-  margin-top:0.35rem;
-}
-.orePool .content{
-  display:flex;
-  
-}
-.orePool .content .left{
-  flex:2 2;
-  text-align: center;
-  background:url("../../assets/img/u6711.svg") no-repeat ;
-  background-position:center;
-  background-size: 3rem;
-}
-.orePool .content .right{
-  flex:3 3;
-  text-align:center;
-  font-size:0.4rem;
-}
-.orePool .content .right p:nth-child(1){
-  padding-top:0.7rem;
-}
-.orePool .content .right p:nth-child(2){
-  padding-top:0.1rem;
-  font-weight:bold;
-}
-.orePool .content .right p:nth-child(2) span{
-  color:#bcbcbc;
-}
-.people{
-  width:2.5rem;
-  height:2.5rem;
-  z-index: 99;
-}
-
-
-
-
-
-
-
-  .direction{
-    display:flex;
+/* 可售池 */
+.bonus{
+    background:#fff;
     margin-top:0.35rem;
-    background-color:#fff;
-    align-items:center;
-    padding:0.4rem;
-  }
-  .direction .content{
-    padding:0.35rem 0.2rem; 
-    border:1px solid rgba(228, 228, 228, 1);
-    border-radius: 5px;
-    width:100%;
-    display:flex;
-    align-items:center;
-  }
-   .direction .content .left img{
-    padding-right:0.2rem;
-  }
-  .direction .content .right{
-    font-size:0.4rem;
-  }
-
-
-
-  .releasePool{
-     background:#fff;
-     margin-top:0.35rem;
-  }
-  .releasePool .content{
-     padding:0.4rem  0.8rem;
-  }
-  .releasePool .content .left{
-    float:left;
-    font-size:0.45rem;
-    
-  }
-  .releasePool .content .right{
-    float:right;
-    font-weight:bold;
-    font-size:0.4rem;
-  }
-  .releasePool .content .right span{
-    color:#BCBCBC;
-  }
-
-  .bonus{
-     background:#fff;
-     margin-top:0.35rem;
-  }
-  .bonus .content{
+}
+.bonus .content{
     display:flex;
     flex-wrap:wrap;
     text-align:center;
-  }
-  .bonus .content .item{
+}
+.bonus .content .item{
     flex:1;
     padding:0.4rem 0.2rem;
-  }
-  
-  .bonus .content .item p:nth-child(1){
+}
+
+.bonus .content .item p:nth-child(1){
     font-family:'微軟正黑體 Regular', '微軟正黑體';
     font-size:0.4rem;
     white-space:nowrap;
-  }
-  .bonus .content .item p:nth-child(2){
-      font-family: 'Bahnschrift Regular', 'Bahnschrift';
-      font-size:0.45rem;
-      white-space:nowrap;
-      font-weight:400;
-  }
-   .bonus .content .item p:nth-child(2) span{
-      color:#bcbcbc;
-  }
-  .bonus .content .item p:nth-child(3){
-      font-family: 'Bahnschrift Regular', 'Bahnschrift';
-      font-weight:400;
-      font-size:0.4rem;
-  }
- 
-
-/*确认密码*/
-.action_layout {
-  background-color: #fff;
-  padding: 35px 50px;
 }
-.btn_active {
-  background-color: #ff8e05;
-  color: #fff;
-  text-align: center;
-  padding: 30px;
-  border-radius: 10px;
-  font-size: 36px;
-  font-weight: bold;
+.bonus .content .item p:nth-child(2){
+    font-family: 'Bahnschrift Regular', 'Bahnschrift';
+    font-size:0.45rem;
+    white-space:nowrap;
+    font-weight:400;
+}
+.bonus .content .item p:nth-child(2) span{
+    color:#bcbcbc;
+}
+.bonus .content .item p:nth-child(3){
+    font-family: 'Bahnschrift Regular', 'Bahnschrift';
+    font-weight:400;
+    font-size:0.4rem;
+}
+
+
+/* common style */
+.jc_sb-al_c {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.jc_sa-al_c {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.jc_c-al_c {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.al_c{
+    display: flex;
+    align-items: center;
+}
+.fd_cln {
+    display: flex;
+    flex-direction: column;
+}
+.flx_default {
+    display: flex;
+    align-items: center;
 }
 
 </style>

@@ -37,9 +37,17 @@ export default {
        back() {
           this.$router.go(-1)
        },
+       jump() {
+          this.$router.push({
+          name: 'TreasurePage',
+        })
+       },
   },
   created(){
     // console.log('this',this);
+    setTimeout(() => {
+      this.jump();
+    }, 2000);
    
   }
 }
