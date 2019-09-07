@@ -2,8 +2,10 @@
 #Description:  create key pairs
 shopt -s expand_aliases
 # 钱包密码应为使用时的那个密码
+POG_NET_POINT="http://45.251.109.187:8888"
+LOCAL_NET_POINT="http://localhost:8888"
 alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5J6pxhZNj2GZMLc77eMkYpEWxp6ReZwQmPrS7g7ty7nLiiup2Vn'
-alias cleos='docker exec -it nodeos /usr/bin/cleos -u http://localhost:8888 --wallet-url unix:///root/eosio-wallet/keosd.sock'
+alias cleos='docker exec -it nodeos /usr/bin/cleos --url=${LOCAL_NET_POINT} --wallet-url unix:///root/eosio-wallet/keosd.sock'
 UE_TOKEN_ACCOUNT=uetokencoin
 
 # 生成 EOS 账号
