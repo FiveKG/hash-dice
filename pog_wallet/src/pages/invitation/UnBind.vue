@@ -117,13 +117,8 @@ export default {
       console.log(22222222,this.account,this.keyboardVal.join(''));
        api.bindReferrer({account_name: this.account,refer_code:this.keyboardVal.join('')}).then(res => {
             console.log('bindReferrer',res)
-          if (res.code !== 1) {
-            this.$router.push({
-                  name: 'index',
-                  par: {
-                    xx: 'xx'
-                  }
-                })
+          if (res.code === 1||res.code === 1020) {
+            this.$store.commit('wallet/setTbgBindStatus', true)
             this.loading = false
             this.$toast('绑定成功')
             // this.$emit('bind', true)

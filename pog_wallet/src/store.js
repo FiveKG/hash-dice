@@ -28,6 +28,8 @@ export default new Vuex.Store({
       strict: true,
       namespaced: true,
       state: {
+        tbgIsBind: false,
+
         fingerprintAuth: false,
         fingerprintToken: '',
         cacheFingerprint: [],
@@ -56,6 +58,9 @@ export default new Vuex.Store({
         block: {},
       },
       mutations: {
+        setTbgBindStatus(state, status) {
+          state.tbgIsBind = status;
+        },
         setSchemaChain(state, schemaChain) {
           state.schemaChain = schemaChain;
         },

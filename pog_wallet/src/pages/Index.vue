@@ -165,7 +165,7 @@ export default {
           console.log('onclose')
         }
       }
-    })
+    })  
   },
   mounted() {
     const url = 'http://www.eos.isecsp.com/app/versionInfo.json'
@@ -215,8 +215,11 @@ export default {
     pogconfirm() {
       window.open('http://web.svconcloud.com/download/', '_system', 'location=yes');
     },
-    initData() {
+    async initData() {
       const selectedTab = this.$store.state.wallet.selectedTab
+      const temp_wallets = this.$store.state.wallet.localFile.wallets
+      // if (temp_wallets.length <= 0) return
+
       if (selectedTab === 'assets') {
         if (this.$store.state.wallet.localFile.wallets.length) {
           this.type = 'assets'
@@ -233,8 +236,27 @@ export default {
         this.selectTab = selectedTab
       }
       // console.log('index-init',this.type,this.selectTab)
-      //如果从绑定页面来，就跳转到主页面
-      if(!!this.$route.par&&this.$route.par.xx){this.selectTab='xx';}
+      if(selectedTab == 'xx'){ //如果未绑定跳转到绑定页面
+        if (temp_wallets.length>0){
+          console.log('我进来了')
+          const response = await api.isBind({account_name: temp_wallets.slice()[0].accountNames[0]})
+          if (response.code==1){
+            console.log('response.data.is_bind',response.data.is_bind)
+            if(response.data.is_bind==true){
+              this.$store.commit('wallet/setTbgBindStatus', true)
+              return
+            }else{
+              this.$store.commit('wallet/setTbgBindStatus', false)
+              this.selectTab='Binding'
+              return
+            }
+          }else{
+            return
+          }
+        }else{
+          return
+        }
+      }
     },
     clickTab(type) {
       if (type === 'invitation') {
@@ -259,17 +281,6 @@ export default {
         console.log('error', err)
         that.showExDialog = true
       }
-      if(type == 'xx'){  //如果未绑定跳转到绑定页面
-         api.isBind({account_name: this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]}).then(res => {
-          if (res.code==1){
-            if(res.data.is_bind==true){
-            return 
-            }else{
-                this.selectTab='Binding';
-            }
-          }
-        })
-      }
     },
   },
   watch: {
@@ -277,6 +288,10 @@ export default {
       if (!newVal.length) {
         this.type = 'wallet'
       }
+    },
+    '$store.state.wallet.tbgIsBind': function(newVal, oldVal) {
+      console.log('newVal',newVal,this.$store.state.wallet.tbgIsBind)
+      this.selectTab = 'xx'
     }
   },
 }

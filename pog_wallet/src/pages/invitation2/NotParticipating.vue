@@ -108,12 +108,19 @@
           <span>规则</span>
         </div>
         <div class="child-account_items jc_sa-al_c">
-          <div @click="jumpSubAccount" class="account_item_left">
+          <div v-if="account_activation" @click="jumpSubAccount" class="account_item_left">
             <div class="acc-img_wrap">
               <img src="../../assets/invitation2/child-acc.png" alt="">
               <span class="child-acc_amount">{{sub_account.total_sub_account || 0}}</span>
             </div>
-            <p>子账号</p>
+            <p >子账号</p>
+          </div>
+          <div v-if="!account_activation" @click="jumpQuantityTbg" class="account_item_left">
+            <div class="acc-img_wrap">
+              <img src="../../assets/invitation2/child-acc.png" alt="">
+              <span class="child-acc_amount">{{sub_account.total_sub_account || 0}}</span>
+            </div>
+            <p >参与TBG</p>
           </div>
           <div @click="navigateTo('HelpFriend')" class="account_item_right">
             <div class="acc-img_wrap">
@@ -358,6 +365,7 @@ export default {
                 tbg:0,
 
                 account_type:'',     //账号类型
+                account_activation:'true',     //账号是否激活
                 Balance:0,      //余额
                 Amount:1,       //额度
                 Quantity:0,     //可售数量
@@ -465,20 +473,7 @@ export default {
         // })
         //
 
-        api.isActive({
-          account_name: this.account_name
-        }).then(res => {
-          switch(res.data.is_activated){
-            case 0:
-              this.atv_text = '未激活';this.subAccountQuantity=false;break;
-            case 10:
-              this.atv_text = '已激活';this.subAccountQuantity=true;break;
-            case 20:
-              this.atv_text = '已激活';this.subAccountQuantity=false;break;
-            case 30:
-              this.subAccountQuantity=true;;break;
-          }
-        })
+        this.is_active()
         api.getTradePrice().then(res => {
           this.trade_price = res.data.price
         })
@@ -700,6 +695,7 @@ export default {
               const adm = await eos.contract('uetokencoin')
               // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
               const trx = await adm.transfer(this.account_name , config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.account_name }`, opts)
+              this.is_active()
               console.log(11221111,trx);
               return true
             } catch (error) {
@@ -716,6 +712,22 @@ export default {
           } else {
             this.$toast(this.$t('common.wrong_pwd'))
           }
+        },
+        is_active () {
+          api.isActive({
+            account_name: this.account_name
+          }).then(res => {
+            switch(res.data.is_activated){
+              case 0:
+                this.atv_text = '未激活';this.subAccountQuantity=false;this.account_activation=false;break;
+              case 10:
+                this.atv_text = '已激活';this.subAccountQuantity=true;this.account_activation=true;break;
+              case 20:
+                this.atv_text = '已激活';this.subAccountQuantity=false;this.account_activation=true;break;
+              case 30:
+                this.subAccountQuantity=true;this.account_activation=true;break;
+            }
+          })
         },
         async getConfig() {
           try {
@@ -1308,6 +1320,20 @@ export default {
     font-size:0.4rem;
 }
 
+/*确认密码*/
+.action_layout {
+  background-color: #fff;
+  padding: 35px 50px;
+}
+.btn_active {
+  background-color: #ff8e05;
+  color: #fff;
+  text-align: center;
+  padding: 30px;
+  border-radius: 10px;
+  font-size: 36px;
+  font-weight: bold;
+}
 
 /* common style */
 .jc_sb-al_c {
