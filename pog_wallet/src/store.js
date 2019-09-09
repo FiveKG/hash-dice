@@ -113,6 +113,26 @@ export default new Vuex.Store({
           state.selectEthToken = selectEthToken;
         }
       }
+    },
+    gameMinuteLottery: {
+      strict: true,
+      namespaced: true,
+      state: {
+        // 区块列表
+        blockList:[],
+      },
+      mutations: {
+        // 添加区块信息
+        pushBlock(state, block) {
+          var date = new Date(block.result.timestamp);
+          var hour = Number(date.getHours()+8) < 10 ? "0" + Number(date.getHours()+8) : Number(date.getHours()+8);
+          var minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+          var second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+          var minsecond = String(date.getMilliseconds()).substr(0, 1);
+          block.result.timestamp = `${hour}:${minute}:${second}.${minsecond}`;
+          state.blockList.push(block.result);
+        },
+      }
     }
   }
 })
