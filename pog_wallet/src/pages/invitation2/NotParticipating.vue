@@ -693,6 +693,7 @@ export default {
               const adm = await eos.contract('uetokencoin')
               // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
               const trx = await adm.transfer(this.account_name , config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.account_name }`, opts)
+              this.is_active()
               console.log(11221111,trx);
               return true
             } catch (error) {
@@ -709,6 +710,22 @@ export default {
           } else {
             this.$toast(this.$t('common.wrong_pwd'))
           }
+        },
+        is_active () {
+          api.isActive({
+            account_name: this.account_name
+          }).then(res => {
+            switch(res.data.is_activated){
+              case 0:
+                this.atv_text = '未激活';this.subAccountQuantity=false;this.account_activation=false;break;
+              case 10:
+                this.atv_text = '已激活';this.subAccountQuantity=true;this.account_activation=true;break;
+              case 20:
+                this.atv_text = '已激活';this.subAccountQuantity=false;this.account_activation=true;break;
+              case 30:
+                this.subAccountQuantity=true;this.account_activation=true;break;
+            }
+          })
         },
         async getConfig() {
           try {
@@ -1316,6 +1333,20 @@ export default {
     font-size:0.4rem;
 }
 
+/*确认密码*/
+.action_layout {
+  background-color: #fff;
+  padding: 35px 50px;
+}
+.btn_active {
+  background-color: #ff8e05;
+  color: #fff;
+  text-align: center;
+  padding: 30px;
+  border-radius: 10px;
+  font-size: 36px;
+  font-weight: bold;
+}
 
 /* common style */
 .jc_sb-al_c {

@@ -92,5 +92,5 @@ function runInCordova() {
 }
 
 
-//runInCordova()
+// runInCordova()
 runInBrowser()
