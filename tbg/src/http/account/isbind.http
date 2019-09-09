@@ -1,0 +1,8 @@
+POST http://45.251.109.187:8888/v1/history/get_actions
+Content-Type: application/json
+
+{
+    "pos": 0,
+    "offset": 9,
+    "account_name": "tbgjoin"
+}

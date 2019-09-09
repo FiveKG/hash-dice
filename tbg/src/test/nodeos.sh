@@ -5,7 +5,7 @@ shopt -s expand_aliases
 POG_NET_POINT="http://45.251.109.187:8888"
 LOCAL_NET_POINT="http://localhost:8888"
 alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5J6pxhZNj2GZMLc77eMkYpEWxp6ReZwQmPrS7g7ty7nLiiup2Vn'
-alias cleos='docker exec -it nodeos /usr/bin/cleos --url=${LOCAL_NET_POINT} --wallet-url unix:///root/eosio-wallet/keosd.sock'
+alias cleos='docker exec -it nodeos /usr/bin/cleos --url=${POG_NET_POINT} --wallet-url unix:///root/eosio-wallet/keosd.sock'
 UE_TOKEN_ACCOUNT=uetokencoin
 
 # 生成 EOS 账号
@@ -58,17 +58,20 @@ function blukImportKey() {
             if [ $count -eq 0 ]
             then
                 # 将账号信息重定向到文件
-                printf "private: $line\n" >> keyPairs
+                printf "private: $line\n" >> testkey
                 # 导入私钥
                 cleos wallet import --private-key=$line
+                # echo ""
             else
-                printf "public: $line\n" >> keyPairs
-                printf "accountName: $accountName\n" >> keyPairs
+                acc=$accountName
+                printf "public: $line\n" >> testkey
+                printf "accountName: $accountName\n" >> testkey
                 # 创建账号
-                cleos create account eosio $accountName $line $line
+                cleos create account yujinsheng11 $accountName $line $line
                 # 转帐
                 quantity='10000.0000 UE'
-                cleos push action $UE_TOKEN_ACCOUNT transfer "[\"${UE_TOKEN_ACCOUNT}\",\"${accountName}\",\"${quantity}\",\"recharger\"]" -p $UE_TOKEN_ACCOUNT
+                # echo "$quantity"
+                cleos push action ${UE_TOKEN_ACCOUNT} transfer "[\"${UE_TOKEN_ACCOUNT}\",\"${acc}\",\"${quantity}\",\"recharger\"]" -p ${UE_TOKEN_ACCOUNT}
             fi
             count=$(($count + 1))
         done
@@ -78,10 +81,10 @@ function blukImportKey() {
 # 给测试账户充值
 function recharger() {
     quantity='10000.0000 UE'
-    for account in `grep -o '[0-5a-z\.]\{12,\}' keyPairs`
+    for account in `grep -o '[0-5a-z\.]\{12,\}' testkey`
     do
         printf "$account\t"
-        cleos push action $UE_TOKEN_ACCOUNT transfer "[\"${UE_TOKEN_ACCOUNT}\",\"${account}\",\"${quantity}\",\"recharger\"]" -p $UE_TOKEN_ACCOUNT
+        cleos push action ${UE_TOKEN_ACCOUNT} transfer "[\"${UE_TOKEN_ACCOUNT}\",\"${account}\",\"${quantity}\",\"recharger\"]" -p ${UE_TOKEN_ACCOUNT}
     done
 }
 
@@ -90,4 +93,17 @@ unlock
 # 生成一批测试账号，同时导入私钥
 blukImportKey
 
-recharger
+# recharger
+
+cleos -u http://45.251.109.187:8888 push action tbgtokencoin transfer '["tbgtokencoin","yujinsheng11","1000000.0000 TBG","recharger"]' -p tbgtokencoin
+cleos -u http://45.251.109.187:8888  push action tbgtokencoin transfer '["tbgtokencoin","gametestuser","1000000.0000 TBG","recharger"]' -p tbgtokencoin
+
+cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["uetokencoin","yujinsheng11","1000000.0000 UE","recharger"]' -p uetokencoin
+cleos -u http://45.251.109.187:8888  push action uetokencoin transfer '["uetokencoin","gametestuser","1000000.0000 UE","recharger"]' -p uetokencoin
+
+
+
+cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgjoin","10.0000 UE","recharger"]' -p yujinsheng11
+cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","10.0000 UE","recharger"]' -p yujinsheng11
+cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","1000.0000 UE","recharger"]' -p yujinsheng11
+cleos -u http://45.251.109.187:8888 push action tbgtokencoin transfer '["tbgtokencoin","tbgfreepool","100.0000 TBG","recharger"]' -p tbgtokencoin

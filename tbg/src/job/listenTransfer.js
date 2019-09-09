@@ -1,4 +1,5 @@
 // @ts-check
+require("../../setEnv.js")();
 const logger = require("../common/logger.js").child({ "@": "listening invest transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
