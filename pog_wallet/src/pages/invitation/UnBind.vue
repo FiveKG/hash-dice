@@ -117,19 +117,12 @@ export default {
       console.log(22222222,this.account,this.keyboardVal.join(''));
        api.bindReferrer({account_name: this.account,refer_code:this.keyboardVal.join('')}).then(res => {
             console.log('bindReferrer',res)
-          if (res.code !== 1) {
-            this.$router.push({
-                  name: 'index',
-                  par: {
-                    xx: 'xx'
-                  }
-                })
-            this.loading = false
-            this.$toast('绑定成功')
+          if (res.code == 1) {
+ 
+            this.loading = false;
+            this.$toast('绑定成功');
             // this.$emit('bind', true)
           }
-        }).catch(err =>{
-           console.log(err);
         })
     },
     clickBind() {

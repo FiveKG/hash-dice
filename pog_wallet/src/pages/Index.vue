@@ -233,8 +233,6 @@ export default {
         this.selectTab = selectedTab
       }
       // console.log('index-init',this.type,this.selectTab)
-      //如果从绑定页面来，就跳转到主页面
-      if(!!this.$route.par&&this.$route.par.xx){this.selectTab='xx';}
     },
     clickTab(type) {
       if (type === 'invitation') {

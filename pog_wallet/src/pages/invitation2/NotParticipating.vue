@@ -108,12 +108,19 @@
           <span>规则</span>
         </div>
         <div class="child-account_items jc_sa-al_c">
-          <div @click="jumpSubAccount" class="account_item_left">
+          <div v-if="!account_activation" @click="jumpSubAccount" class="account_item_left">
             <div class="acc-img_wrap">
               <img src="../../assets/invitation2/child-acc.png" alt="">
               <span class="child-acc_amount">{{sub_account.total_sub_account || 0}}</span>
             </div>
-            <p>子账号</p>
+            <p >子账号</p>
+          </div>
+          <div v-if="account_activation" @click="jumpQuantityTbg" class="account_item_left">
+            <div class="acc-img_wrap">
+              <img src="../../assets/invitation2/child-acc.png" alt="">
+              <span class="child-acc_amount">{{sub_account.total_sub_account || 0}}</span>
+            </div>
+            <p >参与TBG</p>
           </div>
           <div @click="navigateTo('HelpFriend')" class="account_item_right">
             <div class="acc-img_wrap">
@@ -358,6 +365,7 @@ export default {
                 tbg:0,
 
                 account_type:'',     //账号类型
+                account_activation:'true',     //账号是否激活
                 Balance:0,      //余额
                 Amount:1,       //额度
                 Quantity:0,     //可售数量
@@ -450,27 +458,12 @@ export default {
     },
     created(){
         this.account_name = this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];
-        //判断是否激活
-        // api.isBind({account_name: this.account_name}).then(res => {
-        //   if (res.code==1){
-        //     console.log(22222222222222,res);
-        //     if(res.data.is_bind==true){
-        //     return 
-        //     }else{
-        //       this.$router.push({
-        //           name: 'IndexT',
-        //         })
-        //     }
-        //   }
-        // })
-        //
-
         api.isActive({
           account_name: this.account_name
         }).then(res => {
           switch(res.data.is_activated){
             case 0:
-              this.atv_text = '未激活';this.subAccountQuantity=false;break;
+              this.atv_text = '未激活';this.subAccountQuantity=false;this.account_activation=false;break;
             case 10:
               this.atv_text = '已激活';this.subAccountQuantity=true;break;
             case 20:
@@ -1165,6 +1158,21 @@ export default {
     color: rgb(236,90,91);
     font-weight: bold;
     padding: .15rem 0;
+}
+
+/*确认密码*/
+.action_layout {
+  background-color: #fff;
+  padding: 35px 50px;
+}
+.btn_active {
+  background-color: #ff8e05;
+  color: #fff;
+  text-align: center;
+  padding: 30px;
+  border-radius: 10px;
+  font-size: 36px;
+  font-weight: bold;
 }
 
 /* 分配 */
