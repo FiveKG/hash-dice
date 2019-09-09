@@ -30,17 +30,18 @@ export default {
     },
     data () {
         return {
-            list: []
+            list: [
+                '1','2','3','4','5','6','7',
+            ]
         }
     },
     created() {
         api.CheckIn({
-            account_name: this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]
+            account_name: this.$store.state.wallet.assets
         }).then(res => {
+            if (res.data.detail.length>0){
             this.list = res.data.detail
-            this.list.forEach(item => {
-                item.name = 'TBG'
-            })
+            }
         })
     },
      methods: {

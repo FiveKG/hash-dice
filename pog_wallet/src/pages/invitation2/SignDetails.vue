@@ -80,7 +80,7 @@ export default {
   },
   created(){
     // console.log('this1111111111',this.account);
-    api.CheckIn({account_name:this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]}).then(res => {
+    api.CheckIn({account_name:this.$store.state.wallet.assets.account}).then(res => {
       if (res.code === 1) {
             console.log('bindReferrer',res);
             this.airdrop_amount=res.data.airdrop_amount;

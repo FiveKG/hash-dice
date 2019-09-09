@@ -39,6 +39,8 @@ export default {
 .wrap{
   background-color: rgb(51, 51, 51);
   padding:1rem;
+  height:100%;
+  box-sizing: border-box;
 }
 
 .logo img{
@@ -46,7 +48,6 @@ export default {
   height:4rem;
   display:block;
   margin:0 auto;
-  margin-top:2rem;
 }
 .title{
   text-align:center;
@@ -63,7 +64,7 @@ export default {
   text-align:center;
   font-size:0.6rem;
   color:#FF9900;
-  margin-top:1.5rem;
+  margin-top:0.8rem;
   font-family: '微軟正黑體 Regular', '微軟正黑體';
 }
 .content1{
@@ -71,9 +72,9 @@ export default {
   text-justify:distribute-all-lines;/*ie6-8*/
   -moz-text-align-last:justify;/*ff*/
   -webkit-text-align-last:justify;/*chrome 20+*/
-  font-size:0.45rem;
+  font-size:0.4rem;
   margin-top:0.5rem;
-  line-height:0.8rem;
+  line-height:0.72rem;
   color:#FF9900;
   letter-spacing:8px;
   font-family: '微軟正黑體 Regular', '微軟正黑體';

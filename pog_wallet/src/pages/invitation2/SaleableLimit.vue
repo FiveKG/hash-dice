@@ -65,7 +65,7 @@ export default {
   },
   created(){
     // console.log('this',this);
-    api.SaleableAmount({account_name:this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]}).then(res => {
+    api.SaleableAmount({account_name:this.$store.state.wallet.assets.account}).then(res => {
       if (res.code === 1) {
             console.log('bindReferrer',res)
             // for(var i=0;i<res.data.length;i++){

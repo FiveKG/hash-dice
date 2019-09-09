@@ -108,14 +108,14 @@
           <span>规则</span>
         </div>
         <div class="child-account_items jc_sa-al_c">
-          <div v-if="account_activation" @click="jumpSubAccount" class="account_item_left">
+          <div v-if="!account_activation" @click="jumpSubAccount" class="account_item_left">
             <div class="acc-img_wrap">
               <img src="../../assets/invitation2/child-acc.png" alt="">
               <span class="child-acc_amount">{{sub_account.total_sub_account || 0}}</span>
             </div>
             <p >子账号</p>
           </div>
-          <div v-if="!account_activation" @click="jumpQuantityTbg" class="account_item_left">
+          <div v-if="account_activation" @click="jumpQuantityTbg" class="account_item_left">
             <div class="acc-img_wrap">
               <img src="../../assets/invitation2/child-acc.png" alt="">
               <span class="child-acc_amount">{{sub_account.total_sub_account || 0}}</span>
@@ -225,7 +225,7 @@
               <!-- 下拉部分 -->
               <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
                   <div class="select-item" @click="jumpnormal()">普通用户</div>
-                  <div class="select-item" @click="jumpglobal()">全球合作伙伴</div>
+                  <div v-if="isGlobal" class="select-item" @click="jumpglobal()">全球合作伙伴</div>
               </div>
             </div>
             <div class="select-wrap">
@@ -364,7 +364,7 @@ export default {
                 selected_ipt:false,
                 tbg:0,
 
-                account_type:'',     //账号类型
+                isGlobal:'',     //账号类型
                 account_activation:'true',     //账号是否激活
                 Balance:0,      //余额
                 Amount:1,       //额度
@@ -457,7 +457,7 @@ export default {
       MDialog
     },
     created(){
-        this.account_name = this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];
+        this.account_name = this.$store.state.wallet.assets.account;
         //判断是否激活
         // api.isBind({account_name: this.account_name}).then(res => {
         //   if (res.code==1){
@@ -518,8 +518,8 @@ export default {
         })
         api.getType({account_name:this.account_name}).then(res => {    //获取当前用户的信息
           if(res.code){
-            this.account_type=res.data.account_type;
-            }
+            res.data.account_type=="global"?this.isGlobal=true:this.isGlobal=false;
+          }
         })
         this.availableQuantity();     //可售数量
 
@@ -1177,6 +1177,21 @@ export default {
     color: rgb(236,90,91);
     font-weight: bold;
     padding: .15rem 0;
+}
+
+/*确认密码*/
+.action_layout {
+  background-color: #fff;
+  padding: 35px 50px;
+}
+.btn_active {
+  background-color: #ff8e05;
+  color: #fff;
+  text-align: center;
+  padding: 30px;
+  border-radius: 10px;
+  font-size: 36px;
+  font-weight: bold;
 }
 
 /* 分配 */

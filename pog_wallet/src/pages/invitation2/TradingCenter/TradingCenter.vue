@@ -697,12 +697,13 @@ watch: {
   created(){
     // console.log(33333333333333333333,this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]);
     //路由跳转判断
+
     if(this.$route.params.buySell==false){this.buySell=this.$route.params.buySell;}
     if(this.$route.params.buyPartner==2){this.buyPartner=true;}    
     if(this.$route.params.buyPartnerT==1){this.buyPartner=false;} 
        
 
-    this.id=this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];   //初始化ID
+    this.id=this.$store.state.wallet.assets.account;   //初始化ID
      
     this.reqParams.account = this.id;   //转站
    

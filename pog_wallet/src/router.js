@@ -106,6 +106,7 @@ import BettingDetails from './pages/game/treasure/BettingDetails'
 
 import GlovalLotto from './pages/game/qqc/GlovalLotto'
 import LottoGame from './pages/game/qqc/LottoGame'
+import awardOpening from './pages/game/qqc/awardOpening'
 
 // import LottoGame from './pages/game/qqc/LottoGame'
 
@@ -615,6 +616,11 @@ const router = new Router({
       path: '/LottoGame',
       name: 'LottoGame',
       component: LottoGame,
+    },
+    {
+      path: '/awardOpening',
+      name: 'awardOpening',
+      component: awardOpening,
     },
 
   ]

@@ -123,8 +123,6 @@ export default {
             this.$toast('绑定成功')
             // this.$emit('bind', true)
           }
-        }).catch(err =>{
-           console.log(err);
         })
     },
     clickBind() {

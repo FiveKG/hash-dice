@@ -7,15 +7,15 @@
       </div>
       <div class="layout">
         <div class="ipt_layout">
-          <input type="text" class="text-input" placeholder="请输入伙伴的EOS账号" v-model="reqParams.friendAccountName">
+          <input type="text" class="text-input" placeholder="请输入伙伴的账号" v-model="reqParams.friendAccountName">
         </div>
         <div class="btn" @click="clickConfirm">确定</div>
         <div class="tips">
           <div>注：</div>
           <ol>
             <li>帮助伙伴投资后，伙伴的账号为您直接推荐的账号；</li>
-            <li>伙伴投资的 EOS 账号应为未投资账号，已投资账号无效；</li>
-            <li>投资的 30 EOS 将优先从您可提现账户中扣除，当可提现账户不足时，从您的钱包账户中扣除。</li>
+            <li>伙伴投资的账号应为未投资账号，已投资账号无效；</li>
+            <li>投资的 100 UE 将优先从您可提现账户中扣除，当可提现账户不足时，从您的钱包账户中扣除。</li>
           </ol>
         </div>
       </div>
@@ -25,7 +25,7 @@
         style="background: rgba(0,0,0,0.5);"
       >
         <div class="action_layout">
-          <div class="btn_active" @click="showDialog = true">支付 30EOS 投资</div>
+          <div class="btn_active" @click="showDialog = true">支付 30 UE 投资</div>
         </div>
       </v-ons-action-sheet>
       <v-ons-dialog
