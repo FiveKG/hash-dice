@@ -48,6 +48,10 @@ router.get("/account/investment_index", account.investment_index);
 router.get("/balance/balance_alloc", balance.balanceAllocInfo);
 // 提现信息
 router.get("/balance/balance_info", balance.balance_info);
+
+// 获取用户游戏余额信息
+router.get("/balance/game_balance", balance.getGameBalance);
+
 // 提现
 router.post("/balance/withdraw", balance.withdraw);
 // 提现历史
