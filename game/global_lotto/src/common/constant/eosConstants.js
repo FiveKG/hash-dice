@@ -17,6 +17,9 @@ const UE_TOKEN_SYMBOL = "UE"
 const TBG_TOKEN = "tbgtokencoin"
 const TBG_TOKEN_SYMBOL = "TBG"
 
+// 全球彩合约帐号
+const GLOBAL_LOTTO_CONTRACT = "globallotto";
+
 // 节点信息
 const END_POINT = "http://45.251.109.187:8888"
 // 私钥
@@ -37,7 +40,8 @@ const CONSTANT = {
     "PRIVATE_KEY_TEST": PRIVATE_KEY_TEST,
     "EOS_TOKEN_SYMBOL": EOS_TOKEN_SYMBOL,
     "UE_TOKEN_SYMBOL": UE_TOKEN_SYMBOL,
-    "TBG_TOKEN_SYMBOL": TBG_TOKEN_SYMBOL
+    "TBG_TOKEN_SYMBOL": TBG_TOKEN_SYMBOL,
+    "GLOBAL_LOTTO_CONTRACT": GLOBAL_LOTTO_CONTRACT
 }
 
 module.exports = CONSTANT
@@ -56,5 +60,5 @@ module.exports = CONSTANT
  * @property { String } EOS_TOKEN_SYMBOL EOS 代币符号
  * @property { String } UE_TOKEN_SYMBOL UE 代币符号
  * @property { string } TBG_TOKEN_SYMBOL TBG 代币符号
- * 
+ * @property { string } GLOBAL_LOTTO_CONTRACT 全球彩合约帐号
  */

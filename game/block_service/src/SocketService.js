@@ -24,6 +24,7 @@ let block_num = 0;
 const getBlocks = async () => {
   rpc.get_block(block_num).then(res => {
     try {
+      // console.debug("res: ", res);
       block_num++;
       if (block_server) {
         block_server.to('block').emit({type: 'block', result: res})

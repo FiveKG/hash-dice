@@ -1,6 +1,6 @@
 // import store from '../store/store'
 // @ts-check
-const WebSocket = require('ws')
+const WebSocket = require('ws');
 // const url = 'ws://localhost:8080'
 // const connection = new WebSocket(url)
 const suffix = '/socket.io/?EIO=3&transport=websocket';
@@ -63,7 +63,7 @@ class ClientSocket {
 
 			const trySocket = () => {
 				// const host = `wss://lottery-api.eoscrown.com${suffix}`;
-				const host = `ws://192.168.1.141:50007${suffix}`;
+				const host = `ws://192.168.1.141:13021${suffix}`;
 				const s = new WebSocket(host);
 				// const s = io.connect(host);
 		

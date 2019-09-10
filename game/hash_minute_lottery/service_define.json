@@ -53,6 +53,201 @@
                     }
                 }
             }
+        },
+        {
+            "name" : "获取期数信息",
+            "summary": "",
+            "remark": [
+                ""
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/hash_minute_lottery/info_mine",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "count_down": { "type": "number",  "is_require": true,  "desc": "倒计时" },
+                        "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                        "bet_limit": { "type": "text",  "is_require": true,  "desc": "单期投注限额" },
+                        "one_bet_limit": { "type": "text",  "is_require": true,  "desc": "单笔投注限额" },
+                        "bet_total_amount": { "type": "number",  "is_require": true,  "desc": "单期投注额度" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "获取开奖记录",
+            "summary": "",
+            "remark": [
+                ""
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/hash_minute_lottery/reward_record_mine",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "detail": {
+                        "type": "objectArray", "desc": "全部开奖信息",
+                        "properties": {
+                            "reward_id": { "type": "number",  "is_require": true,  "desc": "开奖 id" },
+                            "create_time": { "type": "number",  "is_require": true,  "desc": "时间" },
+                            "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                            "reward_num": { "type": "number",  "is_require": true,  "desc": "开奖号" },
+                            "result": { "type": "number",  "is_require": true,  "desc": "大小｜单双" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "开奖详情",
+            "summary": "",
+            "remark": [
+                ""
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/hash_minute_lottery/reward_detail_mine",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "reward_id": { "type": "number",  "is_require": true,  "desc": "开奖 id" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "create_time": { "type": "number",  "is_require": true,  "desc": "时间" },
+                    "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                    "reward_num": { "type": "number",  "is_require": true,  "desc": "开奖号" },
+                    "result": { "type": "number",  "is_require": true,  "desc": "中奖范围" },
+                    "detail": {
+                        "type": "objectArray", "desc": "开奖区块验证",
+                        "properties": {
+                            "block_num": { "type": "number",  "is_require": true,  "desc": "区块号" },
+                            "trx_id": { "type": "number",  "is_require": true,  "desc": "id" },
+                            "time_stamp": { "type": "number",  "is_require": true,  "desc": "时间" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "我的投注",
+            "summary": "",
+            "remark": [
+                ""
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/hash_minute_lottery/bet_list_mine",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "detail": {
+                        "type": "objectArray", "desc": "用户的投注信息",
+                        "properties": {
+                            "bet_id": { "type": "number",  "is_require": true,  "desc": "投注 id" },
+                            "create_time": { "type": "number",  "is_require": true,  "desc": "时间" },
+                            "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                            "bet_type": { "type": "number",  "is_require": true,  "desc": "类型" },
+                            "bet_detail": { "type": "number",  "is_require": true,  "desc": "详情" },
+                            "amount": { "type": "number",  "is_require": true,  "desc": "额度" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "我的投注",
+            "summary": "",
+            "remark": [
+                ""
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/hash_minute_lottery/bet_list_mine_detail",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "bet_id": { "type": "number",  "is_require": true,  "desc": "投注 id" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "detail": {
+                        "type": "objectArray", "desc": "用户的投注信息",
+                        "properties": {
+                            "bet_time": { "type": "number",  "is_require": true,  "desc": "投注时间" },
+                            "trx_id": { "type": "number",  "is_require": true,  "desc": "投注交易ID" },
+                            "bet_note": { "type": "number",  "is_require": true,  "desc": "投注注数" },
+                            "bet_amount": { "type": "number",  "is_require": true,  "desc": "投注总额度" },
+                            "bet_detail": { "type": "number",  "is_require": true,  "desc": "详情" },
+                            "agent_account": { "type": "number",  "is_require": true,  "desc": "代投账号" },
+                            "reward_time": { "type": "number",  "is_require": true,  "desc": "开奖时间" },
+                            "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                            "reward_num": { "type": "number",  "is_require": true,  "desc": "开奖号" },
+                            "result": { "type": "number",  "is_require": true,  "desc": "中奖范围" },
+                            "block_auth": {
+                                "type": "objectArray", "desc": "开奖区块验证",
+                                "properties": {
+                                    "block_num": { "type": "number",  "is_require": true,  "desc": "区块号" },
+                                    "trx_id": { "type": "number",  "is_require": true,  "desc": "id" },
+                                    "time_stamp": { "type": "number",  "is_require": true,  "desc": "时间" }
+                                }
+                            },
+                            "win_detail": {
+                                "type": "objectArray", "desc": "中奖详情",
+                                "properties": {
+                                    "bet_num": { "type": "number",  "is_require": true,  "desc": "单注号码" },
+                                    "one_note_amount": { "type": "number",  "is_require": true,  "desc": "单注额度" },
+                                    "win": { "type": "number",  "is_require": true,  "desc": "中奖金额" }
+                                }
+                            },
+                            "total_win": { "type": "number",  "is_require": true,  "desc": "共派奖" }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "投注",
+            "summary": "",
+            "remark": [
+                "点击投注"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/hash_minute_lottery/bet",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" },
+                "bet_num": { "type": "number",  "is_require": true,  "desc": "投注号码" },
+                "bet_note": { "type": "number",  "is_require": true,  "desc": "投注注数" },
+                "bet_amount": { "type": "number",  "is_require": true,  "desc": "投注总额度" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
         }
     ]
 }

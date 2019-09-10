@@ -2,10 +2,12 @@
 require("./setEnv.js")();
 const express = require("express");
 const logger = require("./src/common/logger.js");
+const { socketService } = require('./src/websocket/SocketService');
+
 // const sb = require("@yz/yue-svc-base");
 // const service_name = sb.service_define.name;
 
-// logger.info(`init ${service_name} .`);
+// logger.info(`init ${service_name} .`); 
 
 const app = express();
 const nginx_host = `127.0.0.1`;
@@ -40,16 +42,18 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 
 app.use(require("./src/router/router"));
 
-let port = 9527 // = sb.get_config("service_port", `${service_name}`);
+let port = process.env.GLOBAL_LOTTO_SERVER_PORT || 9527// = sb.get_config("service_port", `${service_name}`);
+let host = process.env.GLOBAL_LOTTO_SERVER_HOST || "0.0.0.0"
 if (process.env.NODE_ENV === 'production') {
     // port = require("@yz/yue-generate-port")();
 }
 
-const server = module.exports = app.listen(9527, "0.0.0.0"); //选择一个随机端口
+const server = module.exports = app.listen(Number(port), host);
 server.on('listening', async () => {
   // require("@yz/yue-service-register")(`${service_name}`, port);
   // 初始化系统服务数据
   require("./src/build/initDate");
+  await socketService.initialize(server);
   logger.info(`**** server of pools running at http://localhost:${port}/  ****`)
 });
 

@@ -7,8 +7,9 @@
         {
           "tableName": "game", "tableDesc": "游戏", "primaryKey": "","group": "global_lotto",
           "fields": [
-            { "name": "g_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": "游戏id"} , 
+            { "name": "g_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": "游戏id"}, 
             { "name": "prize_pool" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "全球彩奖池" ,  "isPrimary": false , "remark": ""} , 
+            { "name": "game_name" , "type": "text" , "dblength": "50", "dftValue": "''", "summary": "游戏名称" ,  "isPrimary": false , "remark": ""},
             { "name": "bottom_pool" , "type": "text" , "dblength": "50", "dftValue": "''", "summary": "全球彩底池" ,  "isPrimary": false , "remark": ""},
             { "name": "reserve_pool" , "type": "text" , "dblength": "300", "dftValue": "''", "summary": "全球彩储备池" ,  "isPrimary": false , "remark": ""},
             { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间",   "remark": "", "isPrimary": false } 
@@ -17,13 +18,16 @@
         {
           "tableName": "game_session", "tableDesc": "游戏期数信息", "primaryKey": "","group": "global_lotto",
           "fields": [
-            { "name": "gs_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": ""}, 
+            { "name": "gs_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": ""},
+            { "name": "g_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": false , "remark": "游戏id"}, 
             { "name": "creator", "type": "text", "dblength": "32", "dftValue": "''", "summary": "创建人", "remark": "" , "isPrimary": false },
-            { "name": "periods" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "游戏期数" ,  "isPrimary": false , "remark": ""},
-            { "name": "start_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间",   "remark": "", "isPrimary": false },
-            { "name": "end_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间",   "remark": "", "isPrimary": false },
+            { "name": "periods" , "type": "int" , "dblength": "36", "dftValue": "''", "summary": "游戏期数" ,  "isPrimary": false , "remark": ""},
+            { "name": "extra",  "type": "json", "dblength": "10",   "dftValue": "0", "summary": "附加信息" , "remark": "记录相关的 id", "isPrimary": false },
+            { "name": "start_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "开始时间",   "remark": "", "isPrimary": false },
+            { "name": "end_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "结束时间",   "remark": "", "isPrimary": false },
             { "name": "game_state", "type": "int", "dblength": "0", "dftValue": "now()", "summary": "游戏的状态",   "remark": "", "isPrimary": false },
             { "name": "reward_num", "type": "text", "dblength": "32", "dftValue": "''", "summary": "开奖号码", "remark": "" , "isPrimary": false },
+            { "name": "reward_time", "type": "text", "dblength": "32", "dftValue": "''", "summary": "开奖时间", "remark": "" , "isPrimary": false },
             { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间",   "remark": "", "isPrimary": false } 
           ]
         },
