@@ -110,6 +110,15 @@ import awardOpening from './pages/game/qqc/awardOpening'
 
 // import LottoGame from './pages/game/qqc/LottoGame'
 
+// 哈希分分彩部分==============================================================_start
+import LotteryGo from './pages/game/hash_minute_lottery/LotteryGo'
+import Lottery from './pages/game/hash_minute_lottery/Lottery'
+import LotteryRecord from './pages/game/hash_minute_lottery/LotteryRecord'
+import BetDetail from './pages/game/hash_minute_lottery/BetDetail'
+import LotteryRule from './pages/game/hash_minute_lottery/LotteryRule'
+    
+// 哈希分分彩部分==============================================================_end
+
 Vue.use(Router)
 
 const router = new Router({
@@ -623,6 +632,34 @@ const router = new Router({
       component: awardOpening,
     },
 
+    // 哈希分分彩部分==============================================================_start
+    {
+      path: '/LotteryGo',
+      name: 'LotteryGo',
+      component: LotteryGo,
+    },
+    {
+      path: '/Lottery',
+      name: 'Lottery',
+      component: Lottery,
+    },
+    {
+      path: '/LotteryRecord',
+      name: 'LotteryRecord',
+      component: LotteryRecord,
+    },
+    {
+      path: '/BetDetail',
+      name: 'BetDetail',
+      component: BetDetail,
+    },
+    {
+      path: '/LotteryRule',
+      name: 'LotteryRule',
+      component: LotteryRule,
+    },
+    // 哈希分分彩部分==============================================================_end
+    
   ]
 })
 
