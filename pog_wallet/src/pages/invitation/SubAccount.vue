@@ -34,9 +34,9 @@
           <div class="total_input">
             <div>当前复投余额</div>
             <div class="balance_amount">{{repeatBalance}}</div>
-            <div class="symbol">EOS</div>
+            <div class="symbol">UE</div>
             <div class="desc">
-              <div>每当复投余额满 30 EOS 时</div>
+              <div>每当复投余额满 100 UE 时</div>
               <div>系统将自动复投产生一个子账号</div>
             </div>
           </div>
