@@ -29,9 +29,9 @@
       <!-- 已销毁 -->
       <div class="destroyed">
           <p>已销毁</p>
-          <p><span>1,201,519.</span> <span>2630 2645</span> TBG </p>
+          <p><span>{{destroy_amount[0]}}.</span><span>{{destroy_amount[1]}}</span> TBG </p>
           <p>余</p>
-          <p>998,798,480<span>.7369 7355</span> TBG</p> 
+          <p>{{surplus_amount[0]}}.<span>{{surplus_amount[1]}}</span> TBG</p> 
       </div>
 
       <!-- 资产包挖矿及空投 -->
@@ -87,17 +87,47 @@
 </template>
 
 <script type="text/ecmascript-6">
+import api from '@/servers/invitation'
+
+
 export default {
    name: '',
    data() {
        return {
+         destroy_amount: '',
+         surplus_amount: '',
        }
    },
   components: {},
   methods:{
       goback(){
           this.$router.go(-1)
+      },
+      addSpace (str) {
+        return str.slice(0,str.length-4) + " " +str.slice(-4)
+      },
+      addComma(data){
+        var a=data;var b='';var c=a.length+1;
+          for(var i=0;c/3>i;i++){
+            if(a.length>3){
+              b=','+a.slice(a.length-3,a.length)+b;
+              a=a.slice(0,a.length-3);
+            }else{
+              b=a+b;
+            }
+          }
+          return b;
       }
+  },
+  created(){
+    api.getDestory().then(res => {  //获取已销毁surplus_amount
+          this.destroy_amount = res.data.destroy_amount.split('.')
+          this.destroy_amount[1] = this.addSpace(this.destroy_amount[1])
+          this.destroy_amount[0]=this.addComma(this.destroy_amount[0]);
+          this.surplus_amount = res.data.surplus_amount.split('.')
+          this.surplus_amount[1] = this.addSpace(this.surplus_amount[1])
+          this.surplus_amount[0]=this.addComma(this.surplus_amount[0]);
+        })
   }
 }
 </script>

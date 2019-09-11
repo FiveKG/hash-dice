@@ -73,7 +73,7 @@
             </div>
           </div>
           <div v-if="!allMy">
-            <div style="" v-for="(item,index) in items" :key='index'>
+            <div style="" v-for="(item,index) in itemss" :key='index'>
               <div style="width:100%;height:1.1rem;">
                 <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.a}}</p></div>
                 <div class="display_ib vertical_top" style="width:40%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.b}}</p></div>

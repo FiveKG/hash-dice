@@ -28,8 +28,8 @@
           <span>已销毁</span> 
           <div class="destroyed_txt" v-if="destroy_amount.length>0">
             <span class="destroyed_txt1"> {{destroy_amount[0]}}.</span>     
-            <span class="destroyed_txt2">{{destroy_amount[1][0]}}</span>
-            <span class="destroyed_txt3"> {{destroy_amount[1][1]}}</span>
+            <!-- <span class="destroyed_txt2">{{destroy_amount[1]}}</span> -->
+            <span class="destroyed_txt3"> {{destroy_amount[1]}}</span>
           </div>
           <span>TBG</span>
         </div>
@@ -181,7 +181,7 @@
               <span>TBG线性释放池</span>
               <span>规则</span>
             </div>
-            <div class="common-wrap">
+            <div class="common-wrap" @click="jumpAssetLinearPool">
               <div class="common-box jc_sb-al_c">
                 <span>释放池余额</span>
                 <div class="common-number">
@@ -213,7 +213,8 @@
               </div>
               <div class="distribution_content_inner">
                 <p class="top">可售数量</p>
-                <p class="mid">{{Quantity}}TBG</p>
+                <p class="mid">{{Quantity}}</p>
+                <p class="bot">TBG</p>
               </div>
             </div>
           </div>
@@ -381,7 +382,7 @@ export default {
                 account_activation:'true',     //账号是否激活
                 Balance:0,      //余额
                 Amount:1,       //额度
-                Quantity:0,     //可售数量
+                Quantity:'',     //可售数量
                 subAccountQuantity:false,  //子账号数量切换
 
                 //区块链转站
@@ -490,9 +491,10 @@ export default {
         api.getTradePrice().then(res => {
           this.trade_price = res.data.price
         })
-        api.getDestory().then(res => {
+        api.getDestory().then(res => {  //获取已销毁
           this.destroy_amount = res.data.destroy_amount.split('.')
           this.destroy_amount[1] = this.addSpace(this.destroy_amount[1])
+          this.destroy_amount[0]=this.addComma(this.destroy_amount[0]);
         })
         api.subAccount({
           account_name: this.account_name
@@ -560,8 +562,20 @@ export default {
       switchData (id) {
         this.$refs[`slt-${id}`].classList.toggle('select-toggle')
       },
-      addSpace (str) {
+      addSpace (str) { //修改已销毁数据
         return str.slice(0,str.length-4) + " " +str.slice(-4)
+      },
+      addComma(data){  //修改已销毁数据
+        var a=data;var b='';var c=a.length+1;
+          for(var i=0;c/3>i;i++){
+            if(a.length>3){
+              b=','+a.slice(a.length-3,a.length)+b;
+              a=a.slice(0,a.length-3);
+            }else{
+              b=a+b;
+            }
+          }
+          return b;
       },
       navigateTo (url) {
         console.log('router has active')
