@@ -1,21 +1,35 @@
 <template>
   <v-ons-page>
     <div class="layout">
+      <div class="enterpage" v-if="enterpageshow">
+        <div class="enter_a">
+          <img src="../../assets/img/02.png" alt="hongbao..." />
+        </div>
+        <div class="enter_b">luckmoney</div>
+        <div class="enter_c">
+          <h4>提示</h4>
+          <p>您好，【好运红包】目前不支持来自下列国家或地区的用户：中国内地、朝鲜、美国（包括所有美国领土）</p>
+          <p>未满18岁的用户禁止参与本游戏，本游戏包含一定程度的财务风险，玩家应该意识到这种风险并相应地进行自我管理。我们无意诱使任何人违反任何地方、州或国家法律。玩家的唯一责任是参考其管辖范围内的法律，以确定行为的合法性。</p>
+        </div>
+      </div>
       <!-- <div class="page_header">
         <img class="ion_back" src="@/assets/img/back.png" @click="back"> 
         <span>{{name}}</span>
-      </div> -->
-      <iframe id="show-iframe" frameborder="0" scrolling="auto" :src="url"></iframe>
+      </div>-->
+      <iframe ref="ifra" frameborder="0" scrolling="no" :src="url"></iframe>
     </div>
-    
+
     <v-ons-dialog
       modifier="width_pwd"
       style="background-color: rgba(0, 0, 0, .5);z-index: 10000;"
-      :visible.sync="showSignature">
+      :visible.sync="showSignature"
+    >
       <div>
         <div class="alert-dialog-title verify_title">{{$t('discover.sign_request')}}</div>
         <div class="sign_layout">
-          <div class="authorization">{{signMessage.authorization ? `${signMessage.authorization[0].actor}@${signMessage.authorization[0].permission}` : ''}}</div>
+          <div
+            class="authorization"
+          >{{signMessage.authorization ? `${signMessage.authorization[0].actor}@${signMessage.authorization[0].permission}` : ''}}</div>
           <div class="contract_action">合约 → 操作</div>
           <div class="sign_data">
             <div style="font-weight:bold;">{{signMessage.code}}→{{signMessage.type}}</div>
@@ -50,23 +64,23 @@
       modifier="width_pwd"
       cancelable
       style="background-color: rgba(0, 0, 0, .5);z-index: 10000;"
-      :visible.sync="showDialog">
+      :visible.sync="showDialog"
+    >
       <m-dialog v-model="password" v-on:confirm="handleConfirm" v-on:cancel="handleCancel"></m-dialog>
     </v-ons-dialog>
-    <v-ons-modal :visible="loading" >
+    <v-ons-modal :visible="loading">
       <loading></loading>
     </v-ons-modal>
   </v-ons-page>
 </template>
 
 <script>
-import MDialog from '@/components/MDialog'
-import ClientSocket from '@/socket/ClientSocket'
-import PasswordService from '@/services/PasswordService'
-import CryptoAES from '@/util/CryptoAES'
-import Eos from 'eosjs'
-
-const {ecc} = Eos.modules
+import MDialog from "@/components/MDialog";
+import ClientSocket from "@/socket/ClientSocket";
+import PasswordService from "@/services/PasswordService";
+import CryptoAES from "@/util/CryptoAES";
+import Eos from "eosjs";
+const { ecc } = Eos.modules;
 
 export default {
   components: {
@@ -74,9 +88,10 @@ export default {
   },
   data() {
     return {
-      url: '',
-      name: '',
-      password: '',
+      enterpageshow: true,
+      url: "",
+      name: "",
+      password: "",
       success: false,
       loading: false,
       showSignature: false,
@@ -85,19 +100,19 @@ export default {
         authorization: null,
         data: {}
       }
-    }
+    };
   },
   watch: {
-    '$store.state.wallet.signatureData'(newVal) {
-      console.log(newVal)
-      if (!newVal) return
-      this.signMessage = newVal[0]
-      this.signMessage.data.memo = newVal[0].data.memo.substr(0, 22)
-      this.showSignature = true
+    "$store.state.wallet.signatureData"(newVal) {
+      console.log(newVal);
+      if (!newVal) return;
+      this.signMessage = newVal[0];
+      this.signMessage.data.memo = newVal[0].data.memo.substr(0, 22);
+      this.showSignature = true;
     },
     showDialog(newVal, oldVal) {
       if (!newVal) {
-        this.password = ''
+        this.password = "";
       }
       // if (newVal) {
       //   this.success = false
@@ -112,62 +127,132 @@ export default {
       //     })
       //   }
       // }
-    },
+    }
   },
   mounted() {
-    console.log(this.$route.query)
-    this.url = this.$route.query.url
-    this.name = this.$route.query.name
+    this.url = this.$route.query.url;
+    this.name = this.$route.query.name;
+    const that = this;
+    this.$nextTick(() => {
+      that.$refs.ifra.onload = function() {
+        console.log(1111);
+        that.enterpageshow = false;
+      };
+    });
   },
   methods: {
     back() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     signConfirm() {
-      this.showDialog = true
+      this.showDialog = true;
     },
     signCancel() {
       ClientSocket.link().then(conn => {
         if (conn) {
-          ClientSocket.signTranstion('')
+          ClientSocket.signTranstion("");
         }
-      })
-      this.$store.commit('wallet/setSignatureData',null)
-      this.$store.commit('wallet/setSignatureRequest',null)
-      this.showSignature = false
+      });
+      this.$store.commit("wallet/setSignatureData", null);
+      this.$store.commit("wallet/setSignatureRequest", null);
+      this.showSignature = false;
     },
     async handleConfirm() {
-      const assets = this.$store.state.wallet.assets
-      this.loading = true
-      const signatureRequest = this.$store.state.wallet.signatureRequest
+      const assets = this.$store.state.wallet.assets;
+      this.loading = true;
+      const signatureRequest = this.$store.state.wallet.signatureRequest;
       try {
-        const seed = await PasswordService.encrypt(this.password)
-        const privateKey = CryptoAES.decrypt(assets.privateKey,seed)
+        const seed = await PasswordService.encrypt(this.password);
+        const privateKey = CryptoAES.decrypt(assets.privateKey, seed);
         if (privateKey) {
-          const {payload} = signatureRequest
-          const signatest = ecc.sign(Buffer.from(payload.buf, 'utf8'), privateKey);
-          const signatestarr = []
-          signatestarr.push(signatest)
-          this.showDialog = false
-          this.showSignature = false
-          this.success = true
-          ClientSocket.signTranstion(signatestarr)
+          const { payload } = signatureRequest;
+          const signatest = ecc.sign(
+            Buffer.from(payload.buf, "utf8"),
+            privateKey
+          );
+          const signatestarr = [];
+          signatestarr.push(signatest);
+          this.showDialog = false;
+          this.showSignature = false;
+          this.success = true;
+          ClientSocket.signTranstion(signatestarr);
         } else {
-          this.$toast(this.$t('common.wrong_pwd'))
+          this.$toast(this.$t("common.wrong_pwd"));
         }
       } catch (error) {
-        console.log('handleConfirm',error)
+        console.log("handleConfirm", error);
       }
-      this.loading = false
+      this.loading = false;
     },
     handleCancel() {
-      this.showDialog = false
-    },
-  },
-}
+      this.showDialog = false;
+    }
+  }
+};
 </script>
 
 <style scoped>
+/*2秒欢迎部分*/
+.enterpage {
+  width: 100vw;
+  height: 100vh;
+  background: #e33c3e;
+  overflow: hidden;
+}
+.enterpage .enter_a {
+  width: 200px;
+  height: 200px;
+  background: #ff9900;
+  margin: 25vh auto 0px auto;
+  border-radius: 50%;
+  -moz-box-shadow: 1px 3px 8px 0px #333333;
+  -webkit-box-shadow: 1px 3px 8px 0px #333333;
+  box-shadow: 1px 3px 8px 0px #333333;
+  position: relative;
+  -webkit-transform: rotate(360deg);
+  animation: rotation 2s linear infinite;
+  -moz-animation: rotation 2s linear infinite;
+  -webkit-animation: rotation 2s linear infinite;
+  -o-animation: rotation 2s linear infinite;
+}
+@-webkit-keyframes rotation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+.enterpage .enter_a img {
+  width: auto;
+  /* height:60px; */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) !important;
+}
+.enterpage .enter_b {
+  text-align: center;
+  padding: 2vh 3vw 0vh 3vw;
+  font-size: 0.6rem;
+  font-weight: bold;
+  color: #ffdaa2;
+}
+.enterpage .enter_c {
+  text-align: center;
+  line-height: 32px;
+  padding: .5rem;
+  color: #ffdaa2;
+}
+.enterpage .enter_c>h4{
+  font-size: .6rem;
+}
+.enterpage .enter_c>p{
+  text-align: left;
+  text-indent: 2em;
+  font-size: .5rem;
+  line-height: 60px;
+}
 .layout {
   width: 100%;
   height: 100%;
@@ -218,7 +303,7 @@ iframe {
   flex: 1;
   text-align: left;
 }
-.btn_layout .cancel span{
+.btn_layout .cancel span {
   width: 170px;
   display: inline-block;
   text-align: center;
@@ -231,7 +316,7 @@ iframe {
   flex: 1;
   text-align: right;
 }
-.btn_layout .confirm span{
+.btn_layout .confirm span {
   width: 170px;
   display: inline-block;
   text-align: center;
