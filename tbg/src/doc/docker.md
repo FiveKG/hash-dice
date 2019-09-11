@@ -20,7 +20,7 @@ mkdir $PWD/postgresql/data -p
 printf "cd $PWD/postgresql\n"
 cd $PWD/postgresql
 printf "create and run postgres docker container\n"
-docker run --name postgres -v $PWD/data:/var/lib/postgresql/data --privileged=true -d postgres
+docker run --name postgres -v $PWD/data:/var/lib/postgresql/data --privileged=true -d postgres -p 5432:5432
 
 docker exec -it postgres bash
 su postgres && psql
@@ -49,5 +49,5 @@ sed -i 's/logfile ""/logfile "access.log"/' conf/redis.conf
 sed -i 's/# requirepass foobared/requirepass redis_pass_2019/' conf/redis.conf
 sed -i 's/appendonly no/appendonly yes/' conf/redis.conf
 
-docker run -v $PWD/data:/data -v $PWD/conf/redis.conf:/etc/redis/redis.conf --privileged=true --name redis -d redis redis-server /etc/redis/redis.conf
+docker run -v $PWD/data:/data -v $PWD/conf/redis.conf:/etc/redis/redis.conf -p 6379:6379 --privileged=true --name redis -d redis redis-server /etc/redis/redis.conf
 ```

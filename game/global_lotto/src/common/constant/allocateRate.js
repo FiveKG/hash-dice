@@ -38,20 +38,41 @@ const ALLOC_TO_TEAM = 2.5;
 
 // 超级全球彩大奖
 const LOTTERY_AWARD = 60;
+// 按顺序中全部 9 个数字
+const LOTTERY_AWARD_COUNT = 9;
+
 // 二等奖
 const SECOND_PRICE = 10;
+// 按顺序中全部 8 个数字
+const SECOND_PRICE_COUNT = 8;
+
 // 三等奖
 const THIRD_PRICE = 8;
+// 按顺序中全部 7 个数字
+const THIRD_PRICE_COUNT = 7;
+
 // 四等奖
 const FOURTH_PRICE = 5;
+// 按顺序中全部 6 个数字
+const FOURTH_PRICE_COUNT = 6;
+
 // 特别奖
 const SPECIAL_AWARD = 10;
+
 // 五等奖
-const FIFTH_PRICE = "10.0000 UE";
+const FIFTH_PRICE = "10.0000";
+// 按顺序中全部 5 个数字
+const FIFTH_PRICE_COUNT = 5;
+
 // 六等奖
-const SIXTH_PRICE = "5.0000 UE";
+const SIXTH_PRICE = "5.0000";
+// 按顺序中全部 4 个数字
+const SIXTH_PRICE_COUNT = 4;
+
 // 七等奖
-const SEVENTH_PRICE = "1.0000 UE";
+const SEVENTH_PRICE = "1.0000";
+// 按顺序中全部 3 个数字
+const SEVENTH_PRICE_COUNT = 3;
 
 // 游戏每投注 1 UE, TBG空投 0.05 TBG
 const GAME_AIRDROP_INCOME = 5;
@@ -85,7 +106,14 @@ const CONSTANT = {
     "FIFTH_PRICE": FIFTH_PRICE,
     "SIXTH_PRICE": SIXTH_PRICE,
     "SEVENTH_PRICE": SEVENTH_PRICE,
-    "GAME_AIRDROP_INCOME": GAME_AIRDROP_INCOME
+    "GAME_AIRDROP_INCOME": GAME_AIRDROP_INCOME,
+    "LOTTERY_AWARD_COUNT": LOTTERY_AWARD_COUNT,
+    "SECOND_PRICE_COUNT": SECOND_PRICE_COUNT,
+    "THIRD_PRICE_COUNT": THIRD_PRICE_COUNT,
+    "FOURTH_PRICE_COUNT": FOURTH_PRICE_COUNT,
+    "FIFTH_PRICE_COUNT": FIFTH_PRICE_COUNT,
+    "SIXTH_PRICE_COUNT": SIXTH_PRICE_COUNT,
+    "SEVENTH_PRICE_COUNT": SEVENTH_PRICE_COUNT,
 }
 
 module.exports = CONSTANT
@@ -112,4 +140,11 @@ module.exports = CONSTANT
  * @property { string } SIXTH_PRICE 六等奖
  * @property { string } SEVENTH_PRICE 七等奖
  * @property { number } GAME_AIRDROP_INCOME 游戏每投注 1 UE, TBG空投 0.05 TBG
+ * @property { number } LOTTERY_AWARD_COUNT 按顺序中全部 9 个数字
+ * @property { number } SECOND_PRICE_COUNT 按顺序中全部 8 个数字
+ * @property { number } THIRD_PRICE_COUNT 按顺序中全部 7 个数字
+ * @property { number } FOURTH_PRICE_COUNT 按顺序中全部 6 个数字
+ * @property { number } FIFTH_PRICE_COUNT 按顺序中全部 5 个数字
+ * @property { number } SIXTH_PRICE_COUNT 按顺序中全部 4 个数字
+ * @property { number } SEVENTH_PRICE_COUNT 按顺序中全部 3 个数字
  */

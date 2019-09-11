@@ -1580,6 +1580,30 @@
                     }
                 }
             }
+        },
+        {
+            "name" : "获取用户的推荐人",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/get_referrer",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "referrer_account": { "type": "number",  "is_require": true,  "desc": "我的邀请人帐号" }
+                    }
+                }
+            }
         }
     ]
 }

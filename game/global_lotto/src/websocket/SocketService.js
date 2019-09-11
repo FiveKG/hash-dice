@@ -92,6 +92,10 @@ async function getBlockInfo() {
   }
 }
 
+
+const openFlag = false;
+const openCount = 0;
+
 /**
  * 获取区块链信息
  * @param { number } block_num 
@@ -105,12 +109,18 @@ async function getBlocks(block_num) {
         block_server.to('block').emit({ type: 'block', result: res });
       }
 
-      const timestamp = df.format(res.timestamp, "mm:ss:SSS");
+      // const timestamp = df.format(res.timestamp, "mm:ss:SSS");
+      const timestamp = df.format(res.timestamp, "ss:SSS");
       // 整点开奖
-      if (timestamp === "00:00:000") {
+      if (timestamp === "00:000") {
         logger.debug("open: ", timestamp);
         psGlobalLottoOpen.pub({ block_num: block_num });
       }
+
+      if (openFlag) {
+
+      }
+
       getBlocks(block_num);
     } catch (error) {
       // logger.log('getBlocks', error);

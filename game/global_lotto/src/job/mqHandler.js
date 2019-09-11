@@ -2,6 +2,7 @@
 const logger = require("../common/logger.js").child({ "@": "mq publish and subscribe" });
 const { psGlobalLottoOpen, psGame, psTrx } = require("../db");
 const trxAction = require("./trxAction.js");
+const openGameSession = require("./openGameSession");
 
 
 // 游戏消息
@@ -30,7 +31,7 @@ psGlobalLottoOpen.sub(async msg => {
     try {
         let result = JSON.parse(msg);
         logger.debug("psTrx result: %O", result);
-        await trxAction(result);
+        await openGameSession(result);
     } catch (err) {
         throw err;
     }

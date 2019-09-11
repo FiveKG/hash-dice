@@ -62,9 +62,7 @@ const convertUTCDateToLocalDate = (date) => {
 }
 
 const socketHandler = (socket) => {
-  
   socket.emit('connected');
-
   socket.on('api', async request => {
     console.debug("request: ", request);
     // let result = await ApiService.handler(Object.assign({}, request))

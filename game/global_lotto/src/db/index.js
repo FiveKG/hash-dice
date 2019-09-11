@@ -5,5 +5,6 @@ module.exports = {
     "amqp": require("./amqp.js"),
     "psGlobalLottoOpen": require("./psGlobalLottoOpen.js"),
     "psGame": require("./psGame.js"),
-    "psTrx": require("./psTrx")
+    "psTrx": require("./psTrx"),
+    "psModifyBalance": require("./psModifyBalance"),
 }

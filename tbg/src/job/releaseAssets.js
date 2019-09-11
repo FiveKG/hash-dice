@@ -105,7 +105,7 @@ async function releaseAssets() {
                 }
             }
         })
-
+        let flag = false;
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
@@ -113,6 +113,7 @@ async function releaseAssets() {
                 client.query(it.sql, it.values);
             }));
             await client.query("COMMIT");
+            flag = true;
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
@@ -121,7 +122,9 @@ async function releaseAssets() {
         }
 
         // 发送区块链转帐消息
-        await psTrx.pub(actionList);
+        if (flag) {
+            await psTrx.pub(actionList);
+        }
     } catch (err) {
         logger.error("release assets error, the error stock is %O", err);
         throw err;

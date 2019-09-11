@@ -24,3 +24,6 @@ GET http://localhost:9527/account/level?account_name=yujinsheng11
 
 ### get account information
 GET http://localhost:9527/account/investment_index?account_name=yujinsheng11
+
+### get account information
+GET http://localhost:9527/account/get_referrer?account_name=gametestuser

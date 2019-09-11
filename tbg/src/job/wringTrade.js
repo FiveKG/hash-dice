@@ -146,6 +146,7 @@ async function wringTrade() {
             }            
         }
 
+        let flag = false;
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
@@ -153,6 +154,7 @@ async function wringTrade() {
                 client.query(it.sql, it.values);
             }));
             await client.query("COMMIT");
+            flag = true;
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
@@ -160,7 +162,9 @@ async function wringTrade() {
             await client.release();
         }
 
-        await psTrx.pub(actionList)
+        if (flag) {
+            await psTrx.pub(actionList)
+        }
     } catch (err) {
         logger.error("wring order error, the error stock is ", err);
         throw err;

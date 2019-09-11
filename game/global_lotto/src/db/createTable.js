@@ -56,12 +56,35 @@ async function createTable() {
         comment on table bet_order is '用户投注记录';
         comment on column bet_order.bo_id is '用户资产表 id';
         comment on column bet_order.gs_id is '游戏期数信息 id';
-        comment on column bet_order.extra is '投注投注时间';
-        comment on column bet_order.account_name is '投注时间';
+        comment on column bet_order.extra is '附加信息';
+        comment on column bet_order.account_name is '投注用户';
         comment on column bet_order.bet_num is '投注号码';
         comment on column bet_order.key_count is '投注数量';
         comment on column bet_order.amount is '投注额度';
         comment on column bet_order.create_time is '创建时间';
+        CREATE TABLE IF NOT EXISTS award_session(
+            aw_id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
+            gs_id TEXT UNIQUE NOT NULL DEFAULT '',
+            extra NUMERIC (20, 8) NOT NULL DEFAULT 0,
+            account_name NUMERIC (20, 8) NOT NULL DEFAULT 0,
+            bet_num  NUMERIC (20, 8) NOT NULL DEFAULT 0,
+            win_key  NUMERIC (20, 8) NOT NULL DEFAULT 0,
+            win_type  NUMERIC (20, 8) NOT NULL DEFAULT 0,
+            one_key_bonus  NUMERIC (20, 8) NOT NULL DEFAULT 0,
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+            bonus_amount  NUMERIC (20, 8) NOT NULL DEFAULT 0
+        );
+        comment on table award_session is '派奖表';
+        comment on column award_session.aw_id is '用户资产表 id';
+        comment on column award_session.gs_id is '游戏期数信息 id';
+        comment on column award_session.extra is '附加信息';
+        comment on column award_session.account_name is '投注用户';
+        comment on column award_session.create_time is '创建时间';
+        comment on column award_session.bet_num is '投注号码';
+        comment on column award_session.win_key is '中奖 key 数';
+        comment on column award_session.win_type is '中奖类别';
+        comment on column award_session.one_key_bonus is '单注奖金';
+        comment on column award_session.bonus_amount is '总金额';
     `
 
     try {

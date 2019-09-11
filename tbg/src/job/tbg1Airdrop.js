@@ -67,6 +67,7 @@ async function tbg1Airdrop(data) {
                 }
             }
         });
+        let flag = false;
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
@@ -74,6 +75,7 @@ async function tbg1Airdrop(data) {
                 client.query(it.sql, it.values);
             }));
             await client.query("COMMIT");
+            flag = true;
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
@@ -82,7 +84,9 @@ async function tbg1Airdrop(data) {
         }
 
         // 发送区块链转帐消息
-        await psTrx.pub(actionList);
+        if (flag) {
+            await psTrx.pub(actionList);
+        }
     } catch (err) {
         logger.error("tbg1 airdrop error, the error stock is %O", err);
         throw err;
