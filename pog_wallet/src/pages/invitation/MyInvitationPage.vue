@@ -79,7 +79,7 @@ export default {
       this.$router.go(-1)
     },
     digitize(n) {
-        return (n + "").split("").map(Number);
+        return (n + "").split("");
     }         
   },
   created(){

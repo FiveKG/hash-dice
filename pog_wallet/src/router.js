@@ -103,12 +103,27 @@ import TreasureGo from './pages/game/treasure/TreasureGo'
 import TreasurePage from './pages/game/treasure/TreasurePage'
 import LotteryDetailsNoLottery from './pages/game/treasure/LotteryDetailsNoLottery'
 import BettingDetails from './pages/game/treasure/BettingDetails'
+import TreasureRule from './pages/game/treasure/TreasureRule'
+import HashDiceGo from './pages/game/hashdice/HashDiceGo'
+import HashDicePage from './pages/game/hashdice/HashDicePage'
+import HashDiceRule from './pages/game/hashdice/HashDiceRule'
+import HashDiceDetails from './pages/game/hashdice/HashDiceDetails'
+
 
 import GlovalLotto from './pages/game/qqc/GlovalLotto'
 import LottoGame from './pages/game/qqc/LottoGame'
 import awardOpening from './pages/game/qqc/awardOpening'
 
 // import LottoGame from './pages/game/qqc/LottoGame'
+
+// 哈希分分彩部分==============================================================_start
+import LotteryGo from './pages/game/hash_minute_lottery/LotteryGo'
+import Lottery from './pages/game/hash_minute_lottery/Lottery'
+import LotteryRecord from './pages/game/hash_minute_lottery/LotteryRecord'
+import BetDetail from './pages/game/hash_minute_lottery/BetDetail'
+import LotteryRule from './pages/game/hash_minute_lottery/LotteryRule'
+    
+// 哈希分分彩部分==============================================================_end
 
 Vue.use(Router)
 
@@ -608,6 +623,31 @@ const router = new Router({
       component: BettingDetails,
     },
     {
+      path: '/treasureRule',
+      name: 'TreasureRule',
+      component: TreasureRule,
+    },
+    {
+      path: '/hashDiceGo',
+      name: 'HashDiceGo',
+      component: HashDiceGo,
+    },
+    {
+      path: '/hashDicePage',
+      name: 'HashDicePage',
+      component: HashDicePage,
+    },
+    {
+      path: '/hashDiceRule',
+      name: 'HashDiceRule',
+      component: HashDiceRule,
+    },
+    {
+      path: '/hashDiceDetails',
+      name: 'HashDiceDetails',
+      component: HashDiceDetails,
+    },
+    {
       path: '/GlovalLotto',
       name: 'GlovalLotto',
       component: GlovalLotto,
@@ -623,6 +663,34 @@ const router = new Router({
       component: awardOpening,
     },
 
+    // 哈希分分彩部分==============================================================_start
+    {
+      path: '/LotteryGo',
+      name: 'LotteryGo',
+      component: LotteryGo,
+    },
+    {
+      path: '/Lottery',
+      name: 'Lottery',
+      component: Lottery,
+    },
+    {
+      path: '/LotteryRecord',
+      name: 'LotteryRecord',
+      component: LotteryRecord,
+    },
+    {
+      path: '/BetDetail',
+      name: 'BetDetail',
+      component: BetDetail,
+    },
+    {
+      path: '/LotteryRule',
+      name: 'LotteryRule',
+      component: LotteryRule,
+    },
+    // 哈希分分彩部分==============================================================_end
+    
   ]
 })
 

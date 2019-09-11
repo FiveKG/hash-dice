@@ -1,5 +1,6 @@
 <template>
-  <div class="wrap">
+  <div class="scrollView" @scroll.native="scrollEvent" ref="page">
+    <div ref="page2" class="wrap">
     <!-- 头部信息 -->
     <div class="head-info jc_sb-al_c">
       <div class="head-user flx_default">
@@ -39,7 +40,7 @@
     </div>    
 
     <!-- 查看TBG旗下游戏 -->
-    <div class="games fd_cln">
+    <div v-if="false" class="games fd_cln">
       <div class="section-head jc_sb-al_c">
         <span>TBG旗下游戏</span>
         <span @click="navigateTo('DappList')">查看全部</span>
@@ -86,235 +87,246 @@
         </div>
       </div>
     </div>
-
+    <!-- 为tbgbar吸附提供参照 -->
+    <div ref="barFixedRefer" style="visibility:none;"></div>
     <!-- TBG 1 - 2 -->
-    <div class="tbg-bar-wrap">
+    <div ref="tbgbar" class="tbg-bar-wrap" :class="{'fixedActive':tbgbarFixed}">
       <div class="tbg-bar">
-        <div @click="tbgToggle(1)" class="tbg-bar_item" :class="{'active': tbg === 1}">
+        <div @click="tbgToggle(0)" class="tbg-bar_item" :class="{'active': tbg === 0}">
           TBG-I
         </div>
-        <div @click="tbgToggle(0)" class="tbg-bar_item" :class="{'active': tbg === 0}">
+        <div @click="tbgToggle(1)" class="tbg-bar_item" :class="{'active': tbg === 1}">
           TBG-II
         </div>
       </div>
     </div>
+    <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
+      :index.sync="tbg"
+    >
+      <v-ons-carousel-item>
+        <div>
+          <!-- 交易中心 -->
+          <div>
+            <div class="section2-head jc_sb-al_c">
+              <span>交易中心</span>
+              <span>规则</span>
+            </div>
+            <div class="exchange-content">
+              <div class="exchange-left">
+                <span>当前TBG价格</span>
+                <span>{{trade_price}}</span>
+                <span>UE</span>
+              </div>
+              <div class="exchange-right">
+                <div class="select-wrap">
+                  <div @click='switchData(2)' class="ipt_layout">
+                      <div>
+                      <span style="font-size: .45rem;color: rgb(236,90,91);">买入TBG</span>
+                      </div>
+                      <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;"> 
+                  </div>
+                  <!-- 下拉部分 -->
+                  <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
+                      <div class="select-item" @click="jumpnormal()">普通用户</div>
+                      <div v-if="isGlobal" class="select-item" @click="jumpglobal()">全球合作伙伴</div>
+                  </div>
+                </div>
+                <div class="select-wrap">
+                  <div @click='jumpTwoSell' class="ipt_layout">
+                      <div>
+                      <span style="font-size: .45rem;color: #0099CC;">卖出TBG</span>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 全球区块链去中心化游戏平台 -->
+          <div class="common-wrap">
+            <div class="intro common-box al_c">
+              <div class="left jc_sb-al_c">
+                <img src="@/assets/img/u5094.svg" alt="">
+              </div>
+              <div class="right">  
+                全球区块链去中心化游戏平台，真正公平公正、透明可查、无法作假的区块链去中心化游戏是现在和未来的方向。
+              </div>
+            </div>
+          </div>
+
+          <!-- qiandao -->
+          <check-in></check-in>
+
+          <!-- TBG资产包矿池 -->
+          <div>
+            <div class="section2-head jc_sb-al_c">
+              <span>TBG资产包矿池</span>
+              <span>规则</span>
+            </div>
+            <div class="common-wrap" @click="jumpAssetPool">
+              <div class="common-box resource jc_sb-al_c">
+                <img src="@/assets/img/u6712.gif" alt="">
+                <div class="resource-info">
+                  <p>当前有效资产包</p>
+                  <p>1,954.2532 <span>0000</span> TBG</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+            <!--  TBG线性释放池 -->
+          <div>
+            <div class="section2-head jc_sb-al_c">
+              <span>TBG线性释放池</span>
+              <span>规则</span>
+            </div>
+            <div class="common-wrap">
+              <div class="common-box jc_sb-al_c">
+                <span>释放池余额</span>
+                <div class="common-number">
+                  <span>2,492.5160 </span>
+                  <span style="color: #FF9900;">0210</span>
+                  <span> TBG</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TBG 可售池 -->
+          <div>
+            <div class="section2-head jc_sb-al_c">
+              <span>TBG 可售池</span>
+              <span>规则</span>
+            </div>
+            <div class="common-wrap distribution_content">
+              <div class="distribution_content_inner" @click="jumpSaleableBalance">
+                <p class="top">可售余额</p>
+                <p class="mid">{{Balance}} </p>
+                <p class="bot">TBG</p>
+              </div>
+
+              <div class="distribution_content_inner" @click="jumpSaleableLimit">
+                <p class="top">可售额度</p>
+                <p class="mid">{{Amount}} </p>
+                <p class="bot">TBG</p>
+              </div>
+              <div class="distribution_content_inner">
+                <p class="top">可售数量</p>
+                <p class="mid">{{Quantity}}TBG</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </v-ons-carousel-item>
+      <v-ons-carousel-item>
+        <div class="tag-page">
+          <!-- 子账号 -->
+          <div class="child-account">
+            <div class="section2-head jc_sb-al_c">
+              <span>投资与子账号</span>
+              <span>规则</span>
+            </div>
+            <div class="child-account_items jc_sa-al_c">
+              <div v-if="account_activation" @click="jumpSubAccount" class="account_item_left">
+                <div class="acc-img_wrap">
+                  <img src="../../assets/invitation2/child-acc.png" alt="">
+                  <span class="child-acc_amount">{{sub_account.total_sub_account || 0}}</span>
+                </div>
+                <p >子账号</p>
+              </div>
+              <div v-if="!account_activation" @click="jumpQuantityTbg" class="account_item_left">
+                <div class="acc-img_wrap">
+                  <img src="../../assets/invitation2/child-acc.png" alt="">
+                  <span class="child-acc_amount">{{sub_account.total_sub_account || 0}}</span>
+                </div>
+                <p >参与TBG</p>
+              </div>
+              <div @click="navigateTo('HelpFriend')" class="account_item_right">
+                <div class="acc-img_wrap">
+                  <img src="../../assets/invitation2/assist-fri.png" alt="">
+                </div>
+                <p>帮助伙伴</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 全球区块链去中心化游戏平台 -->
+          <div class="common-wrap">
+            <div class="intro common-box al_c">
+              <div class="left jc_sb-al_c">
+                <img src="@/assets/img/u6628.svg" alt="">
+              </div>
+              <div class="right">  
+                共同建设全球区块链去中心化游戏社区，
+                购买 TBG 资产包即挖矿，参与游戏获空
+                投，持有 TBG 享股东分红。
+              </div>
+            </div>
+          </div>
+
+          <!-- TBG-I 收益 -->
+          <div>
+            <div class="section2-head jc_sb-al_c">
+              <span>TBG-II收益</span>
+              <span>规则</span>
+            </div>
+            <div class="common-wrap">
+              <div class="common-box jc_sb-al_c">
+                <span>总计</span>
+                <div class="common-number">
+                  <span>{{total_income[0]}} </span>
+                  <span style="color: #FF9900;">{{total_income[1]}}</span>
+                  <span> UE</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 奖金和保障 -->
+          <div>
+            <div class="section2-head jc_sb-al_c">
+              <span>奖金以及保障池</span>
+              <span>规则</span>
+            </div>
+            <div class="common-wrap">
+              <div class="common-box ensure_content">
+                <div @click='navigateTo(item.url)' v-for="(item, index) in ensure" :key="index" class="ensure_content_inner" >
+                  <span class="top">{{item.top}}</span>
+                  <span class="mid">{{item.mid}}</span>
+                  <span class="bot">{{item.bot}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 收入分配 -->
+          <div>
+            <div class="section2-head jc_sb-al_c">
+              <span>收益分配</span>
+              <span>规则</span>
+            </div>
+            <div class="common-wrap distribution_content">
+              <div @click='navigateTo(item.url)' v-for="(item, index) in distribution" :key="index" class="distribution_content_inner">
+                <span class="top">{{item.top}}</span>
+                <span class="mid">
+                  <span>{{item.mid[0]}}</span>
+                  <span style="color: #868686;"> {{item.mid[1]}}</span>
+                </span>
+                <span class="bot">{{item.bot}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </v-ons-carousel-item>
+    </v-ons-carousel>
 
     <!-- TBG-I标签页 -->
-    <div class="tag-page" v-if='tbg === 0'>
-      <!-- 子账号 -->
-      <div class="child-account">
-        <div class="section2-head jc_sb-al_c">
-          <span>投资与子账号</span>
-          <span>规则</span>
-        </div>
-        <div class="child-account_items jc_sa-al_c">
-          <div v-if="!account_activation" @click="jumpSubAccount" class="account_item_left">
-            <div class="acc-img_wrap">
-              <img src="../../assets/invitation2/child-acc.png" alt="">
-              <span class="child-acc_amount">{{sub_account.total_sub_account || 0}}</span>
-            </div>
-            <p >子账号</p>
-          </div>
-          <div v-if="account_activation" @click="jumpQuantityTbg" class="account_item_left">
-            <div class="acc-img_wrap">
-              <img src="../../assets/invitation2/child-acc.png" alt="">
-              <span class="child-acc_amount">{{sub_account.total_sub_account || 0}}</span>
-            </div>
-            <p >参与TBG</p>
-          </div>
-          <div @click="navigateTo('HelpFriend')" class="account_item_right">
-            <div class="acc-img_wrap">
-              <img src="../../assets/invitation2/assist-fri.png" alt="">
-            </div>
-            <p>帮助伙伴</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- 全球区块链去中心化游戏平台 -->
-      <div class="common-wrap">
-        <div class="intro common-box al_c">
-          <div class="left jc_sb-al_c">
-            <img src="@/assets/img/u6628.svg" alt="">
-          </div>
-          <div class="right">  
-            共同建设全球区块链去中心化游戏社区，
-            购买 TBG 资产包即挖矿，参与游戏获空
-            投，持有 TBG 享股东分红。
-          </div>
-        </div>
-      </div>
-
-      <!-- TBG-I 收益 -->
-      <div>
-        <div class="section2-head jc_sb-al_c">
-          <span>TBG-I收益</span>
-          <span>规则</span>
-        </div>
-        <div class="common-wrap">
-          <div class="common-box jc_sb-al_c">
-            <span>总计</span>
-            <div class="common-number">
-              <span>{{total_income[0]}} </span>
-              <span style="color: #FF9900;">{{total_income[1]}}</span>
-              <span> UE</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 奖金和保障 -->
-      <div>
-        <div class="section2-head jc_sb-al_c">
-          <span>奖金以及保障池</span>
-          <span>规则</span>
-        </div>
-        <div class="common-wrap">
-          <div class="common-box ensure_content">
-            <div @click='navigateTo(item.url)' v-for="(item, index) in ensure" :key="index" class="ensure_content_inner" >
-              <span class="top">{{item.top}}</span>
-              <span class="mid">{{item.mid}}</span>
-              <span class="bot">{{item.bot}}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 收入分配 -->
-      <div>
-        <div class="section2-head jc_sb-al_c">
-          <span>收益分配</span>
-          <span>规则</span>
-        </div>
-        <div class="common-wrap distribution_content">
-          <div @click='navigateTo(item.url)' v-for="(item, index) in distribution" :key="index" class="distribution_content_inner">
-            <span class="top">{{item.top}}</span>
-            <span class="mid">
-              <span>{{item.mid[0]}}</span>
-              <span style="color: #868686;"> {{item.mid[1]}}</span>
-            </span>
-            <span class="bot">{{item.bot}}</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    
 
 
     <!-- TBG-II标签页 -->
-    <div v-if="tbg === 1">
-      <!-- 交易中心 -->
-      <div>
-        <div class="section2-head jc_sb-al_c">
-          <span>交易中心</span>
-          <span>规则</span>
-        </div>
-        <div class="exchange-content">
-          <div class="exchange-left">
-            <span>当前TBG价格</span>
-            <span>{{trade_price}}</span>
-            <span>UE</span>
-          </div>
-          <div class="exchange-right">
-            <div class="select-wrap">
-              <div @click='switchData(2)' class="ipt_layout">
-                  <div>
-                  <span style="font-size: .45rem;color: rgb(236,90,91);">买入TBG</span>
-                  </div>
-                  <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;"> 
-              </div>
-              <!-- 下拉部分 -->
-              <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
-                  <div class="select-item" @click="jumpnormal()">普通用户</div>
-                  <div v-if="isGlobal" class="select-item" @click="jumpglobal()">全球合作伙伴</div>
-              </div>
-            </div>
-            <div class="select-wrap">
-              <div @click='jumpTwoSell' class="ipt_layout">
-                  <div>
-                  <span style="font-size: .45rem;color: #0099CC;">卖出TBG</span>
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 全球区块链去中心化游戏平台 -->
-      <div class="common-wrap">
-        <div class="intro common-box al_c">
-          <div class="left jc_sb-al_c">
-            <img src="@/assets/img/u5094.svg" alt="">
-          </div>
-          <div class="right">  
-            全球区块链去中心化游戏平台，真正公平公正、透明可查、无法作假的区块链去中心化游戏是现在和未来的方向。
-          </div>
-        </div>
-      </div>
-
-      <!-- qiandao -->
-      <check-in></check-in>
-
-      <!-- TBG资产包矿池 -->
-      <div>
-        <div class="section2-head jc_sb-al_c">
-          <span>TBG资产包矿池</span>
-          <span>规则</span>
-        </div>
-        <div class="common-wrap" @click="jumpAssetPool">
-          <div class="common-box resource jc_sb-al_c">
-            <img src="@/assets/img/u6712.gif" alt="">
-            <div class="resource-info">
-              <p>当前有效资产包</p>
-              <p>1,954.2532 <span>0000</span> TBG</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-        <!--  TBG线性释放池 -->
-      <div>
-        <div class="section2-head jc_sb-al_c">
-          <span>TBG线性释放池</span>
-          <span>规则</span>
-        </div>
-        <div class="common-wrap">
-          <div class="common-box jc_sb-al_c">
-            <span>释放池余额</span>
-            <div class="common-number">
-              <span>2,492.5160 </span>
-              <span style="color: #FF9900;">0210</span>
-              <span> TBG</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TBG 可售池 -->
-      <div>
-        <div class="section2-head jc_sb-al_c">
-          <span>TBG 可售池</span>
-          <span>规则</span>
-        </div>
-        <div class="common-wrap distribution_content">
-          <div class="distribution_content_inner" @click="jumpSaleableBalance">
-            <p class="top">可售余额</p>
-            <p class="mid">{{Balance}} </p>
-            <p class="bot">TBG</p>
-          </div>
-
-          <div class="distribution_content_inner" @click="jumpSaleableLimit">
-            <p class="top">可售额度</p>
-            <p class="mid">{{Amount}} </p>
-            <p class="bot">TBG</p>
-          </div>
-          <div class="distribution_content_inner">
-            <p class="top">可售数量</p>
-            <p class="mid">{{Quantity}}TBG</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    
 
 <v-ons-action-sheet
         :visible.sync="actionSheetVisible"
@@ -336,7 +348,7 @@
         <loading></loading>
       </v-ons-modal>
    
-
+    </div>
   </div>
  
 </template>
@@ -356,6 +368,7 @@ import serverApi from '@/servers/invitation'; //getConfig
 export default {
     data(){
           return {
+                tbgbarFixed: false,
                 atv_text: '',
                 account_name: '',
                 destroy_amount: '',
@@ -523,16 +536,27 @@ export default {
         })
         this.availableQuantity();     //可售数量
 
-
-
-
-
-
+        this.$nextTick(() => {
+          // this.tbgbarlistener = setInterval(() => {
+          //   console.log(this.$refs.tbgbar.offsetTop, this.$refs.page.scrollTop)
+          // }, 1000)
+          window.addEventListener('scroll', this.setTbgBarFixed, true)
+        })
     },
     beforeDestroy() {
       clearInterval(this._binggotimer);
+      window.removeEventListener('scroll',this.setTbgBarFixed, true)
     },
     methods: {
+      setTbgBarFixed () {
+        let barClientTop = this.$refs.barFixedRefer.getBoundingClientRect().top
+        if (barClientTop < 0 && !this.tbgbarFixed) {
+          this.tbgbarFixed = true
+        }
+        if (barClientTop >=  0 && this.tbgbarFixed) {
+          this.tbgbarFixed = false
+        }
+      },
       switchData (id) {
         this.$refs[`slt-${id}`].classList.toggle('select-toggle')
       },
@@ -766,12 +790,16 @@ export default {
          this.$router.push({
            name:'Notice'
          })
-       },
+       }
     },
 }
 </script>
 
 <style scoped>
+.scrollView {
+  width: 100%;
+  height: 100%;
+}
   .wrap{
     /* background: rgb(228, 147, 147); */
     padding-bottom: 2.6rem;
@@ -1001,6 +1029,14 @@ export default {
 .tbg-bar-wrap {
     padding: .3rem .5rem;
 }
+.tbg-bar-wrap.fixedActive {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background: #fff;
+    z-index: 9999;
+}
 .tbg-bar{
     display: flex;
 }
@@ -1129,6 +1165,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    padding: 0;
 }
 .ensure_content_inner {
     width: 32%;
@@ -1166,6 +1203,10 @@ export default {
     font-size: .3rem;
     color: rgb(109, 109, 109);
     font-weight: 400;
+    line-height: 1.4em;
+    height: 2.8em;
+    padding: 0 .3rem;
+    text-align: center;
 }
 .ensure_content_inner>.bot {
     font-size: .35rem;
@@ -1176,7 +1217,7 @@ export default {
     font-size: .45rem;
     color: rgb(236,90,91);
     font-weight: bold;
-    padding: .15rem 0;
+    padding-bottom: .15rem;
 }
 
 /*确认密码*/
@@ -1206,7 +1247,7 @@ export default {
     flex-direction: column;
     align-items: center;
     box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);
-    margin: .2rem 0;
+    margin: .2rem .2rem;
     background: rgb(248, 249, 255);
     border-radius: .3rem;
     padding: .4rem 0;
