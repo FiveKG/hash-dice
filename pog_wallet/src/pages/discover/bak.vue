@@ -42,13 +42,40 @@
             </v-ons-col>
              <v-ons-col>
               <div class="type_item"  @click="gogame()">
-                <img src="">
+                <img src="@/assets/invitation2/u1.png">
                 <div class="type_detail">
                   <div class="type_name">全球彩</div>
                   <div class="summary">全球彩游戏</div>
                 </div>
               </div>
-            </v-ons-col>
+              </v-ons-col>
+               <v-ons-col>
+              <div class="type_item"  @click="goLottery()">
+                <img src="@/assets/invitation2/u1.png">
+                <div class="type_detail">
+                  <div class="type_name">哈希分分彩</div>
+                  <div class="summary">哈希分分彩游戏</div>
+                </div>
+              </div>
+              </v-ons-col>
+               <v-ons-col>
+              <div class="type_item"  @click="goHashDice()">
+                <img src="@/assets/invitation2/u4.svg">
+                <div class="type_detail">
+                  <div class="type_name">哈希骰子</div>
+                  <div class="summary">哈希骰子游戏</div>
+                </div>
+              </div>
+             </v-ons-col>
+             <v-ons-col>
+              <div class="type_item"  @click="goTreasure()">
+                <img src="@/assets/invitation2/u3.png">
+                <div class="type_detail">
+                  <div class="type_name">夺宝</div>
+                  <div class="summary">夺宝游戏</div>
+                </div>
+              </div>
+             </v-ons-col>
 
           </v-ons-row>
           <v-ons-row class="dapp_more" v-if="item.list.length > 5" @click="clickMore(index)">查看更多 <img src="@/assets/img/discover_arrow.png"> </v-ons-row>
@@ -315,7 +342,16 @@ export default {
     },
     gogame(){
       this.$router.push('GlovalLotto')
-    }
+    },
+    goLottery(){
+      this.$router.push('LotteryGo')
+    },
+    goHashDice(){
+      this.$router.push('HashDiceGo')
+    },
+    goTreasure(){
+      this.$router.push('TreasureGo')
+    },
     
   },
   watch: {
