@@ -155,7 +155,11 @@
                     <img src="@/assets/img/sheet_checked.png">
                   </div>
                 </div>
+                <div @click.stop="deleteWallet(item)" class="account_delete_btn">
+                </div>
               </v-ons-row>
+              <div @click="clickAddWallet('select')" class="account_add_btn">
+              </div>
             </div>
             <div class="sheet_add">
               <!-- <img src="@/assets/img/sheet_add.png" @click="clickAddWallet('eos')"> -->
@@ -177,6 +181,20 @@
           </div>
         </div>
       </v-ons-dialog>
+      <v-ons-dialog
+        modifier="width"
+        cancelable
+        :visible.sync="deleteDialogVisible">
+        <div>
+          <div class="delete_question">
+            您是否确认删除选中账号
+          </div>
+          <div class="dialog_action">
+            <span class="btn_cancel" @click="deleteDialogVisible = false">{{$t('common.cancel')}}</span>
+            <span class="btn_delete" @click="clickDelete">{{$t('common.delete')}}</span>
+          </div>
+        </div>
+      </v-ons-dialog>
   </div>
 </template>
 
@@ -194,6 +212,7 @@ export default {
     return {
       actionSheetVisible: false,
       dialogVisible: false,
+      deleteDialogVisible: false,
       showAssets: true,
       deleteKey: '',
       search: '',
@@ -216,7 +235,6 @@ export default {
   created () {
     this.currencySymbol = this.$store.state.wallet.currency === 'USD' ? '$':'￥'
     const assets = this.$store.state.wallet.assets
-    console.log('assets-created', assets, document.documentElement.clientHeight)
     if (assets) {
       this.wallet = assets
       setTimeout(() => {
@@ -233,9 +251,9 @@ export default {
     },
     search(newVal) {
       if (newVal) {
-        console.log(document.documentElement.clientHeight,document.querySelector('.my_page').offsetHeight,this.$refs.tokens.offsetHeight, document.querySelector('.tabbar').offsetHeight,this.$refs.header.$el.offsetHeight)
+        // console.log(document.documentElement.clientHeight,document.querySelector('.my_page').offsetHeight,this.$refs.tokens.offsetHeight, document.querySelector('.tabbar').offsetHeight,this.$refs.header.$el.offsetHeight)
         this.$refs.blank.style.height = document.querySelector('.my_page').offsetHeight - this.$refs.tokens.offsetHeight - document.querySelector('.tabbar').offsetHeight - this.$refs.header.$el.offsetHeight - 10 + 'px'
-        console.log(this.$refs.blank.offsetHeight)
+        // console.log(this.$refs.blank.offsetHeight)
         document.querySelector('.my_page').scrollTop = this.$refs.blank.offsetHeight
       } else {
         document.querySelector('.my_page').scrollTop = 0
@@ -379,6 +397,8 @@ export default {
           }
         }
       }
+      // console.log('this.$store.state.wallet.assets',this.$store.state.wallet.assets)
+      // console.log('this.$store.state.wallet.localFile',this.$store.state.wallet.localFile)
     },
     async totalConvert() {
       const rate = await getCoinRate({coin_id: 'EOS', convert: this.$store.state.wallet.currency})
@@ -435,6 +455,17 @@ export default {
       wallets.splice(index, 1)
       localStorage.setItem('isecsp_wallet',JSON.stringify(localFile))
       this.dialogVisible = false
+      this.deleteDialogVisible = false
+      this.actionSheetVisible = false
+      this.initData()
+    },
+    // 用户主动删除钱包
+    deleteWallet (wallet) {
+      const localFile = this.$store.state.wallet.localFile
+      const wallets = localFile.wallets
+      this.deleteKey = wallet.publicKey
+      this.deleteDialogVisible = true
+      localStorage.setItem('isecsp_wallet',JSON.stringify(localFile))
       this.actionSheetVisible = false
       this.initData()
     },
@@ -803,14 +834,59 @@ export default {
   text-align: center;
 }
 .account_card {
-  margin: 0 38px;
-  margin-top: 34px;
+  margin: 34px 28px 0 38px;
   padding: 32px 48px;
   border-radius: 15px;
   box-shadow: 0 0 15px rgb(228, 228, 228);
   width: 100%;
   display: flex;
   align-items: center;
+  flex-shrink: 1;
+}
+ons-row {
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.account_add_btn {
+  height: .8rem;
+  background: #1D4997;
+  width: .8rem;
+  border-radius: 50%;
+  position: relative;
+  margin: .4rem auto;
+}
+.account_add_btn::after,.account_add_btn::before {
+  position: absolute;
+  content: '';
+  background: #fff;
+  width: 50%;
+  height: .1rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.account_add_btn::after{
+  width: .1rem;
+  height: 50%;
+}
+.account_delete_btn {
+  height: .5rem;
+  background: #e4252a;
+  margin-right: .3rem;
+  flex: 1 0 .5rem;
+  border-radius: 50%;
+  position: relative;
+}
+.account_delete_btn::after {
+  position: absolute;
+  content: '';
+  background: #fff;
+  width: 50%;
+  height: .1rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
 }
 .account_info {
   flex: 1;

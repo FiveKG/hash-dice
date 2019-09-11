@@ -113,17 +113,22 @@ export default {
   },
   data () {
     return {
-      selectTab: 'wallet',
-      type: 'wallet',
+      // selectTab: 'wallet',
+      // type: 'wallet',
       showDialog: false,
       showExDialog: false,
       noPadding: false
     }
   },
+  computed: {
+    selectTab () {
+      console.log('正在前往页面',this.$store.state.wallet.selectedTab)
+      return this.$store.state.wallet.selectedTab
+    }
+  },
   created () {
     this.initData()
     getAdImg().then(res => {
-      console.log('getAdImg', res)
       if (res.code === 1) {
         let arr = this.$store.state.wallet.discoverSwiper
         arr.splice(0)
@@ -215,59 +220,60 @@ export default {
     pogconfirm() {
       window.open('http://web.svconcloud.com/download/', '_system', 'location=yes');
     },
-    async initData() {
-      const selectedTab = this.$store.state.wallet.selectedTab
-      const temp_wallets = this.$store.state.wallet.localFile.wallets
-      // if (temp_wallets.length <= 0) return
+    async initData({...data}) {
+      console.log('targetTab',data)
+      const selectedTab = data.targetTab? data.targetTab : this.$store.state.wallet.selectedTab
+      const currentAcc = this.$store.state.wallet.assets
+      if (selectedTab == 'xx') {
+        // 当前不存在账户放弃跳转
 
-      if (selectedTab === 'assets') {
-        if (this.$store.state.wallet.localFile.wallets.length) {
-          this.type = 'assets'
-          this.selectTab = 'assets'
-        } else {
-          this.type = 'wallet'
-          this.selectTab = 'wallet'
-        }
-      } else {
-        if (selectedTab === 'invitation') {
-          this.noPadding = true
-        }
-        this.type = selectedTab
-        this.selectTab = selectedTab
-      }
-      // console.log('index-init',this.type,this.selectTab)
-      if(selectedTab == 'xx'){ //如果未绑定跳转到绑定页面
-        if (temp_wallets.length>0){
-          console.log('我进来了')
-          const response = await api.isBind({account_name: temp_wallets.slice()[0].accountNames[0]})
-          if (response.code==1){
-            console.log('response.data.is_bind',response.data.is_bind)
-            if(response.data.is_bind==true){
-              this.$store.commit('wallet/setTbgBindStatus', true)
-              return
-            }else{
-              this.$store.commit('wallet/setTbgBindStatus', false)
-              this.selectTab='Binding'
-              return
-            }
+        if (!currentAcc || !currentAcc.account) return
+
+        // 存在用户的话判断是否绑定
+        const response = await api.isBind({account_name: currentAcc.account})
+        if (response.code == 1){
+          if(response.data.is_bind==true){
+            this.$store.commit('wallet/setTbgBindStatus', true)
+            // this.selectTab='xx'
+            console.log('前往xx页面')
+            this.$store.commit('wallet/setSelectedTab', 'xx')
+            return
           }else{
+            this.$store.commit('wallet/setTbgBindStatus', false)
+            // this.selectTab='Binding'
+            console.log('前往binding页面')
+            this.$store.commit('wallet/setSelectedTab', 'Binding')
             return
           }
         }else{
           return
         }
+      } else if (selectedTab === 'assets') {
+        if (this.$store.state.wallet.localFile.wallets.length) {
+          // this.type = 'assets'
+          // this.selectTab = 'assets'
+          this.$store.commit('wallet/setSelectedTab', 'assets')
+          return
+        } else {
+          // this.type = 'wallet'
+          // this.selectTab = 'wallet'
+          this.$store.commit('wallet/setSelectedTab', 'wallet')
+          return
+        }
+      } else if (selectedTab === 'invitation') {
+          this.noPadding = true
       }
+      this.$store.commit('wallet/setSelectedTab', selectedTab)
     },
-    clickTab(type) {
-      if (type === 'invitation') {
+    clickTab(target) {
+      if (target === 'invitation') {
         this.noPadding = true
-      } else if (type === 'exchange') {
+      } else if (target === 'exchange') {
         window.plugins.launcher.canLaunch({packageName:'com.isecsp.pogex'}, successCallback, errorCallback);
       } else {
         this.noPadding = false
       }
-      this.$store.commit('wallet/setSelectedTab', type)
-      this.initData()
+      this.initData({targetTab:target})
       const that = this
       function successCallback(data) {
         console.log('success', data)
@@ -286,12 +292,14 @@ export default {
   watch: {
     '$store.state.wallet.localFile.wallets'(newVal) {
       if (!newVal.length) {
-        this.type = 'wallet'
+        // this.type = 'wallet'
+        this.$store.commit('wallet/setSelectedTab', 'wallet')
       }
     },
     '$store.state.wallet.tbgIsBind': function(newVal, oldVal) {
-      console.log('newVal',newVal,this.$store.state.wallet.tbgIsBind)
-      this.selectTab = 'xx'
+      if (newVal === true) {
+        this.$store.commit('wallet/setSelectedTab', 'xx')
+      }
     }
   },
 }

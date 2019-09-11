@@ -18,7 +18,16 @@
               </div>
           </div>
 
-      <!-- 文字下拉 -->
+      <!-- 区块滚动 -->
+        <div class="recording"   >
+            <transition-group name="scroll" >
+              <div style="display:inline-block" class="row list-complete-item" v-for="item in items" :key='item.twenty'>
+                  <div class="display_ib" style="width: 20%;height: 100%;"><p class=" font_four p_A" style="line-height: .64rem; ">{{item.timestamp}}</p></div>
+                  <div class="display_ib" style="width: 60%;height: 100%;"><p class=" font_four p_A" style="line-height: .64rem; ">{{item.block_num}}</p> </div>
+                  <div class="display_ib" style="width: 20%;height: 100%;"><p class=" font_four p_A" style="line-height: .64rem; ">{{item.id}}1111111111111</p></div>
+              </div>
+            </transition-group> 
+        </div>
         
       <!-- 全球彩 -->
       <div class="globalColor">
@@ -33,23 +42,13 @@
       </div>
       
       <!-- 按钮部分 -->
-      <div style="width: 80%;height: 1rem;margin: 0 auto;border-radius: 5px;background: rgb(54,54,54);">
-          <div class="display_ib vertical_top" style="width:1rem;height:1rem;">
-             <img style="width:50%;height:50%;margin: 25% 25%;" src="@/assets/invitation2/u7.png">
-          </div>
-          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);">
-              <p class=" font_five" style="line-height:1rem;text-align: center;">-</p>
-          </div>
-          <div class="display_ib vertical_top" style="width:1.8rem;height:1rem;">
-              <p class=" font_five orange" style="line-height:1rem;text-align: center;">1</p>
-          </div>
-          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);">
-              <p class=" font_five orange" style="line-height:1rem;text-align: center;">+</p>
-          </div>
-          <div class="display_ib vertical_top" style="width:3rem;height:1rem;">
-              <p class=" font_five" style="line-height:1rem;text-align: center;color: #E4E4E4;">@ 1 UE</p>
-          </div>
-      </div>
+       <div style="width: 80%;height: 1rem;margin: 0 auto;border-radius: 5px;background: rgb(54,54,54);">
+          <div class="display_ib vertical_top" style="width:1rem;height:1rem;"><img style="width:50%;height:50%;margin: 25% 25%;" src="@/assets/invitation2/u7.png"></div>
+          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five" style="line-height:1rem;text-align: center;">-</p></div>
+          <div class="display_ib vertical_top" style="width:1.8rem;height:1rem;"><p class=" font_five orange" style="line-height:1rem;text-align: center;">1</p></div>
+          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five orange" style="line-height:1rem;text-align: center;">+</p></div>
+          <div class="display_ib vertical_top" style="width:3rem;height:1rem;"><p class=" font_five" style="line-height:1rem;text-align: center;color: #E4E4E4;">@ 1 UE</p></div>
+        </div>
 
       <!-- key -->
       <p class="ukey">1 key = 0.1 UE</p>
@@ -114,7 +113,11 @@
     </ons-page>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
+
+//滚动区域
+import ClientSocket from '@/socket/socketWs'
+
 export default {
    name: '',
    data() {
@@ -129,8 +132,13 @@ export default {
             {time:'52期',num:'09/03  01:43:10',key:'5 Key'},
             {time:'53期',num:'09/03  01:43:10',key:'1 Key'},
             {time:'54期',num:'09/03  11:43:10',key:'1 Key'},
-          ]
-            
+          ],
+           items:[    // 滚动
+              {timestamp:"15:23:02.0",block_num:33283278,
+                id:'...'+"F7B195473D4F09BC8F1",treasureKey:1
+                }
+           ],
+           
        }
    },
    methods:{
@@ -142,10 +150,90 @@ export default {
      },
      randomBetting(){
         this.$toast('恭喜你！随机投注成功')
-     }
+     },
+     //滚动区域
+    initSocket() {
+            // ClientSocket.link().then(async connected => {
+            //     // console.log('link',connected)
+            //     if (connected) {
+            //         try {
+            //             let rewards = await ClientSocket.getReward({type:'less'})
+            //             if (rewards.type === 'reward_history') {
+            //                 console.log(222,rewards)
+            //                 let record = rewards.result
+            //                 if (record) {
+            //                     let list = []
+            //                     for (let item of record) {
+            //                         if (item.open_code) {
+            //                             let second = format(parse(item.end_time), 'HH:mm') + ':00'
+            //                             list.push({
+            //                                 session_id: item.session_id,
+            //                                 award_num: item.open_code.replace(/,/g,' '),
+            //                                 time: second
+            //                             })
+            //                         }
+            //                     }
+            //                     this.rewardRecord = list
+            //                     this.sessionId = parseInt(list[0].session_id) + 1
+            //                 }
+            //             }
+            //             const moreReward = await ClientSocket.getReward({type: 'more', page: this.page})
+            //             if (moreReward.type === 'reward_history') {
+            //                 console.log(222,moreReward)
+            //                 if (moreReward.result) {
+            //                     for (let item of moreReward.result) {
+            //                         if (item.open_code) {
+            //                             let bigOrSmall,oddsOrEven
+            //                             let numbers = item.open_code.split(',')
+            //                             let lastNum = Number.parseInt(numbers[numbers.length - 1])
+            //                             if (lastNum > 5) {
+            //                                 bigOrSmall = 'b'
+            //                             } else {
+            //                                 bigOrSmall = 's'
+            //                             }
+            //                             if (lastNum % 2) {
+            //                                 oddsOrEven = 'o'
+            //                             } else {
+            //                                 oddsOrEven = 'e'
+            //                             }
+            //                             this.lotteryRecords.push({
+            //                                 time: format(parse(item.end_time), 'MM/DD HH:mm'),
+            //                                 phase: item.session_id,
+            //                                 number: item.open_code.replace(/,/g,' '),
+            //                                 bigOrSmall: bigOrSmall,
+            //                                 oddsOrEven: oddsOrEven
+            //                             })
+            //                         }
+            //                     }
+            //                 }
+            //             }
+
+
+                        
+            //             // let betRecord = await ClientSocket.getBetRecord()
+            //             // if (betRecord.result) {
+            //             //     for (let item of betRecord.result) {
+            //             //         this.betRecord.unshift({
+            //             //             account_name: item.account_name,
+            //             //             quantity: item.quantity.split(' ')[0],
+            //             //             bet_id: item.session_id,
+            //             //             bet_time: format(parse(item.create_time), 'HH:mm:ss')
+            //             //         })
+            //             //     }
+            //             // }
+            //         } catch (error) {
+            //             console.log(error)
+            //         }
+            //     }
+            // })
+            console.log(ClientSocket.link())
+        }, 
    },
    mounted(){
      
+   },
+   created(){
+     this.initSocket();
    }
 }
 </script>
@@ -464,4 +552,40 @@ export default {
   .my_toast{
     top:50%;
   }
+
+  // 滚动区域
+  .scroll-enter-active, .scroll-leave-active {
+  transition: all 1s;
+}
+  .scroll-enter, .scroll-leave-to{
+    transform: translateY(-30px);
+  }
+  .scroll-move{
+    transition:transform 1s;
+  }
+
+  
+/* 滚动样式    */
+.recording{
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 4.48rem;
+  margin: 0 0 1px 0;
+}
+.row{
+  width: 100%;
+  height: 0.64rem;
+  position: relative;
+}
+.scroll-enter-active, .scroll-leave-active {
+  transition: all .5s;
+}
+.scroll-enter, .scroll-leave-to{
+  transform: translateY(-30px);
+}
+.scroll-move{
+  transition:transform .5s;
+}
+
 </style>

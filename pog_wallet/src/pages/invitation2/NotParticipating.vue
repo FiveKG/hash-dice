@@ -225,7 +225,7 @@
               <!-- 下拉部分 -->
               <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
                   <div class="select-item" @click="jumpnormal()">普通用户</div>
-                  <div class="select-item" @click="jumpglobal()">全球合作伙伴</div>
+                  <div v-if="isGlobal" class="select-item" @click="jumpglobal()">全球合作伙伴</div>
               </div>
             </div>
             <div class="select-wrap">
@@ -364,7 +364,7 @@ export default {
                 selected_ipt:false,
                 tbg:0,
 
-                account_type:'',     //账号类型
+                isGlobal:'',     //账号类型
                 account_activation:'true',     //账号是否激活
                 Balance:0,      //余额
                 Amount:1,       //额度
@@ -457,21 +457,23 @@ export default {
       MDialog
     },
     created(){
-        this.account_name = this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];
-        api.isActive({
-          account_name: this.account_name
-        }).then(res => {
-          switch(res.data.is_activated){
-            case 0:
-              this.atv_text = '未激活';this.subAccountQuantity=false;this.account_activation=false;break;
-            case 10:
-              this.atv_text = '已激活';this.subAccountQuantity=true;break;
-            case 20:
-              this.atv_text = '已激活';this.subAccountQuantity=false;break;
-            case 30:
-              this.subAccountQuantity=true;;break;
-          }
-        })
+        this.account_name = this.$store.state.wallet.assets.account;
+        //判断是否激活
+        // api.isBind({account_name: this.account_name}).then(res => {
+        //   if (res.code==1){
+        //     console.log(22222222222222,res);
+        //     if(res.data.is_bind==true){
+        //     return 
+        //     }else{
+        //       this.$router.push({
+        //           name: 'IndexT',
+        //         })
+        //     }
+        //   }
+        // })
+        //
+
+        this.is_active()
         api.getTradePrice().then(res => {
           this.trade_price = res.data.price
         })
@@ -516,8 +518,8 @@ export default {
         })
         api.getType({account_name:this.account_name}).then(res => {    //获取当前用户的信息
           if(res.code){
-            this.account_type=res.data.account_type;
-            }
+            res.data.account_type=="global"?this.isGlobal=true:this.isGlobal=false;
+          }
         })
         this.availableQuantity();     //可售数量
 

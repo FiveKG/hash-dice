@@ -83,7 +83,7 @@ export default {
     }         
   },
   created(){
-      this.account_name = this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];
+      this.account_name = this.$store.state.wallet.assets.account;
       api.getType({account_name:this.account_name}).then(res => {    // 获取账号类型
             if (res.code === 1) {
                 res.data.account_type=="global"?this.account_type=true:this.account_type=false;

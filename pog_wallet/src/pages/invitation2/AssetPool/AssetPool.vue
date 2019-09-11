@@ -144,9 +144,7 @@ export default {
         },
   },
   created(){
-      // console.log(22222222222222222222222,this.$store.state.wallet.localFile.wallets.slice());
-      // console.log(33333333333333333333,this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0]);
-      this.accountName=this.$store.state.wallet.localFile.wallets.slice()[0].accountNames[0];
+      this.accountName=this.$store.state.wallet.assets.account;
       api.effectiveAssets({
           account_name: this.accountName
         }).then(res => {
