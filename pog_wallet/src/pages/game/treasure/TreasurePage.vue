@@ -98,12 +98,21 @@
                   <img class="pic" src="@/assets/img/u9825.png" alt="">
               </v-ons-row>
 
-              <v-ons-row class="selectrow">
+              <v-ons-row class="selectrow" @click="jumpTreasureRule">
                   <img class="rule" src="@/assets/img/u9832.png" alt="">
                   <span>规则</span>
               </v-ons-row>
           </div>
         </v-ons-action-sheet> 
+
+        <div v-if="betSuccess" class="success">
+            <p style=" font-size: .5rem;color: #FFFFFF;margin-top: .2rem;">恭喜投注成功</p>
+            <p style=" color: #FFFFFF;font-size: .5rem;">祝你好运常随</p>
+        </div>
+        <div v-if="betFailure" class="failure">
+            <p style=" font-size: 0.5rem;color: rgb(51, 51, 51);margin-top: 0.4rem;">余额不足</p>
+        </div>
+
 
        </div>
      </slot>
@@ -130,6 +139,8 @@ export default {
       twenty:1,      //模式选择  20*0.1为1  20*0.5为2  100*0.1为3
       allMy:true,   //区分我的 全部
       actionSheetVisible: false,   //下拉框
+      betSuccess:false,        //成功显示
+      betFailure:false,        //失败显示
       publicData:[   //公用界面数据
 
       ],
@@ -156,6 +167,11 @@ export default {
        },
        selectAllMy(index) {
          this.allMy=index;
+       },
+       jumpTreasureRule() {
+         this.$router.push({
+          name: 'TreasureRule',
+        })
        },
     //滚动区域
     initSocket() {
@@ -237,12 +253,11 @@ export default {
   watch: {
         '$store.state.wallet.block': {
             handler(newVal, oldVal) {
-                // console.log(12311111111111,this.$store.state.wallet.block);
-                // this.treasureKey+=1;
-                // this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
-                // id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey
-                // });
-                // this.items.splice(10);
+                console.log(12311111111111,this.$store.state.wallet.block);
+                this.treasureKey+=1;
+                this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
+                id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey});
+                this.items.splice(10);
 
             }
         },
@@ -335,7 +350,26 @@ export default {
   padding-right:.2rem;
 }
 
-
+.success{
+  position: absolute;
+  background: rgb(225,6,6);
+  width: 40%;
+  height: 1.8rem;
+  top: 62%;
+  left: 30%;
+  border-radius: 5px;
+  text-align: center;
+}
+.failure{
+  position: absolute;
+  background: rgb(225,225,225);
+  width: 40%;
+  height: 1.5rem;
+  top: 62%;
+  left: 30%;
+  border-radius: 5px;
+  text-align: center;
+}
 
 
 /* div{
