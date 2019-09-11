@@ -42,7 +42,7 @@
             </v-ons-col>
              <v-ons-col>
               <div class="type_item"  @click="gogame()">
-                <img src="@/assets/invitation2/u1.png">
+                <div><img src="@/assets/invitation2/u1.png"></div>
                 <div class="type_detail">
                   <div class="type_name">全球彩</div>
                   <div class="summary">全球彩游戏</div>
