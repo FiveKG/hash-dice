@@ -103,6 +103,12 @@ import TreasureGo from './pages/game/treasure/TreasureGo'
 import TreasurePage from './pages/game/treasure/TreasurePage'
 import LotteryDetailsNoLottery from './pages/game/treasure/LotteryDetailsNoLottery'
 import BettingDetails from './pages/game/treasure/BettingDetails'
+import TreasureRule from './pages/game/treasure/TreasureRule'
+import HashDiceGo from './pages/game/hashdice/HashDiceGo'
+import HashDicePage from './pages/game/hashdice/HashDicePage'
+import HashDiceRule from './pages/game/hashdice/HashDiceRule'
+import HashDiceDetails from './pages/game/hashdice/HashDiceDetails'
+
 
 import GlovalLotto from './pages/game/qqc/GlovalLotto'
 import LottoGame from './pages/game/qqc/LottoGame'
@@ -606,6 +612,31 @@ const router = new Router({
       path: '/bettingDetails',
       name: 'BettingDetails',
       component: BettingDetails,
+    },
+    {
+      path: '/treasureRule',
+      name: 'TreasureRule',
+      component: TreasureRule,
+    },
+    {
+      path: '/hashDiceGo',
+      name: 'HashDiceGo',
+      component: HashDiceGo,
+    },
+    {
+      path: '/hashDicePage',
+      name: 'HashDicePage',
+      component: HashDicePage,
+    },
+    {
+      path: '/hashDiceRule',
+      name: 'HashDiceRule',
+      component: HashDiceRule,
+    },
+    {
+      path: '/hashDiceDetails',
+      name: 'HashDiceDetails',
+      component: HashDiceDetails,
     },
     {
       path: '/GlovalLotto',
