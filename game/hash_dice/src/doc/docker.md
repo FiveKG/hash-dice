@@ -1,14 +1,10 @@
 ### docker 部署 `rabbitmq`
-docker run -d --name rabbitmq rabbitmq && \
-docker exec -it rabbitmq /bin/bash 
+docker run -d -p 5672:5672 --name rabbitmq rabbitmq && docker exec -it rabbitmq /bin/bash
 rabbitmqctl add_user mq_user "pass_2019" && \
 rabbitmqctl set_user_tags mq_user administrator && \
 rabbitmqctl set_permissions mq_user -p / ".*" ".*" ".*" && \
 echo "loopback_users = none
 listeners.tcp.1 = 0.0.0.0:5672" > /etc/rabbitmq/rabbitmq.conf
-
-docker run -d --name rabbitmq -e RABBITMQ_DEFAULT_USER=mq_user -e RABBITMQ_DEFAULT_PASS=password rabbitmq
-docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 -e RABBITMQ_DEFAULT_USER=mq_user -e RABBITMQ_DEFAULT_PASS=pass_2019 rabbitmq:3-management
 
 ### docker 部署 postgres
 
@@ -20,19 +16,19 @@ mkdir $PWD/postgresql/data -p
 printf "cd $PWD/postgresql\n"
 cd $PWD/postgresql
 printf "create and run postgres docker container\n"
-docker run --name postgres -v $PWD/data:/var/lib/postgresql/data --privileged=true -d postgres
+docker run -d -p 5432:5432 --name postgres -v $PWD/data:/var/lib/postgresql/data --privileged=true  postgres 
 
 docker exec -it postgres bash
-su postgres && psql
+sudo -u postgres psql
 \password postgres pass_2019
-CREATE USER invest_db_user WITH PASSWORD 'pass_2019';
-CREATE DATABASE investment OWNER invest_db_user;
-GRANT ALL ON DATABASE investment to invest_db_user;
+CREATE USER hash_dice_user WITH PASSWORD 'pass_2019';
+CREATE DATABASE hash_dice OWNER hash_dice_user;
+GRANT ALL ON DATABASE hash_dice to hash_dice_user;
 
 # 导出
 pg_dump -U lucky_money -h 172.17.0.4 -f ./lucky_money.sql lucky_money
 # 导入
-docker exec -i postgres psql -U lucky_money -d lucky_money < ./lucky_money.sql
+docker exec -i postgres psql -U hash_dice_user -d hash_dice < ./hash_dice.sql
 ```
 
 ### docker 部署 redis
@@ -47,7 +43,6 @@ wget https://raw.githubusercontent.com/antirez/redis/3.2.12/redis.conf -O conf/r
 
 sed -i 's/logfile ""/logfile "access.log"/' conf/redis.conf
 sed -i 's/# requirepass foobared/requirepass redis_pass_2019/' conf/redis.conf
-sed -i 's/appendonly no/appendonly yes/' conf/redis.conf
 
-docker run -v $PWD/data:/data -v $PWD/conf/redis.conf:/etc/redis/redis.conf --privileged=true --name redis -d redis redis-server /etc/redis/redis.conf
+docker run -p 7758:7758 -v $PWD/data:/data -v $PWD/conf/redis.conf:/etc/redis/redis.conf --privileged=true --name redis -d redis redis-server /etc/redis/redis.conf
 ```

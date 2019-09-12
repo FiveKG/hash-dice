@@ -13,7 +13,7 @@ function setEnv() {
       process.env.TBG_DB_PORT = config.db.port.toString();
   }
   if(!process.env.TBG_DB_USER){
-      process.env.TBG_DB_USER = config.db.username;
+      process.env.TBG_DB_USER = config.db.user;
   }
   if(!process.env.TBG_DB_PASS){
       process.env.TBG_DB_PASS = config.db.password;
@@ -31,7 +31,7 @@ function setEnv() {
       process.env.TBG_REDIS_PASS = config.redis.auth;
   }
   if(!process.env.RABBIT_PASS){
-      process.env.RABBIT_PASS = config.rabbitmq.pass;
+      process.env.RABBIT_PASS = config.rabbitmq.pwd;
   }
   if(!process.env.RABBIT_PORT){
       process.env.RABBIT_PORT = config.rabbitmq.port.toString();

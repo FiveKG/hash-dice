@@ -11,8 +11,9 @@ const redis = new Redis(port, host, {
   "showFriendlyErrorStack": true , 
   "db": 5,
   "keepAlive": 10000 , 
-  "connectionName": "lucky-money" , 
+  "connectionName": "hash-dice" , 
   "autoResubscribe": true
 });
 
+//console.log(redis)
 module.exports = redis;

@@ -2,10 +2,6 @@
 require("./setEnv.js")();
 const express = require("express");
 const logger = require("./src/common/logger.js");
-// const sb = require("@yz/yue-svc-base");
-// const service_name = sb.service_define.name;
-
-// logger.info(`init ${service_name} .`);
 
 const app = express();
 const nginx_host = `127.0.0.1`;
@@ -48,8 +44,7 @@ if (process.env.NODE_ENV === 'production') {
 const server = module.exports = app.listen(9527, "0.0.0.0"); //选择一个随机端口
 server.on('listening', async () => {
   // require("@yz/yue-service-register")(`${service_name}`, port);
-  // 初始化系统服务数据
-  require("./src/build/initDate");
+  // 初始化系统服务数据;
   logger.info(`**** server of pools running at http://localhost:${port}/  ****`)
 });
 
