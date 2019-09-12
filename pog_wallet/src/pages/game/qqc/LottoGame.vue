@@ -226,9 +226,23 @@ export default {
             //         }
             //     }
             // })
-            console.log(ClientSocket.link())
+            // ClientSocket.link().then(async connected=>{
+            //   console.log(11111111111,connected)
+            // })
         }, 
    },
+    watch: {
+        // '$store.state.wallet.block': {
+        //     handler(newVal, oldVal) {
+        //         console.log(12311111111111,this.$store.state.wallet.block);
+        //         this.treasureKey+=1;
+        //         this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
+        //         id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey});
+        //         this.items.splice(10);
+
+        //     }
+        // },
+    },
    mounted(){
      
    },
