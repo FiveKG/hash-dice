@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import welcome from './pages/welcome/index.vue'
 import Index from './pages/Index'
 import Scanner from './pages/scanner/Scanner'
 import Transfer from './pages/assets/Transfer'
@@ -131,9 +132,14 @@ Vue.use(Router)
 const router = new Router({
   routes: [
     {
-      path: '/',
+      path: '/index',
       name: 'index',
       component: Index,
+    },
+    {
+      path: '/',
+      name: 'welcome',
+      component: welcome,
     },
     {
       path: '/selectBlockchain',
@@ -700,4 +706,7 @@ const router = new Router({
   ]
 })
 
+// router.beforeEach((to, from, next) => {
+//   // ...
+// })
 export default router
