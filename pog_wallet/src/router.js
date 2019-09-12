@@ -132,12 +132,12 @@ Vue.use(Router)
 const router = new Router({
   routes: [
     {
-      path: '/index',
+      path: '/',
       name: 'index',
       component: Index,
     },
     {
-      path: '/',
+      path: '/welcome',
       name: 'welcome',
       component: welcome,
     },
@@ -706,7 +706,4 @@ const router = new Router({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   // ...
-// })
 export default router

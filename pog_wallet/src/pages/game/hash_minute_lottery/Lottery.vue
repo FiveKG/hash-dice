@@ -7,8 +7,8 @@
           <div class="logo"><img src="@/assets/minute_lottery.png" alt=""></div>
           <div class="title">哈希分分彩</div>
           <div class="action">
-            <div class="more"><img src="@/assets/img/更多.png" alt=""></div>
-            <div class="exit"><img src="@/assets/img/u102.png" alt=""></div>
+            <div @click="actionSheetVisible = true" class="more"><img src="@/assets/img/更多.png" alt=""></div>
+            <div @click="back" class="exit"><img src="@/assets/img/u102.png" alt=""></div>
           </div>
         </div>
         <!-- 实时区块记录 -->
@@ -110,6 +110,26 @@
             </div>
           </div>
         </div>
+        <v-ons-action-sheet
+          :visible.sync="actionSheetVisible"
+          cancelable
+        >
+          <div class="selectwrap">
+              <div class="wdclose" @click="actionSheetVisible = false">
+              </div>
+              <v-ons-row class="selectrow" >
+                  <img class="people" src="@/assets/img/u9830.png" alt="">
+                  <span>eoscheshieos</span>
+                  <img class="pic" src="@/assets/img/u9827.png" alt="">
+                  <img class="pic" src="@/assets/img/u9825.png" alt="">
+              </v-ons-row>
+
+              <v-ons-row class="selectrow" @click="jumpTreasureRule">
+                  <img class="rule" src="@/assets/img/u9832.png" alt="">
+                  <span>规则</span>
+              </v-ons-row>
+          </div>
+        </v-ons-action-sheet> 
       </div>
     </slot>
   </vpage>
@@ -128,6 +148,7 @@ export default {
    },
   data() {
     return {
+      actionSheetVisible: false,
       // 实时区块记录
       CurrentBlockRecord: [
         { num: 33283273 , code: 'F7B195473D4F09BC8F1' , time: '15:23:02.0' },
@@ -202,6 +223,14 @@ export default {
     GoToBetDetail(){
       this.$router.push({ path:'/BetDetail' });
     },
+    back() {
+      this.$router.go(-2)
+    },
+    jumpTreasureRule() {
+      this.$router.push({
+      name: 'TreasureRule',
+    })
+    }
   },
   created(){
     // 初始化Socket连接
@@ -448,6 +477,53 @@ export default {
     width: 100%;
   }
 
+/* 下拉框 */
+.selectwrap{
+  background-color: #fff;
+  min-height: 200px;
+  max-height: 100vh;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+}
+.wdclose{
+  width:.6rem;
+  height:.6rem;
+  background:url("../../../assets/img/u102.png") no-repeat center center;
+  background-size:1rem 1rem;
+  position:absolute;
+  right:.8rem;
+  top:.65rem;
+}
+.selectrow{
+  padding:.6rem;
+  align-items:center;
+  font-size:0.5rem;
+  font-family: "Bahnschrift Regular", Bahnschrift;
+  color:#FF9900;
+  font-weight: 400;
+}
+.selectrow span{
+  padding-right:1rem;
+}
+.pic{
+  width: .7rem;
+  height: .5rem;
+  padding-right:.5rem;
+}
+.people{
+  width:0.8rem;
+  height:0.8rem;
+  padding-right:.2rem;
+}
+.rule{
+  width:0.8rem;
+  height:0.8rem;
+  padding-right:.2rem;
+}
 </style>
 
 <style>

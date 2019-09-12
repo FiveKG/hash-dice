@@ -148,6 +148,19 @@ export default new Vuex.Store({
           state.blockList.push(block.result);
         },
       }
-    }
+    },
+    welcomePage: {
+      strict: true,
+      namespaced: true,
+      state: {
+        // 是不是第一次启动
+        isFirst: true
+      },
+      mutations: {
+        setWelcomeStatus (state, status) {
+          state.isFirst = status
+        }
+      }
+    },
   }
 })
