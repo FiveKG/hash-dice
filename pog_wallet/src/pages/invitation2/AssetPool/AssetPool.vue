@@ -12,14 +12,14 @@
           <p >全球区块链去中心化游戏应用平台</p>
           <!-- 有效资产包矿机 -->
           <div class="num_tbg" v-if="log">
-            <span style="color:RGB(255,153,0);font-size:0.8rem;">74.6124 </span>
-            <span style="color:rgb(161, 161, 161);font-size:0.8rem;">1206 </span>
-            <span style="color:RGB(255,153,0);font-size:0.8rem;">TBG</span>
+            <span style="color:RGB(255,153,0);font-size:0.7rem;">{{mined_amount[0]}}.{{mined_amount[1][0]}} </span>
+            <span style="color:rgb(161, 161, 161);font-size:0.7rem;">{{mined_amount[1][1]}} </span>
+            <span style="color:RGB(255,153,0);font-size:0.7rem;">TBG</span>
           </div>
           <!-- 已结束资产包矿机 -->
           <div class="num_tbg" v-if="!log">
             <p >已挖矿至线性释放池</p>
-            <p style="padding-bottom: 0.1rem;" class="font_weight_bold">74.6124 1206</p>
+            <p style="padding-bottom: 0.1rem;" class="font_weight_bold">{{mined_amount[0]}}.{{mined_amount[1]}}</p>
             <p class="font_weight_bold">TBG</p>
         </div>
           <p style="color:RGB(255,153,0);padding-bottom: .3rem;">收益需收取才可至线性释放池释放</p>
@@ -82,7 +82,7 @@
 import MyPage from '@/components/MyPage'
 import axios from 'axios';
 import api from '@/servers/invitation'
-import {effectiveAssets,overAssets,assetMiningCharge,isBind} from '@/servers/invitation'
+import {effectiveAssets,overAssets,assetMiningCharge,} from '@/servers/invitation'
 
 
 
@@ -133,8 +133,8 @@ export default {
             for(var i=0;i<this.start_mined.length;i++){
               id.push(this.start_mined[i].mining_id);
             }
-            const res = await assetMiningCharge({account_name:"tbtestuser1",mining_id:id})
-            // console.log('withdrawHistory',res)
+            const res = await api.assetMiningCharge({account_name:"tbtestuser1",mining_id:id})
+            console.log('withdrawHistory',res)
             if (res.code === 1) {
               console.log('withdrawHistory',res.data)
             }
@@ -142,26 +142,29 @@ export default {
             console.log(error)
           }
         },
+        addSpace (str) { 
+        return str.slice(0,str.length-4) + " " +str.slice(-4)
+        },
   },
   created(){
       this.accountName=this.$store.state.wallet.assets.account;
-      api.effectiveAssets({
-          account_name: this.accountName
-        }).then(res => {
-          
-        })
       //获取有效矿机
-      effectiveAssets({account_name:this.accountName}).then(res => {
+      api.effectiveAssets({account_name:this.accountName}).then(res => {           
         if (res.code === 1) {
         this.start_mined=res.data.mining_info;
         this.mining_count=res.data.mining_count;
         this.mined_count=res.data.mined_count;
-        this.mining_amount=res.data.mining_amount;
+
+        this.mined_amount=res.data.mined_amount;
+        this.mined_amount = res.data.mined_amount.split('.');
+        this.mined_amount[1] = this.addSpace(this.mined_amount[1]);
+        this.mined_amount[1] = this.mined_amount[1].split(' ');
+        
         }
       })
       // 获取结束矿机
-      overAssets({account_name:"yujinsheng11"}).then(res => {
-        console.log('bindReferrer',res);
+      api.overAssets({account_name:"yujinsheng11"}).then(res => {
+        // console.log('bindReferrer',res);
         if (res.code === 1) {
         this.over_mined=res.data.mining_info;
         }

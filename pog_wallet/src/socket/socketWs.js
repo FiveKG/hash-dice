@@ -31,7 +31,7 @@ export default class ClientSocket {
 						const [block] = JSON.parse(msg.data.replace('42/block,', ''));
 						// console.log("block: ", block);
 						if (block.type == 'block') {
-							console.log('block', block)
+							// console.log('block', block)
 							// socket.send('setBlock', block.result)
 						}
 					}
