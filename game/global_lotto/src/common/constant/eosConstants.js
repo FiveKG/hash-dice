@@ -4,7 +4,7 @@
 // 参与 TBG1 所需 UE 额度
 const BASE_AMOUNT = "100";
 // TBG1 收款账户
-const WALLET_RECEIVER = "tbgjoin";
+const RECEIVER_ACCOUNT = "tbgjoin";
 // TBG1 出款账户
 const DISPENSE_ACCOUNT = "tbgjoin";
 // EOS token 合约账户
@@ -16,6 +16,12 @@ const UE_TOKEN_SYMBOL = "UE"
 // TBG token 合约账户
 const TBG_TOKEN = "tbgtokencoin"
 const TBG_TOKEN_SYMBOL = "TBG"
+
+// 庄家
+const BANKER = "lottobanker"
+
+// 代投注账号
+const AGENT_ACCOUNT = "globallotto"
 
 // 全球彩合约帐号
 const GLOBAL_LOTTO_CONTRACT = "globallotto";
@@ -31,7 +37,7 @@ const PRIVATE_KEY_TEST = "5KSzppBW7LcwVQ4hA1AQP4vZYWq1uEv4EQnZ5yz1eu41eLgrLK2,5J
  */
 const CONSTANT = {
     "BASE_AMOUNT": BASE_AMOUNT,
-    "WALLET_RECEIVER": WALLET_RECEIVER,
+    "RECEIVER_ACCOUNT": RECEIVER_ACCOUNT,
     "DISPENSE_ACCOUNT": DISPENSE_ACCOUNT,
     "EOS_TOKEN": EOS_TOKEN,
     "TBG_TOKEN": TBG_TOKEN,
@@ -41,7 +47,9 @@ const CONSTANT = {
     "EOS_TOKEN_SYMBOL": EOS_TOKEN_SYMBOL,
     "UE_TOKEN_SYMBOL": UE_TOKEN_SYMBOL,
     "TBG_TOKEN_SYMBOL": TBG_TOKEN_SYMBOL,
-    "GLOBAL_LOTTO_CONTRACT": GLOBAL_LOTTO_CONTRACT
+    "GLOBAL_LOTTO_CONTRACT": GLOBAL_LOTTO_CONTRACT,
+    "BANKER": BANKER,
+    "AGENT_ACCOUNT": AGENT_ACCOUNT
 }
 
 module.exports = CONSTANT
@@ -50,7 +58,7 @@ module.exports = CONSTANT
  * @description 
  * @typedef { Object } Constant
  * @property { String } BASE_AMOUNT 投资额度
- * @property { String } WALLET_RECEIVER 收款帐号
+ * @property { String } RECEIVER_ACCOUNT 收款帐号
  * @property { String } DISPENSE_ACCOUNT 出款帐号
  * @property { String } EOS_TOKEN EOS 代币合约帐号 eosio.token
  * @property { String } TBG_TOKEN TBG 代币合约帐号
@@ -61,4 +69,6 @@ module.exports = CONSTANT
  * @property { String } UE_TOKEN_SYMBOL UE 代币符号
  * @property { string } TBG_TOKEN_SYMBOL TBG 代币符号
  * @property { string } GLOBAL_LOTTO_CONTRACT 全球彩合约帐号
+ * @property { string } BANKER 庄家
+ * @property { string } AGENT_ACCOUNT 代投注账号
  */

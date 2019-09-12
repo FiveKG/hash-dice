@@ -7,4 +7,5 @@ module.exports = {
     "psGame": require("./psGame.js"),
     "psTrx": require("./psTrx"),
     "psModifyBalance": require("./psModifyBalance"),
+    "psBet": require("./psBet"),
 }

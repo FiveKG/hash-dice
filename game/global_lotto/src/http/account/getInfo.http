@@ -7,6 +7,8 @@ GET http://localhost:13021/config/get_config
 ### get account information
 GET http://localhost:13021/global_lotto/latest_game_session
 
-
 ### get account information
 GET http://localhost:13021/global_lotto/game_session
+
+### get account information
+GET http://localhost:13021/global_lotto/game_session_mine?account_name=yujinsheng11

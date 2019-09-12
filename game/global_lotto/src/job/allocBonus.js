@@ -3,12 +3,13 @@ const logger = require("../common/logger.js");
 const { Decimal } = require("decimal.js");
 const { xhr } = require("../common");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");
-const { UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants");
+const { UE_TOKEN_SYMBOL, BANKER, GLOBAL_LOTTO_CONTRACT } = require("../common/constant/eosConstants");
+const { TBG_TOKEN_COIN } = require("../common/constant/accountConstant");
 const { redis, generate_primary_key } = require("../common");
 const url = require("url");
 
 /**
- * 分配奖金
+ * 分配奖金，买中的奖金全部转入区块链帐号中
  * @param { any } prize_pool 奖池
  * @param { number } winCount 中奖号码个数数
  * @param { any[] } bonusAccList 中奖列表
@@ -19,7 +20,7 @@ const url = require("url");
 async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate, insertRewardSql) {
     const sqlList = [];
     // 存放 区块链转账
-    const actList = [];
+    const tmpActList = [];
     
     // 发放的金额
     let issued = new Decimal(0);
@@ -40,6 +41,22 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
                  ]
                 sqlList.push({ sql: insertRewardSql, values: opts });
                 issued = issued.add(oneKeyBonus);
+                
+                // 奖金由庄家从区块链转到用户的账户
+                tmpActList.push({
+                    account: TBG_TOKEN_COIN,
+                    name: "transfer",
+                    authorization: [{
+                        actor: BANKER,
+                        permission: 'active',
+                    }],
+                    data: {
+                        from: BANKER,
+                        to: info.account_name,
+                        quantity: `${ oneKeyBonus } ${ UE_TOKEN_SYMBOL }`,
+                        memo: `user ${ info.account_name } bingo ${ winCount } number, get ${ oneKeyBonus } ${ UE_TOKEN_SYMBOL } bonus`,
+                    }
+                });
             }
         } 
     } else {
@@ -56,18 +73,23 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
                     generate_primary_key(), info.gs_id, extra, info.account_name, "now()", info.bet_num,
                     winCount, winType, oneKeyBonus.toFixed(4), oneKeyBonus.toFixed(4)
                  ]
-
-                const balanceInfo = {
-                    "account_name": accountName,
-                    "release_amount": bindAirdrop,
-                    "sell_amount": 0,
-                    "active_amount": 0,
-                    "current_balance": acCurrentBalance,
-                    "op_type": bindId,
-                    "extra": { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE },
-                    "remark": acBalanceRemark,
-                }
                 
+                // 奖金由庄家从区块链转到用户的账户
+                tmpActList.push({
+                    account: TBG_TOKEN_COIN,
+                    name: "transfer",
+                    authorization: [{
+                        actor: BANKER,
+                        permission: 'active',
+                    }],
+                    data: {
+                        from: BANKER,
+                        to: info.account_name,
+                        quantity: `${ oneKeyBonus.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+                        memo: `user ${ info.account_name } bingo ${ winCount } number, get ${ oneKeyBonus.toFixed(4) } ${ UE_TOKEN_SYMBOL } bonus`,
+                    }
+                });
+
                 sqlList.push({ sql: insertRewardSql, values: opts });
                 issued = issued.add(oneKeyBonus);
                 // 开出超级大奖后，推荐人可得 10%，从奖池中扣除
@@ -87,13 +109,29 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
                         ]
                         sqlList.push({ sql: insertRewardSql, values: opts });
                         issued = issued.add(bonus);
+
+                        // 奖金由庄家从区块链转到用户的账户
+                        tmpActList.push({
+                            account: TBG_TOKEN_COIN,
+                            name: "transfer",
+                            authorization: [{
+                                actor: BANKER,
+                                permission: 'active',
+                            }],
+                            data: {
+                                from: BANKER,
+                                to: info.account_name,
+                                quantity: `${ oneKeyBonus.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+                                memo: `user ${ info.account_name } bingo ${ winCount } number, referrer get ${ bonus.toFixed(4) } ${ UE_TOKEN_SYMBOL } bonus`,
+                            }
+                        });
                     }
                 }
             }
         } 
     }
 
-    return { issued, sqlList };
+    return { issued, sqlList, tmpActList };
 }
 
 module.exports = allocBonus;

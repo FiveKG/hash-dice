@@ -59,37 +59,42 @@ async function accReward(openCode, betOrderList) {
     const rewardMap = new Map();
     // 分配奖金
     for (const info of betOrderList) {
-        const betNum = info.bet_num.split(",");
-        // 中奖号码的位置
-        const winCode = [];
-        let winCount = 0;
-        // reward_num: 0 , 8 , 9 , 0 , 1 , 2 , 1 , 8 , 7
-        // bet_code:   0 , 2 , 9 , 0 , 9 , 2 , 2 , 8 , 7
-        for (let i = 0; i < OPEN_CODE_COUNT; i++) {
-            if (openCode[i] === betNum[i]) {
-                // 中
-                winCount++
-                winCode[i] = 1
-            } else {
-                winCode[i] = 0
+        // 如果投注了多个 key 的号码，每组 9 位号码按竖线分割
+        // eg: 1,2,3,4,5,6,7,8,9|9,8,7,6,5,4,3,2,1 如果选了相同好，也是如此
+        const betNumGroup = info.bet_num.split("|");
+        for (const betInfo of betNumGroup) {
+            const betNum = betInfo.split(",");
+            // 中奖号码的位置
+            const winCode = [];
+            let winCount = 0;
+            // reward_num: 0 , 8 , 9 , 0 , 1 , 2 , 1 , 8 , 7
+            // bet_code:   0 , 2 , 9 , 0 , 9 , 2 , 2 , 8 , 7
+            for (let i = 0; i < OPEN_CODE_COUNT; i++) {
+                if (openCode[i] === betNum[i]) {
+                    // 中
+                    winCount++
+                    winCode[i] = 1
+                } else {
+                    winCode[i] = 0
+                }
             }
-        }
 
-        // 统计所有 key 中奖的用户
-        const accRewardInfo = rewardMap.get(winCount);
-        if (!!accRewardInfo) {
-            accRewardInfo.push({
-                "bet_num": info.bet_num,
-                "win_key": winCount,
-                ...info
-            })
-        } else {
-            const accRewardInfo = [{
-                "bet_num": info.bet_num,
-                "win_key": winCount,
-                ...info
-            }]
-            rewardMap.set(winCount, accRewardInfo);
+            // 统计所有 key 中奖的用户
+            const accRewardInfo = rewardMap.get(winCount);
+            if (!!accRewardInfo) {
+                accRewardInfo.push({
+                    "bet_num": info.bet_num,
+                    "win_key": winCount,
+                    ...info
+                })
+            } else {
+                const accRewardInfo = [{
+                    "bet_num": info.bet_num,
+                    "win_key": winCount,
+                    ...info
+                }]
+                rewardMap.set(winCount, accRewardInfo);
+            }
         }
     }
 

@@ -1,13 +1,13 @@
 // @ts-check
 const logger = require("../common/logger.js").child({ "@src/job/openGameSession.js": "游戏开奖" });
 const { Decimal } = require("decimal.js");
-const { pool } = require("../db");
+const { pool, psTrx } = require("../db");
 const { xhr } = require("../common");
 const { GLOBAL_LOTTO_CONTRACT } = require("../common/constant/eosConstants");
 const { OPEN_CODE_COUNT, GAME_STATE } = require("../common/constant/gameConstants");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");
 const { redis, generate_primary_key } = require("../common");
-const { getGameInfo, insertGameSession, getLastGameSession, updateGameSession } = require("../models/game");
+const { getGameInfo } = require("../models/game");
 const { scheduleJob } = require("node-schedule");
 const { rpc } = require("./getTrxAction");
 const url = require("url");
@@ -24,6 +24,8 @@ async function awardGame(data) {
     try {
         const { openCode, openResult } = await getOpenResult(data.block_num);
         const sqlList = [];
+        // 记录区块链相关调用信息
+        const actList = [];
         const gameInfo = await getGameInfo();
         // 奖池额度
         const prizePool = new Decimal(gameInfo.prize_pool);
@@ -58,7 +60,7 @@ async function awardGame(data) {
             if (winCount === ALLOC_CONSTANTS.LOTTERY_AWARD_COUNT) {
                 // 超级全球彩大奖
                 const winType = "lottery_award"
-                const { issued, sqlList: res } = await allocBonus(gameInfo.prize_pool, winCount, bonusAccList, winType, ALLOC_CONSTANTS.LOTTERY_AWARD, insertRewardSql);
+                const { issued, sqlList: res, tmpActList } = await allocBonus(gameInfo.prize_pool, winCount, bonusAccList, winType, ALLOC_CONSTANTS.LOTTERY_AWARD, insertRewardSql);
                 // 将全球彩底池的 50% 拨入下一轮全球彩奖池；
                 if (res.length !== 0) {
                     isLotteryAward = true;
@@ -66,67 +68,74 @@ async function awardGame(data) {
                     totalAward = prizePool.minus(issued);
                     prizePoolSurplus = prizePoolSurplus.minus(issued);
                     bottomPoolSurplus = bottomPoolSurplus.div(2);
+                    actList.push(tmpActList);
                 }
             } else if (winCount === ALLOC_CONSTANTS.SECOND_PRICE_COUNT) {
                 // 二等奖
                 const winType = "second_price"
-                const { issued, sqlList: res } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.SECOND_PRICE, insertRewardSql);
+                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.SECOND_PRICE, insertRewardSql);
                 if (res.length !== 0) {
                     sqlList.push(...res);
                     totalAward = prizePool.minus(issued);
                     prizePoolSurplus = prizePoolSurplus.minus(issued);
+                    actList.push(tmpActList);
                 }
             } else if (winCount === ALLOC_CONSTANTS.THIRD_PRICE_COUNT) {
                 // 三等奖
                 const winType = "third_price"
-                const { issued, sqlList: res } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.THIRD_PRICE, insertRewardSql);
+                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.THIRD_PRICE, insertRewardSql);
                 if (res.length !== 0) {
                     sqlList.push(...res);
                     totalAward = prizePool.minus(issued);
                     prizePoolSurplus = prizePoolSurplus.minus(issued);
+                    actList.push(tmpActList);
                 }
             } else if (winCount === ALLOC_CONSTANTS.FOURTH_PRICE_COUNT) {
                 // 四等奖
                 const winType = "fourth_price"
-                const { issued, sqlList: res } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.FOURTH_PRICE, insertRewardSql);
+                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.FOURTH_PRICE, insertRewardSql);
                 if (res.length !== 0) {
                     sqlList.push(...res);
                     totalAward = prizePool.minus(issued);
                     prizePoolSurplus = prizePoolSurplus.minus(issued);
+                    actList.push(tmpActList);
                 }
             } else if (winCount === ALLOC_CONSTANTS.FIFTH_PRICE_COUNT) {
                 // 五等奖
                 // 当五、六、七等奖奖金总额奖池不足以支付时，超出部分由全球彩储备池拨出；
                 const winType = "fifth_price"
-                const { issued, sqlList: res } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.FIFTH_PRICE, insertRewardSql);
+                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.FIFTH_PRICE, insertRewardSql);
                 if (res.length !== 0) {
                     sqlList.push(...res);
                     totalAward = prizePool.minus(issued);
                     const { pr, is, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
                     prizePoolSurplus = pr;
                     reservePoolSurplus = re;
+                    actList.push(tmpActList);
                 }
             } else if (winCount === ALLOC_CONSTANTS.SIXTH_PRICE_COUNT) {
                 // 六等奖
                 const winType = "sixth_price"
-                const { issued, sqlList: res } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.SIXTH_PRICE, insertRewardSql);
+                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.SIXTH_PRICE, insertRewardSql);
                 if (res.length !== 0) {
                     sqlList.push(...res);
                     totalAward = prizePool.minus(issued);
                     const { pr, is, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
                     prizePoolSurplus = pr;
                     reservePoolSurplus = re;
+                    actList.push(tmpActList);
                 }
             } else if (winCount === ALLOC_CONSTANTS.SEVENTH_PRICE_COUNT) {
                 // 七等奖
                 const winType = "seventh_price"
-                const { issued, sqlList: res } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.LOTTERY_AWARD, insertRewardSql);
+                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.LOTTERY_AWARD, insertRewardSql);
                 if (res.length !== 0) {
                     sqlList.push(...res);
                     totalAward = prizePool.minus(issued);
                     const { pr, is, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
                     prizePoolSurplus = pr;
                     reservePoolSurplus = re;
+                    actList.push(tmpActList);
                 }
             } else {
                 // 未中奖的用户
@@ -163,6 +172,22 @@ async function awardGame(data) {
         // 将当前游戏状态设置为已开奖
         sqlList.push({ sql: updateSessionSql, values: [ GAME_STATE.AWARDED, openCode.join(","), { relate_id: openResult }, rewardInfo.gs_id ] });
         
+
+        // 调用 globallotto 合约开奖，记录相关信息
+        actList.push({
+            account: GLOBAL_LOTTO_CONTRACT,
+            name: "open",
+            authorization: [{
+                actor: GLOBAL_LOTTO_CONTRACT,
+                permission: 'active',
+            }],
+            data: {
+                reward_num: openCode.join(","),
+                game_id: rewardInfo.periods,
+                reward_time: rewardInfo.reward_time,
+            }
+        });
+
         let flag = false;
         const client = await pool.connect();
         try {
@@ -177,6 +202,10 @@ async function awardGame(data) {
             throw err;
         } finally {
             await client.release();
+        }
+
+        if (flag && actList.length !== 0) {
+            await psTrx.pub(actList);
         }
     } catch (err) {
         logger.debug("award err: ", err);

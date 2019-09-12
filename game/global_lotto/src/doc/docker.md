@@ -1,5 +1,5 @@
 ### docker 部署 `rabbitmq`
-docker run -d --name rabbitmq rabbitmq && \
+docker run -p 5672:5672 -d --name rabbitmq rabbitmq && \
 docker exec -it rabbitmq /bin/bash 
 rabbitmqctl add_user mq_user "pass_2019" && \
 rabbitmqctl set_user_tags mq_user administrator && \
@@ -49,5 +49,5 @@ sed -i 's/logfile ""/logfile "access.log"/' conf/redis.conf
 sed -i 's/# requirepass foobared/requirepass redis_pass_2019/' conf/redis.conf
 sed -i 's/appendonly no/appendonly yes/' conf/redis.conf
 
-docker run -v $PWD/data:/data -v $PWD/conf/redis.conf:/etc/redis/redis.conf --privileged=true --name redis -d redis redis-server /etc/redis/redis.conf
+docker run -p 6379:6379 -v $PWD/data:/data -v $PWD/conf/redis.conf:/etc/redis/redis.conf --privileged=true --name redis -d redis redis-server /etc/redis/redis.conf
 ```

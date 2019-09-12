@@ -15,6 +15,9 @@ const url = require("url");
     const { data: { referrer_account } } = await xhr.get(url.resolve(TBG_SERVER, "/account/get_referrer"), { data: { account_name: "gametestuser" } });
     console.debug("referrer_account: ", referrer_account);
 
+    const resp= await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), { data: { account_name: "yujinsheng11" } });
+    console.debug("resp: ", resp);
+
     // for (const [  key, val ] of myMap) {
     //     console.debug("key: ", key);
     //     console.debug("val: ", val);

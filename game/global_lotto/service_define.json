@@ -206,7 +206,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" }
+                "account_name": { "type": "text",  "is_require": true,  "desc": "账号" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -217,7 +217,9 @@
                         "type": "objectArray", "desc": "全部开奖信息",
                         "properties": {
                             "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
-                            "reward_state": { "type": "text",  "is_require": true,  "desc": "开奖状态，如果已开奖为开奖号码，否则为开奖状态和倒计时" }
+                            "win_type": { "type": "number",  "is_require": true,  "desc": "中奖类型，是否中奖" },
+                            "reward_num": { "type": "number",  "is_require": true,  "desc": "开奖号码" },
+                            "bet_time": { "type": "text",  "is_require": true,  "desc": "投注时间" }
                         }
                     }
                 }
@@ -234,8 +236,8 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "gs_id": { "type": "number",  "is_require": true,  "desc": "game session id" },
-                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" }
+                "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                "account_name": { "type": "text",  "is_require": true,  "desc": "账号" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -271,7 +273,7 @@
             "type" : "post",
             "requireRole" : [ "*" ],
             "req": {
-                "gs_id": { "type": "number",  "is_require": true,  "desc": "game session id" },
+                "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
                 "account_name": { "type": "number",  "is_require": true,  "desc": "账号" },
                 "bet_num": { "type": "number",  "is_require": true,  "desc": "投注号码" },
                 "bet_key": { "type": "number",  "is_require": true,  "desc": "投注 key 的的数量" },
