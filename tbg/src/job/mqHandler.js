@@ -1,9 +1,8 @@
 // @ts-check
 const logger = require("../common/logger.js").child({ "@": "mq publish and subscribe" });
 const { 
-    psUserWithdraw, psBuyAssets, psCheckIn, 
-    psSellAssets, psBind, psGame, psTbg1, 
-    psTshIncome, psRaise, psTrx
+    psUserWithdraw, psBuyAssets, psSellAssets, psBind, psGame, psTbg1, 
+    psTshIncome, psTrx, psModifyBalance
 } = require("../db");
 const handlerWithdraw = require("./handlerWithdraw.js");
 const handlerSellAssets = require("./handlerSellAssets.js");
@@ -73,7 +72,6 @@ psTbg1.sub(async msg => {
     }
 });
 
-
 // 游戏消息
 psGame.sub(async msg => {
     try {
@@ -107,6 +105,17 @@ psTrx.sub(async msg => {
         await trxAction(result);
     } catch (err) {
         logger.error("psTrx error: ", err);
+        throw err;
+    }
+});
+
+// 修改账户余额
+psModifyBalance.sub(async msg => {
+    try {
+        let result = JSON.parse(msg);
+        logger.debug("psModifyBalance result: %O", result);
+    } catch (err) {
+        logger.error("psModifyBalance error: ", err);
         throw err;
     }
 })

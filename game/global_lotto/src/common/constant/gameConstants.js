@@ -4,7 +4,8 @@
 const GAME_STATE = {
     "INIT": 0,
     "START": 1,
-    "REWARD": 2
+    "REWARDING": 2,
+    "AWARDED": 3
 };
 
 // 开奖号码的位数
@@ -23,6 +24,6 @@ module.exports = CONSTANT
 /**
  * @description 
  * @typedef { Object } Constant
- * @property {{ "INIT": number, "START": number, "REWARD": number }} GAME_STATE 游戏状态
+ * @property {{ "INIT": number, "START": number, "REWARDING": number, "AWARDED": number }} GAME_STATE 游戏状态
  * @property { number } OPEN_CODE_COUNT 开奖号码的位数
  */

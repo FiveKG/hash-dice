@@ -23,9 +23,9 @@ router.get("/global_lotto/game_session_mine", globalLotto.gameSessionMine);
 // 获取当前用户某一期投注的详情
 router.get("/global_lotto/game_session_mine_detail", globalLotto.gameSessionMineDetail);
 // 投注
-router.get("/global_lotto/bet", globalLotto.bet);
+router.post("/global_lotto/bet", globalLotto.bet);
 // 随机投注
-router.get("/global_lotto/random_bet", globalLotto.randomBet);
+router.post("/global_lotto/random_bet", globalLotto.randomBet);
 /*****************************   **************************************/
 
 module.exports = router

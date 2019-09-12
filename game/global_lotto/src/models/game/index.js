@@ -6,5 +6,6 @@ module.exports = {
     "insertGameSession": require("./insertGameSession.js"),
     "updateGameSession": require("./updateGameSession.js"),
     "getLastGameSession": require("./getLastGameSession.js"),
-    "getLatestGameSession": require("./getLatestGameSession.js")
+    "getLatestGameSession": require("./getLatestGameSession.js"),
+    "selectGameSessionByPeriods": require("./selectGameSessionByPeriods.js"),
 }

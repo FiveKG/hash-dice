@@ -1,12 +1,12 @@
 // @ts-check
-const logger = require("../common/logger.js").child({"@": "publish - subscribe game"});
+const logger = require("../common/logger.js").child({"@": "游戏投注"});
 const getAmqpChannel = require("./amqp.js");
-const { GLOBAL_LOTTO_MQ } = require("../common/constant/optConstants");
+const { GLOBAL_LOTTO_BET } = require("../common/constant/optConstants");
 
 async function publish(data) {
     try {
-        let channel = await getAmqpChannel(GLOBAL_LOTTO_MQ);
-        await channel.sendToQueue(GLOBAL_LOTTO_MQ, Buffer.from(JSON.stringify(data)));
+        let channel = await getAmqpChannel(GLOBAL_LOTTO_BET);
+        await channel.sendToQueue(GLOBAL_LOTTO_BET, Buffer.from(JSON.stringify(data)));
     } catch (err) {
         throw err;
     }
@@ -14,8 +14,8 @@ async function publish(data) {
 
 async function subscribe(callback) {
     try {
-        let channel = await getAmqpChannel(GLOBAL_LOTTO_MQ);
-        channel.consume(GLOBAL_LOTTO_MQ, msg => {
+        let channel = await getAmqpChannel(GLOBAL_LOTTO_BET);
+        channel.consume(GLOBAL_LOTTO_BET, msg => {
             // logger.debug("game message: ", msg);
             if (msg !== null) {
                 callback(msg.content.toString());

@@ -1,25 +1,27 @@
 // @ts-check
 const sleep = require("../../job/sleep.js");
-const { getSafeAccountList } = require("../../models/systemPool");
-const { getBalanceLogByTerm } = require("../../models/balanceLog");
-const { redis } = require("../../common");
+const { redis, xhr } = require("../../common");
 const { pool } = require("../../db");
-
-/**
- * 
- * @param { number } a 
- * @param { number } b 
- * @param { number } c 
- * @param { number } d 
- * @param { number } e 
- */
-function getInfo(a, b, c, d, e) {
-    console.debug(a, b, c, d, e);
-}
-
+const url = require("url");
 
 ;(async () => {
+    // const myMap = new Map();
     // const arr = [ 1, 2, 3, 4, 5 ]
+    // for (const val of arr) {
+    //     myMap.set(val, val + "val");
+    // }
+
+    const TBG_SERVER = process.env.TBG_SERVER || "http://localhost:9527/";
+    const { data: { referrer_account } } = await xhr.get(url.resolve(TBG_SERVER, "/account/get_referrer"), { data: { account_name: "gametestuser" } });
+    console.debug("referrer_account: ", referrer_account);
+
+    const resp= await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), { data: { account_name: "yujinsheng11" } });
+    console.debug("resp: ", resp);
+
+    // for (const [  key, val ] of myMap) {
+    //     console.debug("key: ", key);
+    //     console.debug("val: ", val);
+    // }
     // // console.debug(...arr);
     // const now = new Date().getHours()
     // const arr = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]
@@ -42,13 +44,10 @@ function getInfo(a, b, c, d, e) {
     const reg = /[\d]+/
     const res = reg.test(str);
 
-    const balanceLog = await getBalanceLogByTerm({ opType: "sort", "symbol": "UE"});
-    console.debug(balanceLog)
-
     // let safeAccountList = await getSafeAccountList();
     // for (const info of safeAccountList) {
     //     console.debug("info: ", info);
-    //     const acc = await redis.hget(`tbg:income:${info.account_name}`, "sort");
+    //     const acc = await redis.hget(`tbg:income:${info.{ account_name: "yujinsheng11" }}`, "sort");
     //     if (!!acc) {
     //         const res = JSON.parse(acc).map(it => it.change_amount).reduce((pre, curr) => Number(pre) + Number(curr));
     //         console.debug("res: ", res);

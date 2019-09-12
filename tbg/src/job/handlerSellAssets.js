@@ -87,8 +87,8 @@ async function handlerSellAssets(data) {
             tmpActions.push(...actionsList);
         }
 
-        logger.debug("trxList: ", trxList);
-
+        // logger.debug("trxList: ", trxList);
+        let flag = false;
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
@@ -96,6 +96,7 @@ async function handlerSellAssets(data) {
                 client.query(it.sql, it.values);
             }));
             await client.query("COMMIT");
+            flag = true;
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
@@ -104,7 +105,7 @@ async function handlerSellAssets(data) {
         }
 
         // 一笔交易完成，才对用户执行空投及相关的转账操作
-        if (tmpActions.length !== 0) {
+        if (tmpActions.length !== 0 && flag) {
             await psTrx.pub(tmpActions);
         }
     } catch (err) {

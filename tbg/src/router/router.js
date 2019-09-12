@@ -31,6 +31,9 @@ router.post("/account/bind_referrer", account.bind_referrer);
 // 获取当前用户的信息
 router.get("/account/info", account.accountInfo);
 
+// 获取用户的推荐人
+router.get("/account/get_referrer", account.getAccountReferrer);
+
 // 投资 UE, 参与 TBG 1
 // router.post("/account/self_invest", account.self_invest);
 // 帮朋友投资 UE, 参与 TBG 1

@@ -19,10 +19,6 @@ async function checkInDetail(req, res, next) {
         let reqData = await inspect_req_data(req);
         logger.debug(`the param is %j: `, reqData);
         const accountName = reqData.account_name;
-        // const accountInfo = await getAccountInfo(accountName);
-        // if (!accountInfo) {
-        //     return res.send(get_status(1001, "this account does not exists"));
-        // }
         // 获取签到信息
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: OPT_CONSTANTS.CHECK_IN });
         // 如果有的话，直接看第一条的内容，change_amount 就是最新签到所得，create_time 为最新签到日期
