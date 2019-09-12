@@ -12,10 +12,12 @@
             <p class="font_weight_bold">Token · Blockchain · Game</p>
             <p>全球区块链去中心化游戏应用平台</p>
             <div class="num_tbg">
-              <span >可售余额</span>
-              <span style="padding:0 1.1rem;"></span>
-              <span style="color:rgb(161, 161, 161);"> {{balance}} </span>
-              <span class="font_weight_bold">TBG</span>
+              <div style="display: inline-block;width:30%;"><span style="line-height: 1.1rem;">可售余额</span></div>
+              <div style="display: inline-block;width:60%;text-align: right;">
+                <span class="font_B " style="line-height: 1.1rem;">{{saleable_amount[0]}}.{{saleable_amount[1][0]}}</span>
+                <span class="font_B " style="line-height: 1.1rem;color:rgb(161, 161, 161);"> {{saleable_amount[1][1]}} </span>
+                <span style="line-height: 1.1rem;" class="font_B ">TBG</span>
+              </div>
             </div>
               <p style="color:RGB(255,153,0);font-size:0.45rem;margin-bottom:.3rem;">可售余额由线性释放池释放获得</p>
           </div>
@@ -52,7 +54,7 @@ export default {
   data() {
     return {
       log:true,
-      balance:'',
+      saleable_amount:'',
       items:[
           //        {create_time:'1111-11-11',
           //  info:'首次购买推荐收益'
@@ -64,12 +66,15 @@ export default {
        back() {
           this.$router.go(-1)
        },
+       addSpace (str) { 
+        return str.slice(0,str.length-4) + " " +str.slice(-4)
+        },
   },
   created(){
     // console.log('this',this);
     api.SaleableBalance({account_name:this.$store.state.wallet.assets.account}).then(res => {
       if (res.code === 1) {
-            console.log('bindReferrer',res)
+            console.log(this.$store.state.wallet.assets.account,res)
             // for(var i=0;i<res.data.length;i++){
               //   if(res.data[i].amount>0){
                 //     switch (res.data[i].release_type) {
@@ -91,7 +96,11 @@ export default {
             //     }
             //   }
             // }
-            this.balance=res.data.saleable_amount;
+            this.saleable_amount = res.data.saleable_amount;
+            this.saleable_amount = res.data.saleable_amount.split('.');
+            this.saleable_amount[1] = this.addSpace(this.saleable_amount[1]);
+            this.saleable_amount[1] = this.saleable_amount[1].split(' ');
+
             this.items=res.data.properties;
         }
       })
@@ -133,10 +142,11 @@ export default {
   padding: 20px 0 0 0;
 }
 .num_tbg{
-  border: 3px solid RGB(228,228,228);
+  border: 2px solid RGB(228,228,228);
   border-radius:7px;
-  padding: 20px 0;
-  margin: 25px 30px;
+  width:90% ;
+  height: 1.1rem;
+  margin: 25px 5%;
   font-size: 0.4rem;
 }
 .asset_pool_header{

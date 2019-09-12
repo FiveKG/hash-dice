@@ -5,7 +5,7 @@
         <div class="header">
           <img class="ion_back" src="@/assets/img/u14.png" @click="back"> 
           <img class="ion_details" src="@/assets/img/u14.png" @click="jump_details"> 
-          <span>资产包矿池</span>
+          <span>线性释放池</span>
         </div>
         <div class="content">
           <img class="ion_tbg" src="@/assets/img/tbg_selected.png"> 
@@ -25,8 +25,8 @@
           <p style="color:RGB(255,153,0);margin-bottom:.3rem;clear:both;">所有进入释放池的TBG，从次日0:00开始释放</p>
         </div>
         <div style=" text-align: center;"><img style=" width: 4rem;height: auto;" src="@/assets/img/tbg_selected.png"></div>
-        <p style="padding:.2rem 0;text-align: center;font-size: 1.2rem;color:rgb(51,204,153);">1.1921 3251</p>
-        <p style="padding:.2rem 0 .3rem 0;text-align: center;font-size: .5rem;color: orange;">海蓝会员</p>
+        <p style="padding:.2rem 0;text-align: center;font-size: .9rem;color:rgb(51,204,153);">{{pool_data.balance_info}}</p>
+        <p style="padding:.2rem 0 .3rem 0;text-align: center;font-size: .5rem;color: orange;">{{pool_data.level}}</p>
         <div style="width: 0.5rem;height: 0.1rem;background: rgb(51, 204, 153);margin: 0 auto;border-radius: 10px;"></div>
         <p style="padding:.3rem 0 0 0;text-align: center;">每日线性释放比例</p>
         <p style="padding:.0rem 0;text-align: center;font-weight:600;">{{pool_data.release_rate}}</p>  
@@ -39,7 +39,7 @@
 
 <script>
 import MyPage from '@/components/MyPage'
-import {LinearReleasePool,} from '@/servers/invitation';
+import api from '@/servers/invitation'
 
 
 export default {
@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       log:true,
-      pool_data:{released:11111111111,releasing:1111111111,release_rate:1111},
+      pool_data:{},
     }
   },
   methods: {
@@ -65,7 +65,7 @@ export default {
   created(){
       // console.log('this',this);
       
-      LinearReleasePool({account_name:"yujinsheng11"}).then(res => {
+      api.LinearReleasePool({account_name:this.$store.state.wallet.assets.account}).then(res => {
         if (res.code === 1) {
         console.log('bindReferrer',res.data)
         this.pool_data=res.data;

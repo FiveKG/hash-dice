@@ -126,6 +126,14 @@ export default {
       return this.$store.state.wallet.selectedTab
     }
   },
+  beforeRouteEnter (to, from, next) {
+    if (!localStorage.everEnter) {
+      localStorage.setItem('everEnter', true)
+      next('/welcome')
+    } else {
+      next()
+    }
+  },
   created () {
     this.initData()
     getAdImg().then(res => {

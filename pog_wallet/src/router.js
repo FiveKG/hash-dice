@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import welcome from './pages/welcome/index.vue'
 import Index from './pages/Index'
 import Scanner from './pages/scanner/Scanner'
 import Transfer from './pages/assets/Transfer'
@@ -78,6 +79,7 @@ import BingoPool from './pages/invitation/BingoPool'
 import ShareholderPool from './pages/invitation/ShareholderPool'
 import FivePool from './pages/invitation/FivePool'
 import PkPool from './pages/invitation/PkPool'
+import level from './pages/invitation/level'
 
 import UnBind from './pages/invitation/UnBind'
 import IsBind from './pages/invitation/IsBind'
@@ -133,6 +135,11 @@ const router = new Router({
       path: '/',
       name: 'index',
       component: Index,
+    },
+    {
+      path: '/welcome',
+      name: 'welcome',
+      component: welcome,
     },
     {
       path: '/selectBlockchain',
@@ -378,6 +385,11 @@ const router = new Router({
       path: '/pkPool',
       name: 'PkPool',
       component: PkPool,
+    },
+    {
+      path: '/level',
+      name: 'level',
+      component: level,
     },
     {
       path: '/ethAddWallet',

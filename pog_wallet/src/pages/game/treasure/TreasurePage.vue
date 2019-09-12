@@ -73,7 +73,7 @@
             </div>
           </div>
           <div v-if="!allMy">
-            <div style="" v-for="(item,index) in items" :key='index'>
+            <div style="" v-for="(item,index) in itemss" :key='index'>
               <div style="width:100%;height:1.1rem;">
                 <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.a}}</p></div>
                 <div class="display_ib vertical_top" style="width:40%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.b}}</p></div>
@@ -253,7 +253,7 @@ export default {
   watch: {
         '$store.state.wallet.block': {
             handler(newVal, oldVal) {
-                console.log(12311111111111,this.$store.state.wallet.block);
+                // console.log(12311111111111,this.$store.state.wallet.block);
                 this.treasureKey+=1;
                 this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
                 id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey});

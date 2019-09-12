@@ -716,7 +716,7 @@ watch: {
 
     api.getType({account_name:this.id}).then(res => {    // 获取账号类型
         if (res.code === 1) {
-            res.data.account_type=="global"?this.buyPartner=true:this.buyPartner=false;
+            // res.data.account_type=="global"?this.buyPartner=true:this.buyPartner=false;
         }
       })
     //全球合伙人
@@ -782,13 +782,12 @@ watch: {
             this.sellListData=res.data;
         }
       })
-    api.getSellList({account_name:this.id}).then(res => {    // 卖出的买入交易列表
+    api.getSellList({account_name:this.id}).then(res => {    // 卖出的卖出交易列表
         if (res.code === 1) {
           for(let i=0;i<res.data.length;i++){
             res.data[i].create_time=format(new Date(res.data[i].create_time), 'YYYY-MM-DD')
             }
             this.sellHistoryList=res.data;
-            console.log(111111111111,res.data);
         }
       })
     
