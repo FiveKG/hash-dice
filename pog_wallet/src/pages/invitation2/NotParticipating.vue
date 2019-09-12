@@ -6,7 +6,7 @@
       <div class="head-user flx_default">
         <img class="head-user_avatar" src="../../assets/invitation2/avatar.jpg" alt="">
         <span>{{account_name}}</span>
-        <span>{{atv_text}}</span>
+        <span @click="jumplevel">{{atv_text}}</span>
         <img class="head-user_arrow" src="@/assets/img/u28.png">
       </div>
       <img class="head-serve" src="../../assets/invitation2/head-serve.png" alt="">
@@ -167,8 +167,10 @@
               <div class="common-box resource jc_sb-al_c">
                 <img src="@/assets/img/u6712.gif" alt="">
                 <div class="resource-info">
-                  <p>当前有效资产包</p>
-                  <p>1,954.2532 <span>0000</span> TBG</p>
+                  <p class="">当前有效资产包</p>
+                    <span style="font-size:0.6rem;color: rgb(236,90,91);">{{mined_amount[0]}}.{{mined_amount[1][0]}} </span>
+                    <span style="font-size:0.6rem;color: #FF9900;">{{mined_amount[1][1]}} </span>
+                    <span style="font-size:0.6rem;color: rgb(236,90,91);"> TBG</span>
                 </div>
               </div>
             </div>
@@ -185,9 +187,8 @@
               <div class="common-box jc_sb-al_c">
                 <span>释放池余额</span>
                 <div class="common-number">
-                  <span>2,492.5160 </span>
-                  <span style="color: #FF9900;">0210</span>
-                  <span> TBG</span>
+                  <span style="line-height: 1.1rem;" class="font_B ">{{balance_info}} </span>
+                  <span style="line-height: 1.1rem;" class="font_B "> TBG</span>
                 </div>
               </div>
             </div>
@@ -201,9 +202,9 @@
             </div>
             <div class="common-wrap distribution_content">
               <div class="distribution_content_inner" @click="jumpSaleableBalance">
-                <p class="top">可售余额</p>
+                <p class="top ">可售余额</p>
                 <p class="mid">{{Balance}} </p>
-                <p class="bot">TBG</p>
+                <p class="bot ">TBG</p>
               </div>
 
               <div class="distribution_content_inner" @click="jumpSaleableLimit">
@@ -377,6 +378,8 @@ export default {
                 total_income: '',
                 selected_ipt:false,
                 tbg:0,
+                balance_info:0,   //释放池余额
+                mined_amount:0,   //获取当前有效资产包
 
                 isGlobal:'',     //账号类型
                 account_activation:'true',     //账号是否激活
@@ -495,6 +498,18 @@ export default {
           this.destroy_amount = res.data.destroy_amount.split('.')
           this.destroy_amount[1] = this.addSpace(this.destroy_amount[1])
           this.destroy_amount[0]=this.addComma(this.destroy_amount[0]);
+        })
+        api.LinearReleasePool({account_name:this.account_name}).then(res => { //获取释放池数据
+          if (res.code === 1) {
+            this.balance_info = res.data.balance_info;
+          }
+        })
+        api.effectiveAssets({account_name:this.account_name}).then(res => {    //获取当前有效资产包
+          if (res.code === 1) {
+          this.mined_amount = res.data.mined_amount.split('.');
+          this.mined_amount[1] = this.addSpace(this.mined_amount[1]);
+          this.mined_amount[1] = this.mined_amount[1].split(' ');
+          }
         })
         api.subAccount({
           account_name: this.account_name
@@ -804,6 +819,11 @@ export default {
          this.$router.push({
            name:'Notice'
          })
+       },
+       jumplevel(){
+         this.$router.push({
+           name:'level'
+         })
        }
     },
 }
@@ -852,6 +872,10 @@ export default {
     width: .7rem;
 }
 
+.font_B{
+  font-weight: bold;
+  font-family: "Bahnschrift Regular", Bahnschrift;
+}
 /* banner */
 .banner-wrap {
     width: 100vw;

@@ -345,6 +345,12 @@ const getTradePrice= (reqData) => {
     const data = reqData;
     return getData(url, data);
 }
+//会员等级
+const getLevel= (reqData) => {
+    const url = '/account/level';
+    const data = reqData;
+    return getData(url, data);
+}
 
 //TBG销毁数量
 const getDestory= (reqData) => {
@@ -408,6 +414,7 @@ export default{
     globalPartnerPlacement,
     buyAsset,
     sellAsset,
+    getLevel,
 
     effectiveAssets,
     overAssets,

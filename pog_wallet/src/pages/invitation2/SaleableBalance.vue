@@ -74,7 +74,7 @@ export default {
     // console.log('this',this);
     api.SaleableBalance({account_name:this.$store.state.wallet.assets.account}).then(res => {
       if (res.code === 1) {
-            console.log('bindReferrer',res)
+            console.log(this.$store.state.wallet.assets.account,res)
             // for(var i=0;i<res.data.length;i++){
               //   if(res.data[i].amount>0){
                 //     switch (res.data[i].release_type) {

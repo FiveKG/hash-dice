@@ -28,7 +28,8 @@
 
 <script>
 import MyPage from '@/components/MyPage'
-import {LinearReleaseDetail,} from '@/servers/invitation';
+import api from '@/servers/invitation'
+
 
 export default {
   components: {
@@ -51,7 +52,7 @@ export default {
   },
   created(){
     // console.log('this',this);
-       LinearReleaseDetail({account_name:"yujinsheng11"}).then(res => {
+       api.LinearReleaseDetail({account_name:this.$store.state.wallet.assets.account}).then(res => {
          if (res.code === 1) {
             console.log('bindReferrer',res.data)
             for(var i=0;i<res.data.length;i++){

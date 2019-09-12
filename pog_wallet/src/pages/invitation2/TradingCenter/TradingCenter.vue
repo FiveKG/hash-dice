@@ -716,7 +716,7 @@ watch: {
 
     api.getType({account_name:this.id}).then(res => {    // 获取账号类型
         if (res.code === 1) {
-            res.data.account_type=="global"?this.buyPartner=true:this.buyPartner=false;
+            // res.data.account_type=="global"?this.buyPartner=true:this.buyPartner=false;
         }
       })
     //全球合伙人
