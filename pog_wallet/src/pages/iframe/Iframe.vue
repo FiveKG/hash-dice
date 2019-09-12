@@ -129,7 +129,7 @@ export default {
       // }
     }
   },
-  mounted() {
+  created() {
     this.url = this.$route.query.url;
     this.name = this.$route.query.name;
     const that = this;
@@ -194,6 +194,9 @@ export default {
 <style scoped>
 /*2秒欢迎部分*/
 .enterpage {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   background: #e33c3e;
@@ -203,7 +206,7 @@ export default {
   width: 200px;
   height: 200px;
   background: #ff9900;
-  margin: 25vh auto 0px auto;
+  margin: 22vh auto 0px auto;
   border-radius: 50%;
   -moz-box-shadow: 1px 3px 8px 0px #333333;
   -webkit-box-shadow: 1px 3px 8px 0px #333333;
