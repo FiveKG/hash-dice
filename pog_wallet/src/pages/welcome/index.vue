@@ -160,7 +160,7 @@ export default {
 .scenes_1, .scenes_2, .scenes_3, .scenes_1_man, .scenes_text,.scenes_3_grey,.scenes_3_blue {
     background-repeat: no-repeat;
     background-size: 100% auto;
-    background-position: center 3rem;
+    background-position: center 20%;
     width: 100%;
     height: 100%;
     position: absolute;
@@ -170,7 +170,7 @@ export default {
     bottom: 0;
 }
 .scenes_text{
-    background-position: center 9rem;
+    background-position: center 100%;
 }
 .scenes-enter-active, .scenes-leave-active {
     transition: all 1s;
