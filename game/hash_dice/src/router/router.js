@@ -2,7 +2,6 @@
 const express = require("express");
 const router = express.Router();
 const config = require("../controllers/config");
-const tbg = require("../controllers/tbg");
 
 // 获取服务运行状态
 router.get("/common/health", require("../common/health.js"));
