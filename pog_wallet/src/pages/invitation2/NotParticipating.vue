@@ -188,7 +188,6 @@
                 <span>释放池余额</span>
                 <div class="common-number">
                   <span style="line-height: 1.1rem;" class="font_B ">{{balance_info}} </span>
-                  <span style="line-height: 1.1rem;" class="font_B "> TBG</span>
                 </div>
               </div>
             </div>
@@ -203,18 +202,26 @@
             <div class="common-wrap distribution_content">
               <div class="distribution_content_inner" @click="jumpSaleableBalance">
                 <p class="top ">可售余额</p>
-                <p class="mid">{{Balance}} </p>
+                <p class="mid" style="text-align: center;">
+                  <span style="font-size:0.5rem;color: rgb(236,90,91);">{{Balance[0]}}.{{Balance[1][0]}} </span>
+                  <span style="font-size:0.5rem;color: #FF9900;">{{Balance[1][1]}} </span>
+                </p>
                 <p class="bot ">TBG</p>
               </div>
-
               <div class="distribution_content_inner" @click="jumpSaleableLimit">
                 <p class="top">可售额度</p>
-                <p class="mid">{{Amount}} </p>
+                <p class="mid" style="text-align: center;">
+                  <span style="font-size:0.5rem;color: rgb(236,90,91);">{{Amount[0]}}.{{Amount[1][0]}} </span>
+                  <span style="font-size:0.5rem;color: #FF9900;">{{Amount[1][1]}} </span>
+                </p>
                 <p class="bot">TBG</p>
               </div>
               <div class="distribution_content_inner">
                 <p class="top">可售数量</p>
-                <p class="mid">{{Quantity}}</p>
+                <p class="mid" style="text-align: center;">
+                  <span style="font-size:0.5rem;color: rgb(236,90,91);">{{Quantity[0]}}.{{Quantity[1][0]}} </span>
+                  <span style="font-size:0.5rem;color: #FF9900;">{{Quantity[1][1]}} </span>
+                </p>
                 <p class="bot">TBG</p>
               </div>
             </div>
@@ -385,7 +392,7 @@ export default {
                 account_activation:'true',     //账号是否激活
                 Balance:0,      //余额
                 Amount:1,       //额度
-                Quantity:'',     //可售数量
+                Quantity:[0,[]],     //可售数量
                 subAccountQuantity:false,  //子账号数量切换
 
                 //区块链转站
@@ -633,13 +640,17 @@ export default {
       availableQuantity(){    //可售数量
         api.SaleableBalance({account_name:this.account_name}).then(res => {
           if (res.code === 1) {
-            this.Balance=res.data.saleable_amount;
+            this.Balance = res.data.saleable_amount.split('.');
+            this.Balance[1] = this.addSpace(this.Balance[1]);
+            this.Balance[1] = this.Balance[1].split(' ');
           }})
         api.SaleableAmount({account_name:this.account_name}).then(res => {
           if (res.code === 1) {
-            this.Amount=res.data.saleable_balance;
+            this.Amount = res.data.saleable_balance.split('.');
+            this.Amount[1] = this.addSpace(this.Amount[1]);
+            this.Amount[1] = this.Amount[1].split(' ');
           }}).then(() =>{
-          this.Balance>this.Amount?this.Quantity=this.Amount:this.Quantity=this.Balance;
+          (this.Balance[0]+'.'+this.Balance[1][0]+this.Balance[1][1])>(this.Amount[0]+'.'+this.Amount[1][0]+this.Amount[1][1])?this.Quantity=this.Amount:this.Quantity=this.Balance;
           })        
         },
       //跳转路由
@@ -696,7 +707,8 @@ export default {
           this.$router.push({
           name: 'TradingCenter',
           params: {
-            buySell: false
+            buySell: false,
+            Quantity:this.Quantity,
           }
         })
        },

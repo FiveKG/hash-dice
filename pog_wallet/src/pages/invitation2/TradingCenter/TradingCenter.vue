@@ -288,7 +288,7 @@
             <div class="ipt_layout">
               <div class="float_left" style="margin: .3rem 0 0 .5rem;">
                 <!-- <span style="font-size: .45rem;color: #1E1E1E;">总价</span> -->
-                <input type="text" class="text-input" :placeholder="`最多可卖81`" v-model="sellingPrice" style="height: .6rem;width: 3rem;font-size: .5rem;" >
+                <input type="text" class="text-input" :placeholder="`最多可卖`+maximumQuantity[0]" v-model="sellingPrice" style="height: .6rem;width: 3rem;font-size: .5rem;" >
               </div>
               <div class="float_right" style="margin: .28rem .4rem 0 0;">
                 <span class="font_B" style=" font-size:.5rem;color: #1E1E1E;">TBG</span>
@@ -490,6 +490,7 @@ export default {
       sellPrice:[    //卖出界面时间
         {first_buy:'',first_buys:''},
       ],
+      maximumQuantity:[0,[]],//最多可卖TBG数量
       sellData:{},  //卖出界面数据
       sellListData:[    //卖出当前买入列表数据
         
@@ -702,7 +703,7 @@ watch: {
     if(this.$route.params.buyPartner==2){this.buyPartner=true;}    
     if(this.$route.params.buyPartnerT==1){this.buyPartner=false;} 
        
-
+    this.maximumQuantity=this.$route.params.Quantity;   //获取最多可卖出TBG数量
     this.id=this.$store.state.wallet.assets.account;   //初始化ID
      
     this.reqParams.account = this.id;   //转站
