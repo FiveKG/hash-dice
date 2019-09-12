@@ -164,7 +164,7 @@ async function mining() {
             })
         }
 
-
+        let flag = false;
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
@@ -172,6 +172,7 @@ async function mining() {
                 client.query(it.sql, it.values);
             }));
             await client.query("COMMIT");
+            flag = true;
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
@@ -180,7 +181,9 @@ async function mining() {
         }
 
         // 发送区块链转帐消息
-        await psTrx.pub(tmpActions);
+        if (flag) {
+            await psTrx.pub(tmpActions);
+        }
     } catch (err) {
         logger.error("mining error, the error stock is %O", err);
         throw err;

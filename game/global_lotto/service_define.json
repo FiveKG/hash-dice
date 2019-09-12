@@ -82,7 +82,35 @@
             }
         },
         {
-            "name" : "获取当前用户的信息",
+            "name" : "最新一期开奖情况",
+            "summary": "",
+            "remark": [
+                ""
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/global_lotto/latest_game_session",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "gs_id": { "type": "number",  "is_require": true,  "desc": "game session id" },
+                        "count_down": { "type": "number",  "is_require": true,  "desc": "倒计时" },
+                        "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                        "reward_time": { "type": "number",  "is_require": true,  "desc": "开奖时间" },
+                        "prize_pool": { "type": "text",  "is_require": true,  "desc": "全球彩奖池" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "获取所有期数及开奖信息",
             "summary": "",
             "remark": [
                 "进入全球彩页面后，全部栏显示的所有期数及开奖信息"
@@ -101,15 +129,17 @@
                     "detail": {
                         "type": "objectArray", "desc": "全部开奖信息",
                         "properties": {
+                            "gs_id": { "type": "number",  "is_require": true,  "desc": "game session id" },
                             "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
-                            "reward_state": { "type": "text",  "is_require": true,  "desc": "开奖状态，如果已开奖为开奖号码，否则为开奖状态和倒计时" }
+                            "reward_time": { "type": "number",  "is_require": true,  "desc": "开奖时间" },
+                            "reward_state": { "type": "text",  "is_require": true,  "desc": "开奖状态，如果已开奖为开奖号码" }
                         }
                     }
                 }
             }
         },
         {
-            "name" : "获取当前用户的信息",
+            "name" : "获取某一期开奖详情",
             "summary": "",
             "remark": [
                 "进入全球彩页面后，全部栏显示的所有期数及开奖信息"
@@ -119,17 +149,47 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-
+                "gs_id": { "type": "number",  "is_require": true,  "desc": "game session id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "detail": {
-                        "type": "objectArray", "desc": "全部开奖信息",
-                        "properties": {
-                            "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
-                            "reward_state": { "type": "text",  "is_require": true,  "desc": "开奖状态，如果已开奖为开奖号码，否则为开奖状态和倒计时" }
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                        "reward_time": { "type": "number",  "is_require": true,  "desc": "开奖时间" },
+                        "prize_pool": { "type": "text",  "is_require": true,  "desc": "本期累积奖池" },
+                        "award_amount": { "type": "text",  "is_require": true,  "desc": "本期共派奖" },
+                        "prize_pool_balance": { "type": "text",  "is_require": true,  "desc": "本期奖池余额" },
+                        "reserve_pool_award": { "type": "text",  "is_require": true,  "desc": "本期储备池拨出" },
+                        "bottom_pool_award": { "type": "text",  "is_require": true,  "desc": "底池拨入下一期奖池" },
+                        "next_init_amount": { "type": "text",  "is_require": true,  "desc": "下期奖池初始额" },
+                        "reward_code": { "type": "text",  "is_require": true,  "desc": "本期中奖号码为" },
+                        "relate_info": {
+                            "type": "objectArray", "desc": "相关 id 及时间",
+                            "properties": {
+                                "timestamp": { "type": "number",  "is_require": true,  "desc": "相关时间戳" },
+                                "id": { "type": "number",  "is_require": true,  "desc": "相关 id" }
+                            }
+                        },
+                        "detail": {
+                            "type": "objectArray", "desc": "全部开奖信息",
+                            "properties": {
+                                "bonus_type": { "type": "number",  "is_require": true,  "desc": "奖金类型" },
+                                "rate": { "type": "number",  "is_require": true,  "desc": "奖金分配比例" },
+                                "key_count": { "type": "number",  "is_require": true,  "desc": "中奖数" },
+                                "award_amount": { "type": "number",  "is_require": true,  "desc": "派奖金额" },
+                                "one_key_bonus": { "type": "number",  "is_require": true,  "desc": "单注奖金" },
+                                "award_lists": {
+                                    "type": "objectArray", "desc": "全部开奖信息",
+                                    "properties": {
+                                        "account_name": { "type": "number",  "is_require": true,  "desc": "中奖账号" },
+                                        "rate": { "type": "number",  "is_require": true,  "desc": "中奖数" },
+                                        "award_amount": { "type": "number",  "is_require": true,  "desc": "派奖金额" }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -142,38 +202,42 @@
                 "进入全球彩页面后，点击我的按钮，显示用户的投注状态"
             ],
             "isFunctionPoint" : true,
-            "url" : "/global_lotto/info",
+            "url" : "/global_lotto/game_session_mine",
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-
+                "account_name": { "type": "text",  "is_require": true,  "desc": "账号" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
                     "type": "object", "desc": "",
-                    "properties": {
-                        "count_down": { "type": "number",  "is_require": true,  "desc": "倒计时" },
-                        "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
-                        "prize_pool": { "type": "text",  "is_require": true,  "desc": "全球彩奖池" },
-                        "quantity": { "type": "number",  "is_require": true,  "desc": "key 与 UE 比， 1 key = 0.1 UE" }
+                    "detail": {
+                        "type": "objectArray", "desc": "全部开奖信息",
+                        "properties": {
+                            "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                            "win_type": { "type": "number",  "is_require": true,  "desc": "中奖类型，是否中奖" },
+                            "reward_num": { "type": "number",  "is_require": true,  "desc": "开奖号码" },
+                            "bet_time": { "type": "text",  "is_require": true,  "desc": "投注时间" }
+                        }
                     }
                 }
             }
         },
         {
-            "name" : "获取当前用户的信息",
+            "name" : "获取当前用户某一期投注的详情",
             "summary": "",
             "remark": [
-                "进入全球彩页面后，用于显示倒计时，期数，奖池，key 于 UE 的比值"
+                "点击某期投注情况，显示这一期投注的详情"
             ],
             "isFunctionPoint" : true,
-            "url" : "/global_lotto/info",
+            "url" : "/global_lotto/game_session_mine_detail",
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-
+                "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                "account_name": { "type": "text",  "is_require": true,  "desc": "账号" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -181,12 +245,66 @@
                 "data": {
                     "type": "object", "desc": "",
                     "properties": {
-                        "count_down": { "type": "number",  "is_require": true,  "desc": "倒计时" },
                         "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
-                        "prize_pool": { "type": "text",  "is_require": true,  "desc": "全球彩奖池" },
-                        "quantity": { "type": "number",  "is_require": true,  "desc": "key 与 UE 比， 1 key = 0.1 UE" }
+                        "reward_time": { "type": "number",  "is_require": true,  "desc": "开奖时间" },
+                        "bet_time": { "type": "number",  "is_require": true,  "desc": "投注时间" },
+                        "bet_key": { "type": "number",  "is_require": true,  "desc": "投注 key 的的数量" },
+                        "bet_amount": { "type": "number",  "is_require": true,  "desc": "投注总额度" },
+                        "detail": {
+                            "type": "objectArray", "desc": "全部开奖信息",
+                            "properties": {
+                                "bet_num": { "type": "number",  "is_require": true,  "desc": "投注号码" },
+                                "win_count": { "type": "number",  "is_require": true,  "desc": "中奖号码个数" },
+                                "win": { "type": "number",  "is_require": true,  "desc": "中奖额度" }
+                            }
+                        }
                     }
                 }
+            }
+        },
+        {
+            "name" : "投注",
+            "summary": "",
+            "remark": [
+                "点击投注"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/global_lotto/bet",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" },
+                "bet_num": { "type": "number",  "is_require": true,  "desc": "投注号码" },
+                "bet_key": { "type": "number",  "is_require": true,  "desc": "投注 key 的的数量" },
+                "bet_amount": { "type": "number",  "is_require": true,  "desc": "投注总额度" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
+        },
+        {
+            "name" : "随机投注",
+            "summary": "",
+            "remark": [
+                "点击随机投注按钮"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/global_lotto/random_bet",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" },
+                "bet_key": { "type": "number",  "is_require": true,  "desc": "投注 key 的的数量" },
+                "bet_amount": { "type": "number",  "is_require": true,  "desc": "投注总额度" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
             }
         }
     ]

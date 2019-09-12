@@ -13,17 +13,47 @@ unset TBG_RABBIT_PORT
 unset TBG_RABBIT_USER
 unset TBG_RABBIT_PASS
 
-export TBG_DB_HOST=172.17.0.5
-export TBG_DB_PORT=5432
-export TBG_DB_USER=wallet_tbg_user
-export TBG_DB_PASS=pass_2019
-export TBG_DB_NAME=wallet_tbg_db
+postgreshost=$(docker inspect postgres | grep IPAddress | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sed -n '1p')
+redishost=$(docker inspect redis | grep IPAddress | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sed -n '1p')
+rabbitmqhost=$(docker inspect rabbitmq | grep IPAddress | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sed -n '1p')
 
-export TBG_REDIS_HOST=172.17.0.2
+dbname=wallet_tbg_db
+dbuser=wallet_tbg_user
+
+cat > ./config.js <<-EOF
+module.exports = {
+    "db" : {
+        "host"    : "$postgreshost",
+        "database": "$dbname",
+        "user" : "$dbuser",
+        "password" :  "pass_2019",
+        "port"    : 5432,
+    },
+    "redis": {
+        "host" : "$redishost",
+        "port" : 6379 ,
+        "auth" : "redis_pass_2018"
+    },
+    "rabbitmq": {
+        "host": "$rabbitmqhost",
+        "port" : 5672,
+        "user" : "mq_user",
+        "pwd" : "pass_2019"
+    }
+}
+EOF
+
+export TBG_DB_HOST=$postgreshost
+export TBG_DB_PORT=5432
+export TBG_DB_USER=$dbname
+export TBG_DB_PASS=pass_2019
+export TBG_DB_NAME=$dbuser
+
+export TBG_REDIS_HOST=$redishost
 export TBG_REDIS_PORT=6379
 export TBG_REDIS_PASS=redis_pass_2018
 
-export TBG_RABBIT_HOST=172.17.0.3
+export TBG_RABBIT_HOST=$rabbitmqhost
 export TBG_RABBIT_PORT=5672
 export TBG_RABBIT_USER=mq_user
 export TBG_RABBIT_PASS=pass_2019
@@ -34,4 +64,5 @@ then
     npm i -g pm2
 fi
 
-pm2 start ./pm2.json
+# pm2 start ./pm2.json
+node tbg_service.js

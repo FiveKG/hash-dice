@@ -1,18 +1,18 @@
 module.exports = {
     "db" : {
-        "host"    : "172.17.0.5",
-        "database": "wallet_tbg_db",
-        "user" : "wallet_tbg_user",
+        "host"    : "172.17.0.4",
+        "database": "global_lotto",
+        "user" : "global_lotto_user",
         "password" :  "pass_2019",
         "port"    : 5432,
     },
     "redis": {
-        "host" : "172.17.0.6",
+        "host" : "172.17.0.5",
         "port" : 6379 ,
         "auth" : "redis_pass_2018"
     },
     "rabbitmq": {
-        "host": "172.17.0.4",
+        "host": "172.17.0.2",
         "port" : 5672,
         "user" : "mq_user",
         "pwd" : "pass_2019"

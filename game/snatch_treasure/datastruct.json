@@ -10,6 +10,7 @@
             { "name": "g_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": "游戏id"}, 
             { "name": "prize_pool" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "全球彩奖池" ,  "isPrimary": false , "remark": ""} , 
             { "name": "key_count" , "type": "int" , "dblength": "50", "dftValue": "''", "summary": "所需 Key 数量" ,  "isPrimary": false , "remark": ""},
+            { "name": "game_name" , "type": "text" , "dblength": "50", "dftValue": "''", "summary": "游戏名称" ,  "isPrimary": false , "remark": ""},
             { "name": "quantity" , "type": "text" , "dblength": "300", "dftValue": "''", "summary": "一个 key 的额度" ,  "isPrimary": false , "remark": ""}
           ]
         },

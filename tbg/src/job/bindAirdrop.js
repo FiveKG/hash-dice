@@ -65,7 +65,8 @@ async function bindAirdrop(data) {
                     memo: `${ format(it.create_time, "YYYY-MM-DD : HH:mm:ssZ") } bind airdrop`
                 }
             }
-        })
+        });
+        let flag = false;
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
@@ -73,14 +74,18 @@ async function bindAirdrop(data) {
                 client.query(it.sql, it.values);
             }));
             await client.query("COMMIT");
+            flag = true;
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
         } finally {
             await client.release();
         }
+
         // 发送区块链转帐消息
-        await psTrx.pub(actionList);
+        if (flag) {
+            await psTrx.pub(actionList);
+        }
     } catch (err) {
         logger.error("bind airdrop error, the error stock is %O", err);
         throw err;

@@ -24,6 +24,7 @@ let block_num = 0;
 const getBlocks = async () => {
   rpc.get_block(block_num).then(res => {
     try {
+      // console.debug("res: ", res);
       block_num++;
       if (block_server) {
         block_server.to('block').emit({type: 'block', result: res})
@@ -61,9 +62,7 @@ const convertUTCDateToLocalDate = (date) => {
 }
 
 const socketHandler = (socket) => {
-  
   socket.emit('connected');
-
   socket.on('api', async request => {
     console.debug("request: ", request);
     // let result = await ApiService.handler(Object.assign({}, request))

@@ -199,6 +199,35 @@
             }
         },
         {
+            "name" : "获取用户游戏余额信息",
+            "summary": "",
+            "remark": [
+                ""
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/balance/game_balance",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": { 
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "withdraw_enable": { "type": "decimal",  "is_require": true,  "desc": "可提现的 UE 金额" },
+                        "lotto_currency": { "type": "decimal",  "is_require": true,  "desc": "全球彩彩码" },
+                        "game_currency": { "type": "decimal",  "is_require": true,  "desc": "游戏筹码" },
+                        "repeat_currency": { "type": "decimal",  "is_require": true,  "desc": "复投余额" },
+                        "saleable_amount": { "type": "number",  "is_require": true,  "desc": "可售额度" },
+                        "active_amount": { "type": "number",  "is_require": true,  "desc": "可售余额" }
+                    }
+                }
+            }
+        },
+        {
             "name" : "收益分配",
             "summary": "",
             "remark": [
@@ -1548,6 +1577,30 @@
                             "title": { "type": "number",  "is_require": true,  "desc": "标题" },
                             "description": { "type": "number",  "is_require": true,  "desc": "详情" }
                         }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "获取用户的推荐人",
+            "summary": "",
+            "remark": [
+                
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/get_referrer",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "referrer_account": { "type": "number",  "is_require": true,  "desc": "我的邀请人帐号" }
                     }
                 }
             }

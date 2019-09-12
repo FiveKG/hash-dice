@@ -170,3 +170,6 @@ private key: imported private key for: EOS6xKtqbXeTwnrwgVx74dnEhNdFiSt3sYuMfJzJN
 cleos -u http://192.168.1.121:8888 set account permission yujinsheng11 active '{"threshold" : 1, "keys" : [{"key":"EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw","weight":1}], "accounts" : [{"permission":{"actor":"gametestuser","permission":"eosio.code"},"weight":1}]}' owner -p yujinsheng11@owner
 
 cleos set account permission gametestuser active '{"threshold" : 1, "keys" : [{"key":"EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw","weight":1}], "accounts" : [{"permission":{"actor":"yujinsheng11","permission":"eosio.code"},"weight":1}]}' owner -p gametestuser@owner
+
+
+cleos -u http://45.251.109.187:8888 create account yujinsheng11 tbgtestuser1 EOS6UtznEsEeFMytBUxhUZy5Bj6iFbhjMJk49xPeoLifDKve7MhyR EOS6UtznEsEeFMytBUxhUZy5Bj6iFbhjMJk49xPeoLifDKve7MhyR
