@@ -5,6 +5,9 @@ const fetch = require('node-fetch');                                // node only
 const { TextDecoder, TextEncoder } = require('util');               // node only
 const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN, UE_TOKEN } = require("../common/constant/eosConstants.js");
 
+// @ts-ignore
+const rpc = new JsonRpc(END_POINT, { fetch });
+
 /**
  * 
  * @param { string } accountName 
@@ -12,8 +15,6 @@ const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN, UE_TOKEN } = require("../common/
  */
 async function getTrxAction(accountName, actionSeq) {
     try {
-        // @ts-ignore
-        const rpc = new JsonRpc(END_POINT, { fetch });
         const resp = await rpc.history_get_actions(accountName, actionSeq, 9);
         // console.debug("resp: ", resp.actions);
         return resp.actions;
@@ -29,8 +30,6 @@ async function getTrxAction(accountName, actionSeq) {
  */
 async function getCurrencyStats(code, symbol) {
     try {
-        // @ts-ignore
-        const rpc = new JsonRpc(END_POINT, { fetch });
         const resp = await rpc.get_currency_stats(code, symbol);
         // const { [TBG_TOKEN_SYMBOL]: { max_supply: maxSupply } } = resp;
         // console.debug("resp: ", resp);
@@ -48,8 +47,6 @@ async function getCurrencyStats(code, symbol) {
  */
 async function getCurrencyBalance(code, account, symbol) {
     try {
-        // @ts-ignore
-        const rpc = new JsonRpc(END_POINT, { fetch });
         const resp = await rpc.get_currency_balance(code, account, symbol);
         // const { [TBG_TOKEN_SYMBOL]: { max_supply: maxSupply } } = resp;
         console.debug("resp: ", resp);
@@ -66,12 +63,7 @@ async function getCurrencyBalance(code, account, symbol) {
 async function getTransaction(transactionId) {
     try {
         // @ts-ignore
-        const rpc = new JsonRpc(END_POINT, { fetch });
-    
-
-
         const resp = rpc.history_get_transaction("d4688e098ce71b685fc1cdc80d33ecf7e87138aa6a90b495c3063c969816e834");
-        
         return resp;
     } catch (err) {
         throw err;
@@ -135,6 +127,7 @@ async function transfer(tokenContract, from, to, quantity, memo, privateKeyList)
 }
 
 module.exports = {
+    rpc,
     getTrxAction,
     getCurrencyStats,
     getCurrencyBalance,

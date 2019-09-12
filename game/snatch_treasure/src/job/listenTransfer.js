@@ -2,10 +2,11 @@
 const logger = require("../common/logger.js").child({ "@": "listening invest transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
-const { WALLET_RECEIVER, EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN } = require("../common/constant/eosConstants.js");
+const { BANKER, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN } = require("../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
-const INVEST_KEY = "tbg:invest:account_action_seq";
+const GLOBAL_LOTTO_KEY = "tbg:global_lotto:account_action_seq";
+const handlerBet = require("./handlerBet");
 
 logger.debug(`handlerTransferActions running...`);
 // 每秒中执行一次,有可能上一条监听的还没有执行完毕,下一次监听又再执行了一次,从而造成多条数据重复
@@ -36,26 +37,32 @@ async function handlerTransferActions() {
     try {
         await redis.set(INVEST_LOCK, 1);
         const actionSeq = await getLastPos();
-        const actions = await getTrxAction(WALLET_RECEIVER, actionSeq);
+        const actions = await getTrxAction(BANKER, actionSeq);
         logger.debug("actionSeq: ", actionSeq);
         for (const action of actions) {
             const result = await parseEosAccountAction(action);
-            const trxSeq = await redis.get(`tbg:invest:trx:${ result.account_action_seq }`);
+            const trxSeq = await redis.get(`tbg:global_lotto:trx:${ result.account_action_seq }`);
             logger.debug("result: ", result, "trxSeq: ", trxSeq);
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
-            if (trxSeq || !result.invest_type) {
+            if (trxSeq || !result.game_name || !result.account_name || !result.bet_key || !result.bet_num || !result.bet_amount || !result.periods || !result.bet_type) {
                 await setLastPos(result.account_action_seq);
-                await redis.set(INVEST_KEY, result.account_action_seq);
+                await redis.set(GLOBAL_LOTTO_KEY, result.account_action_seq);
                 continue;
             }
-            let userInvestmentRemark = ``;
-            logger.debug("result.from: ", result.from, typeof result.from, "result.invest_type: ", result.invest_type, typeof result.invest_type, result.from !== result.invest_type);
-            if (result.from !== result.invest_type) {
-                userInvestmentRemark = `user ${ result.from } help user ${ result.invest_type } invest ${ result.amount } UE`;
-            } else {
-                userInvestmentRemark = `${ result.from } investment ${ result.amount } UE`;
+
+            // 将听到转帐后处理投注
+            const betData = {
+                "periods": result.periods, 
+                "account_name":  result.account_name, 
+                "bet_num": result.bet_num, 
+                "bet_key": result.bet_key, 
+                "bet_amount": result.bet_amount, 
+                "pay_type": result.pay_type, 
+                "bet_type": result.bet_type
             }
-            await redis.set(`tbg:invest:trx:${ result.account_action_seq }`, result.trx_id);
+            await handlerBet(betData);
+
+            await redis.set(`tbg:global_lotto:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
         }
         await redis.del(INVEST_LOCK);
@@ -79,7 +86,14 @@ async function parseEosAccountAction(action) {
             "amount": "",
             "from": "",
             "symbol": "",
-            "invest_type": "",
+            "periods": 0, 
+            "account_name":  '', 
+            "bet_num": '', 
+            "bet_key": 0, 
+            "bet_amount": 0, 
+            "pay_type": '', 
+            "bet_type": '',
+            "game_name": ''
         }
         let actionTrace = action.action_trace;
         if (!actionTrace) {
@@ -106,7 +120,7 @@ async function parseEosAccountAction(action) {
         logger.debug(`trx_id: ${ actionTrace.trx_id } -- account_action_seq: ${ action.account_action_seq }`);
         let { receipt, act } = actionTrace;
         // logger.debug("act: ", act);
-        let isTransfer = (act.account === UE_TOKEN || act.account === TBG_TOKEN) && act.name === "transfer"
+        let isTransfer = act.account === UE_TOKEN && act.name === "transfer"
         if (!isTransfer) {
             // todo
             // 调用的不是 EOS 或代币的转账方法
@@ -114,37 +128,35 @@ async function parseEosAccountAction(action) {
             return result;
         }
         let { from, to, quantity, memo } = act.data;
-        if (to !== WALLET_RECEIVER) {
+        if (to !== BANKER) {
             // todo
             // 收款帐号不符
-            logger.debug(`receipt receiver does not match, ${ to } !== ${ WALLET_RECEIVER }`);
+            logger.debug(`receipt receiver does not match, ${ to } !== ${ BANKER }`);
             return result;
         }
-        let [ invest, user ] = memo.split(":");
-        if (invest !== "tbg_invest") {
+        let [ game_name, account_name, bet_key, bet_num, bet_amount, periods, bet_type ] = memo.split(":");
+        // memo 由 游戏名称, 用户名称, 投注 key 的数量，投注号码，投注总额度，期数，投注类型 用冒号分隔
+        // memo: game_name:account_name:bet_key:bet_num:bet_amount:periods:bet_type
+        if (!game_name && !account_name && !bet_key && !bet_num && !bet_amount && !periods && !bet_type) {
+            logger.debug("invalid memo, memo must be include game_name, account_name, bet_key, bet_num, bet_amount, periods, bet_type format like 'game_name:account_name:bet_key:bet_num:bet_amount:periods:bet_type'")
+            return result;
+        }
+        if (game_name !== "global_lotto") {
             // todo
             // memo 格式不符
-            logger.debug(`invalid memo, ${ invest } !== "tbg_invest"`);
+            logger.debug(`invalid memo, ${ game_name } !== "global_lotto"`);
             return result;
         }
+
         let [ amount, symbol ] = quantity.split(" ");
-        if (symbol === "UE" || symbol === "TBG") {
-            if (!new  Decimal(amount).eq(BASE_AMOUNT)) {
-                // todo
-                // 转帐额度不符
-                logger.debug(`invalid quantity, amount must be ${ BASE_AMOUNT }, but get ${ amount }`);
-                return result;
-            }
-
-            if (user !== from) {
-                result["invest_type"] = user;
-            } else {
-                result["invest_type"] = from;
-            }
-
-            result["from"] = from;
-            result["amount"] = amount;
-            result["symbol"] = symbol;
+        if (symbol === "UE") {
+            result.account_name = account_name;
+            result.bet_key = bet_key;
+            result.bet_num = bet_num;
+            result.bet_amount = bet_amount;
+            result.bet_type = bet_type;
+            result.pay_type = "ue",
+            result.game_name = game_name;
             return result;
         } else {
             // todo
@@ -158,9 +170,9 @@ async function parseEosAccountAction(action) {
 }
 
 async function getLastPos(){    
-    let lastPosStr = await redis.get(INVEST_KEY);
+    let lastPosStr = await redis.get(GLOBAL_LOTTO_KEY);
     if(!lastPosStr){
-        await redis.set(INVEST_KEY, 0);
+        await redis.set(GLOBAL_LOTTO_KEY, 0);
         return 0;
     }
     return parseInt(lastPosStr) + 1;
@@ -171,7 +183,7 @@ async function getLastPos(){
  * @param { number } seq
  */
 async function setLastPos(seq){
-    await redis.set(INVEST_KEY , seq);
+    await redis.set(GLOBAL_LOTTO_KEY , seq);
 }
 
 module.exports = handlerTransferActions;
