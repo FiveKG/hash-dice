@@ -1,0 +1,212 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.1",
+    "types": [],
+    "structs": [
+        {
+            "name": "bet",
+            "base": "",
+            "fields": [
+                {
+                    "name": "bet_name",
+                    "type": "name"
+                },
+                {
+                    "name": "bet_num",
+                    "type": "string"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "game_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "bet_time",
+                    "type": "time_point_sec"
+                }
+            ]
+        },
+        {
+            "name": "betlotto",
+            "base": "",
+            "fields": [
+                {
+                    "name": "bet_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "bet_num",
+                    "type": "string"
+                },
+                {
+                    "name": "bet_name",
+                    "type": "name"
+                },
+                {
+                    "name": "bet_time",
+                    "type": "time_point_sec"
+                },
+                {
+                    "name": "amount",
+                    "type": "asset"
+                },
+                {
+                    "name": "game_id",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "game",
+            "base": "",
+            "fields": [
+                {
+                    "name": "game_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "game_state",
+                    "type": "uint64"
+                },
+                {
+                    "name": "creator",
+                    "type": "name"
+                },
+                {
+                    "name": "created",
+                    "type": "time_point_sec"
+                },
+                {
+                    "name": "deadline",
+                    "type": "time_point_sec"
+                }
+            ]
+        },
+        {
+            "name": "init",
+            "base": "",
+            "fields": [
+                {
+                    "name": "game_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "create_time",
+                    "type": "time_point_sec"
+                },
+                {
+                    "name": "dead_line",
+                    "type": "time_point_sec"
+                }
+            ]
+        },
+        {
+            "name": "open",
+            "base": "",
+            "fields": [
+                {
+                    "name": "reward_num",
+                    "type": "string"
+                },
+                {
+                    "name": "game_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "reward_time",
+                    "type": "time_point_sec"
+                }
+            ]
+        },
+        {
+            "name": "rewardlotto",
+            "base": "",
+            "fields": [
+                {
+                    "name": "game_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "reward_num",
+                    "type": "string"
+                },
+                {
+                    "name": "reward_time",
+                    "type": "time_point_sec"
+                },
+                {
+                    "name": "creator",
+                    "type": "name"
+                },
+                {
+                    "name": "bonus",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "setstate",
+            "base": "",
+            "fields": [
+                {
+                    "name": "game_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "state",
+                    "type": "uint64"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "bet",
+            "type": "bet",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "init",
+            "type": "init",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "open",
+            "type": "open",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setstate",
+            "type": "setstate",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "betlotto",
+            "type": "betlotto",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "lottogame",
+            "type": "game",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "rewardlotto",
+            "type": "rewardlotto",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "variants": []
+}

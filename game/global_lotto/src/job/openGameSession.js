@@ -172,6 +172,34 @@ async function awardGame(data) {
         // 将当前游戏状态设置为已开奖
         sqlList.push({ sql: updateSessionSql, values: [ GAME_STATE.AWARDED, openCode.join(","), { relate_id: openResult }, rewardInfo.gs_id ] });
         
+        const insertPrizePoolLog = `
+            INSERT INTO prize_pool_log(gs_id,pool_type,change_amount,current_balance,op_type,extra,remark,create_time) 
+                VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+        `
+
+        // 添加奖池变动记录
+        sqlList.push({
+            sql: insertPrizePoolLog,
+            values: [ 
+                rewardInfo.gs_id, 'prize_pool', prizePoolSurplus.minus(gameInfo.prize_pool), prizePoolSurplus, 'award', 
+                { is_lottery_award: isLotteryAward, bottom_pool_change: !!isLotteryAward ? bottomPoolSurplus : 0 }, 
+                `${ new Date() } award`, "now()" 
+            ]
+        });
+
+        sqlList.push({
+            sql: insertPrizePoolLog,
+            values: [ rewardInfo.gs_id, 'bottom_pool', bottomPoolSurplus.minus(gameInfo.bottom_pool), bottomPoolSurplus, 
+                'award', {}, `${ new Date() } award`, "now()" 
+            ]
+        });
+
+        sqlList.push({
+            sql: insertPrizePoolLog,
+            values: [ rewardInfo.gs_id, 'reserve_pool', reservePoolSurplus.minus(gameInfo.reserve_pool), reservePoolSurplus, 'award',
+                {}, `${ new Date() } award`, "now()" 
+            ]
+        });
 
         // 调用 globallotto 合约开奖，记录相关信息
         actList.push({

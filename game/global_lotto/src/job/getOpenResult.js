@@ -83,13 +83,13 @@ async function accReward(openCode, betOrderList) {
             const accRewardInfo = rewardMap.get(winCount);
             if (!!accRewardInfo) {
                 accRewardInfo.push({
-                    "bet_num": info.bet_num,
+                    "bet_num": betInfo,
                     "win_key": winCount,
                     ...info
                 })
             } else {
                 const accRewardInfo = [{
-                    "bet_num": info.bet_num,
+                    "bet_num": betInfo,
                     "win_key": winCount,
                     ...info
                 }]

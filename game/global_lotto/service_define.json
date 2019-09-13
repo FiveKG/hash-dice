@@ -250,12 +250,16 @@
                         "bet_time": { "type": "number",  "is_require": true,  "desc": "投注时间" },
                         "bet_key": { "type": "number",  "is_require": true,  "desc": "投注 key 的的数量" },
                         "bet_amount": { "type": "number",  "is_require": true,  "desc": "投注总额度" },
+                        "agent_account": { "type": "number",  "is_require": true,  "desc": "代投帐号" },
+                        "transaction_id": { "type": "number",  "is_require": true,  "desc": "交易 id" },
+                        "pay_type": { "type": "number",  "is_require": true,  "desc": "使用什么方式支付，彩码, 余额或者 UE" },
                         "detail": {
                             "type": "objectArray", "desc": "全部开奖信息",
                             "properties": {
                                 "bet_num": { "type": "number",  "is_require": true,  "desc": "投注号码" },
                                 "win_count": { "type": "number",  "is_require": true,  "desc": "中奖号码个数" },
-                                "win": { "type": "number",  "is_require": true,  "desc": "中奖额度" }
+                                "win_type": { "type": "number",  "is_require": true,  "desc": "中奖类型" },
+                                "win_amount": { "type": "number",  "is_require": true,  "desc": "中奖额度" }
                             }
                         }
                     }

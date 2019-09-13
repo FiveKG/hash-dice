@@ -121,7 +121,16 @@ warning: transaction executed locally, but may not be confirmed by the network y
 ```
 docker run --name eosio_cdt -v /home/yujinsheng/tmp/yuezhi/eosio.contracts:/contracts -w /contracts -dt eostudio/eosio.cdt:v1.6.2
 alias eosio-cpp='docker exec -it eosio_cdt /usr/bin/eosio-cpp'
+
 eosio-cpp ./hey.cpp -I include -o ./hey.wasm --abigen
+
+eosio-cpp ./global_lotto/src/globallotto.cpp -I ./global_lotto/include -o ./global_lotto/globallotto.wasm --abigen
+
+eosio-cpp ./hash_dice/src/hashdice.cpp -I ./hash_dice/include -o ./hash_dice/hashdice.wasm --abigen
+
+eosio-cpp ./hash_minute_lottery/src/minlottery.cpp -I ./hash_minute_lottery/include -o ./hash_minute_lottery/minlottery.wasm --abigen
+
+eosio-cpp ./snatch/src/snatch.cpp -I ./snatch/include -o ./snatch/snatch.wasm --abigen
 ```
 
 #### set smart contract

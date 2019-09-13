@@ -27,14 +27,18 @@ const ALLOC_TO_PRIZE_POOL = 80;
 const ALLOC_TO_BOTTOM_POOL = 5;
 // 3% 拨入全球彩储备池，当五. 六. 七等奖,   奖金总额奖池不足以支付时，超出部分由全球彩储备池拨出；
 const ALLOC_TO_RESERVE_POOL = 3;
-// 2% 拨入 TBG 股东分红池；
-const ALLOC_TO_TSH_INCOME = 2;
-// 2.5% 拨入 TBG 三倍收益保障池；
-const ALLOC_TO_PROTECTION_POOL = 2.5;
+
+// 分发中心收益
+const DISTRIBUTION_CENTER = 3.5;
+
+// 1% 拨入 TBG 股东分红池；
+const ALLOC_TO_TSH_POOL = 1;
+// 1% 拨入 TBG 三倍收益保障池；
+const ALLOC_TO_PROTECTION_POOL = 1;
 // 5% 拨入 TBG 共享推荐佣金分配；
 const ALLOC_TO_REFERRER = 5;
-// 2.5% 拨入团队，作资源购买及开发运维费用支配；
-const ALLOC_TO_TEAM = 2.5;
+// 1.5% TSH投资股东收益
+const ALLOC_TO_TSH_INCOME = 1.5;
 
 // 超级全球彩大奖
 const LOTTERY_AWARD = 60;
@@ -97,7 +101,8 @@ const CONSTANT = {
     "ALLOC_TO_TSH_INCOME": ALLOC_TO_TSH_INCOME,
     "ALLOC_TO_PROTECTION_POOL": ALLOC_TO_PROTECTION_POOL,
     "ALLOC_TO_REFERRER": ALLOC_TO_REFERRER,
-    "ALLOC_TO_TEAM": ALLOC_TO_TEAM,
+    "ALLOC_TO_TSH_POOL": ALLOC_TO_TSH_POOL,
+    "DISTRIBUTION_CENTER": DISTRIBUTION_CENTER,
     "LOTTERY_AWARD": LOTTERY_AWARD,
     "SECOND_PRICE": SECOND_PRICE,
     "THIRD_PRICE": THIRD_PRICE,
@@ -127,10 +132,11 @@ module.exports = CONSTANT
  * @property { number } ALLOC_TO_PRIZE_POOL 拨入全球彩奖池；
  * @property { number } ALLOC_TO_BOTTOM_POOL 5% 拨入全球彩底池，当开出超级全球彩大奖的下一期，将全球彩底池的 50% 拨入下一轮全球彩奖池；
  * @property { number } ALLOC_TO_RESERVE_POOL 3% 拨入全球彩储备池，当五. 六. 七等奖,   奖金总额奖池不足以支付时，超出部分由全球彩储备池拨出；
- * @property { number } ALLOC_TO_TSH_INCOME 2% 拨入 TBG 股东分红池；
- * @property { number } ALLOC_TO_PROTECTION_POOL 2.5% 拨入 TBG 三倍收益保障池；
+ * @property { number } ALLOC_TO_TSH_POOL 1% 拨入 TBG 股东分红池；
+ * @property { number } ALLOC_TO_PROTECTION_POOL 1% 拨入 TBG 三倍收益保障池；
  * @property { number } ALLOC_TO_REFERRER 5% 拨入 TBG 共享推荐佣金分配；
- * @property { number } ALLOC_TO_TEAM 2.5% 拨入团队，作资源购买及开发运维费用支配；
+ * @property { number } DISTRIBUTION_CENTER 3.5% 分发中心收益
+ * @property { number } ALLOC_TO_TSH_INCOME 1.5% TSH投资股东收益
  * @property { number } LOTTERY_AWARD 超级全球彩大奖
  * @property { number } SECOND_PRICE 二等奖
  * @property { number } THIRD_PRICE 三等奖

@@ -20,6 +20,9 @@ const TBG_TOKEN_SYMBOL = "TBG"
 // 庄家
 const BANKER = "lottobanker"
 
+// 分发中心收益账号
+const DISTRIBUTION_CENTER_ACCOUNT = "gamecenter"
+
 // 代投注账号
 const AGENT_ACCOUNT = "globallotto"
 
@@ -49,7 +52,8 @@ const CONSTANT = {
     "TBG_TOKEN_SYMBOL": TBG_TOKEN_SYMBOL,
     "GLOBAL_LOTTO_CONTRACT": GLOBAL_LOTTO_CONTRACT,
     "BANKER": BANKER,
-    "AGENT_ACCOUNT": AGENT_ACCOUNT
+    "AGENT_ACCOUNT": AGENT_ACCOUNT,
+    "DISTRIBUTION_CENTER_ACCOUNT": DISTRIBUTION_CENTER_ACCOUNT
 }
 
 module.exports = CONSTANT
@@ -71,4 +75,5 @@ module.exports = CONSTANT
  * @property { string } GLOBAL_LOTTO_CONTRACT 全球彩合约帐号
  * @property { string } BANKER 庄家
  * @property { string } AGENT_ACCOUNT 代投注账号
+ * @property { string } DISTRIBUTION_CENTER_ACCOUNT 分发中心收益账号
  */

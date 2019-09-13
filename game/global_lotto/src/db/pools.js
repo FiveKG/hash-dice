@@ -18,7 +18,8 @@ var dbConfig = {
 
 let pool = new Pool(dbConfig);
 
-pool.query("SELECT now()").then(rows => {
-    console.debug("rows: ", rows);
-})
+// pool.query("SELECT now()").then(rows => {
+//     console.debug("rows: ", rows);
+// })
+
 module.exports = pool

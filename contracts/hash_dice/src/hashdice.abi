@@ -1,0 +1,149 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.1",
+    "types": [],
+    "structs": [
+        {
+            "name": "bet",
+            "base": "",
+            "fields": [
+                {
+                    "name": "bet_name",
+                    "type": "name"
+                },
+                {
+                    "name": "bet_num",
+                    "type": "string"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "bet_time",
+                    "type": "time_point_sec"
+                }
+            ]
+        },
+        {
+            "name": "bet_table",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "bet_num",
+                    "type": "string"
+                },
+                {
+                    "name": "bet_name",
+                    "type": "name"
+                },
+                {
+                    "name": "bet_time",
+                    "type": "time_point_sec"
+                },
+                {
+                    "name": "amount",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "open",
+            "base": "",
+            "fields": [
+                {
+                    "name": "reward_num",
+                    "type": "string"
+                },
+                {
+                    "name": "bet_num",
+                    "type": "string"
+                },
+                {
+                    "name": "bet_block",
+                    "type": "uint64"
+                },
+                {
+                    "name": "reward_block",
+                    "type": "uint64"
+                },
+                {
+                    "name": "reward_time",
+                    "type": "time_point_sec"
+                }
+            ]
+        },
+        {
+            "name": "reward",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "bet_num",
+                    "type": "string"
+                },
+                {
+                    "name": "bet_block",
+                    "type": "uint64"
+                },
+                {
+                    "name": "reward_block",
+                    "type": "uint64"
+                },
+                {
+                    "name": "reward_num",
+                    "type": "string"
+                },
+                {
+                    "name": "reward_time",
+                    "type": "time_point_sec"
+                },
+                {
+                    "name": "creator",
+                    "type": "name"
+                },
+                {
+                    "name": "bonus",
+                    "type": "asset"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "bet",
+            "type": "bet",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "open",
+            "type": "open",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "bet",
+            "type": "bet_table",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "reward",
+            "type": "reward",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "variants": []
+}
