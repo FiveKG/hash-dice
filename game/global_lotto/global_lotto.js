@@ -42,7 +42,7 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 
 app.use(require("./src/router/router"));
 
-let port = process.env.GLOBAL_LOTTO_SERVER_PORT || 9527// = sb.get_config("service_port", `${service_name}`);
+let port = process.env.GLOBAL_LOTTO_SERVER_PORT || 13021// = sb.get_config("service_port", `${service_name}`);
 let host = process.env.GLOBAL_LOTTO_SERVER_HOST || "0.0.0.0"
 if (process.env.NODE_ENV === 'production') {
     // port = require("@yz/yue-generate-port")();

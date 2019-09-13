@@ -2,13 +2,14 @@
 const { Pool } = require("pg");
 const { db } = require("../../config.js");
 
+const port = process.env.TBG_DB_PORT || db.port
 // 数据库配置
 var dbConfig = {  
-    user: db.user,
-    host: db.host,
-    database: db.database,
-    password: db.password,
-    port: db.port,
+    user: process.env.TBG_DB_USER || db.user,
+    host: process.env.TBG_DB_HOST || db.host,
+    database: process.env.TBG_DB_NAME || db.database,
+    password: process.env.TBG_DB_PASS || db.password,
+    port: Number(port),
 
     // 扩展属性
     max: 20, // 连接池最大连接数
@@ -21,3 +22,4 @@ let pool = new Pool(dbConfig);
 //     console.debug("rows: ", rows);
 // })
 module.exports = pool
+

@@ -1,19 +1,27 @@
 // @ts-check
 const amqplib = require("amqplib");
 const logger = require("../common/logger.js").child({"@":"amqplib"});
+const { rabbitmq } = require("../../config.js");
+
 const amqpOption = {
     protocol : "amqp",
-    hostname : process.env.TBG_RABBIT_HOST,
-    port     : Number(process.env.TBG_RABBIT_PORT),
-    username : process.env.TBG_RABBIT_USER,
-    password : process.env.TBG_RABBIT_PASS,
+    hostname : process.env.TBG_RABBIT_HOST || rabbitmq.host,
+    port     : Number(process.env.TBG_RABBIT_PORT) || rabbitmq.port,
+    username : process.env.TBG_RABBIT_USER || rabbitmq.user,
+    password : process.env.TBG_RABBIT_PASS || rabbitmq.pwd,
     heartbeat: 300
 };
 
 logger.debug(`amqp option: %j`, amqpOption);
 
+/**
+ * @type { any }
+ */
 let amqpConn = null;
-let channel = null
+/**
+ * @type { any }
+ */
+let channel = null;
 
 /**
  * 获取 channel . 确保 队列名 存在.
