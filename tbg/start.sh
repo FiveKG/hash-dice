@@ -45,9 +45,9 @@ EOF
 
 export TBG_DB_HOST=$postgreshost
 export TBG_DB_PORT=5432
-export TBG_DB_USER=$dbname
+export TBG_DB_USER=$dbuser
 export TBG_DB_PASS=pass_2019
-export TBG_DB_NAME=$dbuser
+export TBG_DB_NAME=$dbname
 
 export TBG_REDIS_HOST=$redishost
 export TBG_REDIS_PORT=6379

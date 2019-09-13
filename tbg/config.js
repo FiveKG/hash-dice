@@ -7,8 +7,8 @@ module.exports = {
         "port"    : 5432,
     },
     "redis": {
-        "host" : "172.17.0.2",
-        "port" : "6379" ,
+        "host" : "172.17.0.5",
+        "port" : 6379 ,
         "auth" : "redis_pass_2018"
     },
     "rabbitmq": {

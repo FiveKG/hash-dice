@@ -13,7 +13,6 @@ unset TBG_RABBIT_PORT
 unset TBG_RABBIT_USER
 unset TBG_RABBIT_PASS
 
-
 export TBG_DB_HOST=127.0.0.1
 export TBG_DB_PORT=54321
 export TBG_DB_USER=wallet_tbg_user
