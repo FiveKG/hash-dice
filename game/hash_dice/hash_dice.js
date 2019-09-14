@@ -47,8 +47,13 @@ server.on('listening', async () => {
   // require("@yz/yue-service-register")(`${service_name}`, port);
   // 初始化系统服务数据;
   logger.info(`**** server of pools running at http://localhost:${port}/  ****`)
+
 });
 
 server.on("close", () => {
   logger.info(`**** server of pools listening on ${port} stopped ****`);
+});
+process.on('unhandledRejection', error => {
+  // Will print "unhandledRejection err is not defined"
+  console.log('unhandledRejection', error.message);
 });

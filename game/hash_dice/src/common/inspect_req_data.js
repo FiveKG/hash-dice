@@ -17,7 +17,6 @@ function inspect_req_data(req) {
   let service_define = server_define_info || {};
   const data = get_data(req, service_define);
   const req_data = check_data(data);
-
   return req_data;
 }
 
