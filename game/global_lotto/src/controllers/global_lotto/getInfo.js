@@ -14,6 +14,9 @@ async function getInfo(req, res, next) {
         let resData = get_status(1);
         const gameInfo = await getGameInfo();
         const sessionInfo = await getLatestGameSession();
+        if (!sessionInfo) {
+            return res.send(get_status(1012, "game not exists"));
+        }
         const data = {
             "count_down": df.differenceInSeconds(new Date(), sessionInfo.end_time),
             "periods": sessionInfo.periods,

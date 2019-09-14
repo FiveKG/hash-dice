@@ -14,15 +14,14 @@ async function gameSessionDetail(req, res, next) {
         let reqData = await inspect_req_data(req);
         logger.debug(`the param is %j: `, reqData);
         const gameInfo = await getGameInfo();;
-        
-        const selectGameSession = `SELECT periods, reward_num, game_state FROM game_session WHERE periods = $1`
+        const selectGameSession = `SELECT periods, reward_num, game_state, extra FROM game_session WHERE periods = $1`
         const { rows: [ gameSessionInfo ] } = await pool.query(selectGameSession, [ reqData.periods ]);
-
+        if (!gameSessionInfo) {
+            return res.send(get_status(1012, "game not exists"));
+        }
         // 如果游戏是开始状态或者是待开奖
-        let rewardNum = gameSessionInfo.reward_num;
+        let resData = get_status(1);
         if (gameSessionInfo.game_state === GAME_STATE.START || gameSessionInfo.game_state == GAME_STATE.REWARDING) {
-            rewardNum = gameSessionInfo.reward_num;
-            let resData = get_status(1);
             resData.data = {
                 "gs_id": gameSessionInfo.gs_id,
                 "count_down": df.differenceInSeconds(new Date(), gameSessionInfo.end_time),
@@ -32,35 +31,100 @@ async function gameSessionDetail(req, res, next) {
             
             res.send(resData);
         } else {
-            // 查出投注记录
-            const selectBetOrder = `SELECT bet_key, bet_amount, create_time, extra FROM bet_order WHERE account_name = $1 AND gs_id = $2`
-            const { rows: [ betOrder ] } = await pool.query(selectBetOrder, [ reqData.account_name, gameSessionInfo.gs_id ]);
-            if (!betOrder) {
-                return res.send(get_status(1013, "can not found bet order"));
-            }
-            // 查出开奖记录
-            const selectBonusInfo = `SELECT win_type, win_key, bet_num, one_key_bonus FROM award_session WHERE account_name = $1 AND gs_id = $2`
-            const { rows: [ mineOrderList ] } = await pool.query(selectBonusInfo, [ reqData.account_name, gameSessionInfo.gs_id ]);
-            const detail = mineOrderList.map(it => {
-                return {
-                    "bet_num": it.bet_num,
-                    "win_count": it.win_key,
-                    "win_type": it.win_type,
-                    "win_amount": it.one_key_bonus
+            // 查找累积奖池和累积发放额
+            const selectTotalAward = `
+                SELECT 
+                    sum(SELECT change_amount FROM prize_pool WHERE change_amount > 0) AS total, 
+                    sum(SELECT change_amount FROM prize_pool_log WHERE change_amount < 0) AS total_award`
+            const { rows: [{ total, total_award }] } = await pool.query(selectTotalAward);
+            // 查找本期奖池变动
+            const selectPrizePoolLogInfo = `SELECT current_balance, extra FROM prize_pool_log WHERE gs_id = $1 AND pool_type = $2 AND op_type = $3`
+            const { rows: [ prizePoolLogInfo ] } = await pool.query(selectPrizePoolLogInfo, [ gameSessionInfo.gs_id, 'prize_pool', 'award' ]);
+            // 查找本期储备池变动
+            // const selectReservePoolInfo = `SELECT current_balance, change_amount FROM prize_pool_log WHERE gs_id = $1 AND pool_type = $2 AND op_type = $3`
+            // const { rows: [ reservePoolLogInfo ] } = await pool.query(selectReservePoolInfo, [ gameSessionInfo.gs_id, 'reserve_pool', 'award' ]);
+            
+            // 查找中奖名单
+            const selectAwardList = `SELECT * FROM award_session WHERE gs_id = $1`;
+            const { rows: awardList } = await pool.query(selectAwardList, [ gameSessionInfo.gs_id ]);
+
+            const rewardMap = new Map();
+            // 遍历开奖信息
+            for (const info of awardList) {
+                // 统计所有 key 中奖的用户
+                // account_name, create_time, bet_num, win_key, win_type, one_key_bonus, bonus_amount
+                let accRewardInfo = rewardMap.get(info.win_key);
+                if (!!accRewardInfo) {
+                    accRewardInfo.push({
+                        "bonus_type": info.win_type,
+                        "rate": info.extra.award_rate,
+                        "key_count": info.win_key,
+                        "award_amount": info.bonus_amount,
+                        "one_key_bonus": info.one_key_bonus,
+                        "account_name": info.account_name
+                    })
+                } else {
+                    accRewardInfo = [];
+                    accRewardInfo.push({
+                        "bonus_type": info.win_type,
+                        "rate": info.extra.award_rate,
+                        "key_count": info.win_key,
+                        "award_amount": info.bonus_amount,
+                        "one_key_bonus": info.one_key_bonus,
+                        "account_name": info.account_name
+                    })
+                    rewardMap.set(info.win_key, accRewardInfo);
                 }
-            })
-            let resData = get_status(1);
+            }
+
+            const detail = [];
+            for (const [ key, val ] of rewardMap) {
+                let award_rate = null;
+                let win_type = null;
+                let win_key = 0;
+                let one_key_bonus = new Decimal(0);
+                let award_amount = new Decimal(0);
+                const award_lists = []
+                for (const info of val) {
+                    if (!award_rate) {
+                        award_rate = info.rate;
+                    }
+                    if (!win_type) {
+                        win_type = info.bonus_type;
+                    }
+                    if (!win_key) {
+                        win_key = win_key + info.key_count;
+                    }
+                    award_lists.push({
+                        "account_name": info.account_name,
+                        "win_key": info.key_count,
+                        "award_amount": info.one_key_bonus
+                    });
+                    award_amount = award_amount.add(info.one_key_bonus);
+                }
+                detail.push({
+                    "bonus_type": win_type,
+                    "rate": award_rate,
+                    "key_count": win_key,
+                    "award_amount": award_amount,
+                    "one_key_bonus": one_key_bonus,
+                    "award_lists": award_lists
+                });
+            }
+
             resData.data = {
-                periods: gameSessionInfo.periods,
-                reward_num: rewardNum,
-                reward_time: gameSessionInfo.reward_time,
-                bet_time: betOrder.create_time,
-                bet_key: betOrder.bet_key,
-                bet_amount: betOrder.bet_amount,
-                agent_account: betOrder.extra.agent_account,
-                transaction_id: betOrder.extra.transaction_id,
-                pay_type: betOrder.extra.pay_type,
-                detail: detail
+                "periods": gameSessionInfo.periods,
+                "reward_time": gameSessionInfo.reward_time,
+                "prize_pool": new Decimal(total).toFixed(4),
+                "award_amount": new Decimal(total_award).abs().toFixed(4),
+                "prize_pool_balance": new Decimal(prizePoolLogInfo.current_balance).toFixed(4),
+                "reserve_pool_award": new Decimal(prizePoolLogInfo.extra.reserve_pool_change).abs().toFixed(4),
+                "bottom_pool_award": new Decimal(prizePoolLogInfo.extra.bottom_pool_change).toFixed(4),
+                "next_init_amount": new Decimal(prizePoolLogInfo.current_balance).add(prizePoolLogInfo.extra.bottom_pool_change).toFixed(4),
+                "reward_code": gameSessionInfo.reward_num,
+                "relate_info": gameSessionInfo.extra.relate_id,
+                "is_lottery_award": prizePoolLogInfo.extra.is_lottery_award, // 是否开出超级大奖
+                "detail": detail
             }
             
             res.send(resData);

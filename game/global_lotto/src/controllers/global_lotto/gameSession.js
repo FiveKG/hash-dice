@@ -12,6 +12,9 @@ async function gameSession(req, res, next) {
         logger.debug(`the param is %j: `, reqData);
         let resData = get_status(1);
         const info =  await getRewardGameSession();
+        if (!info) {
+            return res.send(get_status(1012, "game not exists"));
+        }
         const data = info.map(it => {
             return {
                 "gs_id": it.gs_id,

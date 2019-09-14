@@ -34,6 +34,7 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
             for (const info of bonusAccList) {
                 const extra = {
                     ...info.extra,
+                    award_rate: awardRate
                 }
                 const opts = [
                     generate_primary_key(), info.gs_id, extra, info.account_name, "now()", info.bet_num,
@@ -68,6 +69,7 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
             for (const info of bonusAccList) {
                 const extra = {
                     ...info.extra,
+                    award_rate: awardRate
                 };
                 const opts = [
                     generate_primary_key(), info.gs_id, extra, info.account_name, "now()", info.bet_num,

@@ -166,6 +166,7 @@
                         "bottom_pool_award": { "type": "text",  "is_require": true,  "desc": "底池拨入下一期奖池" },
                         "next_init_amount": { "type": "text",  "is_require": true,  "desc": "下期奖池初始额" },
                         "reward_code": { "type": "text",  "is_require": true,  "desc": "本期中奖号码为" },
+                        "is_lottery_award": { "type": "text",  "is_require": true,  "desc": "本期是否开出超级大奖" },
                         "relate_info": {
                             "type": "objectArray", "desc": "相关 id 及时间",
                             "properties": {
@@ -185,7 +186,7 @@
                                     "type": "objectArray", "desc": "全部开奖信息",
                                     "properties": {
                                         "account_name": { "type": "number",  "is_require": true,  "desc": "中奖账号" },
-                                        "rate": { "type": "number",  "is_require": true,  "desc": "中奖数" },
+                                        "win_key": { "type": "number",  "is_require": true,  "desc": "中奖数" },
                                         "award_amount": { "type": "number",  "is_require": true,  "desc": "派奖金额" }
                                     }
                                 }

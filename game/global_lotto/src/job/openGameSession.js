@@ -182,7 +182,7 @@ async function awardGame(data) {
             sql: insertPrizePoolLog,
             values: [ 
                 rewardInfo.gs_id, 'prize_pool', prizePoolSurplus.minus(gameInfo.prize_pool), prizePoolSurplus, 'award', 
-                { is_lottery_award: isLotteryAward, bottom_pool_change: !!isLotteryAward ? bottomPoolSurplus : 0 }, 
+                { is_lottery_award: isLotteryAward, bottom_pool_change: !!isLotteryAward ? bottomPoolSurplus : 0, reserve_pool_change: reservePoolSurplus.minus(gameInfo.reserve_pool) }, 
                 `${ new Date() } award`, "now()" 
             ]
         });

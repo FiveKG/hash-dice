@@ -13,6 +13,9 @@ async function latestGameSession(req, res, next) {
         let resData = get_status(1);
         const gameInfo = await getGameInfo();
         const info = await getLatestGameSession();
+        if (!info) {
+            return res.send(get_status(1012, "game not exists"));
+        }
         resData.data = {
             "gs_id": info.gs_id,
             "count_down": df.differenceInSeconds(new Date(), info.end_time),
