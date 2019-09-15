@@ -50,7 +50,7 @@ async function createTable() {
             account_name TEXT NOT NULL DEFAULT '',
             bet_num TEXT NOT NULL DEFAULT '',
             key_count INTEGER NOT NULL DEFAULT 0,
-            amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
+            amount NUMERIC(20, 8) NOT NULL DEFAULT 0,
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         comment on table bet_order is '用户投注记录';
@@ -127,6 +127,8 @@ async function dropAllTable() {
             drop table if exists game;
             drop table if exists game_session;
             drop table if exists bet_order;
+            drop table if exists award_session;
+            drop table if exists prize_pool_log;
         `
         logger.info("drop all table");
         await pool.query(querySql);

@@ -1,11 +1,11 @@
-CREATE USER global_lotto_user WITH PASSWORD 'pass_2019';
-CREATE DATABASE global_lotto OWNER global_lotto_user;
-grant select,insert,update,delete on all tables in schema public to global_lotto_user; 
-grant select,usage,update on all sequences in schema public to global_lotto_user;
-grant execute on all functions in schema public to global_lotto_user;
-grant references, trigger on all tables in schema public to global_lotto_user;
-grant create on schema public to global_lotto_user;
-grant usage on schema public to global_lotto_user;
+CREATE USER snatch_treasure_user WITH PASSWORD 'pass_2019';
+CREATE DATABASE snatch_treasure OWNER snatch_treasure_user;
+grant select,insert,update,delete on all tables in schema public to snatch_treasure_user; 
+grant select,usage,update on all sequences in schema public to snatch_treasure_user;
+grant execute on all functions in schema public to snatch_treasure_user;
+grant references, trigger on all tables in schema public to snatch_treasure_user;
+grant create on schema public to snatch_treasure_user;
+grant usage on schema public to snatch_treasure_user;
 
 --------------------- 
 CREATE TABLE IF NOT EXISTS game(

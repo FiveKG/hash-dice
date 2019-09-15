@@ -17,7 +17,6 @@ async function startGameSession() {
     try {
         // 记录区块链相关调用信息
         const actList = [];
-        const gameInfo = await getGameInfo();
         const latestGame = await getLatestGameSession();
         if (latestGame.game_state !== GAME_STATE.START) {
             return;

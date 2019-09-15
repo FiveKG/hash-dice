@@ -4,24 +4,27 @@
  * 操作类型常量
  */
 
-// 全球彩开奖
-const GLOBAL_LOTTO_OPEN = "global_lotto_open";
+// 夺宝开奖
+const SNATCH_OPEN = "snatch_open";
 
-// 全球彩投注
-const GLOBAL_LOTTO_BET = "global_lotto_bet";
+// 夺宝投注
+const SNATCH_BET = "snatch_bet";
 
-// 全球彩开奖
-const GLOBAL_LOTTO_MQ = "global_lotto_mq";
+// 夺宝消息
+const SNATCH_MQ = "snatch_mq";
 
+// 开始新游戏
+const START_NEW_GAME = 'start_new_game'
 
 /**
  * TBG发币规划
  * @type { Constant }
  */
 const CONSTANT = {
-    "GLOBAL_LOTTO_OPEN": GLOBAL_LOTTO_OPEN,
-    "GLOBAL_LOTTO_MQ": GLOBAL_LOTTO_MQ,
-    "GLOBAL_LOTTO_BET": GLOBAL_LOTTO_BET
+    "SNATCH_OPEN": SNATCH_OPEN,
+    "SNATCH_MQ": SNATCH_MQ,
+    "SNATCH_BET": SNATCH_BET,
+    "START_NEW_GAME": START_NEW_GAME
 }
 
 module.exports = CONSTANT
@@ -29,7 +32,8 @@ module.exports = CONSTANT
 /**
  * @description 常量
  * @typedef { Object } Constant
- * @property { string } GLOBAL_LOTTO_OPEN 全球彩开奖
- * @property { string } GLOBAL_LOTTO_MQ 全球彩开奖
- * @property { string } GLOBAL_LOTTO_BET 全球彩开奖
+ * @property { string } SNATCH_OPEN 夺宝开奖
+ * @property { string } SNATCH_MQ 夺宝开奖
+ * @property { string } SNATCH_BET 夺宝消息
+ * @property { string } START_NEW_GAME 开始新游戏
  */

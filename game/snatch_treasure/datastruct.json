@@ -7,11 +7,11 @@
         {
           "tableName": "game", "tableDesc": "游戏", "primaryKey": "","group": "snatch_treasure",
           "fields": [
-            { "name": "g_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": "游戏id"}, 
-            { "name": "prize_pool" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "全球彩奖池" ,  "isPrimary": false , "remark": ""} , 
+            { "name": "g_id" , "type": "int" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": "游戏id"}, 
+            { "name": "prize_pool" , "type": "number" , "dblength": "36", "dftValue": "''", "summary": "每期奖池额度" ,  "isPrimary": false , "remark": ""} , 
             { "name": "key_count" , "type": "int" , "dblength": "50", "dftValue": "''", "summary": "所需 Key 数量" ,  "isPrimary": false , "remark": ""},
-            { "name": "game_name" , "type": "text" , "dblength": "50", "dftValue": "''", "summary": "游戏名称" ,  "isPrimary": false , "remark": ""},
-            { "name": "quantity" , "type": "text" , "dblength": "300", "dftValue": "''", "summary": "一个 key 的额度" ,  "isPrimary": false , "remark": ""}
+            { "name": "game_name" , "type": "number" , "dblength": "50", "dftValue": "''", "summary": "游戏名称" ,  "isPrimary": false , "remark": ""},
+            { "name": "quantity" , "type": "number" , "dblength": "300", "dftValue": "''", "summary": "一个 key 的额度" ,  "isPrimary": false , "remark": ""}
           ]
         },
         {
@@ -19,12 +19,11 @@
           "fields": [
             { "name": "gs_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": ""}, 
             { "name": "creator", "type": "text", "dblength": "32", "dftValue": "''", "summary": "创建人", "remark": "" , "isPrimary": false },
-            { "name": "g_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "游戏类型" ,  "isPrimary": false , "remark": "游戏id"},
+            { "name": "g_id" , "type": "number" , "dblength": "36", "dftValue": "''", "summary": "游戏类型" ,  "isPrimary": false , "remark": "游戏id"},
             { "name": "periods" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "游戏期数" ,  "isPrimary": false , "remark": ""},
-            { "name": "start_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间",   "remark": "", "isPrimary": false },
-            { "name": "end_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间",   "remark": "", "isPrimary": false },
+            { "name": "extra",  "type": "json", "dblength": "10",   "dftValue": "0", "summary": "附加信息" , "remark": "记录相关的 id，是否代投", "isPrimary": false },
             { "name": "game_state", "type": "int", "dblength": "0", "dftValue": "now()", "summary": "游戏的状态",   "remark": "", "isPrimary": false },
-            { "name": "reward_num", "type": "text", "dblength": "32", "dftValue": "''", "summary": "开奖号码", "remark": "" , "isPrimary": false },
+            { "name": "reward_code", "type": "text", "dblength": "32", "dftValue": "''", "summary": "开奖幸运码", "remark": "" , "isPrimary": false },
             { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "创建时间",   "remark": "", "isPrimary": false } 
           ]
         },
@@ -36,9 +35,22 @@
             { "name": "extra",  "type": "json", "dblength": "10",   "dftValue": "0", "summary": "附加信息" , "remark": "记录相关的 id，是否代投", "isPrimary": false },
             { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "" , "isPrimary": false } ,
             { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "投注时间", "remark": "", "isPrimary": false },
-            { "name": "bet_num", "type": "text", "dblength": "32", "dftValue": "''", "summary": "投注号码", "remark": "" , "isPrimary": false },
+            { "name": "bet_code", "type": "text", "dblength": "32", "dftValue": "''", "summary": "投注幸运码", "remark": "" , "isPrimary": false },
             { "name": "key_count", "type": "int", "dblength": "32", "dftValue": "''", "summary": "投注数量", "remark": "" , "isPrimary": false },
             { "name": "amount", "type": "Decimal", "dblength": "0", "dftValue": "now()", "summary": "投注额度", "remark": "", "isPrimary": false }
+          ]
+        },
+        {
+          "tableName": "award_session", "tableDesc": "派奖表", "primaryKey": "","group": "global_lotto",
+          "fields": [
+            { "name": "aw_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "主键Id" ,  "isPrimary": true , "remark": ""},
+            { "name": "gs_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "期数" ,  "isPrimary": true , "remark": ""},
+            { "name": "extra",  "type": "json", "dblength": "10",   "dftValue": "0", "summary": "附加信息" , "remark": "记录相关的 id，是否代投", "isPrimary": false },
+            { "name": "account_name", "type": "text", "dblength": "32", "dftValue": "''", "summary": "用户 eos 帐号名称", "remark": "" , "isPrimary": false } ,
+            { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "投注时间", "remark": "", "isPrimary": false },
+            { "name": "bet_code", "type": "text", "dblength": "32", "dftValue": "''", "summary": "投注幸运码", "remark": "" , "isPrimary": false },
+            { "name": "bonus_code", "type": "int", "dblength": "32", "dftValue": "''", "summary": "中奖幸运码", "remark": "" , "isPrimary": false },
+            { "name": "bonus_amount", "type": "Decimal", "dblength": "0", "dftValue": "now()", "summary": "中奖总金额", "remark": "", "isPrimary": false }
           ]
         }
     ]

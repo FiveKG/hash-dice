@@ -46,24 +46,24 @@ async function initGameSession() {
                     break;
                 }
                 
-                if (periods === 1) {
-                    state = GAME_STATE.START;
-                    // 调用 globallotto 合约设置游戏状态
-                    actList.push({
-                        account: GLOBAL_LOTTO_CONTRACT,
-                        name: "setstate",
-                        authorization: [{
-                            actor: GLOBAL_LOTTO_CONTRACT,
-                            permission: 'active',
-                        }],
-                        data: {
-                            game_id: periods,
-                            state: state
-                        }
-                    });
-                } else {
-                    state = GAME_STATE.INIT;
-                }
+                // if (periods === 1) {
+                //     state = GAME_STATE.START;
+                //     // 调用 globallotto 合约设置游戏状态
+                //     actList.push({
+                //         account: GLOBAL_LOTTO_CONTRACT,
+                //         name: "setstate",
+                //         authorization: [{
+                //             actor: GLOBAL_LOTTO_CONTRACT,
+                //             permission: 'active',
+                //         }],
+                //         data: {
+                //             game_id: periods,
+                //             state: state
+                //         }
+                //     });
+                // } else {
+                //     state = GAME_STATE.INIT;
+                // }
                 
                 const data = {
                     "gs_id": generate_primary_key(),

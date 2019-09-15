@@ -2,7 +2,7 @@
 const logger = require("../common/logger.js").child({ "@": "listening invest transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
-const { BANKER, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN } = require("../common/constant/eosConstants.js");
+const { BANKER, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
 const GLOBAL_LOTTO_KEY = "tbg:global_lotto:account_action_seq";
@@ -10,7 +10,7 @@ const handlerBet = require("./handlerBet");
 
 logger.debug(`handlerTransferActions running...`);
 // 每秒中执行一次,有可能上一条监听的还没有执行完毕,下一次监听又再执行了一次,从而造成多条数据重复
-const INVEST_LOCK = `tbg:lock:invest`;
+const INVEST_LOCK = `tbg:lock:global_lotto`;
 let count = 1;
 scheduleJob("*/1 * * * * *", begin);
 // 如果中途断开，再次启动时计数到 10 以后清除缓存
@@ -149,13 +149,13 @@ async function parseEosAccountAction(action) {
         }
 
         let [ amount, symbol ] = quantity.split(" ");
-        if (symbol === "UE") {
+        if (symbol === UE_TOKEN_SYMBOL) {
             result.account_name = account_name;
             result.bet_key = bet_key;
             result.bet_num = bet_num;
             result.bet_amount = bet_amount;
             result.bet_type = bet_type;
-            result.pay_type = "ue",
+            result.pay_type = UE_TOKEN_SYMBOL,
             result.game_name = game_name;
             return result;
         } else {

@@ -20,7 +20,7 @@ const allocBonus = require("./allocBonus");
  * 游戏开奖
  * @param {{ block_num: number }} data
  */
-async function awardGame(data) {
+async function openGameSession(data) {
     try {
         const { openCode, openResult } = await getOpenResult(data.block_num);
         const sqlList = [];
@@ -38,8 +38,8 @@ async function awardGame(data) {
         // 派奖后储备池剩余
         let reservePoolSurplus = new Decimal(gameInfo.reserve_pool);
         // 查找正在开奖的期数
-        const rewardingSql = `SELECT * FROM game_session WHERE game_state = $1;`;
-        const { rows: [ rewardInfo ] } = await pool.query(rewardingSql, [ GAME_STATE.REWARDING ]);
+        const rewardingSql = `SELECT * FROM game_session WHERE game_state = $1 ORDER BY reward_time DESC LIMIT 1;`;
+        const { rows: [ rewardInfo ] } = await pool.query(rewardingSql, [ GAME_STATE.START ]);
         if (!rewardInfo) {
             return;
         }
@@ -274,18 +274,5 @@ async function minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus) {
     }
 }
 
-/**
- * 游戏开奖
- * @param {{ block_num: number }} data
- */
-async function openGameSession(data) {
-    try {
-        await startGameSession()
-        await awardGame(data);
-    } catch (err) {
-        logger.error("openGameSession error, the error stock is %O", err);
-        throw err;
-    }
-}
 
 module.exports = openGameSession

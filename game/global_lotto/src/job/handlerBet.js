@@ -2,7 +2,7 @@
 const logger = require("../common/logger.js").child({ "@src/job/handlerBet.js": "处理用户投注" });
 const { Decimal } = require("decimal.js");
 const { pool, psTrx, psModifyBalance, psGame } = require("../db");
-const { GLOBAL_LOTTO_CONTRACT, AGENT_ACCOUNT } = require("../common/constant/eosConstants");
+const { GLOBAL_LOTTO_CONTRACT, AGENT_ACCOUNT, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");
 const { GAME_STATE } = require("../common/constant/gameConstants.js");
 const { redis, generate_primary_key } = require("../common");
@@ -94,19 +94,20 @@ async function handlerBet(data) {
         let betNum = ''
         let extra = { agent_account: "", transaction_id: "", pay_type: "" }
         if (data.bet_type === "random") {
-            extra.agent_account = AGENT_ACCOUNT;
             const tmp = [];
             // 每个 key 生成一组号码
             for (let i = 0; i < data.bet_key; i++) {
                 tmp.push(Math.ceil(Math.random() * 899999999 + 100000000).toString().split("").join(","));
             }
             betNum = tmp.join("|");
-        } else if (data.bet_type === "optional") {
-            extra.agent_account = AGENT_ACCOUNT;
-            betNum = data.bet_num;
         } else {
+            betNum = data.bet_num;
+        }
+
+        if (data.pay_type === UE_TOKEN_SYMBOL) {
             extra.agent_account = data.account_name;
-            extra.pay_type = data.pay_type;
+        } else {
+            extra.agent_account = AGENT_ACCOUNT;
         }
 
 
@@ -175,7 +176,7 @@ async function handlerBet(data) {
             });
 
             // 如果直接使用区块链 UE 代币投注，不需要扣除用户的数据库余额
-            if (data.pay_type !== "ue") {
+            if (data.pay_type !== UE_TOKEN_SYMBOL) {
                 await psModifyBalance.pub({
                     account_name: data.account_name,
                     change_amount: betAmount,

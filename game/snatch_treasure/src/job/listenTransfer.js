@@ -2,15 +2,15 @@
 const logger = require("../common/logger.js").child({ "@": "listening invest transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
-const { BANKER, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN } = require("../common/constant/eosConstants.js");
+const { BANKER, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
-const GLOBAL_LOTTO_KEY = "tbg:global_lotto:account_action_seq";
+const GLOBAL_LOTTO_KEY = "tbg:snatch_treasure:account_action_seq";
 const handlerBet = require("./handlerBet");
 
 logger.debug(`handlerTransferActions running...`);
 // 每秒中执行一次,有可能上一条监听的还没有执行完毕,下一次监听又再执行了一次,从而造成多条数据重复
-const INVEST_LOCK = `tbg:lock:invest`;
+const INVEST_LOCK = `tbg:lock:snatch_treasure`;
 let count = 1;
 scheduleJob("*/1 * * * * *", begin);
 // 如果中途断开，再次启动时计数到 10 以后清除缓存
@@ -41,10 +41,10 @@ async function handlerTransferActions() {
         logger.debug("actionSeq: ", actionSeq);
         for (const action of actions) {
             const result = await parseEosAccountAction(action);
-            const trxSeq = await redis.get(`tbg:global_lotto:trx:${ result.account_action_seq }`);
+            const trxSeq = await redis.get(`tbg:snatch_treasure:trx:${ result.account_action_seq }`);
             logger.debug("result: ", result, "trxSeq: ", trxSeq);
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
-            if (trxSeq || !result.game_name || !result.account_name || !result.bet_key || !result.bet_num || !result.bet_amount || !result.periods || !result.bet_type) {
+            if (trxSeq || !result.game_name || !result.account_name || !result.bet_key || !result.bet_amount || !result.periods || !result.g_id) {
                 await setLastPos(result.account_action_seq);
                 await redis.set(GLOBAL_LOTTO_KEY, result.account_action_seq);
                 continue;
@@ -53,16 +53,15 @@ async function handlerTransferActions() {
             // 将听到转帐后处理投注
             const betData = {
                 "periods": result.periods, 
-                "account_name":  result.account_name, 
-                "bet_num": result.bet_num, 
+                "account_name":  result.account_name,
                 "bet_key": result.bet_key, 
                 "bet_amount": result.bet_amount, 
                 "pay_type": result.pay_type, 
-                "bet_type": result.bet_type
+                "g_id": result.g_id
             }
             await handlerBet(betData);
 
-            await redis.set(`tbg:global_lotto:trx:${ result.account_action_seq }`, result.trx_id);
+            await redis.set(`tbg:snatch_treasure:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
         }
         await redis.del(INVEST_LOCK);
@@ -88,11 +87,10 @@ async function parseEosAccountAction(action) {
             "symbol": "",
             "periods": 0, 
             "account_name":  '', 
-            "bet_num": '', 
             "bet_key": 0, 
             "bet_amount": 0, 
             "pay_type": '', 
-            "bet_type": '',
+            "g_id": 0,
             "game_name": ''
         }
         let actionTrace = action.action_trace;
@@ -134,28 +132,27 @@ async function parseEosAccountAction(action) {
             logger.debug(`receipt receiver does not match, ${ to } !== ${ BANKER }`);
             return result;
         }
-        let [ game_name, account_name, bet_key, bet_num, bet_amount, periods, bet_type ] = memo.split(":");
-        // memo 由 游戏名称, 用户名称, 投注 key 的数量，投注号码，投注总额度，期数，投注类型 用冒号分隔
-        // memo: game_name:account_name:bet_key:bet_num:bet_amount:periods:bet_type
-        if (!game_name && !account_name && !bet_key && !bet_num && !bet_amount && !periods && !bet_type) {
-            logger.debug("invalid memo, memo must be include game_name, account_name, bet_key, bet_num, bet_amount, periods, bet_type format like 'game_name:account_name:bet_key:bet_num:bet_amount:periods:bet_type'")
+        let [ game_name, account_name, bet_key, bet_amount, periods, g_id ] = memo.split(":");
+        // memo 由 游戏名称, 用户名称, 投注 key 的数量，投注号码，投注总额度，期数，投注游戏类型 用冒号分隔
+        // memo: game_name:account_name:bet_key:bet_amount:periods:g_id
+        if (!game_name && !account_name && !bet_key && !bet_amount && !periods && !g_id) {
+            logger.debug("invalid memo, memo must be include game_name, account_name, bet_key, bet_amount, periods, g_id format like 'game_name:account_name:bet_key:bet_amount:periods:g_id'")
             return result;
         }
-        if (game_name !== "global_lotto") {
+        if (game_name !== "snatch_treasure") {
             // todo
             // memo 格式不符
-            logger.debug(`invalid memo, ${ game_name } !== "global_lotto"`);
+            logger.debug(`invalid memo, ${ game_name } !== "snatch_treasure"`);
             return result;
         }
 
         let [ amount, symbol ] = quantity.split(" ");
-        if (symbol === "UE") {
+        if (symbol === UE_TOKEN_SYMBOL) {
             result.account_name = account_name;
             result.bet_key = bet_key;
-            result.bet_num = bet_num;
             result.bet_amount = bet_amount;
-            result.bet_type = bet_type;
-            result.pay_type = "ue",
+            result.g_id = g_id;
+            result.pay_type = UE_TOKEN_SYMBOL,
             result.game_name = game_name;
             return result;
         } else {

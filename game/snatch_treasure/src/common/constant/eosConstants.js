@@ -18,13 +18,13 @@ const TBG_TOKEN = "tbgtokencoin"
 const TBG_TOKEN_SYMBOL = "TBG"
 
 // 庄家
-const BANKER = "lottobanker"
+const BANKER = "snatchbanker"
 
 // 代投注账号
-const AGENT_ACCOUNT = "globallotto"
+const AGENT_ACCOUNT = "eossnatcheos"
 
-// 全球彩合约帐号
-const GLOBAL_LOTTO_CONTRACT = "globallotto";
+// 夺宝合约帐号
+const SNATCH_TREASURE_CONTRACT = "eossnatcheos";
 
 // 节点信息
 const END_POINT = "http://45.251.109.187:8888"
@@ -47,7 +47,7 @@ const CONSTANT = {
     "EOS_TOKEN_SYMBOL": EOS_TOKEN_SYMBOL,
     "UE_TOKEN_SYMBOL": UE_TOKEN_SYMBOL,
     "TBG_TOKEN_SYMBOL": TBG_TOKEN_SYMBOL,
-    "GLOBAL_LOTTO_CONTRACT": GLOBAL_LOTTO_CONTRACT,
+    "SNATCH_TREASURE_CONTRACT": SNATCH_TREASURE_CONTRACT,
     "BANKER": BANKER,
     "AGENT_ACCOUNT": AGENT_ACCOUNT
 }
@@ -68,7 +68,7 @@ module.exports = CONSTANT
  * @property { String } EOS_TOKEN_SYMBOL EOS 代币符号
  * @property { String } UE_TOKEN_SYMBOL UE 代币符号
  * @property { string } TBG_TOKEN_SYMBOL TBG 代币符号
- * @property { string } GLOBAL_LOTTO_CONTRACT 全球彩合约帐号
+ * @property { string } SNATCH_TREASURE_CONTRACT 夺宝合约帐号
  * @property { string } BANKER 庄家
  * @property { string } AGENT_ACCOUNT 代投注账号
  */
