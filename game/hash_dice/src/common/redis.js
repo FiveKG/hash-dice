@@ -11,9 +11,8 @@ const redis = new Redis(Number(port), host, {
   "showFriendlyErrorStack": true , 
   "db": 5,
   "keepAlive": 10000 , 
-  "connectionName": "wallet_tbg" , 
+  "connectionName": "hash_dice" , 
   "autoResubscribe": true
 });
 
-//console.log(redis)
 module.exports = redis;

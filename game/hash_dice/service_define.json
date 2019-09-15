@@ -17,7 +17,6 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
