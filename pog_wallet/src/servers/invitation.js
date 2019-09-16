@@ -2,8 +2,9 @@ import axios from 'axios';
 
 // var baseURL = 'http://172.81.224.11/api';
 // var baseURL = 'http://192.168.1.135:9527';
-// var baseURL = 'http://192.168.1.141:9527';
-var baseURL = 'http://pog.tbg.isecsp.com';
+
+var baseURL = 'http://192.168.1.141:9527';
+// var baseURL = 'http://pog.tbg.isecsp.com';
 
 const xhr = axios.create({
     baseURL,
@@ -345,6 +346,12 @@ const getTradePrice= (reqData) => {
     const data = reqData;
     return getData(url, data);
 }
+//会员等级
+const getLevel= (reqData) => {
+    const url = '/account/level';
+    const data = reqData;
+    return getData(url, data);
+}
 
 //TBG销毁数量
 const getDestory= (reqData) => {
@@ -408,6 +415,7 @@ export default{
     globalPartnerPlacement,
     buyAsset,
     sellAsset,
+    getLevel,
 
     effectiveAssets,
     overAssets,

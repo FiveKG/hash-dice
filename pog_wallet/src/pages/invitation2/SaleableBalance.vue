@@ -72,38 +72,55 @@ export default {
   },
   created(){
     // console.log('this',this);
-    api.SaleableBalance({account_name:this.$store.state.wallet.assets.account}).then(res => {
-      if (res.code === 1) {
-            console.log('bindReferrer',res)
-            // for(var i=0;i<res.data.length;i++){
-              //   if(res.data[i].amount>0){
-                //     switch (res.data[i].release_type) {
-                  //         case 1:res.data[i].release_type='买入200TBG';break;
-            //         case 2:res.data[i].release_type='绑定';break;
-            //         case 3:res.data[i].release_type='参与TBG-I';break;
-            //         case 4:res.data[i].release_type='签到';break;
-            //         case 5:res.data[i].release_type='游戏';break;
-            //         case 6:res.data[i].release_type='挖矿';break;
-            //         case 7:res.data[i].release_type='挖矿推荐受益';break;
-            //         case 8:res.data[i].release_type='首次购买推荐收益';break;      
-            //         default: console.log('null');break;
-            //     }
-            //   }else{
-            //     switch (res.data[i].release_type) {
-            //         case 1:res.data[i].release_type='释放';break;
-            //         case 2:res.data[i].release_type='卖出销毁';break; 
-            //         default: console.log('null');break;
-            //     }
-            //   }
-            // }
-            this.saleable_amount = res.data.saleable_amount;
+const type = [
+              {NAME:"私募",ID:'raise'},
+              {NAME:"释放",ID:'release'},
+              {NAME:"转出",ID:'buy'},
+              // {NAME:"买入",ID:'sell'},
+              {NAME:"买入",ID:'买入'},
+              {NAME:"挖矿推荐收益",ID:'mining_referrer'},
+              {NAME:"首次购买",ID:'first_buy'},
+              {NAME:"首次购买推荐收益",ID:'first_buy_referrer'},
+              {NAME:"卖出销毁",ID:'destroy'},
+              {NAME:"绑定",ID:'bind'},
+              {NAME:"参与 TBG-I",ID:'tbg_1'},
+              {NAME:"挖矿",ID:'mining'},
+              {NAME:"游戏",ID:'game'},
+              {NAME:"游戏邀请",ID:'game_invite'},
+              {NAME:"签到",ID:'check_in'},
+              {NAME:"直接推荐",ID:'invite'},
+              {NAME:"奖金",ID:'bingo'},
+              {NAME:"直接推荐 PK 奖金",ID:'pk'},
+              {NAME:"三倍收益保障金",ID:'protection'},
+              {NAME:"股东池分红",ID:'holder'},
+              {NAME:"一行公排收益",ID:'sort'},
+              {NAME:"三三公排收益",ID:'mode'},
+              {NAME:"复投",ID:'repeat'},
+              {NAME:"提现",ID:'withdraw'},
+              {NAME:"提现",ID:'investment'},
+]
+api.SaleableBalance({account_name:this.$store.state.wallet.assets.account}).then(res => {
+  console.log(res.data.detail)
+    if (res.code == 1) {
+      this.items=res.data.detail;
+      
+      for(var i=0;i<this.items.length;i++){
+        console.log(1);
+        for( var l=0;l<this.items.length;l++){
+              if(this.items[l].info==type[l].ID){
+                this.items[l].info=type[l].NAME;
+                }
+              }
+            
+            }
+
+
             this.saleable_amount = res.data.saleable_amount.split('.');
             this.saleable_amount[1] = this.addSpace(this.saleable_amount[1]);
             this.saleable_amount[1] = this.saleable_amount[1].split(' ');
-
-            this.items=res.data.properties;
-        }
-      })
+          }
+      }
+    )
   }
 }
 </script>

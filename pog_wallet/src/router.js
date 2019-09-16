@@ -79,6 +79,7 @@ import BingoPool from './pages/invitation/BingoPool'
 import ShareholderPool from './pages/invitation/ShareholderPool'
 import FivePool from './pages/invitation/FivePool'
 import PkPool from './pages/invitation/PkPool'
+import level from './pages/invitation/level'
 
 import UnBind from './pages/invitation/UnBind'
 import IsBind from './pages/invitation/IsBind'
@@ -131,12 +132,12 @@ Vue.use(Router)
 const router = new Router({
   routes: [
     {
-      path: '/index',
+      path: '/',
       name: 'index',
       component: Index,
     },
     {
-      path: '/',
+      path: '/welcome',
       name: 'welcome',
       component: welcome,
     },
@@ -384,6 +385,11 @@ const router = new Router({
       path: '/pkPool',
       name: 'PkPool',
       component: PkPool,
+    },
+    {
+      path: '/level',
+      name: 'level',
+      component: level,
     },
     {
       path: '/ethAddWallet',
@@ -700,7 +706,4 @@ const router = new Router({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   // ...
-// })
 export default router

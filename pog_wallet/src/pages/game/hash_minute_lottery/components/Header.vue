@@ -4,7 +4,7 @@
     <div class="title">{{HeaderTitlle}}</div>
     <div class="action">
       <div class="more"><img src="@/assets/img/更多.png" alt=""></div>
-      <div class="exit"><img src="@/assets/img/u102.png" alt=""></div>
+      <div @click="Back" class="exit"><img src="@/assets/img/u102.png" alt=""></div>
     </div>
   </div>
 </template>

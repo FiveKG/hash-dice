@@ -19,7 +19,8 @@
           <!-- 已结束资产包矿机 -->
           <div class="num_tbg" v-if="!log">
             <p >已挖矿至线性释放池</p>
-            <p style="padding-bottom: 0.1rem;" class="font_weight_bold">{{mined_amount[0]}}.{{mined_amount[1]}}</p>
+            <span class="font_weight_bold font_four">{{mined_amount[0]}}.{{mined_amount[1][0]}} </span>
+            <span class="font_weight_bold font_four">{{mined_amount[1][1]}} </span>
             <p class="font_weight_bold">TBG</p>
         </div>
           <p style="color:RGB(255,153,0);padding-bottom: .3rem;">收益需收取才可至线性释放池释放</p>
@@ -163,7 +164,7 @@ export default {
         }
       })
       // 获取结束矿机
-      api.overAssets({account_name:"yujinsheng11"}).then(res => {
+      api.overAssets({account_name:this.accountName}).then(res => {
         // console.log('bindReferrer',res);
         if (res.code === 1) {
         this.over_mined=res.data.mining_info;
@@ -310,9 +311,13 @@ p{
 }
 span{
   font-family: '微軟正黑體 Regular', '微軟正黑體';
+  color: #000000;
 }    
 div{
   background: #fff;
+}
+.font_four{
+  font-size: 0.4rem;
 }
 .font_weight_bold{
   font-weight: 600;
