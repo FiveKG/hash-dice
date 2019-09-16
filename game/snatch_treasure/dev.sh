@@ -15,7 +15,7 @@ unset SNATCH_TREASURE_RABBIT_PASS
 
 export TBG_SERVER=http://192.168.1.141:9527/
 export SNATCH_TREASURE_SERVER_HOST=0.0.0.0
-export SNATCH_TREASURE_SERVER_PORT=13021
+export SNATCH_TREASURE_SERVER_PORT=13025
 
 postgreshost=$(docker inspect postgres | grep IPAddress | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sed -n '1p')
 redishost=$(docker inspect redis | grep IPAddress | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sed -n '1p')

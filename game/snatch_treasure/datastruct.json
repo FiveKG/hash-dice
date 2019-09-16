@@ -37,7 +37,9 @@
             { "name": "create_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "投注时间", "remark": "", "isPrimary": false },
             { "name": "bet_code", "type": "text", "dblength": "32", "dftValue": "''", "summary": "投注幸运码", "remark": "" , "isPrimary": false },
             { "name": "key_count", "type": "int", "dblength": "32", "dftValue": "''", "summary": "投注数量", "remark": "" , "isPrimary": false },
-            { "name": "amount", "type": "Decimal", "dblength": "0", "dftValue": "now()", "summary": "投注额度", "remark": "", "isPrimary": false }
+            { "name": "amount", "type": "Decimal", "dblength": "0", "dftValue": "now()", "summary": "投注额度", "remark": "", "isPrimary": false },
+            { "name": "bonus_code", "type": "int", "dblength": "32", "dftValue": "''", "summary": "中奖幸运码", "remark": "" , "isPrimary": false },
+            { "name": "bonus_amount", "type": "Decimal", "dblength": "0", "dftValue": "now()", "summary": "中奖总金额", "remark": "", "isPrimary": false }
           ]
         },
         {

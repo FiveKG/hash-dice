@@ -95,7 +95,11 @@ async function initGameSession(g_id, periods) {
                         data: {
                             game_id: tmpPeriods,
                             create_time: new Date(),
-                            rule: oneGameInfo
+                            rule: {
+                                id: oneGameInfo.g_id,
+                                quantity: oneGameInfo.quantity,
+                                key: oneGameInfo.key_count
+                            }
                         }
                     });
                     tmpPeriods = tmpPeriods + 1;

@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@src/job/initGameSession.js": "初始化游戏期数" });
+const logger = require("../common/logger.js").child({ [`@${__filename}`]: "初始化游戏期数" });
 const { Decimal } = require("decimal.js");
 const { pool, psTrx } = require("../db");
 const { GLOBAL_LOTTO_CONTRACT } = require("../common/constant/eosConstants");
@@ -46,30 +46,30 @@ async function initGameSession() {
                     break;
                 }
                 
-                // if (periods === 1) {
-                //     state = GAME_STATE.START;
-                //     // 调用 globallotto 合约设置游戏状态
-                //     actList.push({
-                //         account: GLOBAL_LOTTO_CONTRACT,
-                //         name: "setstate",
-                //         authorization: [{
-                //             actor: GLOBAL_LOTTO_CONTRACT,
-                //             permission: 'active',
-                //         }],
-                //         data: {
-                //             game_id: periods,
-                //             state: state
-                //         }
-                //     });
-                // } else {
-                //     state = GAME_STATE.INIT;
-                // }
+                if (periods === 1) {
+                    state = GAME_STATE.START;
+                    // 调用 globallotto 合约设置游戏状态
+                    actList.push({
+                        account: GLOBAL_LOTTO_CONTRACT,
+                        name: "setstate",
+                        authorization: [{
+                            actor: GLOBAL_LOTTO_CONTRACT,
+                            permission: 'active',
+                        }],
+                        data: {
+                            game_id: periods,
+                            state: state
+                        }
+                    });
+                } else {
+                    state = GAME_STATE.INIT;
+                }
                 
                 const data = {
                     "gs_id": generate_primary_key(),
                     "g_id": gameInfo.g_id,
                     "periods": periods,
-                    "creator": "",
+                    "creator": GLOBAL_LOTTO_CONTRACT,
                     "start_time": startTime,
                     "end_time": endTime,
                     "reward_time": df.startOfHour(df.addHours(endTime, 1)),

@@ -1,6 +1,6 @@
 // @ts-check
 const pool = require("./pools.js");
-const logger = require("../common/logger").child({ "@db/createTable.js": "create table" });
+const logger = require("../common/logger").child({ [`@${ __filename }`]: "create table" });
 
 async function createTable() {
     let createTableSql = `
@@ -44,6 +44,8 @@ async function createTable() {
             bet_code TEXT NOT NULL DEFAULT '',
             key_count INTEGER NOT NULL DEFAULT 0,
             amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
+            bonus_code TEXT NOT NULL DEFAULT '',
+            bonus_amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         comment on table bet_order is '用户投注记录';
@@ -54,6 +56,8 @@ async function createTable() {
         comment on column bet_order.bet_code is '投注幸运码';
         comment on column bet_order.key_count is '投注数量';
         comment on column bet_order.amount is '投注额度';
+        comment on column bet_order.bonus_code is '中奖幸运码';
+        comment on column bet_order.bonus_amount is '中奖金额';
         comment on column bet_order.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS award_session(
             aw_id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',

@@ -7,7 +7,7 @@ async function insertGame() {
         const game = [
             {
                 game_name: "夺宝 20x0.1",
-                prize_pool: 10,
+                prize_pool: 2,
                 key_count: 20,
                 quantity: 0.1
             },
