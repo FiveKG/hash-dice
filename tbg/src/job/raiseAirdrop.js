@@ -1,6 +1,6 @@
 // @ts-check
 const { pool, psTrx } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/raiseAirdrop.js": "私募空投" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "私募空投" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const TBG_ALLOCATE = require("../common/constant/tbgAllocateRate");
@@ -62,7 +62,7 @@ async function raiseAirdrop(data) {
                     data: {
                         from: TBG_TOKEN_COIN,
                         to: TSH_INCOME,
-                        quantity: `${ userReferrer.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                        quantity: `${ referrerIncome.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
                         memo: `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.RAISE }, allocating raise surplus assets airdrop to ${ TSH_INCOME }`,
                     }
                 }

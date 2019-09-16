@@ -38,11 +38,11 @@ async function checkInInfo(req, res, next) {
         })
         let resData = get_status(1);
         const amount = maxSupply.mul(checkInAirdropInfo.rate);
-        const quantity = !!total ? new Decimal(total).toFixed(8) : 0;
+        const quantity = !!total ? new Decimal(total).toFixed(8) : new Decimal(0).toFixed(8);
         resData["data"] = {
             "airdrop_amount": amount.toFixed(8),
             "airdrop_quantity": quantity,
-            "income": sumIncome,
+            "income": sumIncome.toFixed(8),
             "detail": detail
         }
 

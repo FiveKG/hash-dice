@@ -1,6 +1,6 @@
 // @ts-check
 const { pool, psBuyAssets } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/buyAssets.js": "购买资产包" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "购买资产包" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const { getAssetsInfoById } = require("../models/asset");
@@ -58,7 +58,7 @@ async function buyAssets(data) {
         }
         await psBuyAssets.pub(buyData);
     } catch (err) {
-        logger.error("raise airdrop error, the error stock is %O", err);
+        logger.error("buy assets error, the error stock is %O", err);
         throw err;
     }
 }

@@ -21,25 +21,6 @@ async function gameSessionMine(req, res, next) {
         `
         const { rows: mineOrderList } = await pool.query(sql, [ reqData.account_name ]);
         let resData = get_status(1);
-        resData.data = {
-            detail: mineOrderList.map(it => {
-                // 如果游戏是开始状态或者是待开奖
-                let winType = "sorry";
-                if (it.game_state === GAME_STATE.START || it.game_state == GAME_STATE.REWARDING) {
-                    winType = "waiting"
-                } else {
-                    if (it.win_type !== "sorry") {
-                        winType = "bingo"
-                    }
-                }
-                return {
-                    periods: it.periods,
-                    win_type: winType,
-                    reward_num: it.reward_num,
-                    bet_time: it.create_time
-                }
-            })
-        }
         res.send(resData);
     } catch (err) {
         logger.error("request gameSessionMine error, the error stock is %O", err);

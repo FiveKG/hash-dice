@@ -13,14 +13,6 @@ async function getInfo(req, res, next) {
         logger.debug(`the param is %j: `, reqData);
         let resData = get_status(1);
         const gameInfo = await getGameInfo();
-        const sessionInfo = await getLatestGameSession();
-        const data = {
-            "count_down": df.differenceInSeconds(new Date(), sessionInfo.end_time),
-            "periods": sessionInfo.periods,
-            "prize_pool": new Decimal(gameInfo.prize_pool).toFixed(4),
-            "quantity": 0.1
-        }
-        resData.data = data;
         res.send(resData);
     } catch (err) {
         logger.error("request getInfo error, the error stock is %O", err);

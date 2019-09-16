@@ -11,18 +11,6 @@ async function gameSession(req, res, next) {
         let reqData = await inspect_req_data(req);
         logger.debug(`the param is %j: `, reqData);
         let resData = get_status(1);
-        const info =  await getRewardGameSession();
-        const data = info.map(it => {
-            return {
-                "gs_id": it.gs_id,
-                "periods": it.periods,
-                "reward_time": it.reward_time,
-                "reward_num": it.reward_num
-            }
-        });
-
-        resData.data = data;
-        
         res.send(resData);
     } catch (err) {
         logger.error("request gameSession error, the error stock is %O", err);

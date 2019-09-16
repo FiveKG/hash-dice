@@ -1,6 +1,6 @@
 // @ts-check
 const { pool, psTrx } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/handlerSellAssets.js": "卖出资产" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "卖出资产" });
 const { Decimal } = require("decimal.js");
 const { getAllTrade } = require("../models/trade");
 const { format } = require("date-fns");
@@ -109,7 +109,7 @@ async function handlerSellAssets(data) {
             await psTrx.pub(tmpActions);
         }
     } catch (err) {
-        logger.error("raise airdrop error, the error stock is %O", err);
+        logger.error("sell assets error, the error stock is %O", err);
         throw err;
     }
 }

@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@src/job/sellAlloc.js": "卖出分配" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "卖出分配" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const TRADE_CONSTANTS = require("../common/constant/tradeConstant");
@@ -144,7 +144,7 @@ async function sellAlloc(data) {
             queryList: trxList
         }
     } catch (err) {
-        logger.error("raise airdrop error, the error stock is %O", err);
+        logger.error("sell allocate assets error, the error stock is %O", err);
         throw err;
     }
 }

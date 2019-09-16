@@ -13,12 +13,6 @@ async function latestGameSession(req, res, next) {
         let resData = get_status(1);
         const gameInfo = await getGameInfo();
         const info = await getLatestGameSession();
-        resData.data = {
-            "gs_id": info.gs_id,
-            "count_down": df.differenceInSeconds(new Date(), info.end_time),
-            "reward_time": info.reward_time,
-            "prize_pool": new Decimal(gameInfo.prize_pool).toFixed(4)
-        }
         res.send(resData);
     } catch (err) {
         logger.error("request latestGameSession error, the error stock is %O", err);
