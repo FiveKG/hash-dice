@@ -84,7 +84,7 @@ export default {
       this.$store.commit('wallet/setCurrency', currency)
     }
     getConfig().then(res => {
-      console.log('getConfig',res)
+      // console.log('getConfig',res)
       if (res.code === 1) this.$store.commit('wallet/setConfig', res.data)
     })
     this.$ons.ready(() => {
