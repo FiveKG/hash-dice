@@ -46,7 +46,6 @@ async function raiseAirdrop(data) {
         let reCurrentBalance, reBalanceRemark;
         const referrerIncome = quantity.mul(TBG_ALLOCATE.RAISE_REFERRER_AIRDROP).div(TBG_ALLOCATE.BASE_RATE);
         let tmpActions = []
-        reBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.RAISE }, referrer ${ userReferrer } get airdrop ${ referrerIncome }`;
         // 系统第一个账户没有推荐人，多出的部分转到股东池账户
         if (!userReferrer) {
             userReferrer = TSH_INCOME;
@@ -68,6 +67,7 @@ async function raiseAirdrop(data) {
                 }
             )
         } else {
+            reBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.RAISE }, referrer ${ userReferrer } get airdrop ${ referrerIncome }`;
             // 如果有推荐人，推荐人获得的奖励也要转入释放池
             const reTbgBalance = await getTbgBalanceInfo(userReferrer);
             reCurrentBalance = new Decimal(reTbgBalance.release_amount).add(referrerIncome);
@@ -174,7 +174,7 @@ async function raiseAirdrop(data) {
             const remark = `user ${ accountName } at ${ finishTime } done raise`;
             // 更新交易状态
             // await updateTrade(client, trId, "finished", finishTime);
-            await client.query(updateTradeSql, [ "finished", finishTime, amount, trId ]);
+            await client.query(updateTradeSql, [ "finished", finishTime, amount.toNumber(), trId ]);
             await insertTradeLog(client, trLogId, trId, OPT_CONSTANTS.RAISE, amount.toNumber(), remark, price, amount.mul(price).toNumber(), finishTime);
             // 更新用户状态
             await updateAccountState(client, accountState,accountName);
