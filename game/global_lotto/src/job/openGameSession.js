@@ -20,7 +20,7 @@ const allocBonus = require("./allocBonus");
  * 游戏开奖
  * @param {{ block_num: number }} data
  */
-async function openGameSession(data) {
+async function awardGame(data) {
     try {
         const { openCode, openResult } = await getOpenResult(data.block_num);
         const sqlList = [];
@@ -274,5 +274,18 @@ async function minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus) {
     }
 }
 
+/**
+ * 游戏开奖
+ * @param {{ block_num: number }} data
+ */
+async function openGameSession(data) {
+    try {
+        await startGameSession()
+        await awardGame(data);
+    } catch (err) {
+        logger.error("openGameSession error, the error stock is %O", err);
+        throw err;
+    }
+}
 
 module.exports = openGameSession

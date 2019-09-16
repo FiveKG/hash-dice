@@ -49,10 +49,13 @@ const { Decimal } = require("decimal.js")
     // const { rows: checkInList } = await pool.query(sql, [ 'check_in', now ]);
 
     // console.debug("checkInList: ", now, checkInList);
+    const a = '123457,765432'
+    const b = '123457'
 
     const str = "cb1528298aa9c3a6d4d047e14701c06f1fdc3b9982ab5dead0a3336e13d07064";
-    const reg = /[\d]+/
-    const res = reg.test(str);
+    const reg = /[\d]+/g
+    const res = reg.exec(str);
+    console.debug("res: ", str.match(/[\d]+/g));
 
     // let safeAccountList = await getSafeAccountList();
     // for (const info of safeAccountList) {
