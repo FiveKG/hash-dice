@@ -10,10 +10,7 @@ const { getGameInfo, selectGameSessionByPeriods } = require("../models/game");
 const { scheduleJob } = require("node-schedule");
 const df = require("date-fns");
 const { END_POINT, PRIVATE_KEY_TEST } = require("../common/constant/eosConstants.js");
-const { Api, JsonRpc, RpcError } = require('eosjs');
-const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
-const fetch = require('node-fetch');                                // node only
-const { TextDecoder, TextEncoder } = require('util');               // node only
+const { newApi } = require("./getTrxAction");
 const { format } = require("date-fns");
 const sleep = require("./sleep.js");
 
@@ -129,12 +126,8 @@ async function handlerBet(data) {
         });
 
         let flag = false;
-        // @ts-ignore
-        const rpc = new JsonRpc(END_POINT, { fetch });
-        // @ts-ignore
-        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         const privateKeys = PRIVATE_KEY_TEST.split(",");
-        const signatureProvider = new JsSignatureProvider(privateKeys);
+        const api = await newApi(privateKeys);
         const client = await pool.connect();
         try {
             await client.query("BEGIN");

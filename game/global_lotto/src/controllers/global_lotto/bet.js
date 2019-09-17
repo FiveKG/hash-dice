@@ -61,7 +61,7 @@ async function bet(req, res, next) {
                 "bet_num": reqData.bet_num,
                 "bet_key": reqData.bet_key,
                 "bet_amount": reqData.bet_amount,
-                "pay_type": "game_currency",
+                "pay_type": "lotto_currency",
                 "bet_type": betType
             }
         }

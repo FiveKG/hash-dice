@@ -18,16 +18,16 @@ const TBG_TOKEN = "tbgtokencoin"
 const TBG_TOKEN_SYMBOL = "TBG"
 
 // 庄家
-const BANKER = "lottobanker"
+const BANKER = "snatchbanker"
 
 // 分发中心收益账号
 const DISTRIBUTION_CENTER_ACCOUNT = "gamecenter"
 
 // 代投注账号
-const AGENT_ACCOUNT = "globallotto"
+const AGENT_ACCOUNT = "eossnatcheos"
 
 // 全球彩合约帐号
-const GLOBAL_LOTTO_CONTRACT = "globallotto";
+const GLOBAL_LOTTO_CONTRACT = "eossnatcheos";
 
 // 节点信息
 const END_POINT = "http://45.251.109.187:8888"

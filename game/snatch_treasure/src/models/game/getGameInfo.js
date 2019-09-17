@@ -7,7 +7,7 @@ const logger = require("../../common/logger.js");
  */
 async function getGameInfo() {
     try {
-        let sql = `SELECT * FROM game`
+        let sql = `SELECT * FROM game ORDER BY g_id ASC`
         let { rows: gameInfo } = await pool.query(sql);
         return gameInfo;
     } catch (err) {

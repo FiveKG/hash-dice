@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
-const logger = require("../../common/logger.js").child({ "@": "assets" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "insert game" });
 
 async function insertGame() {
     try {

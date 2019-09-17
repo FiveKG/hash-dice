@@ -3,7 +3,8 @@ const sleep = require("../../job/sleep.js");
 const { redis, xhr } = require("../../common");
 // const { pool } = require("../../db");
 const url = require("url");
-const { Decimal } = require("decimal.js")
+const { Decimal } = require("decimal.js");
+const df = require("date-fns");
 
 ;(async () => {
     // const myMap = new Map();
@@ -55,7 +56,8 @@ const { Decimal } = require("decimal.js")
     const str = "cb1528298aa9c3a6d4d047e14701c06f1fdc3b9982ab5dead0a3336e13d07064";
     const reg = /[\d]+/g
     const res = reg.exec(str);
-    console.debug("res: ", str.match(/[\d]+/g));
+    // console.debug("res: ", str.match(/[\d]+/g));
+    console.debug("now: ", df.format(new Date(), "YYYY-MM-DDTHH:mm:ss.SSZ"));
 
     // let safeAccountList = await getSafeAccountList();
     // for (const info of safeAccountList) {

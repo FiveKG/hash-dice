@@ -174,7 +174,7 @@ async function raiseAirdrop(data) {
             const remark = `user ${ accountName } at ${ finishTime } done raise`;
             // 更新交易状态
             // await updateTrade(client, trId, "finished", finishTime);
-            await client.query(updateTradeSql, [ "finished", finishTime, amount, trId ]);
+            await client.query(updateTradeSql, [ "finished", finishTime, amount.toNumber(), trId ]);
             await insertTradeLog(client, trLogId, trId, OPT_CONSTANTS.RAISE, amount.toNumber(), remark, price, amount.mul(price).toNumber(), finishTime);
             // 更新用户状态
             await updateAccountState(client, accountState,accountName);

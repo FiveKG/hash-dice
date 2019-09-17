@@ -1,6 +1,6 @@
 //@ts-check
 var option = {
-    "name": "tbg",
+    "name": "global_lotto",
     "base": {
     
     }

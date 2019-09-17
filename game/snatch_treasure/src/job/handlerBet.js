@@ -9,14 +9,11 @@ const { redis, generate_primary_key } = require("../common");
 const { getGameInfo, selectGameSessionByPeriods } = require("../models/game");
 const { scheduleJob } = require("node-schedule");
 const df = require("date-fns");
-const { Api, JsonRpc, RpcError } = require('eosjs');
-const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
-const fetch = require('node-fetch');                                // node only
-const { TextDecoder, TextEncoder } = require('util');               // node only
+const { newApi } = require("./getTrxAction");
 
 /**
  * 处理用户投注
- * @param {{ periods: number, account_name:  string, 
+ * @param {{ periods: number, account_name: string, 
  * bet_key: number, bet_amount: number, 
  * pay_type: string, g_id: number }} data 
  */
@@ -63,7 +60,7 @@ async function handlerBet(data) {
         let currBetKey = data.bet_key;
         let nextBetKey = 0;
         const betAmount = new Decimal(data.bet_amount);
-        let currBetAmount = new Decimal(0);
+        let currBetAmount = betAmount;
         let nextBetAmount = new Decimal(0);
         let keyCount = totalKeyCount + data.bet_key;
         let nextData = null;
@@ -150,12 +147,8 @@ async function handlerBet(data) {
         });
 
         let flag = false;
-        // @ts-ignore
-        const rpc = new JsonRpc(END_POINT, { fetch });
-        // @ts-ignore
-        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         const privateKeys = PRIVATE_KEY_TEST.split(",");
-        const signatureProvider = new JsSignatureProvider(privateKeys);
+        const api = await newApi(privateKeys);
         const client = await pool.connect();
         try {
             await client.query("BEGIN");
@@ -181,8 +174,9 @@ async function handlerBet(data) {
             }));
             await client.query("COMMIT");
             // 如果投注的 key 刚好投满,那么最后这一注作为开奖 id
-            if (keyCount > oneGameInfo.key_count) {
+            if (keyCount === oneGameInfo.key_count) {
                 await psSnatchOpen.pub({
+                    "account_name": data.account_name,
                     "periods": data.periods,
                     "g_id": gameSessionInfo.g_id,
                     "transaction_id": result.transaction_id
@@ -202,7 +196,6 @@ async function handlerBet(data) {
         }
 
         if (flag && actList.length !== 0) {
-            await psTrx.pub(actList);
             await psGame.pub({
                 account_name: data.account_name,
                 bet_amount: currBetAmount,
