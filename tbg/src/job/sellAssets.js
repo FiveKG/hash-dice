@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@": "listening user sell asset package" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "user sell asset package" });
 const { redis, generate_primary_key } = require("../common");
 const { RAISE, BUY, FIRST_BUY, SELL } = require("../common/constant/optConstants");
 const { OPENING_PRICE_KEY, DESTROY, SELL_FEE, BASE_RATE } = require("../common/constant/tradeConstant.js");
@@ -16,6 +16,7 @@ async function sellAssets(data) {
     try {
         const { accountName, price, trade_amount } = data;
         const tradeInfo = await getTradeInfo(accountName, SELL);
+        logger.debug("tradeInfo: ", tradeInfo);
         // 没有交易记录，不做处理
         if (tradeInfo.length === 0) {
             return;
@@ -25,13 +26,14 @@ async function sellAssets(data) {
         const tradeAmount = new Decimal(trade_amount);
         // 拿出排在前面的订单
         const trxInfo = tradeInfo.filter(it => it.state === "create" && tradeAmount.eq(it.amount)).shift();
+        logger.debug("trxInfo: ", trxInfo);
         if (!trxInfo) {
             return;
         }
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
-            const finishTime = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+            const finishTime = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
             const trLogId = generate_primary_key();
             const remark = `user ${ accountName } at sell ${ tradeAmount.toNumber() } asset, trade waiting`;
             // 更新交易状态

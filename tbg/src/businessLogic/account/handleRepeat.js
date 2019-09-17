@@ -63,7 +63,7 @@ async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRe
             }
             tshIncomeData = {
                 "changeAmount": changeAmount,
-                "memo": `user ${ accountName } at ${ df.format(now, "YYYY-MM-DD : HH:mm:ssZ") } ${ OPT_CONSTANTS.REPEAT }, allocating repeat surplus assets to ${ TSH_INCOME }`
+                "memo": `user ${ accountName } at ${ df.format(now, "YYYY-MM-DD HH:mm:ssZ") } ${ OPT_CONSTANTS.REPEAT }, allocating repeat surplus assets to ${ TSH_INCOME }`
             }
         } else {
             const memo = `${ userInvestmentRemark }, global account's referrer ${ userReferrer } add ${ changeAmount } UE currency`;

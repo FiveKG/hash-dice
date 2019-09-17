@@ -17,12 +17,14 @@ async function buyAssets(data) {
         const { accountName, price, apId } = data;
         let opType = OPT_CONSTANTS.BUY;
         const tradeInfo = await getTradeInfoHistory({  accountName: accountName, tradeType: opType, orderBy: "DESC" });
+        logger.debug("tradeInfo: ", tradeInfo);
         // 没有交易记录，不做处理
         if (tradeInfo.length === 0) {
             return;
         }
         // 拿出排在前面的订单
         const trxInfo = tradeInfo.filter(it => it.state === "create" && it.extra.ap_id === apId).shift();
+        logger.debug("trxInfo: ", trxInfo);
         if (!trxInfo) {
             return;
         }
@@ -37,7 +39,7 @@ async function buyAssets(data) {
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
-            const finishTime = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+            const finishTime = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
             const trLogId = generate_primary_key();
             const remark = `user ${ accountName } at buy ${ amount } asset, trade waiting`;
             // 更新交易状态
