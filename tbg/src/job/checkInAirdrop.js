@@ -38,7 +38,7 @@ async function checkInAirdrop() {
                     from: TBG_TOKEN_COIN,
                     to: TBG_FREE_POOL,
                     quantity: `${ new Decimal(it.change_amount).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                    memo: `${ format(now, "YYYY-MM-DD : HH:mm:ssZ") } check in airdrop`
+                    memo: `${ format(now, "YYYY-MM-DD HH:mm:ssZ") } check in airdrop`
                 }
             }
         });

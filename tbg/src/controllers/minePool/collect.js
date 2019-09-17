@@ -28,7 +28,7 @@ async function collect(req, res, next) {
         }
 
         // 购买资产包成功后，开始生成挖矿包，从交易完成时开始计算挖矿时间
-        const now = format(new Date, "YYYY-MM-DD : HH:mm:ssZ");
+        const now = format(new Date, "YYYY-MM-DD HH:mm:ssZ");
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, "symbol": TBG_TOKEN_SYMBOL });
         const tbgBalance = await getTbgBalanceInfo(accountName);
         let currentBalance = new Decimal(tbgBalance.release_amount);

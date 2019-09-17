@@ -56,8 +56,8 @@ async function sellAssets(req, res, next) {
         }
         const trId = generate_primary_key();
         const trLogId = generate_primary_key();
-        const createTime = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
-        const finishedTime = format(new Date(1970, 0, 1), "YYYY-MM-DD : HH:mm:ssZ");
+        const createTime = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
+        const finishedTime = format(new Date(1970, 0, 1), "YYYY-MM-DD HH:mm:ssZ");
         // const sellAmount = new Decimal(amount);
         const volume = sellAmount.mul(price);
         const memo = `user ${ accountName } at ${ createTime } sell a ${ sellAmount.toNumber() } assets`;

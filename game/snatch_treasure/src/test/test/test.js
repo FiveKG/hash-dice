@@ -6,6 +6,16 @@ const url = require("url");
 const { Decimal } = require("decimal.js");
 const df = require("date-fns");
 
+const { scheduleJob } = require("node-schedule");
+let count = 1;
+
+scheduleJob("0 */1 * * * *", one);
+
+async function one() {
+    console.debug("one minute: ", new Date());
+}
+
+
 ;(async () => {
     // const myMap = new Map();
     // const arr = [ 1, 2, 3, 4, 5 ]
@@ -74,5 +84,5 @@ const df = require("date-fns");
     //     console.debug(arr.length)
     // }
 
-    process.exit(0);
+    // process.exit(0);
 })();

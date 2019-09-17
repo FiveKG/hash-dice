@@ -3,6 +3,14 @@ const sleep = require("../../job/sleep.js");
 const { redis, xhr } = require("../../common");
 const { pool } = require("../../db");
 const url = require("url");
+const { scheduleJob } = require("node-schedule");
+let count = 1;
+
+scheduleJob("0 */1 * * * *", one);
+
+async function one() {
+    console.debug("one minute: ", new Date());
+}
 
 ;(async () => {
     // const myMap = new Map();

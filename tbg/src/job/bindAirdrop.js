@@ -62,7 +62,7 @@ async function bindAirdrop(data) {
                     from: TBG_TOKEN_COIN,
                     to: TBG_FREE_POOL,
                     quantity: `${ new Decimal(it.release_amount).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                    memo: `${ format(it.create_time, "YYYY-MM-DD : HH:mm:ssZ") } bind airdrop`
+                    memo: `${ format(it.create_time, "YYYY-MM-DD HH:mm:ssZ") } bind airdrop`
                 }
             }
         });
