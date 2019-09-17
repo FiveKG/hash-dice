@@ -22,9 +22,9 @@
          <div class="recording"   >
             <transition-group name="scroll" >
               <div style="display:inline-block" class="row list-complete-item" v-for="item in items" :key='item.treasureKey'>
-                  <div class="display_ib" style="width: 23%;height: 100%;color:#fff;"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.block_num}}</p> </div>
-                  <div class="display_ib" style="width: 54%;height: 100%;color:#fff;"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.id}}</p></div>
-                  <div class="display_ib" style="width: 23%;height: 100%; color:#fff;"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.timestamp}}</p></div>
+                  <div class="display_ib" style="width: 23%;height: 100%;color:#bcbcbc;font-size:0.4rem"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.block_num}}</p> </div>
+                  <div class="display_ib" style="width: 54%;height: 100%;color:#bcbcbc;font-size:0.4rem"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.id}}</p></div>
+                  <div class="display_ib" style="width: 23%;height: 100%; color:#bcbcbc;font-size:0.4rem"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.timestamp}}</p></div>
               </div>
             </transition-group> 
         </div>
@@ -608,5 +608,7 @@ export default {
 .scroll-move{
   transition:transform .5s;
 }
-
+.p_A{
+  font-family: "Arial Normal", Arial;
+}   
 </style>
