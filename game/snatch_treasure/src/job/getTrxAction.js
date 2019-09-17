@@ -128,6 +128,7 @@ async function transfer(tokenContract, from, to, quantity, memo, privateKeyList)
 
 module.exports = {
     rpc,
+    newApi,
     getTrxAction,
     getCurrencyStats,
     getCurrencyBalance,

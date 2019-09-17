@@ -19,7 +19,7 @@ async function createTable() {
         comment on column game.quantity is '一个 key 的额度';
         CREATE TABLE IF NOT EXISTS game_session (
             gs_id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
-            g_id TEXT NOT NULL DEFAULT '',
+            g_id INTEGER NOT NULL,
             creator TEXT NOT NULL DEFAULT '',
             periods INTEGER NOT NULL DEFAULT 0,
             extra JSON NOT NULL DEFAULT '{}'::JSONB,
@@ -38,7 +38,7 @@ async function createTable() {
         comment on column game_session.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS bet_order(
             bo_id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
-            gs_id TEXT UNIQUE NOT NULL DEFAULT '',
+            gs_id TEXT NOT NULL DEFAULT '',
             extra JSON NOT NULL DEFAULT '{}'::JSONB,
             account_name TEXT NOT NULL DEFAULT '',
             bet_code TEXT NOT NULL DEFAULT '',

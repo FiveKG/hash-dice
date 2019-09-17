@@ -1,14 +1,14 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "获取当前用户投注的信息" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "获取所有期数及开奖信息" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { Decimal } = require("decimal.js");
-const df = require("date-fns");
-const { pool } = require("../../db");
 const { getLatestGameSession, getGameInfo } = require("../../models/game");
 const { GAME_STATE } = require("../../common/constant/gameConstants");
+const df = require("date-fns");
+const { pool } = require("../../db");
 
-// 获取当前用户投注的信息
-async function gameSessionMine(req, res, next) {
+// 获取所有期数及开奖信息
+async function gameSessionInfo(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
         logger.debug(`the param is %j: `, reqData);
@@ -16,11 +16,17 @@ async function gameSessionMine(req, res, next) {
         if (!latestGameSession) {
             return res.send(get_status(1012, "game not exists"));
         }
-        const selectBetOrder = `SELECT * FROM bet_order WHERE gs_id = $1 AND account_name = $2`
-        const { rows: betOrderList } = await pool.query(selectBetOrder, [ latestGameSession.gs_id, reqData.account_name ]);
+        const selectAwardSql = `
+            SELECT gs.periods, gs.gs_id, gs.reward_code 
+                FROM game_session gs 
+                WHERE gs.g_id = $1 
+                AND gs.periods <= $2 
+                ORDER BY periods DESC
+        `
+        const { rows: awardList } = await pool.query(selectAwardSql, [ reqData.game_id, latestGameSession.periods ]);
         let resData = get_status(1);
         resData.data = {
-            "detail": betOrderList.map(it => {
+            "detail": awardList.map(it => {
                 let awardCode = "000000";
                 if (it.periods === latestGameSession.periods) {
                     awardCode = "000000";
@@ -30,17 +36,15 @@ async function gameSessionMine(req, res, next) {
 
                 return {
                     "periods": it.periods,
-                    "reward_code": awardCode,
-                    "bonus_amount": it.bonus_amount,
-                    "key_count": it.key_count
+                    "reward_code": awardCode
                 }
             })
         }
         res.send(resData);
     } catch (err) {
-        logger.error("request gameSessionMine error, the error stock is %O", err);
+        logger.error("request latestGameSession error, the error stock is %O", err);
         throw err;
     }
 }
 
-module.exports = gameSessionMine;
+module.exports = gameSessionInfo;

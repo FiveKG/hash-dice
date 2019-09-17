@@ -60,7 +60,7 @@ async function accReward(openCode, betOrderList) {
     // 分配奖金
     for (const info of betOrderList) {
         // 如果投注了多个 key 的号码，每组 9 位号码按竖线分割
-        // eg: 1,2,3,4,5,6,7,8,9|9,8,7,6,5,4,3,2,1 如果选了相同好，也是如此
+        // eg: 1,2,3,4,5,6,7,8,9|9,8,7,6,5,4,3,2,1 如果选了相同号，也是如此
         const betNumGroup = info.bet_num.split("|");
         for (const betInfo of betNumGroup) {
             const betNum = betInfo.split(",");

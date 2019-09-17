@@ -1,14 +1,32 @@
 ### get account information
-GET http://localhost:13021/global_lotto/info
+GET http://localhost:13025/snatch_treasure/game_name
 
 ### get config
-GET http://localhost:13021/config/get_config
+GET http://localhost:13025/config/get_config
 
 ### get account information
-GET http://localhost:13021/global_lotto/latest_game_session
+GET http://localhost:13025/snatch_treasure/game_session_info?game_id=3
 
 ### get account information
-GET http://localhost:13021/global_lotto/game_session
+GET http://localhost:13025/snatch_treasure/game_session_detail?game_id=3&periods=1
 
 ### get account information
-GET http://localhost:13021/global_lotto/game_session_mine?account_name=yujinsheng11
+GET http://localhost:13025/snatch_treasure/game_session?game_id=3
+
+### get account information
+GET http://localhost:13025/snatch_treasure/game_session_mine?account_name=yujinsheng11&game_id=3
+
+### get account information
+GET http://localhost:13025/snatch_treasure/game_session_mine_detail?account_name=yujinsheng11&game_id=1&periods=1
+
+### get account information
+POST http://localhost:13025/snatch_treasure/bet
+Content-Type: application/json
+
+{
+    "game_id": 1,
+    "periods": 1,
+    "account_name": "yujinsheng11",
+    "bet_key": 1,
+    "bet_amount": 0.1
+}

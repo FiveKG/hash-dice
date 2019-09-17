@@ -1,10 +1,5 @@
 // @ts-check
 
-// 最上层帐号
-const TOP_ACCOUNT = [
-    "system"
-]
-
 // 五倍收益保障池的帐号
 const SAFE_POOL = "safePool";
 // 三三静态的帐号

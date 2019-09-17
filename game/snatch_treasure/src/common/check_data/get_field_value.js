@@ -117,8 +117,7 @@ function get_str_value(origin_string) {
 */
 function get_number_value(origin_number) {
   if (typeof origin_number === "string") {
-    //@ts-ignore
-    return utility.toSafenumber(origin_number);
+    return utility.toSafeNumber(origin_number);
   }
   else {
     return origin_number;

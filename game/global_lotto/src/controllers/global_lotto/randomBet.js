@@ -58,7 +58,7 @@ async function randomBet(req, res, next) {
                 "account_name": reqData.account_name,
                 "bet_key": reqData.bet_key,
                 "bet_amount": reqData.bet_amount,
-                "pay_type": "game_currency",
+                "pay_type": "lotto_currency",
                 "bet_type": betType
             }
         }

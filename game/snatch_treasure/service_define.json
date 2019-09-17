@@ -29,39 +29,13 @@
             }
         },
         {
-            "name" : "获取当前用户的信息",
-            "summary": "",
-            "remark": [
-                "获取当前用户的信息"
-            ],
-            "isFunctionPoint" : true,
-            "url" : "/account/info",
-            "type" : "get",
-            "requireRole" : [ "*" ],
-            "req": {
-                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
-            },
-            "res": {
-                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
-                "desc": { "type": "string" ,"desc": "" },
-                "data": {
-                    "type": "object", "desc": "",
-                    "properties": {
-                        "account_name": { "type": "text",  "is_require": true,  "desc": "获取到的帐号名称" },
-                        "account_type": { "type": "text",  "is_require": true,  "desc": "帐号类型" },
-                        "refer_code": { "type": "text",  "is_require": true,  "desc": "推荐号" }
-                    }
-                }
-            }
-        },
-        {
             "name" : "获取游戏信息",
             "summary": "",
             "remark": [
                 "获取游戏的种类和名称"
             ],
             "isFunctionPoint" : true,
-            "url" : "/snatch_treasure/game",
+            "url" : "/snatch_treasure/game_name",
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
@@ -90,7 +64,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "game_id": { "type": "text",  "is_require": true,  "desc": "游戏 id" }
+                "game_id": { "type": "number",  "is_require": true,  "desc": "游戏 id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -119,7 +93,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "game_id": { "type": "text",  "is_require": true,  "desc": "游戏 id" }
+                "game_id": { "type": "number",  "is_require": true,  "desc": "游戏 id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -131,36 +105,6 @@
                             "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
                             "reward_state": { "type": "text",  "is_require": true,  "desc": "开奖状态，如果已开奖为开奖号码，否则为开奖状态和倒计时" }
                         }
-                    }
-                }
-            }
-        },
-        {
-            "name" : "最新一期开奖情况",
-            "summary": "",
-            "remark": [
-                ""
-            ],
-            "isFunctionPoint" : true,
-            "url" : "/snatch_treasure/latest_game_session",
-            "type" : "get",
-            "requireRole" : [ "*" ],
-            "req": {
-                "game_id": { "type": "text",  "is_require": true,  "desc": "游戏 id" },
-                "periods": { "type": "number",  "is_require": true,  "desc": "期数" }
-            },
-            "res": {
-                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
-                "desc": { "type": "string" ,"desc": "" },
-                "data": {
-                    "type": "object", "desc": "",
-                    "properties": {
-                        "game_name": { "type": "text",  "is_require": true,  "desc": "游戏名称" },  
-                        "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
-                        "bet_key": { "type": "text",  "is_require": true,  "desc": "已投注 key 的数量" },
-                        "total_key": { "type": "text",  "is_require": true,  "desc": "总共需要投注 key 的数量" },
-                        "total_amount": { "type": "text",  "is_require": true,  "desc": "总 UE 数量" },
-                        "quantity": { "type": "number",  "is_require": true,  "desc": "key 与 UE 比， 1 key = 0.1 UE" }
                     }
                 }
             }
@@ -176,19 +120,29 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "game_id": { "type": "text",  "is_require": true,  "desc": "游戏 id" },
+                "game_id": { "type": "number",  "is_require": true,  "desc": "游戏 id" },
                 "periods": { "type": "number",  "is_require": true,  "desc": "期数" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "detail": {
-                        "type": "objectArray", "desc": "全部开奖信息",
-                        "properties": {
-                            "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
-                            "reward_state": { "type": "text",  "is_require": true,  "desc": "开奖状态，如果已开奖为开奖号码，否则为开奖状态和倒计时" }
-                        }
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "game_name": { "type": "text",  "is_require": true,  "desc": "游戏名称" },  
+                        "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                        "bet_key": { "type": "number",  "is_require": true,  "desc": "已投注 key 的数量" },
+                        "total_key": { "type": "number",  "is_require": true,  "desc": "总共需要投注 key 的数量" },
+                        "total_amount": { "type": "number",  "is_require": true,  "desc": "总 UE 数量" },
+                        "quantity": { "type": "number",  "is_require": true,  "desc": "key 与 UE 比， 1 key = 0.1 UE" },
+                        "last_bet_account": { "type": "text",  "is_require": true,  "desc": "最后一位投注账号" },
+                        "trx_id": { "type": "text",  "is_require": true,  "desc": "交易ID" },
+                        "lucky_code": { "type": "text",  "is_require": true,  "desc": "幸运数字" },
+                        "agent_account": { "type": "text",  "is_require": true,  "desc": "代投账号" },
+                        "constants_num": { "type": "number",  "is_require": true,  "desc": "100001" },
+                        "bonus_trx_id": { "type": "text",  "is_require": true,  "desc": "交易查询 ID" },
+                        "win_account": { "type": "text",  "is_require": true,  "desc": "中奖账号" },
+                        "pay_type": { "type": "text",  "is_require": true,  "desc": "使用哪种余额投注" }
                     }
                 }
             }
@@ -204,8 +158,8 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "game_id": { "type": "text",  "is_require": true,  "desc": "游戏 id" },
-                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" }
+                "game_id": { "type": "number",  "is_require": true,  "desc": "游戏 id" },
+                "account_name": { "type": "text",  "is_require": true,  "desc": "账号" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -215,7 +169,9 @@
                         "type": "objectArray", "desc": "全部开奖信息",
                         "properties": {
                             "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
-                            "reward_state": { "type": "text",  "is_require": true,  "desc": "开奖状态，如果已开奖为开奖号码，否则为开奖状态和倒计时" }
+                            "reward_code": { "type": "number",  "is_require": true,  "desc": "开奖号码, 如果是开奖中, 开奖号码为字符串 000000" },
+                            "bonus_amount": { "type": "number",  "is_require": true,  "desc": "奖金额度, 0 为不中奖" },
+                            "key_count": { "type": "text",  "is_require": true,  "desc": "投注 key 的数量" }
                         }
                     }
                 }
@@ -232,8 +188,8 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "game_id": { "type": "text",  "is_require": true,  "desc": "游戏 id" },
-                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" },
+                "game_id": { "type": "number",  "is_require": true,  "desc": "游戏 id" },
+                "account_name": { "type": "text",  "is_require": true,  "desc": "账号" },
                 "periods": { "type": "number",  "is_require": true,  "desc": "期数" }
             },
             "res": {
@@ -252,7 +208,11 @@
                             "trx_id": { "type": "number",  "is_require": true,  "desc": "交易ID" },
                             "lucky_code": { "type": "number",  "is_require": true,  "desc": "幸运数字" },
                             "agent_account": { "type": "number",  "is_require": true,  "desc": "代投账号" },
-                            "constants_num": { "type": "number",  "is_require": true,  "desc": "100001" }
+                            "constants_num": { "type": "number",  "is_require": true,  "desc": "100001" },
+                            "game_name": { "type": "text",  "is_require": true,  "desc": "游戏名称" },  
+                            "total_amount": { "type": "number",  "is_require": true,  "desc": "总 UE 数量" },
+                            "quantity": { "type": "number",  "is_require": true,  "desc": "key 与 UE 比， 1 key = 0.1 UE" },
+                            "pay_type": { "type": "text",  "is_require": true,  "desc": "使用哪种余额投注" }
                         }
                     }
                 }
@@ -269,9 +229,9 @@
             "type" : "post",
             "requireRole" : [ "*" ],
             "req": {
-                "game_id": { "type": "text",  "is_require": true,  "desc": "游戏 id" },
+                "game_id": { "type": "number",  "is_require": true,  "desc": "游戏 id" },
                 "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
-                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" },
+                "account_name": { "type": "text",  "is_require": true,  "desc": "账号" },
                 "bet_key": { "type": "number",  "is_require": true,  "desc": "投注 key 的的数量" },
                 "bet_amount": { "type": "number",  "is_require": true,  "desc": "投注总额度" }
             },

@@ -44,6 +44,8 @@ const url = require("url");
     const reg = /[\d]+/
     const res = reg.test(str);
 
+    const betCode = `123456789|223456789|223456789|233456789|234456789`
+    const openCode = `323456789`;
     // let safeAccountList = await getSafeAccountList();
     // for (const info of safeAccountList) {
     //     console.debug("info: ", info);

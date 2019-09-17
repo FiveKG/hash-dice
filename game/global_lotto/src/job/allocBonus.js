@@ -3,8 +3,7 @@ const logger = require("../common/logger.js");
 const { Decimal } = require("decimal.js");
 const { xhr } = require("../common");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");
-const { UE_TOKEN_SYMBOL, BANKER, GLOBAL_LOTTO_CONTRACT } = require("../common/constant/eosConstants");
-const { TBG_TOKEN_COIN } = require("../common/constant/accountConstant");
+const { UE_TOKEN_SYMBOL, BANKER, GLOBAL_LOTTO_CONTRACT, UE_TOKEN } = require("../common/constant/eosConstants");
 const { redis, generate_primary_key } = require("../common");
 const url = require("url");
 
@@ -44,8 +43,16 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
                 issued = issued.add(oneKeyBonus);
                 
                 // 奖金由庄家从区块链转到用户的账户
+                // // 根据用户投注类型发放奖金
+                // let bonus = new Decimal(extra.bonusAmount);
+                // let returnsCurrency = new Decimal(0);
+                // if (extra.pay_type !== UE_TOKEN_SYMBOL) {
+                //     // 如果用户使用游戏码或者可提现余额投注,投注金额需返回用户的账户中,奖金为 总的金额 - 退还额度
+                //     returnsCurrency = new Decimal(extra.bet_amount);
+                //     bonus = new Decimal(extra.bonusAmount).minus(returnsCurrency)
+                // }
                 tmpActList.push({
-                    account: TBG_TOKEN_COIN,
+                    account: UE_TOKEN,
                     name: "transfer",
                     authorization: [{
                         actor: BANKER,
@@ -78,7 +85,7 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
                 
                 // 奖金由庄家从区块链转到用户的账户
                 tmpActList.push({
-                    account: TBG_TOKEN_COIN,
+                    account: UE_TOKEN,
                     name: "transfer",
                     authorization: [{
                         actor: BANKER,
@@ -114,7 +121,7 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
 
                         // 奖金由庄家从区块链转到用户的账户
                         tmpActList.push({
-                            account: TBG_TOKEN_COIN,
+                            account: UE_TOKEN,
                             name: "transfer",
                             authorization: [{
                                 actor: BANKER,

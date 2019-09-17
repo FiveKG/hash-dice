@@ -8,6 +8,7 @@ const { redis, generate_primary_key } = require("../common");
 const { getGameInfo, insertGameSession, getLastGameSession } = require("../models/game");
 const { scheduleJob } = require("node-schedule");
 const df = require("date-fns");
+const sleep = require("./sleep");
 
 /**
  * 第一次初始化
@@ -59,30 +60,13 @@ async function initGameSession(g_id, periods) {
         if (!!total) {
             if (new Decimal(total).div(periods).lessThan(INIT_SESSION_LIMIT)) {
                 let tmpPeriods = periods;
-                // 游戏状态
-                let state = 0;
                 for (let i = 0; i < INIT_SESSION_COUNT; i++) {
-                    // if (tmpPeriods === 1) {
-                    //     state = GAME_STATE.START;
-                    //     // 调用 snatch 合约设置游戏状态
-                    //     actList.push({
-                    //         account: SNATCH_TREASURE_CONTRACT,
-                    //         name: "setstate",
-                    //         authorization: [{
-                    //             actor: SNATCH_TREASURE_CONTRACT,
-                    //             permission: 'active',
-                    //         }],
-                    //         data: {
-                    //             game_id: tmpPeriods,
-                    //             state: state,
-                    //             rule: oneGameInfo
-                    //         }
-                    //     });
-                    //     tmpPeriods = Number(total) + 1
-                    // } else {
-                    //     state = GAME_STATE.INIT;
-                    // }
-                    const opts = [ generate_primary_key(), oneGameInfo.g_id, SNATCH_TREASURE_CONTRACT, tmpPeriods, {}, GAME_STATE.START, "", "now()" ]
+                    await sleep(20);
+                    const now = new Date();
+                    const opts = [ 
+                        generate_primary_key(), oneGameInfo.g_id, SNATCH_TREASURE_CONTRACT, 
+                        tmpPeriods, {}, GAME_STATE.START, "", df.format(now, "YYYY-MM-DDTHH:mm:ss.SSZ")
+                    ]
                     sqlList.push({ sql: insertToGameSessionSql, values: opts });
                     // 调用 snatch 合约初始化期数
                     actList.push({
@@ -94,7 +78,7 @@ async function initGameSession(g_id, periods) {
                         }],
                         data: {
                             game_id: tmpPeriods,
-                            create_time: new Date(),
+                            create_time: now,
                             rule: {
                                 id: oneGameInfo.g_id,
                                 quantity: oneGameInfo.quantity,
@@ -115,9 +99,9 @@ async function initGameSession(g_id, periods) {
             const client = await pool.connect();
             try {
                 await client.query("BEGIN");
-                await Promise.all(sqlList.map(it => {
-                    client.query(it.sql, it.values)
-                }));
+                for (let i = 0; i < sqlList.length; i++) {
+                    await client.query(sqlList[i].sql, sqlList[i].values);
+                }
                 await client.query("COMMIT");
                 flag = true;
             } catch (err) {
