@@ -77,6 +77,7 @@ import HelpFriend from './pages/invitation/HelpFriend'
 import Withdraw from './pages/invitation/Withdraw'
 import BingoPool from './pages/invitation/BingoPool'
 import ShareholderPool from './pages/invitation/ShareholderPool'
+import ShareholderPoolDetails from './pages/invitation/ShareholderPoolDetails'
 import FivePool from './pages/invitation/FivePool'
 import PkPool from './pages/invitation/PkPool'
 import level from './pages/invitation/level'
@@ -375,6 +376,11 @@ const router = new Router({
       path: '/shareholderPool',
       name: 'ShareholderPool',
       component: ShareholderPool,
+    },
+    {
+      path: '/shareholderPoolDetails',
+      name: 'ShareholderPoolDetails',
+      component: ShareholderPoolDetails,
     },
     {
       path: '/fivePool',

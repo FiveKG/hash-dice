@@ -109,7 +109,7 @@
               <div class="asset_pool_data" v-for="item in buyPartnerListData" :key='item.key'>
                 <div class="asset_pool_data_item" style="width:25%;"><p>{{item.create_time}}</p></div>
                 <div class="asset_pool_data_item" style="width:25%;"><p class="font_fine">{{item.price}}</p></div>
-                <div class="asset_pool_data_item" style="width:25%;"><p class="font_silver">{{item.transaction}}</p></div>
+                <div class="asset_pool_data_item" style="width:25%;"><p class="">{{item.transaction}}</p></div>
                 <div class="asset_pool_data_item" style="width:20%;border: 0.02667rem solid orange;border-radius: 0.13333rem;margin-left: 2.5%;"><div style=" margin: .2rem auto;"><p style="font-size: .4rem;color: orange;">查看</p></div></div>
               </div>
             </div>
@@ -238,7 +238,7 @@
               <div class="asset_pool_data" v-for="item in buynormalListData" :key='item.key'>
                 <div class="asset_pool_data_item" style="width:33.3%;"><p>{{item.create_time}}</p></div>
                 <div class="asset_pool_data_item" style="width:33.3%;"><p class="font_fine">{{item.price}}</p></div>
-                <div class="asset_pool_data_item" style="width:33.3%;"><p class="font_silver">{{item.transaction}} / {{item.amount}}</p></div>
+                <div class="asset_pool_data_item" style="width:33.3%;"><p class="">{{item.transaction}} / {{item.amount}}</p></div>
               </div>
             </div>
             <!-- 历史买入记录 -->
@@ -287,7 +287,6 @@
             </div>
             <div class="ipt_layout">
               <div class="float_left" style="margin: .3rem 0 0 .5rem;">
-                <!-- <span style="font-size: .45rem;color: #1E1E1E;">总价</span> -->
                 <input type="text" class="text-input" :placeholder="`最多可卖`+maximumQuantity[0]" v-model="sellingPrice" style="height: .6rem;width: 3rem;font-size: .5rem;" >
               </div>
               <div class="float_right" style="margin: .28rem .4rem 0 0;">
@@ -393,7 +392,7 @@
               <div class="asset_pool_data" v-for="item in sellHistoryList" :key='item.key'>
                 <div class="asset_pool_data_item" style="width:25%;"><p>{{item.create_time}}</p></div>
                 <div class="asset_pool_data_item" style="width:25%;"><p class="font_fine">{{item.price}}</p></div>
-                <div class="asset_pool_data_item" style="width:25%;"><p class="font_silver">{{item.amount}}</p></div>
+                <div class="asset_pool_data_item" style="width:25%;"><p class="">{{item.amount}}</p></div>
                 <div class="asset_pool_data_item" style="width:20%;border: 0.02667rem solid orange;border-radius: 0.13333rem;margin-left: 2.5%;"><div style=" margin: .2rem auto;"><p style="font-size: .4rem;color: orange;">查看</p></div></div>
               </div>
             </div>

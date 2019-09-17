@@ -189,7 +189,7 @@ import { format, parse } from 'date-fns'
 import {Decimal} from 'decimal.js'
 
 //滚动区域
-import ClientSocket from '@/socket/scrollClientSocket'
+import ClientSocket from '@/socket/HashSocket'
 
 
 export default {
@@ -222,16 +222,16 @@ export default {
 
       ],   
       items:[    // 滚动
-              {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:1,ids:10},
-              {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:2,ids:10},
-              {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:3,ids:10},
-              {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:4,ids:10},
-              {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:5,ids:10},
-              {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:6,ids:10},
-              {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:7,ids:10},
-              {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:8,ids:10},
-              {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:9,ids:10},
-              {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:10,ids:10},
+              // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:1,ids:10},
+              // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:2,ids:10},
+              // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:3,ids:10},
+              // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:4,ids:10},
+              // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:5,ids:10},
+              // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:6,ids:10},
+              // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:7,ids:10},
+              // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:8,ids:10},
+              // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:9,ids:10},
+              // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:10,ids:10},
       ],   
         
     }
@@ -351,7 +351,7 @@ export default {
   watch: {
         '$store.state.wallet.block': {
             handler(newVal, oldVal) {
-                // console.log(12311111111111,this.$store.state.wallet.block);
+                console.log(12311111111111,this.$store.state.wallet.block);
                 // this.treasureKey+=1;
                 // this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
                 // id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey

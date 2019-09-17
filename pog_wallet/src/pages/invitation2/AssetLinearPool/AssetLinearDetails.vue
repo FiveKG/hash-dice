@@ -15,8 +15,10 @@
          <div class="asset_pool_data" v-for="item in items" :key='item.key'>
           <div class="asset_pool_data_item" style="width:25%;"><p>{{item.create_time}}</p></div>
           <div class="asset_pool_data_item" style="width:25%;"><p class="font_fine">{{item.release_type}}</p></div>
-          <div class="asset_pool_data_item" style="width:25%;"><p :class="{font_red:item.amount<0}">{{item.amount}}</p><p class="font_silver">11111</p></div>
-          <div class="asset_pool_data_item" style="width:25%;"><p>{{item.balance}}</p><p class="font_silver">11111</p></div>
+          <div class="asset_pool_data_item" style="width:25%;">
+            <p  :class="{font_red:item.amount[0]<0}" ><span v-if="!(item.amount[0]<0)">+ </span>{{item.amount[0]}}.{{item.amount[1][0]}}</p><p class="font_silver">{{item.amount[1][1]}}</p>
+          </div>
+          <div class="asset_pool_data_item" style="width:25%;"><p>{{item.balance[0]}}.{{item.balance[1][0]}}</p><p class="font_silver">{{item.balance[1][1]}}</p></div>
          </div>
        </div>
 
@@ -29,6 +31,7 @@
 <script>
 import MyPage from '@/components/MyPage'
 import api from '@/servers/invitation'
+import { format, parse } from 'date-fns'
 
 
 export default {
@@ -49,36 +52,55 @@ export default {
        back() {
           this.$router.go(-1)
        },
+       addSpace (str) { 
+          return str.slice(0,str.length-4) + " " +str.slice(-4)
+        },
+        addComma(data){
+        var a=data;var b='';var c=a.length+1;
+          for(var i=0;c/3>i;i++){
+            if(a.length>3){
+              b=','+a.slice(a.length-3,a.length)+b;
+              a=a.slice(0,a.length-3);
+            }else if(a.length==3){
+              b=a;
+            }else{
+              b=a+b;
+            }
+          }
+          return b;
+      }
   },
   created(){
     // console.log('this',this);
+const name = ["私募","释放","买入","转出","挖矿推荐收益","首次购买","首次购买推荐收益","卖出销毁","绑定","参与 TBG-I","挖矿",
+"游戏","游戏邀请","签到","直接推荐","奖金","直接推荐 PK 奖金","三倍收益保障金","股东池分红","一行公排收益","三三公排收益","复投","提现","提现"]
+const id = ['raise','release','buy','sell','mining_referrer','first_buy','first_buy_referrer','destroy','bind','tbg_1',
+'mining','game','game_invite','check_in','invite','bingo','pk','protection','holder','sort','mode','repeat','withdraw','investment']
+
        api.LinearReleaseDetail({account_name:this.$store.state.wallet.assets.account}).then(res => {
+         console.log(res.data);
          if (res.code === 1) {
-            console.log('bindReferrer',res.data)
-            for(var i=0;i<res.data.length;i++){
-              if(res.data[i].amount>0){
-                switch (res.data[i].release_type) {
-                    case 'bind':res.data[i].release_type='买入200TBG';break;
-                    case 2:res.data[i].release_type='绑定';break;
-                    case 3:res.data[i].release_type='参与TBG-I';break;
-                    case 4:res.data[i].release_type='签到';break;
-                    case 5:res.data[i].release_type='游戏';break;
-                    case 6:res.data[i].release_type='挖矿';break;
-                    case 7:res.data[i].release_type='挖矿推荐受益';break;
-                    case 8:res.data[i].release_type='首次购买推荐收益';break;      
-                    default: console.log('null');break;
-                }
-              }else{
-                switch (res.data[i].release_type) {
-                    case 1:res.data[i].release_type='释放';break;
-                    case 2:res.data[i].release_type='卖出销毁';break; 
-                    default: console.log('null');break;
-                }
-              }
-            }
-            this.items=res.data;
+           this.items=res.data.detail;
+            for(var i=0;i<this.items.length;i++){
+              var Subscript=id.indexOf(this.items[i].release_type);
+              this.items[i].release_type=name[Subscript];
+              this.items[i].create_time=format(new Date(this.items[i].create_time), 'YYYY-MM-DD')
+
+              this.items[i].amount = this.items[i].amount.split('.');
+              this.items[i].amount[1] = this.addSpace(this.items[i].amount[1]);
+              this.items[i].amount[0] = this.addComma(this.items[i].amount[0]);
+              this.items[i].amount[1] = this.items[i].amount[1].split(' ');
+
+              this.items[i].balance = this.items[i].balance.split('.');
+              this.items[i].balance[1] = this.addSpace(this.items[i].balance[1]);
+              this.items[i].balance[0] = this.addComma(this.items[i].balance[0]);
+              this.items[i].balance[1] = this.items[i].balance[1].split(' ');
+            }   
+         console.log(this.items)
         }
       })
+
+
   }
 }
 </script>

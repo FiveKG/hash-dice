@@ -7,29 +7,25 @@
           <span>签到奖励明细</span>
         </div>
         <div class="content">
-          <div style="position: relative;text-align: center;">
-            <img class="ion_tbg" src="@/assets/img/tbg_selected.png"> 
-            <p class="font_weight_bold">Token · Blockchain · Game</p>
-            <p >全球区块链去中心化游戏应用平台</p>
-            <p style="margin: .5rem 0 .1rem 0">
-              <span class=" bold">{{airdrop_quantity[0]}}.{{airdrop_quantity[1][0]}} </span>
-              <span class=" bold gray">{{airdrop_quantity[1][0]}}</span>
-              <span class=" bold"> / </span>
-              <span class=" bold">{{airdrop_amount[0]}}.{{airdrop_amount[1][0]}} </span>
-              <span class=" bold gray">{{airdrop_amount[1][0]}}</span>
-            </p>
-            <div class="schedule_white"><div class="schedule_orange" :style="{ width: schedule + '%' }"></div></div>
-            <p style="color:RGB(255,153,0);font-size:0.45rem;margin:.3rem 0;font-weight:500;">签到共空投 2,000,000 TBG，空投完即止</p>
-            <div class="num_tbg">
-              <span class="font_size_five">共获得奖励</span>
-              <span style="padding:0 1.1rem;"></span>
-              <span class="font_weight_bold font_size_five">{{income[0]}}.{{income[1][0]}} </span>
-              <span class="gray font_size_five">{{income[1][0]}}</span>
-              <span class="font_weight_bold font_size_five ">TBG</span>
-            </div>
-              <p style="color:RGB(255,153,0);margin-bottom:.3rem;font-weight:500;" class="font_size_five">签到奖励进入线性释放池释放</p>
+          <div style="background: rgb(247,247,247);width:100%;text-align: center;">
+            <div style="width:100%;height:30px;"></div>
+            <p>截止 169 期我的 TBG 可售数量</p>
+            <div style="width:100%;height:10px;"></div>
+            <p>69.0052 2300</p>
+            <p>TBG</p>
+            <div style="width:100%;height:5px;"></div>
+            <p>每 1 TBG 可分红 0.0023 3215 UE</p>
+            <div style="width:100%;height:5px;"></div>
+            <p>本期可分红 0.1609 3053 UE</p>
+            <div style="width:100%;height:20px;"></div>
+            <div><img src="@/assets/img/u8.png" alt=""></div>
+            <div style="width:100%;height:20px;"></div>
+            <p>我已获得分红总额</p>
+            <div style="width:100%;height:10px;"></div>
+            <p>5.2510 6210</p>
+            <p>UE</p>
+            <div style="width:100%;height:10px;"></div>
           </div>
-          <div style="padding:4px 0;background:RGB(228,228,228);"></div>
           <div class="asset_pool_header" > 
               <span style="width:50%;">时间</span>
               <span style="width:50%;">明细</span>
@@ -57,11 +53,7 @@ export default {
    },
   data() {
     return {
-      log:true,
-      airdrop_amount:'',
-      airdrop_quantity:'',
-      income:'',
-      schedule: '',
+      
       items:[
          
         ],
@@ -94,32 +86,15 @@ export default {
     api.CheckIn({account_name:this.$store.state.wallet.assets.account}).then(res => {
       console.log('bindReferrer',res);
       if (res.code === 1) {
-        this.schedule=(res.data.airdrop_quantity/res.data.airdrop_amount)*100;
-        this.items=res.data.detail;
-        for(var i=0;i<this.items.length;i++){
-              this.items[i].create_time=format(new Date(this.items[i].create_time), 'YYYY-MM-DD')
-              this.items[i].reward = this.items[i].reward.split('.')
-              this.items[i].reward[1] = this.addSpace(this.items[i].reward[1])
-              this.items[i].reward[1] = this.items[i].reward[1].split(' ');
-            }   
+        // this.schedule=(res.data.airdrop_quantity/res.data.airdrop_amount)*100;
+        // this.items=res.data.detail;
+        // for(var i=0;i<this.items.length;i++){
+        //       this.items[i].create_time=format(new Date(this.items[i].create_time), 'YYYY-MM-DD')
+        //       this.items[i].reward = this.items[i].reward.split('.')
+        //       this.items[i].reward[1] = this.addSpace(this.items[i].reward[1])
+        //       this.items[i].reward[1] = this.items[i].reward[1].split(' ');
+        //     }   
 
-        this.income = res.data.income
-        this.income = this.income.split('.')
-        this.income[1] = this.addSpace(this.income[1])
-        this.income[0]=this.addComma(this.income[0]);
-        this.income[1] = this.income[1].split(' ');
-
-        this.airdrop_amount = res.data.airdrop_amount
-        this.airdrop_amount = this.airdrop_amount.split('.')
-        this.airdrop_amount[1] = this.addSpace(this.airdrop_amount[1])
-        this.airdrop_amount[0]=this.addComma(this.airdrop_amount[0]);
-        this.airdrop_amount[1] = this.airdrop_amount[1].split(' ');
-
-        this.airdrop_quantity = res.data.airdrop_quantity
-        this.airdrop_quantity = this.airdrop_quantity.split('.')
-        this.airdrop_quantity[1] = this.addSpace(this.airdrop_quantity[1])
-        this.airdrop_quantity[0]=this.addComma(this.airdrop_quantity[0]);
-        this.airdrop_quantity[1] = this.airdrop_quantity[1].split(' ');
         }
       })
 
@@ -128,9 +103,7 @@ export default {
 </script>
 
 <style scoped>
-div{
-  background: #fff;
-}
+
 .header{
   position: fixed;
   width: 100%;
@@ -229,6 +202,9 @@ span{
 }
 .gray{
   color: #BCBCBC;
+}
+.orange{
+  color: orange;
 }
 .bold{
   font-weight: bold;

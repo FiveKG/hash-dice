@@ -4,7 +4,7 @@
        <div style="  background-color: #fff;height:100%">
         <div class="header">
           <img class="ion_back" src="@/assets/img/u14.png" @click="back"> 
-          <img class="ion_details" src="@/assets/img/u14.png" @click="jump_details"> 
+          <img class="ion_details" src="@/assets/invitation2/u20.png" @click="jump_details"> 
           <span>线性释放池</span>
         </div>
         <div class="content">
@@ -14,12 +14,12 @@
           <!-- 有效资产包矿机 -->
           <div class="num_tbg" style=" float: left;  margin: 15px 0% 10px 8%;">
             <p style="margin-bottom:0.2rem;" >已释放</p>
-            <p class="font_weight_bold">{{pool_data.released}}</p>
+            <p class="font_weight_bold">{{pool_data.released[0]}}.{{pool_data.released[1][0]}} {{pool_data.released[1][1]}}</p>
             <p class="font_weight_bold">TBG</p>
           </div>
           <div class="num_tbg" style=" float: right;  margin: 15px 8% 10px 0%;">
             <p style="margin-bottom:0.2rem;" >释放中...</p>
-            <p class="font_weight_bold">{{pool_data.releasing}}</p>
+            <p class="font_weight_bold">{{pool_data.releasing[0]}}.{{pool_data.releasing[1][0]}} {{pool_data.releasing[1][1]}}</p>
             <p class="font_weight_bold">TBG</p>
           </div>
           <p style="color:RGB(255,153,0);margin-bottom:.3rem;clear:both;">所有进入释放池的TBG，从次日0:00开始释放</p>
@@ -31,7 +31,7 @@
         <p style="padding:.3rem 0 0 0;text-align: center;">每日线性释放比例</p>
         <p style="padding:.0rem 0;text-align: center;font-weight:600;">{{pool_data.release_rate}}</p>  
        </div>
-      
+ 
      </slot>
     </vpage>
     
@@ -50,6 +50,8 @@ export default {
     return {
       log:true,
       pool_data:{},
+      a:true,
+      b:true,
     }
   },
   methods: {
@@ -61,6 +63,9 @@ export default {
           name: 'AssetLinearDetails'
         })
        },
+       addSpace (str) { 
+          return str.slice(0,str.length-4) + " " +str.slice(-4)
+        }
   },
   created(){
       // console.log('this',this);
@@ -69,6 +74,14 @@ export default {
         if (res.code === 1) {
         console.log('bindReferrer',res.data)
         this.pool_data=res.data;
+
+        this.pool_data.released = this.pool_data.released.split('.');
+        this.pool_data.released[1] = this.addSpace(this.pool_data.released[1]);
+        this.pool_data.released[1] = this.pool_data.released[1].split(' ');
+
+        this.pool_data.releasing = this.pool_data.releasing.split('.');
+        this.pool_data.releasing[1] = this.addSpace(this.pool_data.releasing[1]);
+        this.pool_data.releasing[1] = this.pool_data.releasing[1].split(' ');
         }
       })
   }
@@ -93,8 +106,8 @@ export default {
   transform: translate(0, -50%);
 }
 .ion_details{
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   position: absolute;
   right: 45px;
   top: 50%;

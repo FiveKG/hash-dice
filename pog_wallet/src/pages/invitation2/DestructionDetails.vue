@@ -112,6 +112,8 @@ export default {
             if(a.length>3){
               b=','+a.slice(a.length-3,a.length)+b;
               a=a.slice(0,a.length-3);
+            }else if(a.length==3){
+              b=a;
             }else{
               b=a+b;
             }

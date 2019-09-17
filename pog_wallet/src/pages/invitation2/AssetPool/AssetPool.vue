@@ -144,7 +144,7 @@ export default {
           }
         },
         addSpace (str) { 
-        return str.slice(0,str.length-4) + " " +str.slice(-4)
+          return str.slice(0,str.length-4) + " " +str.slice(-4)
         },
   },
   created(){

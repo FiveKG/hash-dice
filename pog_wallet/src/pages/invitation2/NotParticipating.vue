@@ -127,8 +127,8 @@
                   </div>
                   <!-- 下拉部分 -->
                   <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
-                      <div class="select-item" @click="jumpnormal()">普通用户</div>
-                      <div v-if="isGlobal" class="select-item" @click="jumpglobal()">全球合作伙伴</div>
+                      <div class="select-item" @click="jumpnormal">普通用户</div>
+                      <div v-if="isGlobal" class="select-item" @click="jumpglobal">全球合作伙伴</div>
                   </div>
                 </div>
                 <div class="select-wrap">
@@ -716,7 +716,8 @@ export default {
           this.$router.push({     
           name: 'TradingCenter',
           params: {
-            buyPartner: 2
+            buyPartner: 2,
+            Quantity:this.Quantity,
           }
         })
        },
@@ -724,7 +725,8 @@ export default {
          this.$router.push({
           name: 'TradingCenter',
           params: {
-            buyPartnerT: 1
+            buyPartnerT: 1,
+            Quantity:this.Quantity,
           }
         })
        },
@@ -781,7 +783,7 @@ export default {
         is_active () {
           api.isActive({
             account_name: this.account_name
-          }).then(res => {
+          }).then(res => {console.log(7777777777777)
             switch(res.data.is_activated){
               case 0:
                 this.atv_text = '未激活';this.subAccountQuantity=false;this.account_activation=false;break;
@@ -790,7 +792,7 @@ export default {
               case 20:
                 this.atv_text = '已激活';this.subAccountQuantity=false;this.account_activation=true;break;
               case 30:
-                this.subAccountQuantity=true;this.account_activation=true;break;
+                this.atv_text = '已激活';this.subAccountQuantity=true;this.account_activation=true;break;
             }
           })
         },

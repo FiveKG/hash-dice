@@ -8,14 +8,14 @@
         </div>
         <div style="padding:1.5rem 0;text-align: center;">
         <p style="color: #fff;font-size: .5rem;">{{mining_data.amount}} TBG  资产包</p>
-        <p style="color: #fff;font-size: .4rem;">已挖矿时间  170 / 12000 H</p>
+        <p style="color: #fff;font-size: .4rem;">已挖矿时间  {{mining_data.mining_time}} / {{mining_data.total_time}} H</p>
         </div>
         <div style=" text-align: center;"><img style="" class="ion_tbg" src="@/assets/img/tbg_selected.png"></div>
-        <p style="padding:.7rem 0;text-align: center;font-size: 1.2rem;color: orange;">{{mining_data.mined}}</p>
+        <p style="padding:.7rem 0;text-align: center;font-size: 1rem;color: orange;">{{mining_data.mined[0]}}.{{mining_data.mined[1][0]}} {{mining_data.mined[1][1]}}</p>
         <p style="padding:.7rem 0;text-align: center;font-size: .5rem;color: #fff;">可收取：{{mining_data.collect_amount}} TBG</p>
         <div style=" bottom:20px;position:fixed;width:100%;" >
           <div class="charge" v-if="mining_data.state" @click="charges"><p>立即收取</p></div>
-          <div class="no_charge" v-if="mining_data.state"><p>未满 24H 不可收取</p></div>
+          <div class="no_charge" v-if="!mining_data.state"><p>未满 24H 不可收取</p></div>
         </div>
        </div>
       
@@ -26,7 +26,7 @@
 
 <script>
 import MyPage from '@/components/MyPage'
-import {assetMiningDetails,assetMiningCharge} from '@/servers/invitation';
+import api from '@/servers/invitation'
 
 
 export default {
@@ -45,7 +45,7 @@ export default {
        },
        async charges() {
           try {
-            const res = await assetMiningCharge({account_name:this.$store.state.wallet.assets.account,mining_id:this.$route.params.mining_id})
+            const res = await api.assetMiningCharge({account_name:this.$store.state.wallet.assets.account,mining_id:this.$route.params.mining_id})
             // console.log('withdrawHistory',res)
             if (res.code === 1) {
               console.log('withdrawHistory',res.data)
@@ -54,14 +54,20 @@ export default {
             console.log(error)
           }
        },
+       addSpace (str) { 
+          return str.slice(0,str.length-4) + " " +str.slice(-4)
+        },
   },
   created(){
     // console.log('this',this);
     // console.log(11111111111111111111111111111,this.$route.params.mining_id);
-    assetMiningDetails({account_name:this.$store.state.wallet.assets.account,mining_id:this.$route.params.mining_id}).then(res => {
+    api.assetMiningDetails({account_name:this.$store.state.wallet.assets.account,mining_id:this.$route.params.mining_id}).then(res => {
       console.log('bindReferrer',res)
         if (res.code === 1) {
         this.mining_data=res.data;
+        this.mining_data.mined = this.mining_data.mined.split('.');
+        this.mining_data.mined[1] = this.addSpace(this.mining_data.mined[1]);
+        this.mining_data.mined[1] = this.mining_data.mined[1].split(' ');
         }
       })
   }

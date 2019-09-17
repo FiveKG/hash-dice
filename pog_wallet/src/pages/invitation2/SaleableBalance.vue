@@ -31,8 +31,8 @@
           <div class="asset_pool_data" v-for="item in items" :key='item.key'>
             <div class="asset_pool_data_item" style="width:25%;"><p style="font-size: 0.38rem;" >{{item.create_time}}</p></div>
             <div class="asset_pool_data_item" style="width:25%;"><p style="font-size: 0.38rem;" class="font_fine">{{item.info}}</p></div>
-            <div class="asset_pool_data_item" style="width:25%;"><p style="font-size: 0.38rem;" :class="{font_red:item.amount<0}">{{item.amount}}</p><p  style="font-size: 0.38rem;" class="font_silver">11111</p></div>
-            <div class="asset_pool_data_item" style="width:25%;"><p style="font-size: 0.38rem;" >{{item.balance}}</p><p  style="font-size: 0.38rem;" class="font_silver">11111</p></div>
+            <div class="asset_pool_data_item" style="width:25%;"><p  :class="{font_red:item.amount[0]<0}" ><span v-if="!(item.amount[0]<0)">+ </span>{{item.amount[0]}}.{{item.amount[1][0]}}</p><p class="font_silver">{{item.amount[1][1]}}</p></div>
+            <div class="asset_pool_data_item" style="width:25%;"><p>{{item.balance[0]}}.{{item.balance[1][0]}}</p><p class="font_silver">{{item.balance[1][1]}}</p></div>
           </div>
         </div>
       </div>
@@ -44,8 +44,7 @@
 <script>
 import MyPage from '@/components/MyPage'
 import api from '@/servers/invitation'
-
-
+import { format, parse } from 'date-fns'
 
 export default {
   components: {
@@ -71,50 +70,29 @@ export default {
         },
   },
   created(){
-    // console.log('this',this);
-const type = [
-              {NAME:"私募",ID:'raise'},
-              {NAME:"释放",ID:'release'},
-              {NAME:"转出",ID:'buy'},
-              // {NAME:"买入",ID:'sell'},
-              {NAME:"买入",ID:'买入'},
-              {NAME:"挖矿推荐收益",ID:'mining_referrer'},
-              {NAME:"首次购买",ID:'first_buy'},
-              {NAME:"首次购买推荐收益",ID:'first_buy_referrer'},
-              {NAME:"卖出销毁",ID:'destroy'},
-              {NAME:"绑定",ID:'bind'},
-              {NAME:"参与 TBG-I",ID:'tbg_1'},
-              {NAME:"挖矿",ID:'mining'},
-              {NAME:"游戏",ID:'game'},
-              {NAME:"游戏邀请",ID:'game_invite'},
-              {NAME:"签到",ID:'check_in'},
-              {NAME:"直接推荐",ID:'invite'},
-              {NAME:"奖金",ID:'bingo'},
-              {NAME:"直接推荐 PK 奖金",ID:'pk'},
-              {NAME:"三倍收益保障金",ID:'protection'},
-              {NAME:"股东池分红",ID:'holder'},
-              {NAME:"一行公排收益",ID:'sort'},
-              {NAME:"三三公排收益",ID:'mode'},
-              {NAME:"复投",ID:'repeat'},
-              {NAME:"提现",ID:'withdraw'},
-              {NAME:"提现",ID:'investment'},
-]
+    
+const name = ["私募","释放","买入","转出","挖矿推荐收益","首次购买","首次购买推荐收益","卖出销毁","绑定","参与 TBG-I","挖矿",
+"游戏","游戏邀请","签到","直接推荐","奖金","直接推荐 PK 奖金","三倍收益保障金","股东池分红","一行公排收益","三三公排收益","复投","提现","提现"]
+const id = ['raise','release','buy','sell','mining_referrer','first_buy','first_buy_referrer','destroy','bind','tbg_1',
+'mining','game','game_invite','check_in','invite','bingo','pk','protection','holder','sort','mode','repeat','withdraw','investment']
+
+
 api.SaleableBalance({account_name:this.$store.state.wallet.assets.account}).then(res => {
-  console.log(res.data.detail)
-    if (res.code == 1) {
-      this.items=res.data.detail;
-      
-      for(var i=0;i<this.items.length;i++){
-        console.log(1);
-        for( var l=0;l<this.items.length;l++){
-              if(this.items[l].info==type[l].ID){
-                this.items[l].info=type[l].NAME;
-                }
-              }
-            
-            }
+  if (res.code == 1) {
+            this.items=res.data.detail;
+            for(var i=0;i<this.items.length;i++){
+            var Subscript=id.indexOf(this.items[i].info);
+            this.items[i].info=name[Subscript];
+            this.items[i].create_time=format(new Date(this.items[i].create_time), 'YYYY-MM-DD')
 
+            this.items[i].amount = this.items[i].amount.split('.');
+            this.items[i].amount[1] = this.addSpace(this.items[i].amount[1]);
+            this.items[i].amount[1] = this.items[i].amount[1].split(' ');
 
+            this.items[i].balance = this.items[i].balance.split('.');
+            this.items[i].balance[1] = this.addSpace(this.items[i].balance[1]);
+            this.items[i].balance[1] = this.items[i].balance[1].split(' ');
+            }        
             this.saleable_amount = res.data.saleable_amount.split('.');
             this.saleable_amount[1] = this.addSpace(this.saleable_amount[1]);
             this.saleable_amount[1] = this.saleable_amount[1].split(' ');
