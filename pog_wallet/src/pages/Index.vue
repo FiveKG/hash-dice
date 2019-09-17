@@ -127,7 +127,7 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    if (!localStorage.everEnter) {
+    if (!localStorage.everEnter && localStorage.everEnter) {
       localStorage.setItem('everEnter', true)
       next('/welcome')
     } else {
@@ -315,7 +315,7 @@ export default {
 
 <style scoped>
 .my_bg {
-  background-color: #f6f6f6;
+  background-color: #fff;
 }
 .my_page {
   /* padding-bottom: 120px; */

@@ -68,6 +68,7 @@ import SimpleLogin from './pages/discover/SimpleLogin'
 import FingerprintWarn from './pages/assets/FingerprintWarn'
 import MyInvitationPage from './pages/invitation/MyInvitationPage'
 import Profit from './pages/invitation/Profit'
+import Profit2 from './pages/invitation2/Profit'
 import SubAccount from './pages/invitation/SubAccount'
 import Invitation from './pages/me/Invitation'
 import TBGFAQ from './pages/invitation/FAQ'
@@ -331,6 +332,11 @@ const router = new Router({
       path: '/profit',
       name: 'Profit',
       component: Profit,
+    },
+    {
+      path: '/profit2',
+      name: 'Profit2',
+      component: Profit2,
     },
     {
       path: '/subAccount',

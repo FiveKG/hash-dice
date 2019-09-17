@@ -2,9 +2,12 @@ import axios from 'axios';
 
 // var baseURL = 'http://172.81.224.11/api';
 // var baseURL = 'http://192.168.1.135:9527';
-
-// var baseURL = 'http://192.168.1.141:9527';
-var baseURL = 'http://pog.tbg.isecsp.com';
+var baseURL
+if (process.env === 'development') {
+    baseURL = 'http://192.168.1.141:9527';
+} else {
+    baseURL = 'http://pog.tbg.isecsp.com';
+}
 
 const xhr = axios.create({
     baseURL,
@@ -334,11 +337,23 @@ const SaleableAmount= (reqData) => {
     const data = reqData;
     return getData(url, data);
 }
-//签到奖励明细
+//签到状态
 const CheckIn= (reqData) => {
+    const url = '/check_in';
+    const data = reqData;
+    return getData(url, data);
+}
+//签到奖励明细
+const CheckInDetail= (reqData) => {
     const url = '/check_in/detail';
     const data = reqData;
     return getData(url, data);
+}
+// 用户签到
+const UseCheckin = (reqData) => {
+    const url = '/user_check_in';
+    const data = reqData;
+    return postData(url, data);
 }
 //交易价格
 const getTradePrice= (reqData) => {
@@ -426,6 +441,8 @@ export default{
     SaleableBalance,
     SaleableAmount,
     CheckIn,
+    UseCheckin,
+    CheckInDetail,
     getTradePrice,
     getDestory,
     getBalanceAlloc,

@@ -274,13 +274,13 @@
             </div>
           </div>
 
-          <!-- TBG-I 收益 -->
+          <!-- TBG-II 收益 -->
           <div>
             <div class="section2-head jc_sb-al_c">
               <span>TBG-II收益</span>
               <span>规则</span>
             </div>
-            <div class="common-wrap">
+            <div  @click="jumpProfit" class="common-wrap">
               <div class="common-box jc_sb-al_c">
                 <span>总计</span>
                 <div class="common-number">

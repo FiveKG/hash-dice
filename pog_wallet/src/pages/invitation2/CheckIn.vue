@@ -9,7 +9,7 @@
             </span>
         </div>
         <div class="checkin-steps">
-            <div v-for="(item, index) in list" :key="index" class="checkin-step_box" :class="{'active':item.is_check}">
+            <div @click="userCheckin" v-for="(item, index) in list" :key="index" class="checkin-step_box" :class="{'active':item.is_check}">
                 <div class="top">{{index + 1}}</div>
                 <div class="mid">{{item.income}}</div>
                 <div class="bot">TBG</div>
@@ -32,17 +32,13 @@ export default {
         return {
             list: [
                 '1','2','3','4','5','6','7',
-            ]
+            ],
+            disableClick: false
         }
     },
     created() {
-        api.CheckIn({
-            account_name: this.$store.state.wallet.assets
-        }).then(res => {
-            if (res.data.detail.length>0){
-            this.list = res.data.detail
-            }
-        })
+        console.log('this.$store.state.wallet.assets',this.$store.state.wallet.assets)
+        this.initCheckinState()
     },
      methods: {
         jumpSignDetails() {        //跳转签到奖励明细
@@ -50,6 +46,34 @@ export default {
           name: 'SignDetails',
         })
        },
+       userCheckin () {
+            if(this.disableClick) return
+            this.disableClick = true
+            api.UseCheckin({
+                account_name: this.$store.state.wallet.assets.account
+            }).then(async res => {
+                if ( res.code === 1 ) {
+                    await this.initCheckinState()
+                } else if ( res.code === 1019 ) {
+                    this.$ons.notification.alert('您今天已经签到了哦！')
+                } else {
+                    this.$ons.notification.alert('签到失败')
+                }
+                this.disableClick = false
+            }).catch(() => {
+                this.disableClick = false
+            })
+       },
+       initCheckinState () {
+            api.CheckIn({
+                account_name: this.$store.state.wallet.assets.account
+            }).then(res => {
+                console.log('res.data.detail',res)
+                if (res.data.detail.length>0){
+                    this.list = res.data.detail
+                }
+            })
+       }
     }
 }
 </script>
@@ -57,6 +81,7 @@ export default {
 <style scoped>
     .checkin {
         background: #fff;
+        text-align: center;
     }
     .checkin-title {
         text-align: center;
@@ -137,8 +162,13 @@ export default {
 
     }
     .checkin-link{
-        padding: .2rem;
-        text-align: center;
-        font-size: .4rem;
+        display: inline-block;
+        line-height: 2.2em;
+        font-size: .35rem;
+        padding: 0 .5rem;
+        border-radius: 1em;
+        background: #FF9900;
+        color: #fff;
+        margin: .3rem 0 .5rem 0;
     }
 </style>

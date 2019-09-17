@@ -12,19 +12,19 @@
             <p class="font_weight_bold">Token · Blockchain · Game</p>
             <p >全球区块链去中心化游戏应用平台</p>
             <p style="margin: .5rem 0 .1rem 0">
-              <span class=" bold">{{airdrop_quantity[0]}}.{{airdrop_quantity[1][0]}} </span>
-              <span class=" bold gray">{{airdrop_quantity[1][0]}}</span>
+              <span class=" bold">{{airdrop_quantity}} </span>
+              <!-- <span class=" bold gray">8000 </span> -->
               <span class=" bold"> / </span>
-              <span class=" bold">{{airdrop_amount[0]}}.{{airdrop_amount[1][0]}} </span>
-              <span class=" bold gray">{{airdrop_amount[1][0]}}</span>
+              <span class=" bold">{{airdrop_amount}} </span>
+              <!-- <span class=" bold gray"> 0000</span> -->
             </p>
             <div class="schedule_white"><div class="schedule_orange" :style="{ width: schedule + '%' }"></div></div>
             <p style="color:RGB(255,153,0);font-size:0.45rem;margin:.3rem 0;font-weight:500;">签到共空投 2,000,000 TBG，空投完即止</p>
             <div class="num_tbg">
               <span class="font_size_five">共获得奖励</span>
               <span style="padding:0 1.1rem;"></span>
-              <span class="font_weight_bold font_size_five">{{income[0]}}.{{income[1][0]}} </span>
-              <span class="gray font_size_five">{{income[1][0]}}</span>
+              <span class="font_weight_bold font_size_five">{{income}}</span>
+              <!-- <span class="gray font_size_five"> 1206 </span> -->
               <span class="font_weight_bold font_size_five ">TBG</span>
             </div>
               <p style="color:RGB(255,153,0);margin-bottom:.3rem;font-weight:500;" class="font_size_five">签到奖励进入线性释放池释放</p>
@@ -71,58 +71,22 @@ export default {
        back() {
           this.$router.go(-1)
        },
-       addSpace (str) { 
+       addSpace (str) { //修改已销毁数据
           return str.slice(0,str.length-4) + " " +str.slice(-4)
-        },
-        addComma(data){
-        var a=data;var b='';var c=a.length+1;
-          for(var i=0;c/3>i;i++){
-            if(a.length>3){
-              b=','+a.slice(a.length-3,a.length)+b;
-              a=a.slice(0,a.length-3);
-            }else if(a.length==3){
-              b=a;
-            }else{
-              b=a+b;
-            }
-          }
-          return b;
         }
   },
   created(){
     // console.log('this1111111111',this.account);
-    api.CheckIn({account_name:this.$store.state.wallet.assets.account}).then(res => {
+    api.CheckInDetail({account_name:this.$store.state.wallet.assets.account}).then(res => {
       console.log('bindReferrer',res);
       if (res.code === 1) {
-        this.schedule=(res.data.airdrop_quantity/res.data.airdrop_amount)*100;
-        this.items=res.data.detail;
-        for(var i=0;i<this.items.length;i++){
-              this.items[i].create_time=format(new Date(this.items[i].create_time), 'YYYY-MM-DD')
-              this.items[i].reward = this.items[i].reward.split('.')
-              this.items[i].reward[1] = this.addSpace(this.items[i].reward[1])
-              this.items[i].reward[1] = this.items[i].reward[1].split(' ');
-            }   
-
-        this.income = res.data.income
-        this.income = this.income.split('.')
-        this.income[1] = this.addSpace(this.income[1])
-        this.income[0]=this.addComma(this.income[0]);
-        this.income[1] = this.income[1].split(' ');
-
-        this.airdrop_amount = res.data.airdrop_amount
-        this.airdrop_amount = this.airdrop_amount.split('.')
-        this.airdrop_amount[1] = this.addSpace(this.airdrop_amount[1])
-        this.airdrop_amount[0]=this.addComma(this.airdrop_amount[0]);
-        this.airdrop_amount[1] = this.airdrop_amount[1].split(' ');
-
-        this.airdrop_quantity = res.data.airdrop_quantity
-        this.airdrop_quantity = this.airdrop_quantity.split('.')
-        this.airdrop_quantity[1] = this.addSpace(this.airdrop_quantity[1])
-        this.airdrop_quantity[0]=this.addComma(this.airdrop_quantity[0]);
-        this.airdrop_quantity[1] = this.airdrop_quantity[1].split(' ');
+            this.airdrop_amount=this.addSpace(res.data.airdrop_amount);
+            this.airdrop_quantity=res.data.airdrop_quantity;
+            this.income=res.data.income;
+            this.items=res.data.detail;
+            this.schedule=(res.data.airdrop_quantity/res.data.airdrop_amount)*100;
         }
       })
-
   }
 }
 </script>
