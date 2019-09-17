@@ -27,7 +27,8 @@ async function mining() {
         // 查找所有用户的 TBG 资产
         const trxList = [];
         const tmpActions = [];
-        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+        const now = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
+        logger.debug("now: ", now);
         const opType = OPT_CONSTANTS.MINING;
         let sql = `
             INSERT INTO 

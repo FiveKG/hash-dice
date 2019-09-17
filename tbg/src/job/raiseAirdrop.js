@@ -37,7 +37,7 @@ async function raiseAirdrop(data) {
         const assetsInfo = await getAssetsInfoById([tradeInfo[0].extra.ap_id]);
         const amount = new Decimal(assetsInfo[0].amount);
         const quantity = amount.mul(assetsInfo[0].release_multiple);
-        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+        const now = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
         const memo = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.RAISE }`
         const tbgBalance = await getTbgBalanceInfo(accountName);
         const acCurrentBalance = new Decimal(tbgBalance.release_amount)
@@ -169,7 +169,7 @@ async function raiseAirdrop(data) {
                 await updateTbgBalance(client, userReferrer, referrerIncome.toNumber(), 0, 0);
                 await insertBalanceLog(client, userReferrer, referrerIncome.toNumber(), reCurrentBalance.toNumber(), OPT_CONSTANTS.RAISE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, reBalanceRemark, 'now()');
             }
-            const finishTime = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+            const finishTime = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
             const trLogId = generate_primary_key();
             const remark = `user ${ accountName } at ${ finishTime } done raise`;
             // 更新交易状态

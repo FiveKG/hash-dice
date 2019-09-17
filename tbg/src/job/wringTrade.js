@@ -13,7 +13,7 @@ const buyAirdrop = require("./buyAirdrop.js");
 const buyAlloc = require("./buyAlloc");
 
 logger.debug(`wringTrade running...`);
-scheduleJob("* */5 * * * *", wringTrade);
+scheduleJob("0 */5 * * * *", wringTrade);
 
 // wringTrade()
 
@@ -31,6 +31,7 @@ async function wringTrade() {
         const WAIT_STATE = "wait";
         const CREATE_STATE = "create";
         const FINISH_STATE = "finished";
+        logger.debug("now: ", now);
         // 如果在不再交易时间内, 交易结束时，没有完成的订单全部撤销，资金原路退回
         if (!df.isWithinRange(now, startTime, endTime)) {
             const sql = `
@@ -74,7 +75,7 @@ async function wringTrade() {
                 });
 
                 // 将未成交的资金退回用户账户中
-                const trxMemo = `trade close at ${ df.format(new Date(), "YYYY-MM-DD : HH:mm:ssZ") }, return pending transaction ${ trxAmount.toNumber() }`;
+                const trxMemo = `trade close at ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ssZ") }, return pending transaction ${ trxAmount.toNumber() }`;
                 actionList.push(
                     {
                         account: TBG_TOKEN_COIN,
@@ -96,7 +97,7 @@ async function wringTrade() {
             // 新创建的订单，直接撤销, create 状态时用户未转账，直接关闭
             const newOrder = tradeInfo.filter(it => it.trade_type == CREATE_STATE);
             for (const info of newOrder) {
-                const tradeTime = df.format(now, "YYYY-MM-DD : HH:mm:ssZ");
+                const tradeTime = df.format(now, "YYYY-MM-DD HH:mm:ssZ");
                 const tradeMemo = 'trade close, close trade order';
                 trxList.push({
                     sql: updateTradeSql,
@@ -113,7 +114,7 @@ async function wringTrade() {
                 SELECT * FROM trade ORDER BY create_time DESC;
             `
             const { rows: tradeInfo } = await pool.query(sql);
-            const buyOrder = tradeInfo.filter(it => it.trade_type !== BUY && (it.state === FINISH_STATE || it.state === WAIT_STATE));
+            const buyOrder = tradeInfo.filter(it => it.trade_type !== SELL && (it.state === FINISH_STATE || it.state === WAIT_STATE));
             const sellOrder = tradeInfo.filter(it => it.trade_type === SELL && (it.state === FINISH_STATE || it.state === WAIT_STATE));
             // 如果没有订单，不做处理
             if (tradeInfo.length === 0) {
@@ -179,7 +180,7 @@ async function replenish(waitOrder) {
     try {
         const queryList = [];
         const tmpActions = [];
-        const now = df.format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+        const now = df.format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
         const updateTradeSql = `
             UPDATE trade SET state = $1, finished_time = $2, trx_amount = $3 WHERE id = $4
         `
@@ -234,7 +235,7 @@ async function replenish(waitOrder) {
                     from: TBG_TOKEN_COIN,
                     to: TBG_FREE_POOL,
                     quantity: `${ new Decimal(it.amount).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                    memo: `${ df.format(it.create_time, "YYYY-MM-DD : HH:mm:ssZ") } platform replenish order`
+                    memo: `${ df.format(it.create_time, "YYYY-MM-DD HH:mm:ssZ") } platform replenish order`
                 }
             }
         });

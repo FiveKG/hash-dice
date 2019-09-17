@@ -44,7 +44,7 @@ async function buyAirdrop(data) {
                 queryList: []
             };
         }
-        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+        const now = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
         // 获取资产包信息
         const assetsInfo = await getAssetsInfoById([apId]);
         const amount = new Decimal(assetsInfo[0].amount);

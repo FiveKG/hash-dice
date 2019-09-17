@@ -33,7 +33,7 @@ async function investAirdrop(client, accountName, create_time) {
         let acCurrentBalance = new Decimal(accountTbgBalance.release_amount);
         let reCurrentBalance = new Decimal(0);
         let referrerTbgBalance = null;
-        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+        const now = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
         if (total <= TBG_ALLOCATE.BIND_MEMBER_LIMIT) {
             // 系统第一个账户没有推荐人，多出的部分转到股东池账户
             const bindId = OPT_CONSTANTS.BIND;

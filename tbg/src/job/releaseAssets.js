@@ -38,7 +38,7 @@ async function releaseAssets() {
         const trxList = [];
         const releaseList = [];
         const { rows: tbgBalanceInfo } = await pool.query("SELECT * FROM tbg_balance where release_amount > 0");
-        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+        const now = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
         let sql = `
             INSERT INTO 
                 balance_log(account_name, change_amount, current_balance, op_type, extra, remark, create_time)

@@ -46,7 +46,7 @@ async function sellAlloc(data) {
         `
         let { amount, price, id: trId, account_name: accountName } = data;
         let trxAmount = new Decimal(data.trxAmount);
-        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+        const now = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
 
         // 卖出后，减去用户的可售余额和可售额度
         const tbgBalance = await getTbgBalanceInfo(accountName);

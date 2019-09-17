@@ -48,7 +48,7 @@ async function buyAlloc(data) {
         `
         let { amount, price, id: trId, account_name: accountName, trx_amount } = data;
         let trxAmount = new Decimal(data.trxAmount);
-        const now = format(new Date(), "YYYY-MM-DD : HH:mm:ssZ");
+        const now = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
         // 修改订单的状态
         const memo = `user buy ${ amount } assets, transaction ${ trxAmount.toNumber() }, get income ${ trxAmount.mul(price) }`;
         trxList.push({
