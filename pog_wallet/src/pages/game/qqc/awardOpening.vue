@@ -12,19 +12,19 @@ export default {
   components: {
     
    },
-  data() {
-    return {
-      
+    data() {
+      return {
+        
+
+      }
+    },
+    methods: {
+        
+    },
+    created(){
+
 
     }
-  },
-  methods: {
-       
-  },
-  created(){
-
-   
-  }
 }
 </script>
 
