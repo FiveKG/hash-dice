@@ -25,12 +25,12 @@
             "out_file"    : "../../../logs/globalLottoMqHandler-out.log"
         },
         {
-            "name"        : "globalLottoGameSession",
+            "name"        : "globalLottoInitGameSession",
             "script"      : "./initGameSession.js",
             "watch"       : false,
             "cwd"         : "./",
-            "error_file"  : "./../../logs/globalLottoGameSession-err.log",
-            "out_file"    : "./../../logs/globalLottoGameSession-out.log"
+            "error_file"  : "./../../logs/globalLottoInitGameSession-err.log",
+            "out_file"    : "./../../logs/globalLottoInitGameSession-out.log"
         }
     ]
 }
