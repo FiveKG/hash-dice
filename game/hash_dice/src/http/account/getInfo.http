@@ -2,5 +2,29 @@
 GET http://localhost:13022/account/info?account_name=yujinsheng11
 
 ### get config
-GET http://localhost:13022/config/get_config?id=123
+GET http://localhost:13022/config/get_config
 
+### get banker
+GET http://localhost:13022/hash_dice/banker
+
+### getGame Rate
+GET http://localhost:13022/hash_dice/game_rate?account_name=110
+
+### get all bet list 
+GET http://localhost:13022/hash_dice/bet_list
+
+### get user bet list
+GET http://localhost:13022/hash_dice/bet_list_mine?account_name=fiveKG
+
+### get user bet detail
+GET http://localhost:13022/hash_dice/bet_list_mine_detail?id=RnBowzgs11
+
+### betting
+POST http://localhost:13022/hash_dice/bet
+content-type: application/json
+
+{
+    "account_name": "fiveKG",
+    "bet_num"     : "smaller",
+    "bet_amount"  : "1UE"
+}
