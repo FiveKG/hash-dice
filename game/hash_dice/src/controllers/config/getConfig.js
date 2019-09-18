@@ -4,7 +4,12 @@ const { get_status, inspect_req_data } = require("../../common/index.js");
 const { WALLET_RECEIVER } = require("../../common/constant/eosConstants.js");
 const { TBG_FREE_POOL } = require("../../common/constant/accountConstant");
 
-// 获取配置信息
+/**
+ * 
+ * @param {any} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 async function getConfig(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);

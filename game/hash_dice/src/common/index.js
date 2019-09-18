@@ -5,4 +5,5 @@ module.exports = {
   generate_primary_key: require("./generate_primary_key"),  // 生成主键
   check_role          : require("./check_role"),            // 检查角色
   redis: require("./redis.js"),
+  xhr: require("./xhr"),
 };  
