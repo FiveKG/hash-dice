@@ -61,8 +61,8 @@ async function staticMode(req, res, next) {
         resData["data"] = {
             total_income: new Decimal(userBalance.amount).toFixed(8),
             refer_income: referIncome.toFixed(8),
-            mode_income: sortIncome.toFixed(8),
-            sort_income: modeIncome.toFixed(8),
+            mode_income: modeIncome.toFixed(8),
+            sort_income: sortIncome.toFixed(8),
             other_income: otherIncome.toFixed(8),
             detail: detail
         };
