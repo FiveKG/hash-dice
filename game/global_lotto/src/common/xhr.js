@@ -31,7 +31,7 @@ async function get(api_url, options = {}) {
         headers: options.headers || {},
         qs: options.data || {}
       };
-  
+
       return await asyncRequest(req_options);
     } catch (err) {
       throw err;

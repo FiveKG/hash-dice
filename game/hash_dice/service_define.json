@@ -51,10 +51,10 @@
             }
         },
         {
-            "name" : "获取当前用户的信息",
+            "name" : "获取当前游戏赔率",
             "summary": "",
             "remark": [
-                "获取当前用户的信息"
+                "获取当前游戏赔率"
             ],
             "isFunctionPoint" : true,
             "url" : "/hash_dice/game_rate",
@@ -74,6 +74,7 @@
                             "winning_probability": { "type": "text",  "is_require": true,  "desc": "中奖概率" },
                             "num_interval": { "type": "text",  "is_require": true,  "desc": "号码区间" },
                             "bet_type": { "type": "text",  "is_require": true,  "desc": "下注的类型" }
+
                         }
                     }
                 }
@@ -131,8 +132,8 @@
                             "id": { "type": "text",  "is_require": true,  "desc": "投注 id" },
                             "create_time": { "type": "text",  "is_require": true,  "desc": "时间" },
                             "bet_num": { "type": "text",  "is_require": true,  "desc": "投注内容" },
-                            "bet_amount": { "type": "text",  "is_require": true,  "desc": "投注金额" },
-                            "bonus": { "type": "text",  "is_require": true,  "desc": "奖金" }
+                            "betting_amount": { "type": "text",  "is_require": true,  "desc": "投注金额" },
+                            "reward": { "type": "text",  "is_require": true,  "desc": "奖金" }
                         }
                     }
                 }
@@ -145,7 +146,7 @@
                 "在用户的投注列表点击某个投注记录，进入详情"
             ],
             "isFunctionPoint" : true,
-            "url" : "/hash_dice/bet_list_mine",
+            "url" : "/hash_dice/bet_list_mine_detail",
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
@@ -156,7 +157,7 @@
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
                     "detail": {
-                        "type": "objectArray", "desc": "全部开奖信息",
+                        "type": "object", "desc": "我的投注详情",
                         "properties": {
                             "create_time": { "type": "text",  "is_require": true,  "desc": "时间" },
                             "bet_block_num": { "type": "text",  "is_require": true,  "desc": "投注区块编号" },
@@ -167,7 +168,7 @@
                             "bet_amount": { "type": "text",  "is_require": true,  "desc": "投注金额" },
                             "odds_rate": { "type": "text",  "is_require": true,  "desc": "赔率" },
                             "agent_account": { "type": "number",  "is_require": true,  "desc": "代投账号" },
-                            "bonus": { "type": "text",  "is_require": true,  "desc": "中奖金额" }
+                            "reward": { "type": "text",  "is_require": true,  "desc": "中奖金额" }
                         }
                     }
                 }
@@ -184,9 +185,9 @@
             "type" : "post",
             "requireRole" : [ "*" ],
             "req": {
-                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" },
-                "bet_num": { "type": "number",  "is_require": true,  "desc": "投注号码" },
-                "bet_amount": { "type": "number",  "is_require": true,  "desc": "投注总额度" }
+                "account_name": { "type": "text",  "is_require": true,  "desc": "账号" },
+                "bet_num": { "type": "text",  "is_require": true,  "desc": "投注号码" },
+                "bet_amount": { "type": "text",  "is_require": true,  "desc": "投注总额度" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,

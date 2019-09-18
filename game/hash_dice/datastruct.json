@@ -19,7 +19,7 @@
           "fields": [
             { "name": "gs_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "期数主键" ,  "isPrimary": true , "remark": ""}, 
             { "name": "creator", "type": "text", "dblength": "32", "dftValue": "''", "summary": "创建人", "remark": "" , "isPrimary": false },
-            { "name": "g_tyle" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "游戏类型" ,  "isPrimary": false , "remark": "游戏id"},
+            { "name": "g_id" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "游戏类型" ,  "isPrimary": false , "remark": "游戏id"},
             { "name": "periods" , "type": "text" , "dblength": "36", "dftValue": "''", "summary": "游戏期数" ,  "isPrimary": false , "remark": ""},
             { "name": "start_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "开始时间",   "remark": "", "isPrimary": false },
             { "name": "end_time", "type": "dateTime", "dblength": "0", "dftValue": "now()", "summary": "结束时间",   "remark": "", "isPrimary": false },
