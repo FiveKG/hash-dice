@@ -6,3 +6,13 @@ Content-Type: application/json
     "account_name": "yujinsheng11",
     "income_type": "all"
 }
+
+
+### 收取收益
+POST  http://pog.tbg.isecsp.com/income/income_gain
+Content-Type: application/json
+
+{
+    "account_name": "yujinsheng11",
+    "income_type": "all"
+}

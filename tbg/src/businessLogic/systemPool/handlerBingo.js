@@ -1,4 +1,5 @@
 // @ts-check
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "bingo 奖金池分配" });
 const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { BINGO_POOL } = require("../../common/constant/accountConstant.js");
@@ -8,13 +9,12 @@ const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { Decimal } = require("decimal.js");
-const logger = require("../../common/logger.js");
 const { redis } = require("../../common");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
 
 /**
- * 直接推荐PK奖金池分配
+ * bingo 奖金池分配
  */
 async function handlerPk() {
     let client = await pool.connect();
@@ -45,7 +45,7 @@ async function handlerPk() {
             currPeriods = parseInt(periods);
         }
         
-        logger.log("bingoAccountList: ", bingoAccountList)
+        logger.debug("bingoAccountList: ", bingoAccountList)
         for (let i = 0; i< bingoAccountList.length; i++){
             let item = bingoAccountList[i]
             let rate = 0;

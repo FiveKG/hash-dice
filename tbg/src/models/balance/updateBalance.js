@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js");
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: ""});
 const { 
     WITHDRAW_ENABLE,
     REPEAT_CURRENCY, 

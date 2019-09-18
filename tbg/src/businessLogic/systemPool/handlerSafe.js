@@ -1,4 +1,5 @@
 // @ts-check
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "五倍收益保障池分配" });
 const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { SAFE_POOL } = require("../../common/constant/accountConstant.js");
@@ -9,7 +10,6 @@ const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const df = require("date-fns");
-const logger = require("../../common/logger.js");
 const storeIncome = require("../../common/storeIncome.js");
 const { redis } = require("../../common/index.js");
 
@@ -73,7 +73,7 @@ async function handlerSafe() {
             return;
         }
 
-        logger.log("bonusList: ", bonusList);
+        logger.debug("bonusList: ", bonusList);
         for (let item of bonusList) {
             let last = new Decimal(item.last);
             let total = new Decimal(item.all);

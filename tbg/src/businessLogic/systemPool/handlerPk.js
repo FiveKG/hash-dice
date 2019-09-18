@@ -1,4 +1,5 @@
 // @ts-check
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "直接推荐PK奖金池分配" });
 const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { PK_POOL } = require("../../common/constant/accountConstant.js");
@@ -9,7 +10,6 @@ const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const df = require("date-fns");
-const logger = require("../../common/logger.js");
 const storeIncome = require("../../common/storeIncome.js");
 
 /**
@@ -36,7 +36,7 @@ async function handlerPk() {
         if (pkAccountList.length === 0) {
             return;
         }
-        logger.log("pkAccountList: ", pkAccountList);
+        logger.debug("pkAccountList: ", pkAccountList);
         for (let i = 0; i < pkAccountList.length - 5; i++){
             let item = pkAccountList[i]
             let rate = setRate(i);

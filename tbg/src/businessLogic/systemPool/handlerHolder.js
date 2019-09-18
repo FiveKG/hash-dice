@@ -1,4 +1,5 @@
 // @ts-check
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "股东分红池分配" });
 const { pool } = require("../../db");
 const { getOneAccount } = require("../../models/systemPool");
 const { SHAREHOLDERS_POOL } = require("../../common/constant/accountConstant.js");
@@ -9,7 +10,6 @@ const { insertSystemOpLog } = require("../../models/systemOpLog");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const df = require("date-fns");
-const logger = require("../../common/logger.js");
 const { redis } = require("../../common");
 const storeIncome = require("../../common/storeIncome.js");
 
