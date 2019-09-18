@@ -32,8 +32,10 @@ async function handlerSafe() {
             return;
         }
         // 本次分配的金额
-        let distrEnable = safePoolAmount.mul(INCOME_CONSTANT.SAFE_ALLOCATE_RATE / INCOME_CONSTANT.SAFE_ALLOCATE_RATE);
+        let distrEnable = safePoolAmount.mul(INCOME_CONSTANT.SAFE_ALLOCATE_RATE).div(INCOME_CONSTANT.SAFE_ALLOCATE_RATE);
+        logger.debug("distrEnable: ", distrEnable);
         let safeAccountList = await getSafeAccountList();
+        logger.debug("safeAccountList: ", safeAccountList);
         if (safeAccountList.length === 0) {
             return;
         }
@@ -41,17 +43,20 @@ async function handlerSafe() {
         // 用户的收益还包括 redis 里面未收取的部分
         const tmpList = [];
         let total = safeAccountList.map(it => it.total).reduce((pre, curr) => Number(pre) + Number(curr));
+        logger.debug("total: ", total);
         for (const info of safeAccountList) {
             let incomeJsonIfy = await redis.hgetall(`tbg:income:${ info.account_name }`);
             let incomeArr = JSON.parse(incomeJsonIfy);
             let amount = new Decimal(info.total);
             for (let item of incomeArr) {
+                logger.debug("item: ", item);
                 let changeAmount = new Decimal(item.change_amount);
                 amount = amount.add(changeAmount);
             }
 
             total = amount.add(total).toNumber();
             const last = new Decimal(INCOME_CONSTANT.SAFE_OUT_LINE).minus(amount);
+            logger.debug("last: ", last);
             // 如果收益低于三倍收益保障
             if (!last.lessThanOrEqualTo(INCOME_CONSTANT.SAFE_OUT_LINE)) {
                 tmpList.push({
@@ -88,6 +93,7 @@ async function handlerSafe() {
                 "extra": { "symbol": UE_TOKEN_SYMBOL },
                 "remark": remark
             }
+            logger.debug("data: ", data);
             await storeIncome(item.account_name, OPT_CONSTANTS.PROTECTION, data);
         }
 

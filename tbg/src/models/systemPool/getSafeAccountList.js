@@ -9,12 +9,10 @@ const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js")
 async function getSafeAccount() {
     try {
         let sql = `
-            select account_name,
-                cast(
-                    withdraw_enable + repeat_currency + lotto_currency + game_currency as numeric(12, 8)
-                ) as total, account_name
-                from balance
-                where total < $1;
+            WITH etc AS (
+                SELECT account_name, cast(withdraw_enable + repeat_currency + lotto_currency + game_currency AS numeric(12, 8)) AS total FROM balance
+            )
+            SELECT * FROM etc WHERE total < $1;
         `
         let { rows } = await pool.query(sql, [ INCOME_CONSTANT.SAFE_OUT_LINE ]);
         return rows;

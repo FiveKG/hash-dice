@@ -160,3 +160,9 @@ select account_name
 
 
 SELECT * FROM trade WHERE account_name = 'gametestuser' AND trade_type != 'sell' ORDER BY create_time DESC;
+
+
+WITH etc AS (
+    SELECT account_name, cast(withdraw_enable + repeat_currency + lotto_currency + game_currency AS numeric(12, 8)) AS total FROM balance
+)
+SELECT * FROM etc WHERE total < 300;
