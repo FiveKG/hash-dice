@@ -279,8 +279,8 @@
             "requireRole" : [ "*" ],
             "req": {
                 "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
-                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" },
-                "bet_num": { "type": "number",  "is_require": true,  "desc": "投注号码" },
+                "account_name": { "type": "text",  "is_require": true,  "desc": "账号" },
+                "bet_num": { "type": "text",  "is_require": true,  "desc": "投注号码" },
                 "bet_key": { "type": "number",  "is_require": true,  "desc": "投注 key 的的数量" },
                 "bet_amount": { "type": "number",  "is_require": true,  "desc": "投注总额度" }
             },
@@ -302,7 +302,7 @@
             "requireRole" : [ "*" ],
             "req": {
                 "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
-                "account_name": { "type": "number",  "is_require": true,  "desc": "账号" },
+                "account_name": { "type": "text",  "is_require": true,  "desc": "账号" },
                 "bet_key": { "type": "number",  "is_require": true,  "desc": "投注 key 的的数量" },
                 "bet_amount": { "type": "number",  "is_require": true,  "desc": "投注总额度" }
             },

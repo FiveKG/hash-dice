@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/global_lotto/latestGameSession.js": "最新一期开奖情况" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "最新一期开奖情况" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { Decimal } = require("decimal.js");
 const { getLatestGameSession, getGameInfo } = require("../../models/game");
@@ -16,9 +16,14 @@ async function latestGameSession(req, res, next) {
         if (!info) {
             return res.send(get_status(1012, "game not exists"));
         }
-        resData.data = {
+        const now = df.format(new Date(), "YYYY-MM-DD HH:mm:ssZ")
+        const diff = df.differenceInSeconds(info.end_time, now)
+        logger.debug(`info.end_time: `, info.end_time);
+        logger.debug(`now: `, now);
+        logger.debug("diff: ", diff);
+        resData.data = {    
             "gs_id": info.gs_id,
-            "count_down": df.differenceInSeconds(new Date(), info.end_time),
+            "count_down": diff,
             "reward_time": info.reward_time,
             "prize_pool": new Decimal(gameInfo.prize_pool).toFixed(4)
         }

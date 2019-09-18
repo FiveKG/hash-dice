@@ -26,7 +26,7 @@ class SocketService {
    */
   async initialize(server) {
     const options = { pingTimeout: 100000000 };
-    io.attach(server,options);
+    io.attach(server, options);
     this.open();
     await getBlockInfo();
   }
@@ -109,10 +109,10 @@ async function getBlocks(block_num) {
         block_server.to('block').emit({ type: 'block', result: res });
       }
 
-      // const timestamp = df.format(res.timestamp, "mm:ss:SSS");
-      const timestamp = df.format(res.timestamp, "ss:SSS");
+      const timestamp = df.format(res.timestamp, "mm:ss:SSS");
+      // const timestamp = df.format(res.timestamp, "ss:SSS");
       // 整点开奖
-      if (timestamp === "00:000") {
+      if (timestamp === "00:00:000") {
         logger.debug("open: ", timestamp);
         psGlobalLottoOpen.pub({ block_num: block_num });
       }

@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/global_lotto/gameSessionMine.js": "获取当前用户投注的信息" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "获取当前用户投注的信息" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { Decimal } = require("decimal.js");
 const df = require("date-fns");

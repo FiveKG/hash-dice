@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/global_lotto/randomBet.js": "随机投注" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "随机投注" });
 const { get_status, inspect_req_data, xhr } = require("../../common/index.js");
 const { Decimal } = require("decimal.js");
 const { selectGameSessionByPeriods } = require("../../models/game");

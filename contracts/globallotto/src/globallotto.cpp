@@ -5,7 +5,7 @@ void globallotto::init(uint64_t game_id, time_point_sec create_time, time_point_
     require_auth( get_self() );
     lottogames lottogames_table( get_self(), game_id );
     // 如果这一期游戏不存在,添加一期
-    if ( lottogames_table.find(game_id) != lottogames_table.end() ) {
+    if ( lottogames_table.find(game_id) == lottogames_table.end() ) {
         lottogames_table.emplace( get_self(), [&](auto& game) {
             game.game_id = game_id;
             game.game_state = 0; // 初始化时状态默认为 0
@@ -37,7 +37,7 @@ void globallotto::bet(name bet_name, string bet_num, asset& quantity, uint64_t g
     check( bet_num.size() > 0, "invalid bet number" );
 
     betlottos betlottos_table( get_self(), game_id );
-    if ( betlottos_table.find(game_id) != betlottos_table.end() ) {
+    if ( betlottos_table.find(game_id) == betlottos_table.end() ) {
         betlottos_table.emplace( get_self(), [&](auto& game) {
             game.bet_id = lottogames_table.available_primary_key();
             game.bet_num = bet_num;
@@ -61,7 +61,7 @@ void globallotto::open(string reward_num, uint64_t game_id, time_point_sec rewar
 
     rewards rewards_table( get_self(), game_id );
 
-    if ( rewards_table.find(game_id) != rewards_table.end() ) {
+    if ( rewards_table.find(game_id) == rewards_table.end() ) {
         rewards_table.emplace( get_self(), [&](auto& game) {
             game.game_id = game_id;
             game.reward_num = reward_num;

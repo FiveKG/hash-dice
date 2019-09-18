@@ -23,7 +23,7 @@ const TBG_TOKEN_SYMBOL = "TBG"
 // 节点信息
 const END_POINT = "http://localhost:8888"
 // 私钥
-const PRIVATE_KEY_TEST = "5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h,5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo,5KSzppBW7LcwVQ4hA1AQP4vZYWq1uEv4EQnZ5yz1eu41eLgrLK2,5JRiAXpyd5TW5REvLYd35FkrJSMjFfiUtrwrCNpChHFMVNnRDwB,5JAW6eWS4ADjwCr76xCvmPefknzhFg33f4haL5dbuiB5WoW79tQ,5JiaokGm1A7kyLq92YrQjp42Fr7Vqs52NBquCYiuU8DxKURkhfu,5KbQQbR83HFMPPaKCY4GPVBtNZZW4t6nNxtPEWkVPUHMWxpQLzS,5K7h5xxZNCfq6ujRmLWgCHHQKf4gAuKYAU8yDFRDwvkAN3scPki,5K5sRqqp3XebvjMmK1TYBFiSAd6XbwLeJa9L3CxWBMiWcSGCsDG"
+const PRIVATE_KEY_TEST = "5KNrMrmiQ1fu3cwMdRCdh1bAfBcbyte2nJwB6evcB1By3fmwF6s,5KN7eEYR6xqCARDDCDRKNbqdL4q6oW24hK22qGvrRWiWbje41tB,5JXK3gnpUiLvnbxLbcHDTbgKHfVGNJTyVUkfWFGYJZ6Ucihj2sB,5JfAs6FQZ6pjr82BExuSBYUQMJR86bppEtWUcujMKGbv4BQ4BCn,5J2GxxF4xCfAZjP9R26jwnVY8rp8FYqXRE1fJPq5KDMSxa5NRuW,5K3LFVo36rAYBuAGC1UQmrZtrtvLkuWVYQ6TyhzwBgB2DpHo4zB,5K56kFugCU8UwbREvaZ8DTnH45q1LCMCQwp6xRHTGmxZVpUxBtt,5Kd5ExHx2AZwcnfFsQwNuiMvbeZvk1WGBD1iyc4FjwT5WBmDEF6,5JrN9PmaBTuDuoDBhYPwVsBmjTwtdpeGg4LN1sTCzv8igZgtxrx,5JZH8pBYdr3yfZnDhPtZzu9437tRoUJVCny8DvtCx1kbBh6KqyW,5JSZgw2fuoeXLXzwoQyBJ3L9vwH7AoQxjwBQRar4G2jqXnfrSXW,5KSzppBW7LcwVQ4hA1AQP4vZYWq1uEv4EQnZ5yz1eu41eLgrLK2,5JRiAXpyd5TW5REvLYd35FkrJSMjFfiUtrwrCNpChHFMVNnRDwB,5JAW6eWS4ADjwCr76xCvmPefknzhFg33f4haL5dbuiB5WoW79tQ,5JiaokGm1A7kyLq92YrQjp42Fr7Vqs52NBquCYiuU8DxKURkhfu,5KbQQbR83HFMPPaKCY4GPVBtNZZW4t6nNxtPEWkVPUHMWxpQLzS,5K7h5xxZNCfq6ujRmLWgCHHQKf4gAuKYAU8yDFRDwvkAN3scPki,5K5sRqqp3XebvjMmK1TYBFiSAd6XbwLeJa9L3CxWBMiWcSGCsDG,5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h,5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo,5KSzppBW7LcwVQ4hA1AQP4vZYWq1uEv4EQnZ5yz1eu41eLgrLK2,5JRiAXpyd5TW5REvLYd35FkrJSMjFfiUtrwrCNpChHFMVNnRDwB,5JAW6eWS4ADjwCr76xCvmPefknzhFg33f4haL5dbuiB5WoW79tQ,5JiaokGm1A7kyLq92YrQjp42Fr7Vqs52NBquCYiuU8DxKURkhfu,5KbQQbR83HFMPPaKCY4GPVBtNZZW4t6nNxtPEWkVPUHMWxpQLzS,5K7h5xxZNCfq6ujRmLWgCHHQKf4gAuKYAU8yDFRDwvkAN3scPki,5K5sRqqp3XebvjMmK1TYBFiSAd6XbwLeJa9L3CxWBMiWcSGCsDG"
 
 
 ;(async ()=> {
@@ -35,16 +35,34 @@ const PRIVATE_KEY_TEST = "5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h,5K
         const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
 
         // 获取区块链信息
-        const { head_block_num, head_block_time } = await rpc.get_info();
-        // 根据当前区块获取到时间戳和交易 id
-        const { id, timestamp } = await rpc.get_block(head_block_num);
-        console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
+        // const { head_block_num, head_block_time } = await rpc.get_info();
+        // // 根据当前区块获取到时间戳和交易 id
+        // const { id, timestamp } = await rpc.get_block(head_block_num);
+        // console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
 
-        getCurrencyBalance(UE_TOKEN, 'dengderong', 'UE')
-        .then(res => console.error(res))
-        .catch(err => console.error(err));
+        // getCurrencyBalance(UE_TOKEN, 'dengderong', 'UE')
+        // .then(res => console.debug(res))
+        // .catch(err => console.error(err));
 
-        // transfer(UE_TOKEN, UE_TOKEN, 'dengderong', '1000000.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
+        const act = { 
+            account: 'eoslottoeos',
+            name: 'init',
+            authorization: [ { actor: 'eoslottoeos', permission: 'active' } ],
+            data:
+            { 
+                game_id: 1,
+                create_time: new Date(),
+                dead_line: new Date() 
+            } 
+        }
+        await api.transact({ actions: [ act ] }, {
+            blocksBehind: 3,
+            expireSeconds: 30,
+        }).then(resp => {
+            console.debug("resp: ", resp);
+        });
+
+        // transfer(UE_TOKEN, UE_TOKEN, 'eoslottoeos', '1000000.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
         // .then(res => console.error(res))
         // .catch(err => console.error(err));
     } catch (err) {

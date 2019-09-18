@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@": "mq publish and subscribe" });
+const logger = require("../common/logger.js").child({ [`@${__filename}`]: "mq publish and subscribe" });
 const { psGlobalLottoOpen, psTrx, psBet } = require("../db");
 const trxAction = require("./trxAction.js");
 const openGameSession = require("./openGameSession");

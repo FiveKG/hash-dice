@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js");
+const logger = require("../common/logger.js").child({ [`@${__filename}`]: "获取开奖相关的区块信息" });
 const { OPEN_CODE_COUNT } = require("../common/constant/gameConstants");
 const { rpc } = require("./getTrxAction");
 

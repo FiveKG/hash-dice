@@ -1,7 +1,7 @@
 // @ts-check
 require("./setEnv.js")();
 const express = require("express");
-const logger = require("./src/common/logger.js");
+const logger = require("./src/common/logger.js").child({ [`@${__filename}`]: "run server" });
 const { socketService } = require('./src/websocket/SocketService');
 
 // const sb = require("@yz/yue-svc-base");

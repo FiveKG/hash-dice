@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@src/job/openGameSession.js": "游戏开奖" });
+const logger = require("../common/logger.js").child({ [`@${__filename}`]: "游戏开奖" });
 const { Decimal } = require("decimal.js");
 const { pool, psTrx } = require("../db");
 const { xhr } = require("../common");
@@ -164,7 +164,7 @@ async function awardGame(data) {
         const updateGameSql = `
             UPDATE game SET prize_pool = $1, bottom_pool = $2, reserve_pool = $3 WHERE g_id = $4;
         `
-        sqlList.push({ sql: updateGameSql, values: [ prizePoolSurplus, bottomPoolSurplus, reservePoolSurplus, gameInfo.g_id ] });
+        sqlList.push({ sql: updateGameSql, values: [ prizePoolSurplus.toNumber(), bottomPoolSurplus.toNumber(), reservePoolSurplus.toNumber(), gameInfo.g_id ] });
         // 更新 session 状态
         const updateSessionSql = `
             UPDATE game_session SET game_state = $1, reward_num = $2, extra = $3 WHERE gs_id = $4;
@@ -181,22 +181,22 @@ async function awardGame(data) {
         sqlList.push({
             sql: insertPrizePoolLog,
             values: [ 
-                rewardInfo.gs_id, 'prize_pool', prizePoolSurplus.minus(gameInfo.prize_pool), prizePoolSurplus, 'award', 
-                { is_lottery_award: isLotteryAward, bottom_pool_change: !!isLotteryAward ? bottomPoolSurplus : 0, reserve_pool_change: reservePoolSurplus.minus(gameInfo.reserve_pool) }, 
+                rewardInfo.gs_id, 'prize_pool', prizePoolSurplus.minus(gameInfo.prize_pool).toNumber(), prizePoolSurplus.toNumber(), 'award', 
+                { is_lottery_award: isLotteryAward, bottom_pool_change: !!isLotteryAward ? bottomPoolSurplus.toNumber() : 0, reserve_pool_change: reservePoolSurplus.minus(gameInfo.reserve_pool).toNumber() }, 
                 `${ new Date() } award`, "now()" 
             ]
         });
 
         sqlList.push({
             sql: insertPrizePoolLog,
-            values: [ rewardInfo.gs_id, 'bottom_pool', bottomPoolSurplus.minus(gameInfo.bottom_pool), bottomPoolSurplus, 
+            values: [ rewardInfo.gs_id, 'bottom_pool', bottomPoolSurplus.minus(gameInfo.bottom_pool).toNumber(), bottomPoolSurplus.toNumber(), 
                 'award', {}, `${ new Date() } award`, "now()" 
             ]
         });
 
         sqlList.push({
             sql: insertPrizePoolLog,
-            values: [ rewardInfo.gs_id, 'reserve_pool', reservePoolSurplus.minus(gameInfo.reserve_pool), reservePoolSurplus, 'award',
+            values: [ rewardInfo.gs_id, 'reserve_pool', reservePoolSurplus.minus(gameInfo.reserve_pool).toNumber(), reservePoolSurplus.toNumber(), 'award',
                 {}, `${ new Date() } award`, "now()" 
             ]
         });
@@ -216,13 +216,14 @@ async function awardGame(data) {
             }
         });
 
+        logger.debug("sqlList: ", sqlList);
         let flag = false;
         const client = await pool.connect();
         try {
             await client.query("BEGIN");
-            await Promise.all(sqlList.map(it => {
-                client.query(it.sql, it.values)
-            }));
+            for (const item of sqlList) {
+                await client.query(item.sql, item.values);
+            }
             await client.query("COMMIT");
             flag = true;
         } catch (err) {

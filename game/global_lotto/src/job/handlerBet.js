@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@src/job/handlerBet.js": "处理用户投注" });
+const logger = require("../common/logger.js").child({ [`@${__filename}`]: "处理用户投注" });
 const { Decimal } = require("decimal.js");
 const { pool, psTrx, psModifyBalance, psGame } = require("../db");
 const { GLOBAL_LOTTO_CONTRACT, AGENT_ACCOUNT, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants");

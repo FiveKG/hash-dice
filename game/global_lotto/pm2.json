@@ -7,6 +7,30 @@
             "cwd"         : "./",
             "error_file"  : "../logs/globalLotto-err.log",
             "out_file"    : "../logs/globalLotto-out.log"
+        },
+        {
+            "name"        : "globalLottoListenTransfer",
+            "script"      : "./listenTransfer.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/globalLottoListenTransfer-err.log",
+            "out_file"    : "../../../logs/globalLottoListenTransfer-out.log"
+        },
+        {
+            "name"        : "globalLottoMqHandler",
+            "script"      : "./mqHandler.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/globalLottoMqHandler-err.log",
+            "out_file"    : "../../../logs/globalLottoMqHandler-out.log"
+        },
+        {
+            "name"        : "globalLottoMnitGameSession",
+            "script"      : "./initGameSession.js",
+            "watch"       : false,
+            "cwd"         : "./",
+            "error_file"  : "./../../logs/globalLottoMnitGameSession-err.log",
+            "out_file"    : "./../../logs/globalLottoMnitGameSession-out.log"
         }
     ]
 }

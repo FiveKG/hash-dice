@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@src/job/startGameSession.js": "开始游戏" });
+const logger = require("../common/logger.js").child({ [`@${__filename}`]: "开始游戏" });
 const { Decimal } = require("decimal.js");
 const { pool, psTrx } = require("../db");
 const { GLOBAL_LOTTO_CONTRACT } = require("../common/constant/eosConstants");
@@ -18,7 +18,7 @@ async function startGameSession() {
         // 记录区块链相关调用信息
         const actList = [];
         const latestGame = await getLatestGameSession();
-        if (latestGame.game_state !== GAME_STATE.START) {
+        if (!latestGame || latestGame.game_state !== GAME_STATE.START) {
             return;
         }
         const sqlList = [];

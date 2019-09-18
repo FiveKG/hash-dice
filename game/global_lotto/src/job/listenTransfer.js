@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@": "listening invest transfer" });
+const logger = require("../common/logger.js").child({ [`@${__filename}`]: "listening invest transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
 const { BANKER, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");

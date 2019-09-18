@@ -11,9 +11,9 @@ const df = require("date-fns");
 
 logger.debug(`beginListenAction running...`);
 // 每天 0：00 执行一次
-scheduleJob("0 0 0 */1 * *", initGameSession);
+// scheduleJob("0 0 0 */1 * *", initGameSession);
 
-// initGameSession()
+initGameSession();
 
 /**
  * 初始化游戏期数
@@ -25,8 +25,8 @@ async function initGameSession() {
         const dayInterval = 2;
         const gameInfo = await getGameInfo();
         const lastGameSession = await getLastGameSession();
-        let startTime = df.startOfHour(new Date());
-        let endTime = df.endOfHour(new Date());
+        let startTime = df.startOfHour(df.format(new Date(), "YYYY-MM-DD HH:mm:ssZ"));
+        let endTime = df.endOfHour(df.format(new Date(), "YYYY-MM-DD HH:mm:ssZ"));
         let lastEndTime = endTime;
         // 游戏期数
         let periods = 1;
@@ -48,19 +48,6 @@ async function initGameSession() {
                 
                 if (periods === 1) {
                     state = GAME_STATE.START;
-                    // 调用 globallotto 合约设置游戏状态
-                    actList.push({
-                        account: GLOBAL_LOTTO_CONTRACT,
-                        name: "setstate",
-                        authorization: [{
-                            actor: GLOBAL_LOTTO_CONTRACT,
-                            permission: 'active',
-                        }],
-                        data: {
-                            game_id: periods,
-                            state: state
-                        }
-                    });
                 } else {
                     state = GAME_STATE.INIT;
                 }
@@ -78,13 +65,6 @@ async function initGameSession() {
                     "extra": {},
                     "create_time": 'now()',
                 }
-                await insertGameSession(data);
-                endTime = df.addHours(lastEndTime, 1);
-                startTime = df.startOfHour(endTime);
-                lastEndTime = endTime;
-                periods += 1;
-                logger.debug("startTime: ", startTime, "endTime: ", endTime, "periods: ", periods, "lastEndTime: ", lastEndTime);
-
                 // 调用 globallotto 合约初始化期数
                 actList.push({
                     account: GLOBAL_LOTTO_CONTRACT,
@@ -99,6 +79,28 @@ async function initGameSession() {
                         dead_line: endTime,
                     }
                 });
+
+                if (periods === 1) {
+                    // 调用 globallotto 合约设置游戏状态
+                    actList.push({
+                        account: GLOBAL_LOTTO_CONTRACT,
+                        name: "setstate",
+                        authorization: [{
+                            actor: GLOBAL_LOTTO_CONTRACT,
+                            permission: 'active',
+                        }],
+                        data: {
+                            game_id: periods,
+                            state: state
+                        }
+                    });
+                }
+                await insertGameSession(data);
+                endTime = df.addHours(lastEndTime, 1);
+                startTime = df.startOfHour(endTime);
+                lastEndTime = endTime;
+                periods += 1;
+                logger.debug("startTime: ", startTime, "endTime: ", endTime, "periods: ", periods, "lastEndTime: ", lastEndTime);
             }
         }
 

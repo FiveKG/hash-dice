@@ -82,6 +82,19 @@ cleos create account eosio tbgametoken EOS5aicTbGvPj2WHEmcN26aAuR5E5PmYYgr4M34NF
 cleos create account eosio tbtestuser1 EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw
 cleos create account eosio dengderong EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw
 
+cleos set contract eosio.token ./eosio.token
+cleos push action eosio.token create '["eosio.token", "1000000000.0000 EOS"]' -p eosio.token
+cleos push action eosio.token issue '["eosio.token", "1000000000.0000 EOS", "issue"]' -p eosio.token
+cleos set contract uegametoken ./eosio.token
+cleos push action uegametoken create '["uegametoken", "1000000000.0000 UE"]' -p uegametoken
+cleos push action uegametoken issue '["uegametoken", "1000000000.0000 UE", "issue"]' -p uegametoken
+cleos set contract tbgametoken ./eosio.token
+cleos push action tbgametoken create '["tbgametoken", "1000000000.0000 TBG"]' -p tbgametoken
+cleos push action tbgametoken issue '["tbgametoken", "1000000000.0000 TBG", "issue"]' -p tbgametoken
+cleos set contract gametestuser ./eosio.token
+cleos push action gametestuser create '["gametestuser", "10000.0000 TEST"]' -p gametestuser
+cleos push action gametestuser issue '["gametestuser", "10000.0000 TEST", "issue"]' -p gametestuser
+
 root@9270b9e8849b:/eosio# cleos create account eosio eosio.token EOS63n3ZaYyGkPP7xRsztJz9roxKdJMG4Go4jvEmc4L27bRMZ3gHV EOS63n3ZaYyGkPP7xRsztJz9roxKdJMG4Go4jvEmc4L27bRMZ3gHV
 executed transaction: 65dccc8711acdc0204ab0ced84e08f243194741434e947d93332977944bdc559  200 bytes  5628 us
 #         eosio <= eosio::newaccount            {"creator":"eosio","name":"eosio.token","owner":{"threshold":1,"keys":[{"key":"EOS63n3ZaYyGkPP7xRszt...
@@ -108,7 +121,16 @@ warning: transaction executed locally, but may not be confirmed by the network y
 ```
 docker run --name eosio_cdt -v /home/yujinsheng/tmp/yuezhi/eosio.contracts:/contracts -w /contracts -dt eostudio/eosio.cdt:v1.6.2
 alias eosio-cpp='docker exec -it eosio_cdt /usr/bin/eosio-cpp'
+
 eosio-cpp ./hey.cpp -I include -o ./hey.wasm --abigen
+
+eosio-cpp ./globallotto/src/globallotto.cpp -I ./globallotto/include -o ./globallotto/globallotto.wasm --abigen
+
+eosio-cpp ./hashdice/src/hashdice.cpp -I ./hashdice/include -o ./hashdice/hashdice.wasm --abigen
+
+eosio-cpp ./minlottery/src/minlottery.cpp -I ./minlottery/include -o ./minlottery/minlottery.wasm --abigen
+
+eosio-cpp ./snatch/src/snatch.cpp -I ./snatch/include -o ./snatch/snatch.wasm --abigen
 ```
 
 #### set smart contract
@@ -170,6 +192,3 @@ private key: imported private key for: EOS6xKtqbXeTwnrwgVx74dnEhNdFiSt3sYuMfJzJN
 cleos -u http://192.168.1.121:8888 set account permission yujinsheng11 active '{"threshold" : 1, "keys" : [{"key":"EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw","weight":1}], "accounts" : [{"permission":{"actor":"gametestuser","permission":"eosio.code"},"weight":1}]}' owner -p yujinsheng11@owner
 
 cleos set account permission gametestuser active '{"threshold" : 1, "keys" : [{"key":"EOS8iGjedKoNxdHMactsAJ1F9GjJfDfgwVnFJk4bZUpVGztiFqiEw","weight":1}], "accounts" : [{"permission":{"actor":"yujinsheng11","permission":"eosio.code"},"weight":1}]}' owner -p gametestuser@owner
-
-
-cleos -u http://45.251.109.187:8888 create account yujinsheng11 tbgtestuser1 EOS6UtznEsEeFMytBUxhUZy5Bj6iFbhjMJk49xPeoLifDKve7MhyR EOS6UtznEsEeFMytBUxhUZy5Bj6iFbhjMJk49xPeoLifDKve7MhyR

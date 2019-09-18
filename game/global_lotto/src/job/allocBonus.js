@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js");
+const logger = require("../common/logger.js").child({ [`@${__filename}`]: "分配奖金，买中的奖金全部转入区块链帐号中" });
 const { Decimal } = require("decimal.js");
 const { xhr } = require("../common");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");

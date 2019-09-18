@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/global_lotto/getInfo.js": "获取全球彩奖池，倒计时，期数" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "获取全球彩奖池，倒计时，期数" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { Decimal } = require("decimal.js");
 const { pool } = require("../../db");

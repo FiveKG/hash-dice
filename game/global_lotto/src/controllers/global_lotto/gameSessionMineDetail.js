@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/global_lotto/gameSessionMineDetail.js": "获取当前用户某一期投注的详情" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "获取当前用户某一期投注的详情" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { Decimal } = require("decimal.js");
 const df = require("date-fns");
@@ -18,7 +18,7 @@ async function gameSessionMineDetail(req, res, next) {
             return res.send(get_status(1012, "game not exists"));
         }
         // 查出投注记录
-        const selectBetOrder = `SELECT bet_key, bet_amount, create_time, extra FROM bet_order WHERE account_name = $1 AND gs_id = $2`
+        const selectBetOrder = `SELECT key_count, amount, create_time, extra FROM bet_order WHERE account_name = $1 AND gs_id = $2`
         const { rows: [ betOrder ] } = await pool.query(selectBetOrder, [ reqData.account_name, gameSessionInfo.gs_id ]);
         if (!betOrder) {
             return res.send(get_status(1013, "can not found bet order"));
@@ -33,8 +33,8 @@ async function gameSessionMineDetail(req, res, next) {
                 periods: gameSessionInfo.periods,
                 reward_time: gameSessionInfo.reward_time,
                 bet_time: betOrder.create_time,
-                bet_key: betOrder.bet_key,
-                bet_amount: betOrder.bet_amount,
+                bet_key: betOrder.key_count,
+                bet_amount: betOrder.amount,
                 agent_account: betOrder.extra.agent_account,
                 transaction_id: betOrder.extra.transaction_id,
                 pay_type: betOrder.extra.pay_type,
@@ -44,7 +44,7 @@ async function gameSessionMineDetail(req, res, next) {
             res.send(resData);
         } else {
             // 查出投注记录
-            const selectBetOrder = `SELECT bet_key, bet_amount, create_time, extra FROM bet_order WHERE account_name = $1 AND gs_id = $2`
+            const selectBetOrder = `SELECT key_count, amount, create_time, extra FROM bet_order WHERE account_name = $1 AND gs_id = $2`
             const { rows: [ betOrder ] } = await pool.query(selectBetOrder, [ reqData.account_name, gameSessionInfo.gs_id ]);
             if (!betOrder) {
                 return res.send(get_status(1013, "can not found bet order"));
@@ -66,8 +66,8 @@ async function gameSessionMineDetail(req, res, next) {
                 reward_num: rewardNum,
                 reward_time: gameSessionInfo.reward_time,
                 bet_time: betOrder.create_time,
-                bet_key: betOrder.bet_key,
-                bet_amount: betOrder.bet_amount,
+                bet_key: betOrder.key_count,
+                bet_amount: betOrder.amount,
                 agent_account: betOrder.extra.agent_account,
                 transaction_id: betOrder.extra.transaction_id,
                 pay_type: betOrder.extra.pay_type,

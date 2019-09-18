@@ -38,4 +38,4 @@ then
     npm i -g pm2
 fi
 
-node snatch_treasure.js
+pm2 start pm2.json

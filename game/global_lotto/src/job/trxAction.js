@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/trxAction.js": "处理转账动作" });
+const logger = require("../common/logger.js").child({ [`@${__filename}`]: "处理转账动作" });
 const { Decimal } = require("decimal.js");
 const { END_POINT, PRIVATE_KEY_TEST } = require("../common/constant/eosConstants.js");
 const { Api, JsonRpc, RpcError } = require('eosjs');
@@ -27,9 +27,10 @@ async function trxAction(data) {
         const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         for (const actions of data) {
             // 隔十五秒再执行下一次转账
-            await sleep(15 * 1000);
+            await sleep(1 * 1000);
             try {
-                logger.debug("action begin: ", actions);
+                console.debug("action begin: ", actions);
+                // logger.debug("action begin: ", actions);
                 const result = await api.transact({ actions: [ actions ] }, {
                     blocksBehind: 3,
                     expireSeconds: 30,
@@ -40,7 +41,7 @@ async function trxAction(data) {
                 if (err instanceof RpcError) {
                     if (err.json.error.code === 3040008) {
                         logger.debug("after err action begin: ", actions);
-                        await sleep(5 * 1000);
+                        await sleep(2 * 1000);
                         const result = await api.transact({ actions: [ actions ] }, {
                             blocksBehind: 3,
                             expireSeconds: 30,
@@ -49,7 +50,7 @@ async function trxAction(data) {
                     }
                 }
             }
-            await sleep(15 * 1000);
+            await sleep(3 * 1000);
         }
     } catch (err) {
         logger.error("transaction error, the error stock is %O", err);
