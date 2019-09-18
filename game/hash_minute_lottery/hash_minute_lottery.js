@@ -1,7 +1,8 @@
 // @ts-check
 require("./setEnv.js")();
 const express = require("express");
-const logger = require("./src/common/logger.js");
+const logger = require("./src/common/logger.js").child({ [`@${ __filename }`]: "run server" });
+const { socketService } = require('./src/websocket/SocketService');
 // const sb = require("@yz/yue-svc-base");
 // const service_name = sb.service_define.name;
 
@@ -51,6 +52,7 @@ server.on('listening', async () => {
   // require("@yz/yue-service-register")(`${service_name}`, port);
   // 初始化系统服务数据
   // require("./src/build/initDate");
+  await socketService.initialize(server);
   logger.info(`**** server of pools running at http://localhost:${port}/  ****`)
 });
 
