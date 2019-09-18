@@ -45,13 +45,17 @@ async function handlerSafe() {
         let total = safeAccountList.map(it => it.total).reduce((pre, curr) => Number(pre) + Number(curr));
         logger.debug("total: ", total);
         for (const info of safeAccountList) {
-            let incomeJsonIfy = await redis.hgetall(`tbg:income:${ info.account_name }`);
-            let incomeArr = JSON.parse(incomeJsonIfy);
+            let incomeJson = await redis.hgetall(`tbg:income:${ info.account_name }`);
+            logger.debug("incomeJson: ", incomeJson);
             let amount = new Decimal(info.total);
-            for (let item of incomeArr) {
-                logger.debug("item: ", item);
-                let changeAmount = new Decimal(item.change_amount);
-                amount = amount.add(changeAmount);
+            for (let key in incomeJson) {
+                let incomeArr = JSON.parse(incomeJson[key]);
+                logger.debug("incomeArr: ", incomeArr);
+                for (const item of incomeArr) {
+                    logger.debug("item: ", item);
+                    let changeAmount = new Decimal(item.change_amount);
+                    amount = amount.add(changeAmount);
+                }
             }
 
             total = amount.add(total).toNumber();
@@ -81,8 +85,16 @@ async function handlerSafe() {
         logger.debug("bonusList: ", bonusList);
         for (let item of bonusList) {
             let last = new Decimal(item.last);
+            let rate = new Decimal(0);
             let total = new Decimal(item.all);
-            let rate = last.div(total);
+            // 一开始 total 可能为 0；
+            if (total.eq(0)) {
+                // 按人数均分
+                rate = new Decimal(1).div(bonusList.length);
+            } else {
+                // 按比例均分
+                rate = last.div(total);
+            }
             let remark = `account ${ item.account_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
             let now = new Date();
             let data = {

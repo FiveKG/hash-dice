@@ -18,10 +18,23 @@ async function one() {
 
 ;(async () => {
     // const myMap = new Map();
-    // const arr = [ 1, 2, 3, 4, 5 ]
+    const arr = [ 1, 2, 3, 4, 5 ]
     // for (const val of arr) {
     //     myMap.set(val, val + "val");
     // }
+
+    await redis.hset("a", "b", JSON.stringify({ "r": arr }))
+    const incomeJson = await redis.hgetall(`tbg:income:gametestuser`);
+    console.debug("incomeJson: ", incomeJson);
+    for (const key in incomeJson) {
+        console.debug("key: ", key);
+        console.debug("incomeJson[key]: ", incomeJson[key]);
+        let incomeArr = JSON.parse(incomeJson[key]);
+        console.debug("incomeArr: ", incomeArr);
+        for (const item of incomeArr) {
+            console.debug("item: ", item);
+        }
+    }
 
     // const TBG_SERVER = process.env.TBG_SERVER || "http://localhost:9527/";
     // const { data: { referrer_account } } = await xhr.get(url.resolve(TBG_SERVER, "/account/get_referrer"), { data: { account_name: "gametestuser" } });
