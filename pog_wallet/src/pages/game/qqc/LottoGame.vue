@@ -19,7 +19,6 @@
           </div>
 
       <!-- 区块滚动 -->
-        <div style="font-size:23px;color:#fff">{{openInfo}}</div>
          <div class="recording"   >
             <transition-group name="scroll" >
               <div style="display:inline-block" class="row list-complete-item" v-for="item in items" :key='item.treasureKey'>
