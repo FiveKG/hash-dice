@@ -19,6 +19,7 @@
           </div>
 
       <!-- 区块滚动 -->
+        <div style="font-size:23px;color:#fff">{{openInfo}}</div>
          <div class="recording"   >
             <transition-group name="scroll" >
               <div style="display:inline-block" class="row list-complete-item" v-for="item in items" :key='item.treasureKey'>
@@ -155,12 +156,8 @@ export default {
      btnToggle(id){
         this.btnId = id
      },
-     //倒计时
-     remainingTime(){
-       console.log(this.openInfo)
-     },
-       //滚动区域
-    initSocket() {
+     //滚动区域
+     initSocket() {
             ClientSocket.link().then(async connected => {
                 // console.log('link',connected)
                 if (connected) {
@@ -233,6 +230,14 @@ export default {
             })
         },
 
+        //倒计时
+      remainingTime(){
+          // let leveTime = 0;
+          // setTimeout(()=>{leveTime = this.openInfo},1000)
+          console.log(11111111,this.openInfo.count_down)
+          
+        
+     },
 
    },
 
@@ -244,17 +249,26 @@ export default {
                 this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
                 id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey});
                 this.items.splice(10);
-
             }
         },
     },
 
    created(){
-    //获取全球彩奖池，倒计时，期数
-     api.getOpen().then( res => this.openInfo =  res.data )
 
-    this.initSocket();
-       
+
+     //轮播滚动
+     this.initSocket();
+
+     //获取全球彩奖池，倒计时，期数
+     api.getOpen().then(res => this.openInfo = res.data)
+
+
+     setTimeout(()=>{this.remainingTime()})
+     
+
+    
+
+
    }
 }
 </script>
