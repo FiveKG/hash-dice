@@ -4,37 +4,16 @@
       <div style=" background-color: #fff;height:100%;">
         <div class="header">
           <img class="ion_back" src="@/assets/img/u14.png" @click="back"> 
-          <span>我的分红</span>
+          <span>我的保障收益</span>
         </div>
         <div class="content">
-          <div style="background: rgb(247,247,247);width:100%;text-align: center;">
-            <div style="width:100%;height:30px;"></div>
-            <p>截止 169 期我的 TBG 可售数量</p>
-            <div style="width:100%;height:10px;"></div>
-            <p><span class="orange font_eight">69.0052 </span><span class="gray font_eight">2300</span></p>
-            <p class="font_B font_five">TBG</p>
-            <div style="width:100%;height:5px;"></div>
-            <p>每 <span>1 TBG</span> 可分红 <span>0.0023 3215 UE</span></p>
-            <div style="width:100%;height:5px;"></div>
-            <p> <span class="orange">本期可分红 0.1609</span><span class="gray"> 3053 </span><span class="orange">UE</span></p>
-            <div style="width:100%;height:20px;"></div>
-            <div><img src="@/assets/img/u8.png" alt=""></div>
-            <div style="width:100%;height:20px;"></div>
-            <p>我已获得分红总额</p>
-            <div style="width:100%;height:10px;"></div>
-            <p><span class="font_B font_five">5.2510</span><span class="gray font_five"> 6210</span></p>
-            <p class="font_B font_five">UE</p>
-            <div style="width:100%;height:10px;"></div>
-          </div>
           <div class="asset_pool_header" > 
-              <span style="width:33.33%;">时间</span>
-              <span style="width:33.33%;">期数</span>
-              <span style="width:33.33%;">分红额</span>
+              <span style="width:50%;">时间</span>
+              <span style="width:50%;">保障收益额</span>
           </div>
           <div class="asset_pool_data" v-for="item in items" :key='item.key'>
-            <div class="asset_pool_data_item" style="width:33.33%;"><p>{{item.create_time}}</p></div>
-            <div class="asset_pool_data_item" style="width:33.33%;"><p>{{item.reward[0]}}.{{item.reward[1][0]}} TBG</p></div>
-            <div class="asset_pool_data_item" style="width:33.33%;"><p>{{item.reward[0]}}.{{item.reward[1][0]}} TBG</p></div>
+            <div class="asset_pool_data_item" style="width:50%;"><p>{{item.create_time}}</p></div>
+            <div class="asset_pool_data_item" style="width:50%;"><p>{{item.reward[0]}}.{{item.reward[1][0]}} TBG</p></div>
           </div>
         </div>
       </div>
@@ -85,7 +64,7 @@ export default {
   },
   created(){
     // console.log('this1111111111',this.account);
-    api.incomeDividend({account_name:this.$store.state.wallet.assets.account}).then(res => {
+    api.incomeSafe({account_name:this.$store.state.wallet.assets.account}).then(res => {
       console.log('bindReferrer',res);
       if (res.code === 1) {
         // this.schedule=(res.data.airdrop_quantity/res.data.airdrop_amount)*100;
