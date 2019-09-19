@@ -13,48 +13,48 @@
         </div>
         <!-- 开奖详情-未开奖   1   -->
         <div v-if="pageMode==1" class="font_four" style="width: 80%;margin:20px 10% 0 10%">
-          <p class="p_A orange">夺宝 - 20x0.1</p>
-          <p class="p_A">本期：第 166 期</p>
-          <p class="p_A">共需 20Key，1Key = 0.1UE，共 2UE</p>
+          <p class="p_A orange">{{items.game_name}}</p>
+          <p class="p_A">本期：第 {{items.periods}} 期</p>
+          <p class="p_A">共需 {{items.total_key}}Key，1Key = {{items.quantity}}UE，共 {{items.total_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">已投注 18Key</p>
+          <p class="p_A">已投注 {{items.bet_key}}Key</p>
           <p class="p_A orange">待开奖</p>
         </div>
 
         <!-- 开奖详情-已开奖    2  -->
         <div v-if="pageMode==2" class="font_four" style="width: 80%;margin:20px 10% 0 10%">
-          <p class="p_A orange">夺宝 - 20x0.1</p>
-          <p class="p_A">本期：第 166 期</p>
-          <p class="p_A">共需 20Key，1Key = 0.1UE，共 2UE</p>
+          <p class="p_A orange">{{items.game_name}}</p>
+          <p class="p_A">本期：第 {{items.periods}} 期</p>
+          <p class="p_A">共需 {{items.total_key}}Key，1Key = {{items.quantity}}UE，共 {{items.total_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">最后一位投注账号：eoscheshieosy</p>
-          <p class="p_A">交易ID：5eea2b24e5f3......40dcb33<span class="orange p_A">13224</span>cc4</p>
+          <p class="p_A">最后一位投注账号：{{items.last_bet_account}}</p>
+          <p class="p_A">交易ID：{{items.trx_id}}<span class="orange p_A">13224</span>cc4</p>
           <p class="p_A">本期：165</p>
           <p class="p_A">幸运数字</p>
           <p class="p_A">= (( 132244 + 165 ) / 20 ) 的余数 + 100001</p>
-          <p class="p_A">= 9 + 100001 = <span class="orange p_A">10001</span></p>
+          <p class="p_A">= 9 + 100001 = <span class="orange p_A">{{items.lucky_code}}</span></p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">获奖玩家：cheeosshieos</p>
-          <p class="p_A orange">交易查询：5e198b595f3......23570611c7cd9f30</p>
+          <p class="p_A">获奖玩家：{{items.win_account}}</p>
+          <p class="p_A orange">交易查询：{{items.bonus_trx_id}}</p>
         </div>
         
         <!-- 开奖详情-已开奖-代投   3   -->
         <div v-if="pageMode==3" class="font_four" style="width: 80%;margin:20px 10% 0 10%">
-          <p class="p_A orange">夺宝 - 20x0.1</p>
-          <p class="p_A">本期：第 166 期</p>
-          <p class="p_A">共需 20Key，1Key = 0.1UE，共 2UE</p>
+          <p class="p_A orange">{{items.game_name}}</p>
+          <p class="p_A">本期：第 {{items.periods}} 期</p>
+          <p class="p_A">共需 {{items.total_key}}Key，1Key = {{items.quantity}}UE，共 {{items.total_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">最后一位投注账号：eoscheshieosy</p>
-          <p class="p_A">交易ID：5eea2b24e5f3......40dcb33<span class="orange p_A">13224</span>cc4</p>
+          <p class="p_A">最后一位投注账号：{{items.last_bet_account}}</p>
+          <p class="p_A">交易ID：{{items.trx_id}}<span class="orange p_A">13224</span>cc4</p>
           <p class="p_A">本期：165</p>
           <p class="p_A">幸运数字</p>
           <p class="p_A">= (( 132244 + 165 ) / 20 ) 的余数 + 100001</p>
-          <p class="p_A">= 9 + 100001 = <span class="orange p_A">10001</span></p>
+          <p class="p_A">= 9 + 100001 = <span class="orange p_A">{{items.lucky_code}}</span></p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">获奖玩家：cheeosshieos</p>
+          <p class="p_A">获奖玩家：{{items.win_account}}</p>
           <p class="p_A">使用 TBG 游戏筹码投注</p>
-          <p class="p_A">代投账号：snatchsnatch</p>
-          <p class="p_A orange">交易查询：5e198b595f3......23570611c7cd9f30</p>
+          <p class="p_A">代投账号：{{items.agent_account}}</p>
+          <p class="p_A orange">交易查询：{{items.bonus_trx_id}}</p>
         </div>
 
          <!-- 下拉框 -->
@@ -87,6 +87,7 @@
 
 <script>
 import MyPage from '@/components/MyPage'
+import api from '@/pages/game/treasure/game'
 
 export default {
   components: {
@@ -96,6 +97,7 @@ export default {
     return {
       pageMode:1,
       actionSheetVisible: false,   //下拉框
+      items:{}   //数据
     }
   },
   methods: {
@@ -108,9 +110,25 @@ export default {
         })
        },
   },
-  created(){
-    // console.log('this',this);
-   
+created(){
+    // console.log('this',this.$route.params);
+    api.getSomeLotteryDetails({game_id:this.$route.params.game_id,periods:this.$route.params.periods}).then(res => {
+      if (res.code === 1) {
+          console.log(res)
+          if(res.data.win_account==null){
+            this.pageMode=1;
+            this.items=res.data;
+          }else{
+            if(res.data.agent_account==null){
+              this.pageMode=2;
+              this.items=res.data;
+            }else{
+              this.pageMode=3;
+              this.items=res.data;
+            }
+          }         
+        }
+    })
   }
 }
 </script>

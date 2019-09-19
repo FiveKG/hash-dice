@@ -27,20 +27,20 @@
         <div style="height: .9rem;margin:0 5% 12px 5%;">
           <div class="display_ib" style="width: .9rem;height: .9rem;background:rgb(0,204,153);border-radius: 50%;"><img  style="width: 80%;height: 80%;margin: 10%;" src="@/assets/invitation2/u11.png"></div>
           <div class="display_ib" style="height:100%;width:3.7rem;vertical-align: bottom;margin-left: .3rem;vertical-align: top;">
-            <p class="white p_A" style="font-size:.5rem;margin-top:.15rem;">175,939 UE</p>
+            <p class="white p_A" style="font-size:.5rem;margin-top:.15rem;">{{bankerQuota[0]}} UE</p>
           </div>
           <div class="display_ib" style="width: 4rem;height: .8rem;border: 1px solid rgb(107, 107, 107);border-radius: 6px;vertical-align: top;text-align: center;position: relative;">
-            <div style="background: orange;width: 30%;height: 100%;position: absolute;border-radius: 6px;"></div>
+            <div style="background: orange;width: 1%;height: 100%;position: absolute;border-radius: 6px;"></div>
             <p class="font_white" style="font-size:.35rem;position: absolute;margin: .13rem 0 0 .3rem;">最大可下注 100 UE</p>
           </div>
         </div>
         <!--  -->
         <div style="border: 1px solid rgb(107, 107, 107);width: 90%;height: 1.2rem;margin: 0 auto;border-radius: 5px;">
-          <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p style="margin-top: .13rem;">可赢奖金</p><p class="orange font_five">{{publicData[twenty][0]}}</p></div>
+          <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >可赢奖金</p><p class="orange font_five">{{publicData[twenty][0]}}</p></div>
           <div class="display_ib vertical_top Centered p_A" style="width: 1px;height: 100%;background: rgb(107, 107, 107);"></div>
-          <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p style="margin-top: .13rem;">赔率</p><p class="orange font_five">{{publicData[twenty][1]}}</p></div>
+          <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >赔率</p><p class="orange font_five">{{publicData[twenty].odds_rate}}</p></div>
           <div class="display_ib vertical_top Centered p_A" style="width: 1px;height: 100%;background: rgb(107, 107, 107);"></div>
-          <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p style="margin-top: .13rem;">中奖概率</p><p class="orange font_five">{{publicData[twenty][2]}}</p></div>
+          <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >中奖概率</p><p class="orange font_five">{{publicData[twenty].winning_probability}}</p></div>
         </div>
         <!--  -->
         <div style="width: 100%;height: 9px;"></div>
@@ -53,12 +53,12 @@
             <p class="font_five" :class="{font_white:twenty==1}" style="margin-top: .24rem;">大</p>
           </div>
           <div class="display_ib" style="width: 3%;height: 100%;"></div>
-          <div @click="selectTwenty(2)" :class="{background_orange:twenty==2}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
-            <p class="font_five" :class="{font_white:twenty==2}" style="margin-top: .24rem;">对子</p>
+          <div @click="selectTwenty(3)" :class="{background_orange:twenty==3}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
+            <p class="font_five" :class="{font_white:twenty==3}" style="margin-top: .24rem;">对子</p>
           </div>
           <div class="display_ib" style="width: 3%;height: 100%;"></div>
-          <div @click="selectTwenty(3)" :class="{background_orange:twenty==3}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
-            <p class="font_five" :class="{font_white:twenty==3}" style="margin-top: .24rem;">小</p>
+          <div @click="selectTwenty(2)" :class="{background_orange:twenty==2}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
+            <p class="font_five" :class="{font_white:twenty==2}" style="margin-top: .24rem;">小</p>
           </div>
         </div>
         <!--  -->
@@ -67,6 +67,7 @@
         <div style="width: 90%;margin: 0 auto;">
           <div class="display_ib vertical_top" style="width: 6%;"><p class="white font_five font-weight">0 </p></div>
           <div class="schedule_white vertical_top display_ib" style="width: 84%;height: .66rem;">
+            <div :style="{ width:fadeInDuration*0.068+ 'rem' }" class="shadow_orange"></div>
             <input type="range" v-model="fadeInDuration" min="0" max="99">
           </div>
           <div class="display_ib vertical_top" style="width: 10%;"><p class="white font_five font-weight">&nbsp;&nbsp;99</p></div>
@@ -76,28 +77,28 @@
         <div style="width: 90%;height: 1.2rem;margin: 0 auto;">
           <div class="display_ib vertical_top  p_A " style="width: 24%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
             <div class="display_ib" style="width: 70%;height:100%;"><img  style="width: 80%;height: 100%;" src="@/assets/invitation2/u10.svg"></div>
-            <div class="display_ib vertical_top" style="width: 20%;height:100%;"><p class="font_five orange" style="margin-top: .24rem;">1</p></div>
+            <div class="display_ib vertical_top" style="width: 20%;height:100%;"><p @click="selectBetAmount()" class="font_five orange" style="margin-top: .24rem;">{{betAmount}}</p></div>
           </div>
           <div class="display_ib" style="width: 3%;height: 100%;"></div>
           <div class="display_ib vertical_top Centered p_A" style="width: 15%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
-            <p class="font_five" style="margin-top: .24rem;">1/2</p>
+            <p @click="selectBetAmount()" class="font_five" style="margin-top: .24rem;">1/2</p>
           </div>
           <div class="display_ib" style="width: 3%;height: 100%;"></div>
           <div class="display_ib vertical_top Centered p_A" style="width: 15%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
-            <p class="font_five" style="margin-top: .24rem;">2X</p>
+            <p @click="selectBetAmount()" class="font_five" style="margin-top: .24rem;">2X</p>
           </div>
           <div class="display_ib" style="width: 3%;height: 100%;"></div>
           <div class="display_ib vertical_top Centered p_A" style="width: 15%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">                                                                       
-            <p class="font_five" style="margin-top: .24rem;">MIN</p>
+            <p @click="selectBetAmount()" class="font_five" style="margin-top: .24rem;">MIN</p>
           </div>
           <div class="display_ib" style="width: 3%;height: 100%;"></div>
           <div class="display_ib vertical_top Centered p_A" style="width: 15%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">                                                                       
-            <p class="font_five" style="margin-top: .24rem;">MAX</p>
+            <p @click="selectBetAmount()" class="font_five" style="margin-top: .24rem;">MAX</p>
           </div>
         </div>
         <!--  -->
         <div style="width: 100%;height: 20px;"></div>
-        <div v-if="!Betting" class="background_orange" style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;"><p @click="selectBetting" class="Centered font_white font_five" style="line-height: 1.4rem;">{{publicData[twenty][3]}}</p></div>
+        <div v-if="!Betting" class="background_orange" style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;"><p @click="selectBetting();betting();" class="Centered font_white font_five" style="line-height: 1.4rem;">{{publicDataButton[twenty]}}</p></div>
         <div v-if="Betting" style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;"><p class="Centered font_white font_five" style="line-height: 1.4rem;">开奖中...</p></div>
         <div style="width: 100%;height: 20px;"></div>
         <div style="width: 100%;">
@@ -111,11 +112,11 @@
               <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_five" style="line-height:1.1rem;text-align: center;">玩家</p></div>
               <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_five" style="line-height:1.1rem;text-align: center;">奖金</p></div>
             </div>
-            <div style="" v-for="(item,index) in items" :key='index'>
+            <div style="" v-for="(item,index) in aLLBetting" :key='index'>
               <div style="width:100%;height:1.1rem;">
-                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.timestamp}}</p></div>
-                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.block_num}}</p></div>
-                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.block_num}}</p></div>
+                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.create_time}}</p></div>
+                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.account_name}}</p></div>
+                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.bonus}}</p></div>
               </div>
             </div>
           </div>
@@ -126,13 +127,13 @@
               <div class="display_ib" style="width:25%;height:1.1rem;"><p class=" font_five" style="line-height:1.1rem;text-align: center;">投注金额</p></div>
               <div class="display_ib" style="width:25%;height:1.1rem;"><p class=" font_five" style="line-height:1.1rem;text-align: center;">奖金</p></div>
             </div>
-            <div style="" v-for="(item,index) in items" :key='index'>
+            <div style="" v-for="(item,index) in myBetting" :key='index'>
               <div style="width:100%;height:1.1rem;">
-                <div class="display_ib vertical_top" style="width:25%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.block_num}}</p></div>
-                <div class="display_ib vertical_top" style="width:25%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.block_num}}</p></div>
-                <div class="display_ib vertical_top" style="width:25%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.block_num}}</p></div>
-                <div class="display_ib vertical_top" style="width:25%;margin-left: 0%;height:1.1rem;" @click="jumpHashDiceDetails">
-                  <div class="display_ib vertical_top" style="width:70%;height: 1.1rem;"><p style="font-size: .45rem;line-height:1.1rem;">000000</p></div>
+                <div class="display_ib vertical_top" style="width:25%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.create_time}}</p></div>
+                <div class="display_ib vertical_top" style="width:25%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.bet_num}}</p></div>
+                <div class="display_ib vertical_top" style="width:25%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.bet_amount}}</p></div>
+                <div class="display_ib vertical_top" style="width:25%;margin-left: 0%;height:1.1rem;" @click="jumpHashDiceDetails(item.id)">
+                  <div class="display_ib vertical_top Centered" style="width:70%;height: 1.1rem;"><p style="font-size: .45rem;line-height:1.1rem;">{{item.bonus}}</p></div>
                   <div class="display_ib vertical_top" style="width:30%;height: 1.1rem;"><img style="width: .5rem;height: .5rem;margin-top: .3rem;" src="@/assets/img/invitation_profitarrow.png"></div>
                 </div>
               </div>
@@ -187,6 +188,8 @@
 import MyPage from '@/components/MyPage'
 import { format, parse } from 'date-fns'
 import {Decimal} from 'decimal.js'
+import api from '@/pages/game/hashdice/game'
+
 
 //滚动区域
 import ClientSocket from '@/socket/HashSocket'
@@ -198,29 +201,24 @@ export default {
    },
   data() {
     return {
+      account_name:'',//账户ID
       treasureKey:1,  //滚动KEY
       allMy:true,   //区分我的 全部
       actionSheetVisible: false,   //下拉框
       betSuccess:false,        //成功显示
       betFailure:false,        //失败显示
       fadeInDuration:0,      //滑块骰子的值
-      twenty:0,      //公用界面数据选择  
+      twenty:0,      //模式选择  
       Betting:false, //投注按钮显示开奖中
       CountDown:false, //开奖
       CountDownNum:7, //开奖倒计时
       LotteryResult:false,//开奖结果
-      publicData:[   //公用界面数据
-      [1.9600,'1.960x','50%','小于 50 赢 - 去投注'],            //小于 0
-      [2.1770,'2.177x','45%','50 - 99 且不是对子赢 - 去投注'],  //大   1
-      [9.8000,'9.800x','10%','对子赢 - 去投注'],                //对子 2
-      [2.1770,'2.177x','45%','00 - 49 且不是对子赢 - 去投注']   //小   3
-      ],
-      publicAll:[    //公用全部
-
-      ],
-      publicMy:[    //公用我的
-
-      ],   
+      bankerQuota:'',  //庄家的额度
+      betAmount:0,//投注的总额度
+      publicData:[],  //公用界面数据       小于0   大于1   对子3   小2
+      publicDataButton:[ //按钮
+        '小于 50 赢 - 去投注','50 - 99 且不是对子赢 - 去投注','00 - 49 且不是对子赢 - 去投注','对子赢 - 去投注'
+      ],  
       items:[    // 滚动
               // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:1,ids:10},
               // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:2,ids:10},
@@ -233,7 +231,12 @@ export default {
               // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:9,ids:10},
               // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:10,ids:10},
       ],   
-        
+      aLLBetting:[],//所有投注
+      myBetting:[   //我的投注
+        {create_time:1,bet_num:1,bet_amount:1,bonus:1}
+      ],
+      socket:'',
+
     }
   },
   methods: {
@@ -266,17 +269,45 @@ export default {
           name: 'HashDiceRule',
         })
        },
-       jumpHashDiceDetails() {
+       jumpHashDiceDetails(id) {
          this.$router.push({
           name: 'HashDiceDetails',
+          params: {
+            id: id,
+          }
         })
        },
+       betting(){ //投注
+        // api.Betting({account_name:this.account_name,bet_num:,bet_amount:}).then(res => {
+        //     if (res.code === 1) {
+        //         console.log(res)
+        //       }
+        //   })
+       },
+       selectBetAmount(data){ //选择投注额度
+
+       },
+       addComma(data){
+        var a=data;var b='';var c=a.length+1;
+          for(var i=0;c/3>i;i++){
+            if(a.length>3){
+              b=','+a.slice(a.length-3,a.length)+b;
+              a=a.slice(0,a.length-3);
+            }else if(a.length==3){
+              b=a;
+            }else{
+              b=a+b;
+            }
+          }
+          return b;
+      },
     //滚动区域
     initSocket() {
             ClientSocket.link().then(async connected => {
                 // console.log('link',connected)
                 if (connected) {
                     try {
+                        this.socket=ClientSocket.getSocket();
                         let rewards = await ClientSocket.getReward({type:'less'})
                         if (rewards.type === 'reward_history') {
                             console.log(222,rewards)
@@ -351,7 +382,7 @@ export default {
   watch: {
         '$store.state.wallet.block': {
             handler(newVal, oldVal) {
-                console.log(12311111111111,this.$store.state.wallet.block);
+                // console.log(12311111111111,this.$store.state.wallet.block);
                 // this.treasureKey+=1;
                 // this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
                 // id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey
@@ -362,10 +393,53 @@ export default {
         },
     },
   created(){
-    // console.log('this',this);
+    this.account_name=this.$store.state.wallet.assets.account;
     //滚动区域
     this.initSocket();
-    }
+    //获取配置信息
+    api.getConfig().then(res => {
+        if (res.code === 1) {
+          }
+      })
+    //获取庄家的额度
+    api.bankerQuota().then(res => {
+        if (res.code === 1) {
+            this.bankerQuota=res.data.balance[0].split('.');
+            this.bankerQuota[0]=this.addComma(this.bankerQuota[0]);
+          }
+      })
+    //获取当前用户的信息
+    api.getCurrentUser({account_name:this.account_name}).then(res => {
+        if (res.code === 1) {
+            this.publicData=res.data;
+          }
+      })
+    //获取所有的投注
+    api.getAllBets().then(res => {
+        if (res.code === 1) {
+            this.aLLBetting=res.data;
+          }
+      })
+    //获取我的投注
+    api.getSomeUserBettingList({account_name:this.account_name}).then(res => {
+        if (res.code === 1) {
+            this.myBetting=res.data;
+          }
+      })
+
+
+
+
+
+
+
+
+
+
+    },
+  destroyed(){
+    this.socket.close();
+  } 
 }
 </script>
 
@@ -507,7 +581,15 @@ input[type="range"]::-webkit-slider-thumb {
   background-repeat:no-repeat;
   background-position: center center;
 }
-
+.shadow_orange{
+  margin-top: 0.02667rem;
+  background-color: orange;
+  border-radius: 0.2rem;
+  -webkit-appearance: none;
+  height: 0.23rem;
+  margin: .214rem 0;
+  position: absolute;
+}
 
 /* div{
   background: #fff;

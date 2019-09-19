@@ -4,7 +4,7 @@
        <div style="background-color: rgb(40,40,40);height:100%;width:100%;">
         <div class="head" style="background: rgb(27,27,27);">
           <div class="float_left box"><img  class="ion_tbg" src="@/assets/img/u14.png" @click="back"></div>
-          <p class="float_left font_four" style="margin: 0.45rem 0 .45rem 0;color: #FFFFFF;">开奖详情</p>
+          <p class="float_left font_four" style="margin: 0.45rem 0 .45rem 0;color: #FFFFFF;">投注详情</p>
           <div class="float_right" style="width: 3rem;height: 1rem;border: 1px solid rgb(100,100,100);margin: .25rem .6rem .25rem 0;border-radius: 6px;">
             <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="actionSheetVisible = true" style="width: 50%;height: 27%;margin: 25% 0px 0px 25%;" src="@/assets/invitation2/u8.png"></div>
             <div class="display_ib" style="width: 1%;height: 70%;background: rgb(100,100,100);vertical-align: top;margin-top: 5%;"></div>
@@ -177,6 +177,7 @@
 
 <script>
 import MyPage from '@/components/MyPage'
+import api from '@/pages/game/treasure/game'
 
 export default {
   components: {
@@ -184,8 +185,10 @@ export default {
    },
   data() {
     return {
-      pageMode:6,
+      account_name:'',
+      pageMode:1,
       actionSheetVisible: false,   //下拉框
+      items:{}   //数据
     }
   },
   methods: {
@@ -200,7 +203,25 @@ export default {
   },
   created(){
     // console.log('this',this);
-   
+      this.account_name=this.$store.state.wallet.assets.account;
+      api.getSomeUserBettingData({game_id:this.$route.params.game_id,periods:this.$route.params.periods,account_name:this.account_name}).then(res => {
+        console.log(res)
+      if (res.code === 1) {
+          // if(res.data.win_account==null){
+          //   this.pageMode=1;
+          //   this.items=res.data;
+          // }else{
+          //   if(res.data.agent_account==null){
+          //     this.pageMode=2;
+          //     this.items=res.data;
+          //   }else{
+          //     this.pageMode=3;
+          //     this.items=res.data;
+          //   }
+          // }         
+        }
+    })
+  
   }
 }
 </script>

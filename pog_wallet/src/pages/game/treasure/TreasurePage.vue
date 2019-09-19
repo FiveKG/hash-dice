@@ -24,60 +24,57 @@
         <div style="height: 1.4rem;">
           <div style="width:100%;height:.15rem;background: rgb(27, 27, 27);"></div>  
           <div style="width:100%;height:1.1rem;">
-            <div class="display_ib" style="width:33.3%;height:1.1rem;"><p @click="selectTwenty(1)" :class="{orange:twenty==1}" class=" font_five" style="line-height:1.1rem;text-align: center;">20x0.1</p></div>
-            <div class="display_ib" style="width:33.3%;height:1.1rem;"><p @click="selectTwenty(2)" :class="{orange:twenty==2}" class=" font_five" style="line-height:1.1rem;text-align: center;">20x0.5</p></div>
-            <div class="display_ib" style="width:33.3%;height:1.1rem;"><p @click="selectTwenty(3)" :class="{orange:twenty==3}" class=" font_five" style="line-height:1.1rem;text-align: center;">100x0.1</p></div>
+            <div class="display_ib" style="width:33.3%;height:1.1rem;"><p @click="selectTwenty(1)" :class="{orange:twenty==1}" class=" font_five" style="line-height:1.1rem;text-align: center;">{{GameData[0].game_name.substring(3)}}</p></div>
+            <div class="display_ib" style="width:33.3%;height:1.1rem;"><p @click="selectTwenty(2)" :class="{orange:twenty==2}" class=" font_five" style="line-height:1.1rem;text-align: center;">{{GameData[1].game_name.substring(3)}}</p></div>
+            <div class="display_ib" style="width:33.3%;height:1.1rem;"><p @click="selectTwenty(3)" :class="{orange:twenty==3}" class=" font_five" style="line-height:1.1rem;text-align: center;">{{GameData[2].game_name.substring(3)}}</p></div>
           </div>
           <div style="width:100%;height:.15rem;background: rgb(27, 27, 27);"></div>
         </div>
         <div style="width: 100%;">
         <div style="width: 80%;height: 3.4rem;border: 1px solid rgb(100,100,100);margin: 1rem auto .5rem auto;border-radius: 7px;position: relative;box-shadow: 5px 5px 5px rgba(94, 94, 94, 0.349019607843137);">
           <div style=" position: absolute;width: 50%;height: 1rem;background-color: rgb(40,40,40);right: 25%;top: -15%;">
-            <p class="" style=" line-height: 1rem;text-align: center;font-size: .6rem;font-weight: 700;">夺宝 20x0.1</p>
+            <p class="" style=" line-height: 1rem;text-align: center;font-size: .6rem;font-weight: 700;">夺宝 {{GameData[twenty-1].game_name.substring(3)}}</p>
           </div>
-            <p class="Centered font_four p_A" style="margin: 25px auto 8px auto;"># 166 期</p>
-            <div class="schedule_white"><div class="schedule_orange" :style="{ width: 80 + '%' }"></div></div>
+            <p class="Centered font_four p_A" style="margin: 25px auto 8px auto;"># {{TreasureBettin.periods}} 期</p>
+            <div class="schedule_white"><div class="schedule_orange" :style="{ width: (TreasureBettin.bet_key/TreasureBettin.total_key)*100 + '%' }"></div></div>
             <div style="width:100%;margin-top:.3rem;">
-              <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_four" style="text-align: center;">18 Key</p><p class=" font_four" style="text-align: center;">已投</p></div>
-              <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_four" style="text-align: center;">18 Key</p><p class=" font_four" style="text-align: center;">总需</p></div>
-              <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_four" style="text-align: center;">18 Key</p><p class=" font_four" style="text-align: center;">剩余</p></div>
+              <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_four" style="text-align: center;">{{TreasureBettin.bet_key}} Key</p><p class=" font_four" style="text-align: center;">已投</p></div>
+              <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_four" style="text-align: center;">{{TreasureBettin.total_key}} Key</p><p class=" font_four" style="text-align: center;">总需</p></div>
+              <div class="display_ib" style="width:33.3%;height:1.1rem;"><p class=" font_four" style="text-align: center;">{{TreasureBettin.last_key}} Key</p><p class=" font_four" style="text-align: center;">剩余</p></div>
             </div>
         </div>
         <div style="width: 80%;height: 1rem;margin: 0 auto;border-radius: 5px;background: rgb(54,54,54);">
           <div class="display_ib vertical_top" style="width:1rem;height:1rem;"><img style="width:50%;height:50%;margin: 25% 25%;" src="@/assets/invitation2/u7.png"></div>
-          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five" style="line-height:1rem;text-align: center;">-</p></div>
-          <div class="display_ib vertical_top" style="width:1.8rem;height:1rem;"><p class=" font_five orange" style="line-height:1rem;text-align: center;">1</p></div>
-          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five orange" style="line-height:1rem;text-align: center;">+</p></div>
-          <div class="display_ib vertical_top" style="width:3rem;height:1rem;"><p class=" font_five" style="line-height:1rem;text-align: center;color: #E4E4E4;">@ 1 UE</p></div>
+          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p @click="reduceKey" class=" font_five" style="line-height:1rem;text-align: center;">-</p></div>
+          <div class="display_ib vertical_top" style="width:1.8rem;height:1rem;"><p class=" font_five orange" style="line-height:1rem;text-align: center;">{{betKey}}</p></div>
+          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p @click="increaseKey" class=" font_five orange" style="line-height:1rem;text-align: center;">+</p></div>
+          <div class="display_ib vertical_top" style="width:3rem;height:1rem;"><p class=" font_five" style="line-height:1rem;text-align: center;color: #E4E4E4;">@ {{TreasureBettin.quantity}} UE</p></div>
         </div>
-        <p class="Centered font_four p_A" style="margin:8px auto;">1 key = 0.1 UE</p>
-        <div style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;"><p class="Centered orange font_five" style="line-height: 1.4rem;">投注</p></div>
+        <p class="Centered font_four p_A" style="margin:8px auto;">1 key = {{TreasureBettin.quantity}} UE</p>
+        <div style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;"><p @click="betting" class="Centered orange font_five" style="line-height: 1.4rem;">投注</p></div>
         <p class="Centered p_A" style="font-size: .35rem;margin:15px auto;color: #949494;">若投注超出本期可投数量，超出部分将自动投注下期</p>
         <p></p>
         </div>
         <div style="width: 100%;background: rgb(27, 27, 27);height: 8rem;">
           <div style="width:100%;height:1.4rem;">
-            <div class="display_ib" :class="{gray:!allMy}" @click="selectAllMy(true)" style="width:50%;height:1.4rem;line-height: .7rem;"><p  style="text-align: center;font-size: .45rem;">全部</p><p  style="text-align: center;font-size: .45rem;">20x0.1</p></div>
-            <div class="display_ib" :class="{gray:allMy}" @click="selectAllMy(false)" style="width:50%;height:1.4rem;line-height: .7rem;"><p  style="text-align: center;font-size: .45rem;">我的</p><p  style="text-align: center;font-size: .45rem;">20x0.1</p></div>
+            <div class="display_ib" :class="{gray:!allMy}" @click="selectAllMy(true)" style="width:50%;height:1.4rem;line-height: .7rem;"><p  style="text-align: center;font-size: .45rem;">全部</p><p  style="text-align: center;font-size: .45rem;">{{GameData[twenty-1].game_name.substring(3)}}</p></div>
+            <div class="display_ib" :class="{gray:allMy}" @click="selectAllMy(false)" style="width:50%;height:1.4rem;line-height: .7rem;"><p  style="text-align: center;font-size: .45rem;">我的</p><p  style="text-align: center;font-size: .45rem;">{{GameData[twenty-1].game_name.substring(3)}}</p></div>
           </div>
           <div v-if="allMy">
-            <div style="" v-for="(item,index) in items" :key='index'>
+            <div style="" v-for="item in BettinAllData" :key='item.key'>
               <div style="width:100%;height:1.1rem;">
-                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.a}}</p></div>
-                <div class="display_ib vertical_top" style="width:40%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.b}}</p></div>
-                <div class="display_ib vertical_top" style="width:22%;margin-left: 4%;height:1.1rem;">
-                  <div class="display_ib vertical_top"><p style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.key}} key</p></div>
-                  <div class="display_ib"><img style="width: .5rem;height: 0.5rem;margin: .35rem .2rem;" src="@/assets/img/invitation_profitarrow.png"></div>
-                </div>
+                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;"># {{item.periods}} 期</p></div>
+                <div class="display_ib vertical_top" style="width:40%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">幸运码 : {{item.reward_code}}</p></div>
+                <div class="display_ib vertical_top" style="width:26.5%;height:1.1rem;"><img @click="jumpLottery" style="width: .5rem;height: 0.5rem;margin: 0.35rem 0 0 50%;" src="@/assets/img/invitation_profitarrow.png"></div>
               </div>
             </div>
           </div>
           <div v-if="!allMy">
-            <div style="" v-for="(item,index) in itemss" :key='index'>
+            <div style="" v-for="item in UserBetting" :key='item.key'>
               <div style="width:100%;height:1.1rem;">
-                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.a}}</p></div>
-                <div class="display_ib vertical_top" style="width:40%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.b}}</p></div>
-                <div class="display_ib vertical_top" style="width:22%;margin-left: 4%;height:1.1rem;"><img style="width: .5rem;height: 0.5rem;margin: .35rem 0 .35rem 50%;" src="@/assets/img/invitation_profitarrow.png"></div>
+                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;"># {{item.periods}} 期</p></div>
+                <div class="display_ib vertical_top" style="width:40%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">幸运码 : {{item.reward_code}}</p></div>
+                <div class="display_ib vertical_top" style="width:26.5%;height:1.1rem;"><div class="display_ib vertical_top" style="width:60%;"><p style="color: rgb(188,188,188);font-size: 0.45rem;line-height: 1.1rem;text-align: center;">{{item.key_count}} key</p></div><img @click="jumpBetting" style="width: .5rem;height: 0.5rem;margin: .35rem 0 0 0;" src="@/assets/img/invitation_profitarrow.png"></div>
               </div>
             </div>
           </div>
@@ -124,6 +121,8 @@
 import MyPage from '@/components/MyPage'
 import { format, parse } from 'date-fns'
 import {Decimal} from 'decimal.js'
+import api from '@/pages/game/treasure/game'
+
 
 //滚动区域
 import ClientSocket from '@/socket/scrollClientSocket'
@@ -135,42 +134,88 @@ export default {
    },
   data() {
     return {
+      account_name:'',//账户ID
       treasureKey:1,  //滚动KEY
       twenty:1,      //模式选择  20*0.1为1  20*0.5为2  100*0.1为3
       allMy:true,   //区分我的 全部
       actionSheetVisible: false,   //下拉框
       betSuccess:false,        //成功显示
       betFailure:false,        //失败显示
-      publicData:[   //公用界面数据
-
-      ],
-      publicAll:[    //公用全部
-
-      ],
-      publicMy:[    //公用我的
-
-      ],   
+      betKey:0,//投注 key 的的数量
       items:[    // 滚动
               // {timestamp:"15:23:02.0",block_num:33283278,
               //   id:'...'+"F7B195473D4F09BC8F1",treasureKey:1
               //   }
       ],   
-        
+      GameData:[],//获取游戏的种类和名称
+      TreasureBettin:{},//获取游戏的种类和名称
+      BettinAllData:[],//获取所有期数及开奖信息
+      UserBetting:[   //获取当前用户投注的信息
+        {periods:1,reward_code:10000,key_count:1}
+      ],
+      socket:'',
     }
   },
   methods: {
        back() {
           this.$router.go(-2)
        },
-       selectTwenty(index) {
-         this.twenty=index;
+       selectTwenty(index) {//切换模式
+          this.twenty=index;
+          api.getTreasureBettin({game_id:index}).then(res => {
+            if (res.code === 1) {
+                this.TreasureBettin=res.data;
+              }
+          })
+          api.getAllData({game_id:index}).then(res => {
+              if (res.code === 1) {
+                  this.BettinAllData=res.data.detail;
+                }
+            })
+          api.getUserBettingData({game_id:index,account_name:this.account_name}).then(res => {
+            if (res.code === 1) {
+                this.UserBetting=res.data.detail;
+                }
+            })
        },
        selectAllMy(index) {
          this.allMy=index;
        },
-       jumpTreasureRule() {
+       jumpTreasureRule() {  //规则
          this.$router.push({
           name: 'TreasureRule',
+        })
+       },
+       jumpLottery() {  //开奖详情
+         this.$router.push({
+          name: 'LotteryDetailsNoLottery',
+          params: {
+            game_id: this.twenty,
+            periods: this.TreasureBettin.periods,
+          }
+        })
+       },
+       jumpBetting() {  //投注详情
+         this.$router.push({
+          name: 'BettingDetails',
+          params: {
+            game_id: this.twenty,
+            periods: this.TreasureBettin.periods,
+          }
+        })
+       },
+       reduceKey(){   //减少key
+        this.betKey>0?this.betKey-=1:this.betKey=0
+       },
+       increaseKey(){   //增加key
+        this.betKey+=1
+       },
+       betting(){   //投注
+        api.Betting({game_id:this.twenty,periods:this.TreasureBettin.periods,account_name:this.account_name,bet_key:this.betKey,bet_amount:this.betKey*this.TreasureBettin.quantity}).then(res => {
+          console.log(res)
+          if (res.code === 1) {
+              console.log('成功')
+            }
         })
        },
     //滚动区域
@@ -179,6 +224,7 @@ export default {
                 // console.log('link',connected)
                 if (connected) {
                     try {
+                        this.socket=ClientSocket.getSocket();
                         let rewards = await ClientSocket.getReward({type:'less'})
                         if (rewards.type === 'reward_history') {
                             console.log(222,rewards)
@@ -245,10 +291,8 @@ export default {
                     }
                 }
             })
-        },
+    },
        
-        
-        
   },
   watch: {
         '$store.state.wallet.block': {
@@ -263,9 +307,53 @@ export default {
         },
     },
   created(){
-    // console.log('this',this);
+    this.account_name=this.$store.state.wallet.assets.account;
     //滚动区域
     this.initSocket();
+    //获取配置信息
+    api.getConfig().then(res => {
+        if (res.code === 1) {
+          }
+      })
+    //获取游戏的种类和名称
+    api.getGameData().then(res => {
+        if (res.code === 1) {
+            this.GameData=res.data;
+          }
+      })
+    //获取夺宝期数信息
+    api.getTreasureBettin({game_id:1}).then(res => {
+        if (res.code === 1) {
+            this.TreasureBettin=res.data;
+          }
+      })
+    //获取所有期数及开奖信息
+    api.getAllData({game_id:1}).then(res => {
+        if (res.code === 1) {
+            this.BettinAllData=res.data.detail;
+          }
+      })
+    //获取当前用户投注的信息
+    api.getUserBettingData({game_id:1,account_name:this.account_name}).then(res => {
+      if (res.code === 1) {
+          // this.UserBetting=res.data.detail;
+          }
+      })
+
+
+
+
+
+
+
+
+
+
+
+
+  },
+  destroyed(){
+    this.socket.close();
   }
 }
 </script>

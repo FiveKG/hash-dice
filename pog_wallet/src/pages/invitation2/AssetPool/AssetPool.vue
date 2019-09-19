@@ -134,6 +134,7 @@ export default {
             for(var i=0;i<this.start_mined.length;i++){
               id.push(this.start_mined[i].mining_id);
             }
+            id=id.join();
             const res = await api.assetMiningCharge({account_name:"tbtestuser1",mining_id:id})
             console.log('withdrawHistory',res)
             if (res.code === 1) {

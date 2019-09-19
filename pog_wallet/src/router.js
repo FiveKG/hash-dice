@@ -79,6 +79,7 @@ import BingoPool from './pages/invitation/BingoPool'
 import ShareholderPool from './pages/invitation/ShareholderPool'
 import ShareholderPoolDetails from './pages/invitation/ShareholderPoolDetails'
 import FivePool from './pages/invitation/FivePool'
+import FivePoolDetails from './pages/invitation/FivePoolDetails'
 import PkPool from './pages/invitation/PkPool'
 import level from './pages/invitation/level'
 
@@ -386,6 +387,11 @@ const router = new Router({
       path: '/fivePool',
       name: 'FivePool',
       component: FivePool,
+    },
+    {
+      path: '/fivePoolDetails',
+      name: 'FivePoolDetails',
+      component: FivePoolDetails,
     },
     {
       path: '/pkPool',

@@ -11,21 +11,39 @@
             <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="back" src="../../../assets/img/u102.png" style="width: 55%;height: 80%;margin: 6% 0 0 21%;"></div>
           </div>
         </div>
-
-        <div class="font_four" style="width: 80%;margin:20px 10% 0 10%">
-          <p class="p_A">时间：2019/04/27  00:31:24.5</p>
-          <p class="p_A">投注区块编号：55021515</p>
-          <p class="p_A">开奖区块编号：55021522（投注区块编号+7）</p>
+         <!-- 投注详情        -->
+        <div v-if="twenty==1" class="font_four" style="width: 80%;margin:20px 10% 0 10%">
+          <p class="p_A">时间：{{items.create_time}}</p>
+          <p class="p_A">投注区块编号：{{items.bet_block_num}}</p>
+          <p class="p_A">开奖区块编号：{{items.reward_block_num}}（投注区块编号+7）</p>
           <p class="p_A ">开奖区块ID：</p>
-          <p class="p_A">5eea2b24e5f3f38d......ae4a0dcb33132<span class="orange">2</span>cc<span class="orange">3</span></p>
+          <p class="p_A">{{items.reward_block_id}}<span class="orange">2</span>cc<span class="orange">3</span></p>
           <div style="width: 100%;height: 10px;"></div>
-          <p class="p_A">开奖数字：<span class="orange">23</span></p>
+          <p class="p_A">开奖数字：<span class="orange">{{items.reward_num}}</span></p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">投注内容：小于 85</p>
-          <p class="p_A">投注金额：0.1000 UE</p>
-          <p class="p_A">赔率：1.152x</p>
+          <p class="p_A">投注内容：小于 {{items.bet_num}}</p>
+          <p class="p_A">投注金额：{{items.bet_amount}} UE</p>
+          <p class="p_A">赔率: {{items.odds_rate}}</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">中奖金额：<span class="orange">0.1152 UE</span></p>
+          <p class="p_A">中奖金额：<span class="orange">{{items.bonus}} UE</span></p>
+        </div>
+        <!-- 投注详情代投 -->
+        <div v-if="twenty==2" class="font_four" style="width: 80%;margin:20px 10% 0 10%">
+          <p class="p_A">时间：{{items.create_time}}</p>
+          <p class="p_A">投注区块编号：{{items.bet_block_num}}</p>
+          <p class="p_A">开奖区块编号：{{items.reward_block_num}}（投注区块编号+7）</p>
+          <p class="p_A ">开奖区块ID：</p>
+          <p class="p_A">{{items.reward_block_id}}<span class="orange">2</span>cc<span class="orange">3</span></p>
+          <div style="width: 100%;height: 10px;"></div>
+          <p class="p_A">开奖数字：<span class="orange">{{items.reward_num}}</span></p>
+          <div style="width: 100%;height: 20px;"></div>
+          <p class="p_A">投注内容：小于 {{items.bet_num}}</p>
+          <p class="p_A">投注金额：{{items.bet_amount}} UE</p>
+          <p class="p_A Centered">使用游戏筹码投注</p>
+          <p class="p_A">代投账号：{{items.agent_account}}</p>
+          <p class="p_A">赔率: {{items.odds_rate}}</p>
+          <div style="width: 100%;height: 20px;"></div>
+          <p class="p_A">中奖金额：<span class="orange">{{items.bonus}} UE</span></p>
         </div>
 
          <!-- 下拉框 -->
@@ -58,6 +76,7 @@
 
 <script>
 import MyPage from '@/components/MyPage'
+import api from '@/pages/game/hashdice/game'
 
 export default {
   components: {
@@ -66,6 +85,8 @@ export default {
   data() {
     return {
       actionSheetVisible: false,   //下拉框
+      twenty:1,  //模式选择
+      items:[]
     }
   },
   methods: {
@@ -79,8 +100,17 @@ export default {
        },
   },
   created(){
-    // console.log('this',this);
-   
+    // console.log('this',this);    
+    api.getSomeUserBettingListBetting({id:this.$route.params.id}).then(res => {
+        if (res.code === 1) {
+            this.items=res.data
+            if(this.items.agent_account==null){
+              this.twenty=1  
+            }else{
+              this.twenty=2
+            }
+          }
+      })
   }
 }
 </script>
