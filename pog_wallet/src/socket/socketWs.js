@@ -63,7 +63,8 @@ export default class ClientSocket {
 
 			const trySocket = () => {
 				// const host = `wss://lottery-api.eoscrown.com${suffix}`;
-				const host = `ws://192.168.1.141:13021${suffix}`;
+				// const host = `ws://192.168.1.141:13021${suffix}`;
+				const host = `ws://global_lotto.tbg.isecsp.com${suffix}`;
 				const s = new WebSocket(host);
 				// const s = io.connect(host);
 

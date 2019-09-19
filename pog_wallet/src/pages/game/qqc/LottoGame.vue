@@ -19,14 +19,22 @@
           </div>
 
       <!-- 区块滚动 -->
-        <div style="color:#fff; font-size:23px;">{{openInfo.count_down}}</div>
+         <div class="recording"   >
+            <transition-group name="scroll" >
+              <div style="display:inline-block" class="row list-complete-item" v-for="item in items" :key='item.treasureKey'>
+                  <div class="display_ib" style="width: 23%;height: 100%;color:#bcbcbc;font-size:0.4rem"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.block_num}}</p> </div>
+                  <div class="display_ib" style="width: 54%;height: 100%;color:#bcbcbc;font-size:0.4rem"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.id}}</p></div>
+                  <div class="display_ib" style="width: 23%;height: 100%; color:#bcbcbc;font-size:0.4rem"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.timestamp}}</p></div>
+              </div>
+            </transition-group> 
+        </div>
         
       <!-- 全球彩 -->
       <div class="globalColor">
          <div class="content">
             <p class="small_t">全球彩</p>
             <p class="big_t">全球彩</p>
-            <div class="openTime">00:35:23</div>
+            <div class="openTime">{{tiemer}}</div>
             <p class="openPhase"># {{openInfo.periods}} 期</p>
             <p class="openNum">{{openInfo.prize_pool}}</p>
             <p class="Company">UE</p>
@@ -108,8 +116,10 @@
 <script>
 
 //滚动区域
-import ClientSocket from '@/socket/socketWs'
+// import ClientSocket from '@/socket/socketWs'
+import ClientSocket from '@/socket/scrollClientSocket'
 import api from '@/servers/game'
+import { format, parse } from 'date-fns'
 
 export default {
    name: '',
@@ -117,6 +127,13 @@ export default {
        return {
           actionSheetVisible: false, //拉下框
           btnId:0,  //选项卡， 0为全部 1为我的
+          treasureKey:1,  //滚动KEY
+          tiemer:'',
+          items:[    // 滚动
+            // {timestamp:"15:23:02.0",block_num:33283278,
+            //   id:'...'+"F7B195473D4F09BC8F1",treasureKey:1
+            //   }
+          ],  
           openList:[
             {time:'50期',num:'09/03  11:43:10',key:'1 Key'},
             {time:'51期',num:'09/03  21:43:10',key:'1 Key'},
@@ -139,14 +156,131 @@ export default {
      btnToggle(id){
         this.btnId = id
      },
+     //滚动区域
+     initSocket() {
+            ClientSocket.link().then(async connected => {
+                // console.log('link',connected)
+                if (connected) {
+                    try {
+                        let rewards = await ClientSocket.getReward({type:'less'})
+                        if (rewards.type === 'reward_history') {
+                            console.log(222,rewards)
+                            let record = rewards.result
+                            if (record) {
+                                let list = []
+                                for (let item of record) {
+                                    if (item.open_code) {
+                                        let second = format(parse(item.end_time), 'HH:mm') + ':00'
+                                        list.push({
+                                            session_id: item.session_id,
+                                            award_num: item.open_code.replace(/,/g,' '),
+                                            time: second
+                                        })
+                                    }
+                                }
+                                this.rewardRecord = list
+                                this.sessionId = parseInt(list[0].session_id) + 1
+                            }
+                        }
+                        const moreReward = await ClientSocket.getReward({type: 'more', page: this.page})
+                        if (moreReward.type === 'reward_history') {
+                            console.log(222,moreReward)
+                            if (moreReward.result) {
+                                for (let item of moreReward.result) {
+                                    if (item.open_code) {
+                                        let bigOrSmall,oddsOrEven
+                                        let numbers = item.open_code.split(',')
+                                        let lastNum = Number.parseInt(numbers[numbers.length - 1])
+                                        if (lastNum > 5) {
+                                            bigOrSmall = 'b'
+                                        } else {
+                                            bigOrSmall = 's'
+                                        }
+                                        if (lastNum % 2) {
+                                            oddsOrEven = 'o'
+                                        } else {
+                                            oddsOrEven = 'e'
+                                        }
+                                        this.lotteryRecords.push({
+                                            time: format(parse(item.end_time), 'MM/DD HH:mm'),
+                                            phase: item.session_id,
+                                            number: item.open_code.replace(/,/g,' '),
+                                            bigOrSmall: bigOrSmall,
+                                            oddsOrEven: oddsOrEven
+                                        })
+                                    }
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            })
+        },
+
+
+
+     //获取全球彩奖池，倒计时，期数
+      getOpen(){
+            api.getOpen().then(res => {
+                this.openInfo = res.data
+                //倒计时
+                var allSecond =Math.abs(this.openInfo.count_down) 
+                setInterval(()=>{
+                    let hour = parseInt(allSecond / 3600 % 24)
+
+                    if(hour<10){
+                        hour = '0' + hour
+                    }
+
+                    let minute = parseInt(allSecond / 60 % 60)
+
+                    if(minute<10){
+                        minute = '0' + minute
+                    }
+
+                    let second = parseInt(allSecond % 60)
+
+                    if(second<10){
+                        second = '0' + second
+                    }
+                    this.tiemer = hour + ':' + minute + ':' + second
+                    allSecond--
+                },1000)
+      
+          })
+      }
+
    },
 
+    watch: {
+        '$store.state.wallet.block': {
+            handler(newVal, oldVal) {
+                console.log(12311111111111,this.$store.state.wallet.block);
+                this.treasureKey+=1;
+                this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
+                id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey});
+                this.items.splice(10);
+            }
+        },
+    },
+
    created(){
+
+
+     //轮播滚动
+     this.initSocket();
+
      //获取全球彩奖池，倒计时，期数
-     api.getOpen().then(async res => this.openInfo = await res.data )
+     this.getOpen()
+
+  
      
-      console.log(111111111,this.openInfo.count_down)
-    //  this.remainingTime()
+
+    
+
+
    }
 }
 </script>
@@ -500,5 +634,7 @@ export default {
 .scroll-move{
   transition:transform .5s;
 }
-
+.p_A{
+  font-family: "Arial Normal", Arial;
+}   
 </style>
