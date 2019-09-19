@@ -110,12 +110,12 @@ async function getBlocks(block_num) {
       }
 
       // const timestamp = df.format(res.timestamp, "mm:ss:SSS");
-      const timestamp = df.format(res.timestamp, "ss:SSS");
+      // const timestamp = df.format(res.timestamp, "ss:SSS");
       // 整点开奖
-      if (timestamp === "00:000") {
-        logger.debug("open: ", timestamp);
-        psGlobalLottoOpen.pub({ block_num: block_num });
-      }
+      // if (timestamp === "00:000") {
+      //   logger.debug("open: ", timestamp);
+      //   psGlobalLottoOpen.pub({ block_num: block_num });
+      // }
 
       if (openFlag) {
 

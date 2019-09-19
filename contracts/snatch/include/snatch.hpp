@@ -63,6 +63,14 @@ class [[eosio::contract("snatch")]] snatch : public contract {
      * @param rule_id    规则 id
      */
     ACTION open(string lucky_code, uint64_t game_id, time_point_sec reward_time, snatchrule rule);
+
+    /***
+     * @brief 清除数据
+     * @param game_id 游戏的期数 id
+     * @param table_name 表名
+     * @param flag 是否全部删除
+     */
+    ACTION clear(uint64_t game_id, snatchrule rule, string table_name, bool flag);
     
   private:
     // 定义游戏

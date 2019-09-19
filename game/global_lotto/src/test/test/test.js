@@ -5,6 +5,8 @@ const { pool } = require("../../db");
 const url = require("url");
 const { scheduleJob } = require("node-schedule");
 let count = 1;
+const { getLatestGameSession, getGameInfo } = require("../../models/game");
+const df = require("date-fns");
 
 scheduleJob("0 */1 * * * *", one);
 
@@ -19,12 +21,19 @@ async function one() {
     //     myMap.set(val, val + "val");
     // }
 
-    const TBG_SERVER = process.env.TBG_SERVER || "http://localhost:9527/";
-    const { data: { referrer_account } } = await xhr.get(url.resolve(TBG_SERVER, "/account/get_referrer"), { data: { account_name: "gametestuser" } });
-    console.debug("referrer_account: ", referrer_account);
+    const sessionInfo = await getLatestGameSession();
+    const now = new Date();
+    const diff = df.differenceInSeconds(sessionInfo.end_time, now);
+    console.debug("now: ", now);
+    console.debug("sessionInfo.end_time: ", sessionInfo.end_time);
+    console.debug("diff: ", diff);
 
-    const resp= await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), { data: { account_name: "yujinsheng11" } });
-    console.debug("resp: ", resp);
+    // const TBG_SERVER = process.env.TBG_SERVER || "http://localhost:9527/";
+    // const { data: { referrer_account } } = await xhr.get(url.resolve(TBG_SERVER, "/account/get_referrer"), { data: { account_name: "gametestuser" } });
+    // console.debug("referrer_account: ", referrer_account);
+
+    // const resp= await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), { data: { account_name: "yujinsheng11" } });
+    // console.debug("resp: ", resp);
 
     // for (const [  key, val ] of myMap) {
     //     console.debug("key: ", key);
@@ -43,7 +52,7 @@ async function one() {
     const sql = `
         SELECT * FROM balance_log WHERE op_type = $1 AND create_time BETWEEN CAST($2 AS DATE) - 1 AND $2
     `
-    const now = new Date(2019, 7, 30, 0, 0);
+    // const now = new Date(2019, 7, 30, 0, 0);
     // const { rows: checkInList } = await pool.query(sql, [ 'check_in', now ]);
 
     // console.debug("checkInList: ", now, checkInList);

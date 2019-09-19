@@ -87,7 +87,7 @@ async function createTable() {
         comment on column award_session.bonus_amount is '总金额';
         CREATE TABLE IF NOT EXISTS prize_pool_log(
             id serial PRIMARY KEY UNIQUE NOT NULL,
-            gs_id TEXT UNIQUE NOT NULL DEFAULT '',
+            gs_id TEXT NOT NULL DEFAULT '',
             pool_type TEXT NOT NULL DEFAULT '',
             change_amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
             current_balance NUMERIC (20, 8) NOT NULL DEFAULT 0,

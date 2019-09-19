@@ -25,18 +25,21 @@ async function initGameSession() {
         const dayInterval = 2;
         const gameInfo = await getGameInfo();
         const lastGameSession = await getLastGameSession();
-        let startTime = df.startOfHour(df.format(new Date(), "YYYY-MM-DD HH:mm:ssZ"));
-        let endTime = df.endOfHour(df.format(new Date(), "YYYY-MM-DD HH:mm:ssZ"));
+        const now = new Date();
+        let startTime = df.startOfHour(df.format(now, "YYYY-MM-DDTHH:mm:ssZ"));
+        let endTime = df.endOfHour(df.format(now, "YYYY-MM-DDTHH:mm:ssZ"));
         let lastEndTime = endTime;
-        // 游戏期数
+        // 游戏期数 
         let periods = 1;
         // 游戏状态
         let state = 0;
         if (!!lastGameSession) {
-            periods = lastGameSession.periods;
+            periods = lastGameSession.periods + 1;
             lastEndTime = lastGameSession.end_time;
+            endTime = df.addHours(lastEndTime, 1);
+            startTime = df.startOfHour(endTime);
+            lastEndTime = endTime;
         }
-        const now = new Date();
         logger.debug("df.differenceInDays(now, lastEndTime):", df.differenceInDays(now, lastEndTime))
         // 如果时间差小于三天，新生成一周的数据
         if (df.differenceInDays(now, lastEndTime) < dayInterval) {
@@ -65,6 +68,7 @@ async function initGameSession() {
                     "extra": {},
                     "create_time": 'now()',
                 }
+                
                 // 调用 globallotto 合约初始化期数
                 actList.push({
                     account: GLOBAL_LOTTO_CONTRACT,
@@ -75,8 +79,8 @@ async function initGameSession() {
                     }],
                     data: {
                         game_id: periods,
-                        create_time: startTime,
-                        dead_line: endTime,
+                        create_time: df.format(startTime, "YYYY-MM-DDTHH:mm:ss"),
+                        dead_line: df.format(endTime, "YYYY-MM-DDTHH:mm:ss"),
                     }
                 });
 

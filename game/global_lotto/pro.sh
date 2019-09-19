@@ -46,7 +46,7 @@ module.exports = {
         "database": "$dbname",
         "user" : "$dbuser",
         "password" :  "pass_2019",
-        "port"    : 5432,
+        "port"    : 54321,
     },
     "redis": {
         "host" : "$redishost",

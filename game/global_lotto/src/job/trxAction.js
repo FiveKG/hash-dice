@@ -29,7 +29,7 @@ async function trxAction(data) {
             // 隔十五秒再执行下一次转账
             await sleep(1 * 1000);
             try {
-                console.debug("action begin: ", actions);
+                logger.debug("action begin: ", actions);
                 // logger.debug("action begin: ", actions);
                 const result = await api.transact({ actions: [ actions ] }, {
                     blocksBehind: 3,
@@ -38,6 +38,7 @@ async function trxAction(data) {
                 logger.debug("action result: ", result);
             } catch (err) {
                 // 判断是不是双花错误，是的花再执行一遍
+                logger.error("caught exception error: ", err);
                 if (err instanceof RpcError) {
                     if (err.json.error.code === 3040008) {
                         logger.debug("after err action begin: ", actions);
@@ -47,7 +48,13 @@ async function trxAction(data) {
                             expireSeconds: 30,
                         });
                         logger.debug("after err action result: ", result);
+                    } else {
+                        logger.error("again action error: ", err);
+                        // throw err;
                     }
+                } else {
+                    logger.error("trx action error: ", err);
+                    // throw err;
                 }
             }
             await sleep(3 * 1000);

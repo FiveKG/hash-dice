@@ -107,3 +107,51 @@ void snatch::open(string lucky_code, uint64_t game_id, time_point_sec reward_tim
         }
     }
 };
+
+// 清除数据
+void snatch::clear(uint64_t game_id, snatchrule rule, string table_name, bool flag) {
+    require_auth( get_self() );
+    if (table_name == "snatchgame") {
+        snatchgames games_table( get_self(), get_self().value );
+        if (!!flag) {
+            for (auto itr = games_table.begin(); itr != games_table.end();) {
+                itr = games_table.erase(itr);
+            }
+        } else {
+            auto game_index = games_table.get_index<"bysnatchgame"_n>();
+            auto itr = game_index.find(game_id);
+            for (; itr == game_index.end(); itr++) {
+                if (itr->game_type.id == rule.id) {
+                   auto itr = games_table.find(game_id);
+                    if (itr != games_table.end()) {
+                        games_table.erase(itr);
+                    }
+                }
+            }
+        }
+    }
+
+    if (table_name == "betsnatch") {
+        betsnatchs bets_table( get_self(), get_self().value );
+        if (!!flag) {
+            for (auto itr = bets_table.begin(); itr != bets_table.end();) {
+                itr = bets_table.erase(itr);
+            }
+        } else {
+            auto itr = bets_table.find(game_id);
+            bets_table.erase(itr);
+        }
+    }
+
+    if (table_name == "rewardsnatch") {
+        rewardsnatchs rewards_table( get_self(), get_self().value );
+        if (flag) {
+            for (auto itr = rewards_table.begin(); itr != rewards_table.end();) {
+                itr = rewards_table.erase(itr);
+            }
+        } else {
+            auto itr = rewards_table.find(game_id);
+            rewards_table.erase(itr);
+        }
+    }
+}

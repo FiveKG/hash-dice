@@ -132,7 +132,7 @@
                             "gs_id": { "type": "number",  "is_require": true,  "desc": "game session id" },
                             "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
                             "reward_time": { "type": "number",  "is_require": true,  "desc": "开奖时间" },
-                            "reward_state": { "type": "text",  "is_require": true,  "desc": "开奖状态，如果已开奖为开奖号码" }
+                            "reward_num": { "type": "text",  "is_require": true,  "desc": "开奖状态，如果已开奖为开奖号码" }
                         }
                     }
                 }
@@ -219,7 +219,7 @@
                         "properties": {
                             "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
                             "win_type": { "type": "number",  "is_require": true,  "desc": "中奖类型，是否中奖" },
-                            "reward_num": { "type": "number",  "is_require": true,  "desc": "开奖号码" },
+                            "win_key": { "type": "number",  "is_require": true,  "desc": "中奖 key 的数量" },
                             "bet_time": { "type": "text",  "is_require": true,  "desc": "投注时间" }
                         }
                     }

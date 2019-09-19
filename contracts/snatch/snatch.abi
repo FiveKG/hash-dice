@@ -76,6 +76,28 @@
             ]
         },
         {
+            "name": "clear",
+            "base": "",
+            "fields": [
+                {
+                    "name": "game_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "rule",
+                    "type": "snatchrule"
+                },
+                {
+                    "name": "table_name",
+                    "type": "string"
+                },
+                {
+                    "name": "flag",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
             "name": "init",
             "base": "",
             "fields": [
@@ -220,6 +242,11 @@
         {
             "name": "bet",
             "type": "bet",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "clear",
+            "type": "clear",
             "ricardian_contract": ""
         },
         {
