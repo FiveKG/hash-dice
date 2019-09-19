@@ -12,8 +12,6 @@ export default new Vuex.Store({
       state: {
         stack: [],
         
-      
-
       },
       mutations: {
         reset (state, page) {
