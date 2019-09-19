@@ -35,7 +35,7 @@
          <div class="content">
             <p class="small_t">全球彩</p>
             <p class="big_t">全球彩</p>
-            <div class="openTime">00:35:23</div>
+            <div class="openTime">{{tiemer}}</div>
             <p class="openPhase"># {{openInfo.periods}} 期</p>
             <p class="openNum">{{openInfo.prize_pool}}</p>
             <p class="Company">UE</p>
@@ -129,6 +129,7 @@ export default {
           actionSheetVisible: false, //拉下框
           btnId:0,  //选项卡， 0为全部 1为我的
           treasureKey:1,  //滚动KEY
+          tiemer:'',
           items:[    // 滚动
             // {timestamp:"15:23:02.0",block_num:33283278,
             //   id:'...'+"F7B195473D4F09BC8F1",treasureKey:1
@@ -212,17 +213,6 @@ export default {
                                 }
                             }
                         }
-                        // let betRecord = await ClientSocket.getBetRecord()
-                        // if (betRecord.result) {
-                        //     for (let item of betRecord.result) {
-                        //         this.betRecord.unshift({
-                        //             account_name: item.account_name,
-                        //             quantity: item.quantity.split(' ')[0],
-                        //             bet_id: item.session_id,
-                        //             bet_time: format(parse(item.create_time), 'HH:mm:ss')
-                        //         })
-                        //     }
-                        // }
                     } catch (error) {
                         console.log(error)
                     }
@@ -230,14 +220,38 @@ export default {
             })
         },
 
-        //倒计时
-      remainingTime(){
-          // let leveTime = 0;
-          // setTimeout(()=>{leveTime = this.openInfo},1000)
-          console.log(11111111,this.openInfo.count_down)
-          
-        
-     },
+
+
+     //获取全球彩奖池，倒计时，期数
+      getOpen(){
+            api.getOpen().then(res => {
+                this.openInfo = res.data
+                //倒计时
+                var allSecond =Math.abs(this.openInfo.count_down) 
+                setInterval(()=>{
+                    let hour = parseInt(allSecond / 3600 % 24)
+
+                    if(hour<10){
+                        hour = '0' + hour
+                    }
+
+                    let minute = parseInt(allSecond / 60 % 60)
+
+                    if(minute<10){
+                        minute = '0' + minute
+                    }
+
+                    let second = parseInt(allSecond % 60)
+
+                    if(second<10){
+                        second = '0' + second
+                    }
+                    this.tiemer = hour + ':' + minute + ':' + second
+                    allSecond--
+                },1000)
+      
+          })
+      }
 
    },
 
@@ -260,10 +274,9 @@ export default {
      this.initSocket();
 
      //获取全球彩奖池，倒计时，期数
-     api.getOpen().then(res => this.openInfo = res.data)
+     this.getOpen()
 
-
-     setTimeout(()=>{this.remainingTime()})
+  
      
 
     
