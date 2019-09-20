@@ -47,7 +47,7 @@
           <div @click="btnLess()" class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five" style="line-height:1rem;text-align: center;color: rgb(228, 228, 228);">-</p></div>
           <div class="display_ib vertical_top" style="width:1.8rem;height:1rem;"><p class=" font_five orange" style="line-height:1rem;text-align: center;">{{inputNumber}}</p></div>
           <div @click="btnAdd()" class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five orange" style="line-height:1rem;text-align: center;">+</p></div>
-          <div class="display_ib vertical_top" style="width:3rem;height:1rem;"><p class=" font_five" style="line-height:1rem;text-align: center;color: #E4E4E4;">@ {{openInfo.quantity}} UE</p></div>
+          <div class="display_ib vertical_top" style="width:3rem;height:1rem;"><p class=" font_five" style="line-height:1rem;text-align: center;color: #E4E4E4;">@ {{UEnumber}} UE</p></div>
         </div>
 
       <!-- key -->
@@ -114,8 +114,6 @@
             </v-ons-row>
          </div>
       </v-ons-action-sheet> 
-
-
         </div>
     </ons-page>
 </template>
@@ -127,6 +125,7 @@
 import ClientSocket from '@/socket/scrollClientSocket'
 import api from '@/servers/game'
 import { format, parse } from 'date-fns'
+import {Decimal} from 'decimal.js';
 
 export default {
    name: '',
@@ -137,6 +136,7 @@ export default {
           treasureKey:1,  //滚动KEY
           tiemer:'', //倒计时
           inputNumber:1,  //加减框数字
+          UEnumber:0,
           items:[    // 滚动
             // {timestamp:"15:23:02.0",block_num:33283278,
             //   id:'...'+"F7B195473D4F09BC8F1",treasureKey:1
@@ -224,6 +224,7 @@ export default {
       getOpen(){
             api.getOpen().then(res => {
                 this.openInfo = res.data
+                this.UEnumber = this.openInfo.quantity 
                 //倒计时
 
                 var allSecond =Math.abs(this.openInfo.count_down) 
@@ -266,9 +267,17 @@ export default {
           if(this.inputNumber<1){
               this.inputNumber = 1
           }
+          this.UEnumber =new Decimal(this.inputNumber).mul(new Decimal(this.openInfo.quantity) )
+          console.log(this.inputNumber)
+          console.log(this.openInfo.quantity)
+          console.log(this.UEnumber)
       },
       btnAdd(){
           this.inputNumber++
+          this.UEnumber =new Decimal(this.inputNumber).mul(new Decimal(this.openInfo.quantity) )   
+          console.log(this.inputNumber)
+          console.log(this.openInfo.quantity)
+          console.log(this.UEnumber)
       },
       getAllGame(){
           api.getOpenlist().then(res => this.openAllList = res.data)
