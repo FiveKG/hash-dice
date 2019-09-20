@@ -83,29 +83,12 @@ async function startGain(incomeMap, incomeType) {
             let rows = await getUserBalance(accountName);
             const createTime = df.format(item.create_time, "YYYY-MM-DD HH:mm:ssZ");
             const repeat_currency = await updateBalance(pool, accountName, changeAmount);
-            await insertBalanceLog(pool, accountName, changeAmount.toFixed(8), rows.amount, item.op_type, item.extra, item.remark, createTime)
-            // trxList.push([accountName, changeAmount.toFixed(8), rows.amount, item.op_type, item.extra, item.remark, createTime]);
+            await insertBalanceLog(pool, accountName, changeAmount.toFixed(8), changeAmount.add(rows.amount).toNumber(), item.op_type, item.extra, item.remark, createTime)
             // 如果复投资产大于投资额,自动复投生成一个子账号
             if (new Decimal(repeat_currency).gte(BALANCE_CONSTANTS.BASE_RATE)) {
                 await userInvestment(BALANCE_CONSTANTS.BASE_RATE, accountName, `user ${ accountName } repeat ${ BALANCE_CONSTANTS.BASE_RATE } UE`)
             }
         }
-        // const client = await pool.connect();
-        // try {
-        //     // 收取收益
-        //     await client.query("BEGIN");
-        //     logger.debug("trxList: ", trxList);
-        //     await Promise.all(trxList.map(it => {
-        //         logger.debug("...it: ", ...it);
-        //         insertBalanceLog(client, ...it)
-        //     }))
-        //     await client.query("COMMIT");
-        // } catch (err) {
-        //     await client.query("ROLLBACK");
-        //     throw err;
-        // } finally {
-        //     await client.release();
-        // }
     } catch (err) {
         throw err;
     }

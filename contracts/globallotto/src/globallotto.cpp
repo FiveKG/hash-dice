@@ -39,16 +39,14 @@ void globallotto::bet(name bet_name, string bet_num, asset& quantity, uint64_t g
     check( bet_num.size() > 0, "invalid bet number" );
 
     betlottos betlottos_table( _self, _self.value );
-    if ( betlottos_table.find(game_id) == betlottos_table.end() ) {
-        betlottos_table.emplace( get_self(), [&](auto& game) {
-            game.bet_id = lottogames_table.available_primary_key();
-            game.bet_num = bet_num;
-            game.bet_name = bet_name;
-            game.bet_time = bet_time;
-            game.amount = quantity;
-            game.game_id = game_id;
-        });
-    }
+    betlottos_table.emplace( get_self(), [&](auto& b) {
+        b.bet_id = betlottos_table.available_primary_key();
+        b.bet_num = bet_num;
+        b.bet_name = bet_name;
+        b.bet_time = bet_time;
+        b.amount = quantity;
+        b.game_id = game_id;
+    });
 }
 
 // 开奖
@@ -67,6 +65,7 @@ void globallotto::open(string reward_num, uint64_t game_id, time_point_sec rewar
         rewards_table.emplace( get_self(), [&](auto& game) {
             game.game_id = game_id;
             game.reward_num = reward_num;
+            game.reward_time = reward_time;
             game.reward_time = reward_time;
         });
 

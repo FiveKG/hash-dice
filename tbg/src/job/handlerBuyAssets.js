@@ -1,6 +1,6 @@
 // @ts-check
 const { pool, psTrx } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/handlerBuyAssets.js": "处理买入交易" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "处理买入交易" });
 const { Decimal } = require("decimal.js");
 const { getAllTrade } = require("../models/trade");
 const buyAlloc = require("./buyAlloc");

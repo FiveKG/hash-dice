@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/trxAction.js": "处理转账动作" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "处理转账动作" });
 const { Decimal } = require("decimal.js");
 const { END_POINT, PRIVATE_KEY_TEST } = require("../common/constant/eosConstants.js");
 const { Api, JsonRpc, RpcError } = require('eosjs');

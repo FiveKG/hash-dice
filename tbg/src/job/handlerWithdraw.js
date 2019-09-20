@@ -1,7 +1,7 @@
 // @ts-check
 const { redis } = require("../common");
 const { pool } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/handlerWithdraw.js": "user withdraw" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "user withdraw" });
 const { getUserBalance, updateWithdrawEnable, insertBalanceLog } = require("../models/balance");
 const { insertAccountOp } = require("../models/accountOp");
 const handlerTransfer = require("./handlerTransfer.js");

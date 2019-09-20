@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@": "mq publish and subscribe" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "mq publish and subscribe" });
 const { 
     psUserWithdraw, psBuyAssets, psSellAssets, psBind, psGame, psTbg1, 
     psTshIncome, psTrx, psModifyBalance
@@ -11,6 +11,7 @@ const bindAirdrop = require("./bindAirdrop");
 const tbg1Airdrop = require("./tbg1Airdrop");
 const tshIncomeAirdrop = require("./tshIncomeAirdrop");
 const trxAction = require("./trxAction.js");
+const modifyBalance = require("./modifyBalance");
 
 // 用户提现消息
 psUserWithdraw.sub(async msg => {
@@ -114,6 +115,7 @@ psModifyBalance.sub(async msg => {
     try {
         let result = JSON.parse(msg);
         logger.debug("psModifyBalance result: %O", result);
+        await modifyBalance(result);
     } catch (err) {
         logger.error("psModifyBalance error: ", err);
         throw err;

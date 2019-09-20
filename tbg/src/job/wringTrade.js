@@ -1,6 +1,6 @@
 // @ts-check
 const { pool, psTrx } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/wringTrade.js": "撮合交易" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "撮合交易" });
 const { TRADE_ORDER_RATE, BUY_END_TIME, BUY_START_TIME, BASE_RATE } = require("../common/constant/tradeConstant");
 const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant");
 const { TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants");

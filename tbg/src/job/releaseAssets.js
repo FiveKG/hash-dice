@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@": "线性释放" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "线性释放" });
 const { MEMBER_LEVEL_TRX } = require("../common/constant/assetsConstant.js");
 const { Decimal } = require("decimal.js");
 const { userMember } = require("../common/userMember.js");
