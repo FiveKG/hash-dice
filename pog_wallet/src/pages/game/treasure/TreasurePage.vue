@@ -13,7 +13,7 @@
         </div>
         <!-- 区块滚动 -->
         <div class="recording"   >
-            <transition-group name="scroll" >
+            <transition-group name="scroll" mode="out-in">
               <div style="display:inline-block" class="row list-complete-item" v-for="item in items" :key='item.treasureKey'>
                   <div class="display_ib" style="width: 23%;height: 100%;"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.block_num}}</p> </div>
                   <div class="display_ib" style="width: 54%;height: 100%;"><p class=" font_four p_A" style="line-height: .64rem;text-align: center; ">{{item.id}}</p></div>
@@ -523,7 +523,7 @@ span{
   position: relative;
 }
 .scroll-enter-active, .scroll-leave-active {
-  transition: all .5s;
+  transition: all .8s;
 }
 .scroll-enter, .scroll-leave-to{
   transform: translateY(-30px);
