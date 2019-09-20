@@ -73,16 +73,19 @@
           <span># {{item.periods}} 期</span>  
           <span style="color:#FF9900" v-if="item.reward_num =='' ">待开奖 - 开奖倒计时 {{tiemer}}</span>
           <span v-if="item.reward_num">{{item.reward_num}}</span>
-          <span>{{item.key}}</span> 
-          <img src="@/assets/img/invitation_profitarrow.png" alt="">
+          <span>{{item.key}} <img src="@/assets/img/invitation_profitarrow.png" alt=""></span> 
+          
         </p>
       </div>
 
 
       <!-- 如果状态等于1 显示我的 -->
       <div class="myList" v-if="btnId == 1">
-        <p v-for="(item,index) in openList" :key="index"><span># {{item.time}}</span>   <span>{{item.num}}</span>
-          <span>{{item.key}}</span> <img src="@/assets/img/invitation_profitarrow.png" alt="">
+        <p v-for="(item,index) in openMyList" :key="index">
+          <span># {{item.periods}} 期 - <span style="color:#FF9900" v-if="item.win_type== 'waiting'">待开奖</span> </span>   
+          <span>{{item.bet_time}}</span>
+          <span>{{item.bet_key}} Key<img src="@/assets/img/invitation_profitarrow.png" alt=""></span> 
+          
         </p>
       </div>
       
@@ -140,6 +143,7 @@ export default {
             //   }
           ],  
           openAllList:[],
+          openMyList:[],
           openInfo:{},
        }
    },
@@ -270,7 +274,15 @@ export default {
           api.getOpenlist().then(res => this.openAllList = res.data)
       },
       getMyGame(){
-          api.getOpenlist().then(res => this.openAllList = res.data)
+          api.getUserBet({account_name:this.$store.state.wallet.assets.account}).then(res => {
+                this.openMyList = res.data.detail;
+                
+                for(var i=0; i<this.openMyList.length; i++){
+                     this.openMyList[i].bet_time = format(parse(this.openMyList[i].bet_time), 'MM/DD HH:mm:ss')
+                }
+                console.log(111111111,this.openMyList)
+                // this.openMyList.
+            })
       },
       randomBetting(){
           this.$toast('随机投注成功')
@@ -291,17 +303,24 @@ export default {
         },
     },
 
-   created(){
+  created(){
 
 
      //轮播滚动
-     this.initSocket();
+    //  this.initSocket();
 
      //获取全球彩奖池，倒计时，期数
      this.getOpen()
 
      //获取全部开奖信息列表
      this.getAllGame()
+
+     //获取我的开奖信息列表
+     this.getMyGame()
+
+     
+     
+
 
 
     
@@ -593,30 +612,42 @@ export default {
       background-color:#1b1b1b;
       height:10.5rem;
       overflow-y:scroll;
+ 
   }
+  // .allList p, .myList p{
+  //     text-align:center;
+  //     line-height: 1.5rem;
+  //     font-size:.44rem;
+  //     font-family: '微軟正黑體 Regular', '微軟正黑體';
+  //     font-weight: 400;
+  //     font-style: normal;
+  // }
   .allList p, .myList p{
-      text-align:center;
-      line-height: 1.5rem;
-      font-size:.44rem;
+      display:flex;
+      flex-wrap:nowrap;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 0.35rem 0 0.35rem;
+      height:1.1rem;
       font-family: '微軟正黑體 Regular', '微軟正黑體';
-      font-weight: 400;
-      font-style: normal;
+      font-size:0.42rem;
+
   }
   .allList p span:nth-child(1), .myList p span:nth-child(1){
      color:#BCBCBC;
-     padding-right:.7rem;
+  
     
   }
   .allList p span:nth-child(2), .myList p span:nth-child(2){
      color:#BCBCBC;
-     padding-right:1rem;
+
   }
   .allList p span:nth-child(3), .myList p span:nth-child(3){
      color:#BCBCBC;
  
   }
   .allList{
-    padding:.2rem 0;
+  
   }
   .allList p img, .myList p img{
     vertical-align: middle;
