@@ -20,6 +20,11 @@ async function randomBet(req, res, next) {
             return res.send(get_status(1012, "game not exists"));
         }
 
+        // 判断投注的数量和额度是否符合
+        if (!new Decimal(0.1).mul(reqData.bet_key).eq(reqData.bet_amount)) {
+            return res.send(get_status(1015, "bet amount does not match"))
+        }
+
         // 如果游戏不是开始状态, 不可投注
         if (gameSessionInfo.game_state !== GAME_STATE.START) {
             return res.send(get_status(1013, "game is not start, can not bet"));
@@ -28,6 +33,10 @@ async function randomBet(req, res, next) {
         const opts = { data: { account_name: reqData.account_name } };
         // 获取用户彩码，游戏码，余额
         const { data: resp } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
+        if (!resp.lotto_currency) {
+            return res.send(get_status(1001, "this account does not exists"));
+        }
+        logger.debug("resp: ", resp);
         // 全球彩彩码
         const lottoCurrency = new Decimal(resp.lotto_currency);
         // 可提现余额
@@ -67,7 +76,6 @@ async function randomBet(req, res, next) {
 
         // 提交投注信息
         await psBet.pub(psData);
-        res.send(resData);
     } catch (err) {
         logger.error("request randomBet error, the error stock is %O", err);
         throw err;

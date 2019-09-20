@@ -45,7 +45,7 @@ async function createTable() {
         comment on column game_session.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS bet_order(
             bo_id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
-            gs_id TEXT UNIQUE NOT NULL DEFAULT '',
+            gs_id TEXT NOT NULL DEFAULT '',
             extra JSON NOT NULL DEFAULT '{}'::JSONB,
             account_name TEXT NOT NULL DEFAULT '',
             bet_num TEXT NOT NULL DEFAULT '',
@@ -64,7 +64,7 @@ async function createTable() {
         comment on column bet_order.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS award_session(
             aw_id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
-            gs_id TEXT UNIQUE NOT NULL DEFAULT '',
+            gs_id TEXT NOT NULL DEFAULT '',
             extra JSON NOT NULL DEFAULT '{}'::JSONB,
             account_name TEXT NOT NULL DEFAULT '',
             bet_num TEXT NOT NULL DEFAULT '',

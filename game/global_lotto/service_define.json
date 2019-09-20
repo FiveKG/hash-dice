@@ -219,7 +219,7 @@
                         "properties": {
                             "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
                             "win_type": { "type": "number",  "is_require": true,  "desc": "中奖类型，是否中奖" },
-                            "win_key": { "type": "number",  "is_require": true,  "desc": "中奖 key 的数量" },
+                            "bet_key": { "type": "number",  "is_require": true,  "desc": "投注 key 的数量" },
                             "bet_time": { "type": "text",  "is_require": true,  "desc": "投注时间" }
                         }
                     }

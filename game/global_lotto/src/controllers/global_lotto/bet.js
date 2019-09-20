@@ -20,6 +20,11 @@ async function bet(req, res, next) {
             return res.send(get_status(1012, "game not exists"));
         }
 
+        // 判断投注的数量和额度是否符合
+        if (!new Decimal(0.1).mul(reqData.bet_key).eq(reqData.bet_amount)) {
+            return res.send(get_status(1015, "bet amount does not match"))
+        }
+
         // 如果游戏不是开始状态, 不可投注
         if (gameSessionInfo.game_state !== GAME_STATE.START) {
             return res.send(get_status(1013, "game is not start, can not bet"));
@@ -33,6 +38,10 @@ async function bet(req, res, next) {
         const lottoCurrency = new Decimal(resp.lotto_currency);
         // 可提现余额
         const withdrawEnable = new Decimal(resp.withdraw_enable);
+        const betNum = [];
+        for (let i = 0; i < reqData.bet_key; i++) {
+            betNum.push(reqData.bet_num.split("").join(","))
+        }
         let psData = {};
         // 投注类型为自选
         const betType = "optional"
@@ -46,7 +55,7 @@ async function bet(req, res, next) {
                 psData = {
                     "periods": reqData.periods,
                     "account_name": reqData.account_name,
-                    "bet_num": reqData.bet_num,
+                    "bet_num": betNum.join("|"),
                     "bet_key": reqData.bet_key,
                     "bet_amount": reqData.bet_amount,
                     "pay_type": "withdraw_enable",
@@ -58,7 +67,7 @@ async function bet(req, res, next) {
             psData = {
                 "periods": reqData.periods,
                 "account_name": reqData.account_name,
-                "bet_num": reqData.bet_num,
+                "bet_num": betNum.join("|"),
                 "bet_key": reqData.bet_key,
                 "bet_amount": reqData.bet_amount,
                 "pay_type": "lotto_currency",

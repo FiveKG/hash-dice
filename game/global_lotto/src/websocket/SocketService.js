@@ -87,7 +87,7 @@ async function getBlockInfo() {
     const { head_block_num } = await rpc.get_info();
     getBlocks(head_block_num)
   } catch(err) {
-    logger.log('getBlockInfo',err)
+    logger.debug('getBlockInfo',err)
     throw err;
   }
 }
@@ -110,21 +110,21 @@ async function getBlocks(block_num) {
       }
 
       const timestamp = df.format(res.timestamp, "mm:ss:SSS");
-      // const timestamp = df.format(res.timestamp, "ss:SSS");
-      // 整点开奖
       if (timestamp === "00:00:000") {
-      // if (time stamp === "00:000") {
-        logger.debug("open: ", timestamp);
-        psGlobalLottoOpen.pub({ block_num: block_num });
+          logger.debug("open: ", timestamp);
+          psGlobalLottoOpen.pub({ block_num: block_num });
       }
-
-      if (openFlag) {
-
-      }
+      // logger.debug("timestamp: ", timestamp);
+      // const timestamp = df.format(res.timestamp, "ss:SSS");
+      // // 整点开奖
+      // if (timestamp === "00:000") {
+      //   logger.debug("open: ", timestamp);
+      //   psGlobalLottoOpen.pub({ block_num: block_num });
+      // }
 
       getBlocks(block_num);
     } catch (error) {
-      // logger.log('getBlocks', error);
+      // logger.error('getBlocks', error);
     }
   }).catch(err => {
     // logger.error("get_block: ", err);

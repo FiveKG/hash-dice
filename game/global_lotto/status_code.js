@@ -12,4 +12,6 @@ module.exports = [
     { "code": 1011, "desc": "insufficient balance" },
     { "code": 1012, "desc": "game not exists" },
     { "code": 1013, "desc": "game is not start, can not bet" },
+    { "code": 1014, "desc": "can not found bet order" },
+    { "code": 1015, "desc": "bet amount does not match" }
 ];

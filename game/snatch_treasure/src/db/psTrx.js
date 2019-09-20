@@ -2,7 +2,7 @@
 const logger = require("../common/logger.js").child({"@": "publish - subscribe transaction"});
 const getAmqpChannel = require("./amqp.js");
 
-const TRX = 'transaction'
+const TRX = 'snatch_transaction'
 async function publish(data) {
     try {
         let channel = await getAmqpChannel(TRX);

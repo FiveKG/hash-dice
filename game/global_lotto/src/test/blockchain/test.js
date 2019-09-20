@@ -72,6 +72,7 @@ const PRIVATE_KEY_TEST = "5KNrMrmiQ1fu3cwMdRCdh1bAfBcbyte2nJwB6evcB1By3fmwF6s,5K
                 dead_line: "2019-09-19T03:59:59" 
             } 
         }
+
         // await api.transact({ actions: [ act ] }, {
         //     blocksBehind: 3,
         //     expireSeconds: 30,
@@ -79,7 +80,11 @@ const PRIVATE_KEY_TEST = "5KNrMrmiQ1fu3cwMdRCdh1bAfBcbyte2nJwB6evcB1By3fmwF6s,5K
         //     console.debug("resp: ", resp);
         // })
 
-        const resp = await clearTable(GLOBAL_LOTTO_CONTRACT, 1, "lottogame", true, PRIVATE_KEY_TEST.split(","))
+        await clearTable(GLOBAL_LOTTO_CONTRACT, 1, "lottogame", true, PRIVATE_KEY_TEST.split(","))
+        await clearTable(GLOBAL_LOTTO_CONTRACT, 1, "rewardlotto", true, PRIVATE_KEY_TEST.split(","))
+        await clearTable(GLOBAL_LOTTO_CONTRACT, 1, "betlotto", true, PRIVATE_KEY_TEST.split(","))
+        
+        
         // console.debug("resp: ", resp)
 
         // transfer(UE_TOKEN, UE_TOKEN, 'eoslottoeos', '10.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))

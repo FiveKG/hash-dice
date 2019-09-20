@@ -1,7 +1,7 @@
 // @ts-check
 const logger = require("../common/logger.js").child({ [`@${__filename}`]: "游戏开奖" });
 const { Decimal } = require("decimal.js");
-const { pool, psTrx } = require("../db");
+const { pool, psTrx, psModifyBalance } = require("../db");
 const { xhr } = require("../common");
 const { GLOBAL_LOTTO_CONTRACT } = require("../common/constant/eosConstants");
 const { OPEN_CODE_COUNT, GAME_STATE } = require("../common/constant/gameConstants");
@@ -54,6 +54,7 @@ async function awardGame(data) {
         `
 
         const rewardMap = await accReward(openCode, betOrderList);
+        logger.debug("rewardMap: ", rewardMap);
         // 是否开出超级全球彩大奖
         let isLotteryAward = false;
         // 遍历用户中奖情况
@@ -149,7 +150,7 @@ async function awardGame(data) {
                             ...info.extra,
                         }
                         const opts = [
-                            generate_primary_key(), info.gs_id, extra, "now()", info.bet_num,
+                            generate_primary_key(), info.gs_id, extra, info.account_name, "now()", info.bet_num,
                             winCount, winType, oneKeyBonus, oneKeyBonus
                          ]
                         sqlList.push({ sql: insertRewardSql, values: opts });
@@ -163,7 +164,7 @@ async function awardGame(data) {
         }
         // 更新奖池
         const updateGameSql = `
-            UPDATE game SET prize_pool = prize_pool + $1, bottom_pool = bottom_pool + $2, reserve_pool = reserve_pool + $3 WHERE g_id = $4;
+            UPDATE game SET prize_pool = $1, bottom_pool = $2, reserve_pool = $3 WHERE g_id = $4;
         `
         sqlList.push({ sql: updateGameSql, values: [ prizePoolSurplus.toNumber(), bottomPoolSurplus.toNumber(), reservePoolSurplus.toNumber(), gameInfo.g_id ] });
         // 更新 session 状态
@@ -259,6 +260,16 @@ async function awardGame(data) {
         if (flag && actList.length !== 0) {
             await psTrx.pub(actList);
         }
+
+        // 如果直接使用区块链 UE 代币投注，不需要扣除用户的数据库余额
+        // if (data.pay_type !== UE_TOKEN_SYMBOL) {
+        //     await psModifyBalance.pub({
+        //         game_type: "globallotto",
+        //         account_name: data.account_name,
+        //         change_amount: betAmount,
+        //         pay_type: data.pay_type
+        //     })
+        // }
     } catch (err) {
         logger.debug("award err: ", err);
     }

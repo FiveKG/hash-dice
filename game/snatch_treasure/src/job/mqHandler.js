@@ -38,14 +38,3 @@ psBet.sub(async msg => {
         throw err;
     }
 });
-
-// 开始新游戏
-psStartNewGame.sub(async msg => {
-    try {
-        let result = JSON.parse(msg);
-        logger.debug("psTrx result: %O", result);
-        await startGameSession(result);
-    } catch (err) {
-        throw err;
-    }
-});

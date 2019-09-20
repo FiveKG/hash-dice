@@ -13,29 +13,29 @@ async function gameSessionMine(req, res, next) {
         logger.debug(`the param is %j: `, reqData);
         // 先查出所有的期数
         const sql = `
-            SELECT gs.periods, gs.reward_num, bo.create_time, aw.win_type, gs.game_state
+            SELECT gs.periods, gs.reward_num, bo.create_time, gs.game_state, bo.key_count
                 FROM game_session gs 
                 JOIN bet_order bo ON gs.gs_id = bo.gs_id
-                JOIN award_session aw ON gs.gs_id = aw.gs_id
                 WHERE bo.account_name = $1
         `
-        const { rows: mineOrderList } = await pool.query(sql, [ reqData.account_name ]);
+        const { rows: myOrderList } = await pool.query(sql, [ reqData.account_name ]);
+        logger.debug("myOrderList: ", myOrderList)
         let resData = get_status(1);
         resData.data = {
-            detail: mineOrderList.map(it => {
+            detail: myOrderList.map(it => {
                 // 如果游戏是开始状态或者是待开奖
                 let winType = "sorry";
                 if (it.game_state === GAME_STATE.START || it.game_state == GAME_STATE.REWARDING) {
                     winType = "waiting"
                 } else {
-                    if (it.win_type !== "sorry") {
-                        winType = "bingo"
-                    }
+                    // if (it.win_type !== "sorry") {
+                    //     winType = "bingo"
+                    // }
                 }
                 return {
                     periods: it.periods,
                     win_type: winType,
-                    reward_num: it.reward_num,
+                    bet_key: it.key_count,
                     bet_time: it.create_time
                 }
             })

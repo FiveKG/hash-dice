@@ -24,7 +24,7 @@ const BANKER = "lottobanker"
 const DISTRIBUTION_CENTER_ACCOUNT = "eoscentereos"
 
 // 代投注账号
-const AGENT_ACCOUNT = "eoslottoeos"
+const AGENT_ACCOUNT = "globallotto"
 
 // 全球彩合约帐号
 const GLOBAL_LOTTO_CONTRACT = "globallotto";
