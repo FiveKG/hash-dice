@@ -3,7 +3,6 @@ const logger = require("../common/logger.js").child({ "@": "mq publish and subsc
 const { psSnatchOpen, psTrx, psBet, psModifyBalance, psStartNewGame } = require("../db");
 const trxAction = require("./trxAction.js");
 const openGameSession = require("./openGameSession");
-const startGameSession = require("./startGameSession");
 const handlerBet = require("./handlerBet.js");
 
 // 订阅转账的消息，避免双花
