@@ -44,10 +44,10 @@
       <!-- 按钮部分 -->
        <div style="width: 80%;height: 1rem;margin: 0 auto;border-radius: 5px;background: rgb(54,54,54);">
           <div class="display_ib vertical_top" style="width:1rem;height:1rem;"><img style="width:50%;height:50%;margin: 25% 25%;" src="@/assets/invitation2/u7.png"></div>
-          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five" style="line-height:1rem;text-align: center;">-</p></div>
-          <div class="display_ib vertical_top" style="width:1.8rem;height:1rem;"><p class=" font_five orange" style="line-height:1rem;text-align: center;">1</p></div>
-          <div class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five orange" style="line-height:1rem;text-align: center;">+</p></div>
-          <div class="display_ib vertical_top" style="width:3rem;height:1rem;"><p class=" font_five" style="line-height:1rem;text-align: center;color: #E4E4E4;">@ 1 UE</p></div>
+          <div @click="btnLess()" class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five" style="line-height:1rem;text-align: center;color: rgb(228, 228, 228);">-</p></div>
+          <div class="display_ib vertical_top" style="width:1.8rem;height:1rem;"><p class=" font_five orange" style="line-height:1rem;text-align: center;">{{inputNumber}}</p></div>
+          <div @click="btnAdd()" class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five orange" style="line-height:1rem;text-align: center;">+</p></div>
+          <div class="display_ib vertical_top" style="width:3rem;height:1rem;"><p class=" font_five" style="line-height:1rem;text-align: center;color: #E4E4E4;">@ {{UEnumber}} UE</p></div>
         </div>
 
       <!-- key -->
@@ -69,16 +69,23 @@
 
       <!-- 如果状态等于0 显示全部 -->
       <div class="allList" v-if="btnId == 0">
-        <p v-for="(item,index) in openList" :key="index"><span># {{item.time}}</span>   <span>{{item.num}}</span>
-          <span>{{item.key}}</span> <img src="@/assets/img/invitation_profitarrow.png" alt="">
+        <p v-for="(item,index) in openAllList" :key="index">
+          <span># {{item.periods}} 期</span>  
+          <span style="color:#FF9900" v-if="item.reward_num =='' ">待开奖 - 开奖倒计时 {{tiemer}}</span>
+          <span v-if="item.reward_num">{{item.reward_num}}</span>
+          <span>{{item.key}} <img src="@/assets/img/invitation_profitarrow.png" alt=""></span> 
+          
         </p>
       </div>
 
 
       <!-- 如果状态等于1 显示我的 -->
       <div class="myList" v-if="btnId == 1">
-        <p v-for="(item,index) in openList" :key="index"><span># {{item.time}}</span>   <span>{{item.num}}</span>
-          <span>{{item.key}}</span> <img src="@/assets/img/invitation_profitarrow.png" alt="">
+        <p v-for="(item,index) in openMyList" :key="index">
+          <span># {{item.periods}} 期 - <span style="color:#FF9900" v-if="item.win_type== 'waiting'">待开奖</span> </span>   
+          <span>{{item.bet_time}}</span>
+          <span>{{item.bet_key}} Key<img src="@/assets/img/invitation_profitarrow.png" alt=""></span> 
+          
         </p>
       </div>
       
@@ -107,8 +114,6 @@
             </v-ons-row>
          </div>
       </v-ons-action-sheet> 
-
-
         </div>
     </ons-page>
 </template>
@@ -120,6 +125,7 @@
 import ClientSocket from '@/socket/scrollClientSocket'
 import api from '@/servers/game'
 import { format, parse } from 'date-fns'
+import {Decimal} from 'decimal.js';
 
 export default {
    name: '',
@@ -128,21 +134,16 @@ export default {
           actionSheetVisible: false, //拉下框
           btnId:0,  //选项卡， 0为全部 1为我的
           treasureKey:1,  //滚动KEY
-          tiemer:'',
+          tiemer:'', //倒计时
+          inputNumber:1,  //加减框数字
+          UEnumber:0,
           items:[    // 滚动
             // {timestamp:"15:23:02.0",block_num:33283278,
             //   id:'...'+"F7B195473D4F09BC8F1",treasureKey:1
             //   }
           ],  
-          openList:[
-            {time:'50期',num:'09/03  11:43:10',key:'1 Key'},
-            {time:'51期',num:'09/03  21:43:10',key:'1 Key'},
-            {time:'52期',num:'09/03  12:43:10',key:'5 Key'},
-            {time:'52期',num:'09/03  11:43:10',key:'5 Key'},
-            {time:'52期',num:'09/03  01:43:10',key:'5 Key'},
-            {time:'53期',num:'09/03  01:43:10',key:'1 Key'},
-            {time:'54期',num:'09/03  11:43:10',key:'1 Key'},
-          ],
+          openAllList:[],
+          openMyList:[],
           openInfo:{},
        }
    },
@@ -219,45 +220,90 @@ export default {
             })
         },
 
-
-
      //获取全球彩奖池，倒计时，期数
       getOpen(){
             api.getOpen().then(res => {
                 this.openInfo = res.data
+                this.UEnumber = this.openInfo.quantity 
                 //倒计时
+
                 var allSecond =Math.abs(this.openInfo.count_down) 
-                setInterval(()=>{
-                    let hour = parseInt(allSecond / 3600 % 24)
+   
+                if(!allSecond){
+                   return false 
+                }
+                var timeInerval=setInterval(()=>{
+                      let hour = parseInt(allSecond / 3600 % 24)
 
-                    if(hour<10){
-                        hour = '0' + hour
-                    }
+                      if(hour<10){
+                          hour = '0' + hour
+                      }
 
-                    let minute = parseInt(allSecond / 60 % 60)
+                      let minute = parseInt(allSecond / 60 % 60)
 
-                    if(minute<10){
-                        minute = '0' + minute
-                    }
+                      if(minute<10){
+                          minute = '0' + minute
+                      }
 
-                    let second = parseInt(allSecond % 60)
+                      let second = parseInt(allSecond % 60)
 
-                    if(second<10){
-                        second = '0' + second
-                    }
-                    this.tiemer = hour + ':' + minute + ':' + second
-                    allSecond--
+                      if(second<10){
+                          second = '0' + second
+                      }
+
+                      if(second == 0 && minute==0  && hour==0){
+                              clearInterval(timeInerval);
+                      }
+                      
+                      this.tiemer = hour + ':' + minute + ':' + second
+                      
+                      allSecond--
                 },1000)
       
           })
+      },
+      btnLess(){
+          this.inputNumber--
+          if(this.inputNumber<1){
+              this.inputNumber = 1
+          }
+          this.UEnumber =new Decimal(this.inputNumber).mul(new Decimal(this.openInfo.quantity) )
+          console.log(this.inputNumber)
+          console.log(this.openInfo.quantity)
+          console.log(this.UEnumber)
+      },
+      btnAdd(){
+          this.inputNumber++
+          this.UEnumber =new Decimal(this.inputNumber).mul(new Decimal(this.openInfo.quantity) )   
+          console.log(this.inputNumber)
+          console.log(this.openInfo.quantity)
+          console.log(this.UEnumber)
+      },
+      getAllGame(){
+          api.getOpenlist().then(res => this.openAllList = res.data)
+      },
+      getMyGame(){
+          api.getUserBet({account_name:this.$store.state.wallet.assets.account}).then(res => {
+                this.openMyList = res.data.detail;
+                
+                for(var i=0; i<this.openMyList.length; i++){
+                     this.openMyList[i].bet_time = format(parse(this.openMyList[i].bet_time), 'MM/DD HH:mm:ss')
+                }
+                console.log(111111111,this.openMyList)
+                // this.openMyList.
+            })
+      },
+      randomBetting(){
+          this.$toast('随机投注成功')
       }
+
 
    },
 
     watch: {
         '$store.state.wallet.block': {
             handler(newVal, oldVal) {
-                console.log(12311111111111,this.$store.state.wallet.block);
+                // console.log(12311111111111,this.$store.state.wallet.block);
                 this.treasureKey+=1;
                 this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
                 id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey});
@@ -266,17 +312,25 @@ export default {
         },
     },
 
-   created(){
+  created(){
 
 
      //轮播滚动
-     this.initSocket();
+    //  this.initSocket();
 
      //获取全球彩奖池，倒计时，期数
      this.getOpen()
 
-  
+     //获取全部开奖信息列表
+     this.getAllGame()
+
+     //获取我的开奖信息列表
+     this.getMyGame()
+
      
+     
+
+
 
     
 
@@ -565,30 +619,44 @@ export default {
   
   .allList, .myList{
       background-color:#1b1b1b;
+      height:10.5rem;
+      overflow-y:scroll;
+ 
   }
+  // .allList p, .myList p{
+  //     text-align:center;
+  //     line-height: 1.5rem;
+  //     font-size:.44rem;
+  //     font-family: '微軟正黑體 Regular', '微軟正黑體';
+  //     font-weight: 400;
+  //     font-style: normal;
+  // }
   .allList p, .myList p{
-      text-align:center;
-      line-height: 1.5rem;
-      font-size:.44rem;
+      display:flex;
+      flex-wrap:nowrap;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 0.35rem 0 0.35rem;
+      height:1.1rem;
       font-family: '微軟正黑體 Regular', '微軟正黑體';
-      font-weight: 400;
-      font-style: normal;
+      font-size:0.42rem;
+
   }
   .allList p span:nth-child(1), .myList p span:nth-child(1){
      color:#BCBCBC;
-     padding-right:.7rem;
+  
     
   }
   .allList p span:nth-child(2), .myList p span:nth-child(2){
      color:#BCBCBC;
-     padding-right:1rem;
+
   }
   .allList p span:nth-child(3), .myList p span:nth-child(3){
      color:#BCBCBC;
  
   }
   .allList{
-    padding:.2rem 0;
+  
   }
   .allList p img, .myList p img{
     vertical-align: middle;
@@ -637,4 +705,10 @@ export default {
 .p_A{
   font-family: "Arial Normal", Arial;
 }   
+.font_five{
+  font-size: .4rem;
+}
+.orange{
+  color: rgba(255, 153, 51, 1);
+}
 </style>
