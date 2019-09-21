@@ -94,14 +94,14 @@ const getUserBetWeek = (reqData) => {
 const getBetting = (reqData) => {
   const url = '/global_lotto/bet';
   const data = reqData;
-  return getData(url, data);
+  return postData(url, data);
 }
 
 // 随机投注
 const getRandomBetting = (reqData) => {
   const url = '/global_lotto/random_bet';
   const data = reqData;
-  return getData(url, data);
+  return postData(url, data);
 }
 
 
