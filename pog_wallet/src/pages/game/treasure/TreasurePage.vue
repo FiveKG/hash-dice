@@ -65,16 +65,16 @@
               <div style="width:100%;height:1.1rem;">
                 <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;"># {{item.periods}} 期</p></div>
                 <div class="display_ib vertical_top" style="width:40%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">幸运码 : {{item.reward_code}}</p></div>
-                <div class="display_ib vertical_top" style="width:26.5%;height:1.1rem;"><img @click="jumpLottery" style="width: .5rem;height: 0.5rem;margin: 0.35rem 0 0 50%;" src="@/assets/img/invitation_profitarrow.png"></div>
+                <div class="display_ib vertical_top" style="width:26.5%;height:1.1rem;" @click="jumpLottery(item.periods)"><img  style="width: .5rem;height: 0.5rem;margin: 0.35rem 0 0 50%;" src="@/assets/img/invitation_profitarrow.png"></div>
               </div>
             </div>
           </div>
           <div v-if="!allMy">
             <div style="" v-for="item in UserBetting" :key='item.key'>
               <div style="width:100%;height:1.1rem;">
-                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;"># {{item.periods}} 期</p></div>
+                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;"># {{item.periods}} 期 <span class="orange" v-if="item.bonus_amount>0">- 中奖</span></p></div>
                 <div class="display_ib vertical_top" style="width:40%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">幸运码 : {{item.reward_code}}</p></div>
-                <div class="display_ib vertical_top" style="width:26.5%;height:1.1rem;"><div class="display_ib vertical_top" style="width:60%;"><p style="color: rgb(188,188,188);font-size: 0.45rem;line-height: 1.1rem;text-align: center;">{{item.key_count}} key</p></div><img @click="jumpBetting" style="width: .5rem;height: 0.5rem;margin: .35rem 0 0 0;" src="@/assets/img/invitation_profitarrow.png"></div>
+                <div class="display_ib vertical_top" style="width:26.5%;height:1.1rem;" @click="jumpBetting(item.periods)"><div class="display_ib vertical_top" style="width:60%;"><p style="color: rgb(188,188,188);font-size: 0.45rem;line-height: 1.1rem;text-align: center;">{{item.key_count}} key</p></div><img style="width: .5rem;height: 0.5rem;margin: .35rem 0 0 0;" src="@/assets/img/invitation_profitarrow.png"></div>
               </div>
             </div>
           </div>
@@ -151,7 +151,7 @@ export default {
       TreasureBettin:{},//获取游戏的种类和名称
       BettinAllData:[],//获取所有期数及开奖信息
       UserBetting:[   //获取当前用户投注的信息
-        {periods:1,reward_code:10000,key_count:1}
+        // {periods:1,reward_code:10000,key_count:1}
       ],
       socket:'',
     }
@@ -186,21 +186,21 @@ export default {
           name: 'TreasureRule',
         })
        },
-       jumpLottery() {  //开奖详情
+       jumpLottery(data) {  //开奖详情
          this.$router.push({
           name: 'LotteryDetailsNoLottery',
           params: {
             game_id: this.twenty,
-            periods: this.TreasureBettin.periods,
+            periods: data,
           }
         })
        },
-       jumpBetting() {  //投注详情
+       jumpBetting(data) {  //投注详情
          this.$router.push({
           name: 'BettingDetails',
           params: {
             game_id: this.twenty,
-            periods: this.TreasureBettin.periods,
+            periods: data,
           }
         })
        },
@@ -215,6 +215,10 @@ export default {
           console.log(res)
           if (res.code === 1) {
               console.log('成功')
+              this.betSuccess=true;
+              setTimeout(() => {
+                this.betSuccess=false;
+              }, 2500);
             }
         })
        },
@@ -336,7 +340,7 @@ export default {
     //获取当前用户投注的信息
     api.getUserBettingData({game_id:1,account_name:this.account_name}).then(res => {
       if (res.code === 1) {
-          // this.UserBetting=res.data.detail;
+          this.UserBetting=res.data.detail;
           }
       })
 

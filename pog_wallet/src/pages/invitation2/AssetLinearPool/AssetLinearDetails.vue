@@ -88,7 +88,6 @@ const id = ['raise','release','buy','sell','mining_referrer','first_buy','first_
 
               this.items[i].amount = this.items[i].amount.split('.');
               this.items[i].amount[1] = this.addSpace(this.items[i].amount[1]);
-              this.items[i].amount[0] = this.addComma(this.items[i].amount[0]);
               this.items[i].amount[1] = this.items[i].amount[1].split(' ');
 
               this.items[i].balance = this.items[i].balance.split('.');
@@ -96,7 +95,6 @@ const id = ['raise','release','buy','sell','mining_referrer','first_buy','first_
               this.items[i].balance[0] = this.addComma(this.items[i].balance[0]);
               this.items[i].balance[1] = this.items[i].balance[1].split(' ');
             }   
-         console.log(this.items)
         }
       })
 

@@ -180,7 +180,7 @@ export default {
 <style scoped>
 .asset_pool{
   background-color: #fff;
-  height: 100%;
+  /* height: 100%; */
 }
 .header {
   padding: 30px 55px;

@@ -1,7 +1,7 @@
 <template>
     <vpage >
      <slot>
-       <div style="background-color: rgb(40,40,40);height:100%;width:100%;">
+       <div style="background-color: rgb(40,40,40);height:auto;width:100%;">
         <div class="head" style="background: rgb(27,27,27);">
           <div class="float_left box"><img  class="ion_tbg" src="@/assets/img/u14.png" @click="back"></div>
           <p class="float_left font_four" style="margin: 0.45rem 0 .45rem 0;color: #FFFFFF;">投注详情</p>
@@ -13,89 +13,89 @@
         </div>
         <!-- 投注详情-待开奖   1   -->
         <div v-if="pageMode==1" class="font_four" style="width: 80%;margin:20px 10% 0 10%">
-          <p class="p_A orange">夺宝 - 20x0.1</p>
-          <p class="p_A">本期：第 166 期</p>
-          <p class="p_A">共需 20Key，1Key = 0.1UE，共 2UE</p>
+          <p class="p_A orange">{{items.game_name}}</p>
+          <p class="p_A">本期：第 {{items.periods}} 期</p>
+          <p class="p_A">共需 {{items.total_key}}Key，{{items.quantity}}，共 {{items.total_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">已投注 18Key</p>
           <p class="p_A orange">待开奖</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">投注数量 ：18Key</p>
-          <p class="p_A">投注数量 ：18Key</p>
+          <p class="p_A">投注数量 ：{{items.bet_key}}Key</p>
+          <p class="p_A">投注金额 ：{{items.bet_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">夺宝投注幸运码：</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A"><span>100007</span><span>100007</span></p>
+          <div style="word-break:break-word;"><p class="p_A"><span  style="margin-right: 15px;" v-for="item in items.bet_num" :key="item.key">{{item}}</span></p></div>
         </div>
 
         <!-- 投注详情-待开奖-代投   2   -->
         <div v-if="pageMode==2" class="font_four" style="width: 80%;margin:20px 10% 0 10%">
-          <p class="p_A orange">夺宝 - 20x0.1</p>
-          <p class="p_A">本期：第 166 期</p>
-          <p class="p_A">共需 20Key，1Key = 0.1UE，共 2UE</p>
+          <p class="p_A orange">{{items.game_name}}</p>
+          <p class="p_A">本期：第 {{items.periods}} 期</p>
+          <p class="p_A">共需 {{items.total_key}}Key，{{items.quantity}}，共 {{items.total_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">已投注 18Key</p>
           <p class="p_A orange">待开奖</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">投注数量 ：18Key</p>
-          <p class="p_A">投注数量 ：18Key</p>
+          <p class="p_A">投注数量 ：{{items.bet_key}}Key</p>
+          <p class="p_A">投注金额 ：{{items.bet_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A Centered">使用游戏筹码投注</p>
-          <p class="p_A">代投账号：snatchsnatch</p>
+          <p class="p_A">代投账号：{{items.agent_account}}</p>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">夺宝投注幸运码：</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A"><span style="margin-right:20px">100007</span><span>100007</span></p>
+          <div style="word-break:break-word;"><p class="p_A"><span style="margin-right: 15px;" v-for="item in items.bet_num" :key="item.key">{{item}}</span></p></div>
         </div>
         
         <!-- 投注详情-已开奖-代投--未中奖  3      -->
         <div v-if="pageMode==3" class="font_four" style="width: 80%;margin:20px 10% 0 10%">
-          <p class="p_A orange">夺宝 - 20x0.1</p>
-          <p class="p_A">本期：第 166 期</p>
-          <p class="p_A">共需 20Key，1Key = 0.1UE，共 2UE</p>
+          <p class="p_A orange">{{items.game_name}}</p>
+          <p class="p_A">本期：第 {{items.periods}} 期</p>
+          <p class="p_A">共需 {{items.total_key}}Key，{{items.quantity}}，共 {{items.total_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">最后一位投注账号：eoscheshieosy</p>
-          <p class="p_A">交易ID：5eea2b24e5f3......40dcb33<span class="orange p_A">13224</span>cc4</p>
-          <p class="p_A">本期：165</p>
+          <p class="p_A">最后一位投注账号：{{items.last_bet_account}}</p>
+          <div style="word-break:break-word;"><p class="p_A">交易ID :{{items.trx_id}}</p></div>
+          <p class="p_A">本期：{{items.lucky_code}}</p>
           <p class="p_A">幸运数字</p>
           <p class="p_A">= (( 132244 + 165 ) / 20 ) 的余数 + 100001</p>
-          <p class="p_A">= 9 + 100001 = <span class="orange p_A">10001</span></p>
+          <p class="p_A">= 9 + 100001 = <span class="orange p_A">{{items.constants_num}}</span></p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">投注数量 ：18Key</p>
-          <p class="p_A">投注数量 ：18Key</p>
+          <p class="p_A">投注数量 ：{{items.bet_key}}Key</p>
+          <p class="p_A">投注金额 ：{{items.bet_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A Centered">使用游戏筹码投注</p>
-          <p class="p_A">代投账号：snatchsnatch</p>
+          <p class="p_A">代投账号：{{items.agent_account}}</p>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">夺宝投注幸运码：</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A"><span style="margin-right:20px">100007</span><span>100007</span></p>
+          <div style="word-break:break-word;"><p class="p_A"><span style="margin-right: 15px;" v-for="item in items.bet_num" :key="item.key">{{item}}</span></p></div>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">未中奖</p>
         </div>
 
         <!-- 投注详情-已开奖-代投--中奖   4      -->
         <div v-if="pageMode==4" class="font_four" style="width: 80%;margin:20px 10% 0 10%">
-          <p class="p_A orange">夺宝 - 20x0.1</p>
-          <p class="p_A">本期：第 166 期</p>
-          <p class="p_A">共需 20Key，1Key = 0.1UE，共 2UE</p>
+          <p class="p_A orange">{{items.game_name}}</p>
+          <p class="p_A">本期：第 {{items.periods}} 期</p>
+          <p class="p_A">共需 {{items.total_key}}Key，{{items.quantity}}，共 {{items.total_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">最后一位投注账号：eoscheshieosy</p>
-          <p class="p_A">交易ID：5eea2b24e5f3......40dcb33<span class="orange p_A">13224</span>cc4</p>
-          <p class="p_A">本期：165</p>
+          <p class="p_A">最后一位投注账号：{{items.last_bet_account}}</p>
+          <div style="word-break:break-word;"><p class="p_A">交易ID :{{items.trx_id}}</p></div>
+          <p class="p_A">本期：{{items.lucky_code}}</p>
           <p class="p_A">幸运数字</p>
           <p class="p_A">= (( 132244 + 165 ) / 20 ) 的余数 + 100001</p>
-          <p class="p_A">= 9 + 100001 = <span class="orange p_A">10001</span></p>
+          <p class="p_A">= 9 + 100001 = <span class="orange p_A">{{items.constants_num}}</span></p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">投注数量 ：18Key</p>
-          <p class="p_A">投注数量 ：18Key</p>
+          <p class="p_A">投注数量 ：{{items.bet_key}}Key</p>
+          <p class="p_A">投注金额 ：{{items.bet_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A Centered">使用游戏筹码投注</p>
-          <p class="p_A">代投账号：snatchsnatch</p>
+          <p class="p_A">代投账号：{{items.agent_account}}</p>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">夺宝投注幸运码：</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A"><span style="margin-right:20px">100007</span><span class="orange">100007</span></p>
+          <div style="word-break:break-word;"><p class="p_A"><span style="margin-right: 15px;" v-for="item in items.bet_num" :key="item.key">{{item}}</span></p></div>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">中奖，共派奖：1.8000 UE</p>
           <p class="p_A">其中：1.6000 UE + 0.2000 游戏筹码</p>
@@ -103,46 +103,46 @@
 
         <!-- 投注详情-已开奖-未中奖   5  -->
         <div v-if="pageMode==5" class="font_four" style="width: 80%;margin:20px 10% 0 10%">
-          <p class="p_A orange">夺宝 - 20x0.1</p>
-          <p class="p_A">本期：第 166 期</p>
-          <p class="p_A">共需 20Key，1Key = 0.1UE，共 2UE</p>
+          <p class="p_A orange">{{items.game_name}}</p>
+          <p class="p_A">本期：第 {{items.periods}} 期</p>
+          <p class="p_A">共需 {{items.total_key}}Key，{{items.quantity}}，共 {{items.total_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">最后一位投注账号：eoscheshieosy</p>
-          <p class="p_A">交易ID：5eea2b24e5f3......40dcb33<span class="orange p_A">13224</span>cc4</p>
-          <p class="p_A">本期：165</p>
+          <p class="p_A">最后一位投注账号：{{items.last_bet_account}}</p>
+          <div style="word-break:break-word;"><p class="p_A">交易ID :{{items.trx_id}}</p></div>
+          <p class="p_A">本期：{{items.lucky_code}}</p>
           <p class="p_A">幸运数字</p>
           <p class="p_A">= (( 132244 + 165 ) / 20 ) 的余数 + 100001</p>
-          <p class="p_A">= 9 + 100001 = <span class="orange p_A">10001</span></p>
+          <p class="p_A">= 9 + 100001 = <span class="orange p_A">{{items.constants_num}}</span></p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">投注数量 ：18Key</p>
-          <p class="p_A">投注数量 ：18Key</p>
+          <p class="p_A">投注数量 ：{{items.bet_key}}Key</p>
+          <p class="p_A">投注金额 ：{{items.bet_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">夺宝投注幸运码：</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A"><span style="margin-right:20px">100007</span><span>100007</span></p>
+          <div style="word-break:break-word;"><p class="p_A"><span style="margin-right: 15px;"  v-for="item in items.bet_num" :key="item.key">{{item}}</span></p></div>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">未中奖</p>
         </div>
 
         <!-- 投注详情-已开奖-已中奖  6    -->
         <div v-if="pageMode==6" class="font_four" style="width: 80%;margin:20px 10% 0 10%">
-          <p class="p_A orange">夺宝 - 20x0.1</p>
-          <p class="p_A">本期：第 166 期</p>
-          <p class="p_A">共需 20Key，1Key = 0.1UE，共 2UE</p>
+          <p class="p_A orange">{{items.game_name}}</p>
+          <p class="p_A">本期：第 {{items.periods}} 期</p>
+          <p class="p_A">共需 {{items.total_key}}Key，{{items.quantity}}，共 {{items.total_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">最后一位投注账号：eoscheshieosy</p>
-          <p class="p_A">交易ID：5eea2b24e5f3......40dcb33<span class="orange p_A">13224</span>cc4</p>
-          <p class="p_A">本期：165</p>
+          <p class="p_A">最后一位投注账号：{{items.last_bet_account}}</p>
+          <div style="word-break:break-word;"><p class="p_A">交易ID :{{items.trx_id}}</p></div>
+          <p class="p_A">本期：{{items.lucky_code}}</p>
           <p class="p_A">幸运数字</p>
           <p class="p_A">= (( 132244 + 165 ) / 20 ) 的余数 + 100001</p>
-          <p class="p_A">= 9 + 100001 = <span class="orange p_A">10001</span></p>
+          <p class="p_A">= 9 + 100001 = <span class="orange p_A">{{items.constants_num}}</span></p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A">投注数量 ：18Key</p>
-          <p class="p_A">投注数量 ：18Key</p>
+          <p class="p_A">投注数量 ：{{items.bet_key}}Key</p>
+          <p class="p_A">投注金额 ：{{items.bet_amount}}UE</p>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">夺宝投注幸运码：</p>
           <div style="width: 100%;height: 20px;"></div>
-          <p class="p_A"><span style="margin-right:20px">100007</span><span>100007</span></p>
+          <div style="word-break:break-word;"><p class="p_A"><span style="margin-right: 15px;" v-for="item in items.bet_num" :key="item.key">{{item}}</span></p></div>
           <div style="width: 100%;height: 20px;"></div>
           <p class="p_A">中奖，共派奖：1.8000 UE</p>
         </div>
@@ -206,19 +206,28 @@ export default {
       this.account_name=this.$store.state.wallet.assets.account;
       api.getSomeUserBettingData({game_id:this.$route.params.game_id,periods:this.$route.params.periods,account_name:this.account_name}).then(res => {
         console.log(res)
-      if (res.code === 1) {
-          // if(res.data.win_account==null){
-          //   this.pageMode=1;
-          //   this.items=res.data;
-          // }else{
-          //   if(res.data.agent_account==null){
-          //     this.pageMode=2;
-          //     this.items=res.data;
-          //   }else{
-          //     this.pageMode=3;
-          //     this.items=res.data;
-          //   }
-          // }         
+      if (res.code === 1) {     
+          if(res.data.last_bet_account==null){          //未开奖
+            if(res.data.agent_account==null){          //未代投         
+              this.pageMode=1;this.items=res.data;this.items.bet_num=this.items.bet_num.split(',')     
+            }else{
+              this.pageMode=2;this.items=res.data;this.items.bet_num=this.items.bet_num.split(',')      //代投
+            }
+          }else{              //已开奖
+            if(res.data.agent_account==null){      //   未代投      
+              if(res.data.bonus_amount==null){    //未中奖
+                this.pageMode=5;this.items=res.data;this.items.bet_num=this.items.bet_num.split(',')     
+              }else{                             //中奖
+                this.pageMode=6;this.items=res.data;this.items.bet_num=this.items.bet_num.split(',')     
+              }
+            }else{                                  //代投
+               if(res.data.bonus_amount==null){    //未中奖
+                this.pageMode=3;this.items=res.data;this.items.bet_num=this.items.bet_num.split(',')     
+              }else{                             //中奖
+                this.pageMode=4;this.items=res.data;this.items.bet_num=this.items.bet_num.split(',')     
+              }
+            }
+          }       
         }
     })
   
