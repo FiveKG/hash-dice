@@ -16,9 +16,8 @@ async function createTable() {
         CREATE TABLE IF NOT EXISTS bet_order(
             id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
             bet_block_num TEXT NOT NULL DEFAULT '',
-            extra JSON  NOT NULL DEFAULT '{}'::JSONB,
+            reward_block_num TEXT NOT NULL DEFAULT '',
             account_name TEXT NOT NULL DEFAULT '',
-            betting_time  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
             bet_num  TEXT NOT NULL DEFAULT 0,
             betting_amount TEXT NOT NULL DEFAULT '',
             reward TEXT NOT NULL DEFAULT '',
@@ -29,23 +28,21 @@ async function createTable() {
         comment on table bet_order is '用户投注记录';
         comment on column bet_order.id is '投注Id';
         comment on column bet_order.bet_block_num is '投注区块号';
-        comment on column bet_order.extra is '附加信息';
+        comment on column bet_order.reward_block_num is '中奖区块号';
         comment on column bet_order.account_name is '用户 eos 帐号名称';
-        comment on column bet_order.betting_time is '投注时间';
         comment on column bet_order.bet_num is '投注号码';
         comment on column bet_order.betting_amount is '投注额度';
         comment on column bet_order.reward is '奖金';
-        comment on column bet_order.agent_account is '代投账号';
         comment on column bet_order.game_rate is '中奖赔率';
+        comment on column bet_order.agent_account is '代投账号';
+        comment on column bet_order.create_time is '投注时间';
 
         CREATE TABLE IF NOT EXISTS reward(
-            bet_block_num TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
-            reward_block_num TEXT NOT NULL DEFAULT '',
+            reward_block_num TEXT  PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
             reward_block_id TEXT NOT NULL DEFAULT '',
             reward_num TEXT NOT NULL DEFAULT ''
         );
         comment on table reward is '区块中奖信息';
-        comment on column reward.bet_block_num is '投注区块编号';
         comment on column reward.reward_block_num is '开奖区块编号';
         comment on column reward.reward_block_id is '开奖区块ID';
         comment on column reward.reward_num is '开奖数字';

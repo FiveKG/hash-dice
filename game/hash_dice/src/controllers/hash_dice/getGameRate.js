@@ -1,7 +1,6 @@
 // @ts-check
 const logger = require("../../common/logger").child({ "@controllers/hash_dice/getGameRate.js": "获取赔率"});
 const { get_status, inspect_req_data } = require("../../common/index.js");
-const { pool } = require("../../db");
 const {game_rate} = require("./config")
 /**
  * 

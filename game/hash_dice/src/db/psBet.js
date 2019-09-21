@@ -1,12 +1,16 @@
 // @ts-check
-const logger = require("../common/logger.js").child({"@": "publish - subscribe game"});
+const logger = require("../common/logger.js").child({"@": "游戏投注"});
 const getAmqpChannel = require("./amqp.js");
-const { HASH_DICE_MQ } = require("../common/constant/optConstants.js");
+const { HASH_DICE_BET } = require("../common/constant/optConstants");
 
+/**
+ * 
+ * @param {Object} data 
+ */
 async function publish(data) {
     try {
-        let channel = await getAmqpChannel(HASH_DICE_MQ);
-        await channel.sendToQueue(HASH_DICE_MQ, Buffer.from(JSON.stringify(data)));
+        let channel = await getAmqpChannel(HASH_DICE_BET);
+        await channel.sendToQueue(HASH_DICE_BET, Buffer.from(JSON.stringify(data)));
     } catch (err) {
         throw err;
     }
@@ -14,8 +18,8 @@ async function publish(data) {
 
 async function subscribe(callback) {
     try {
-        let channel = await getAmqpChannel(HASH_DICE_MQ);
-        channel.consume(HASH_DICE_MQ, msg => {
+        let channel = await getAmqpChannel(HASH_DICE_BET);
+        channel.consume(HASH_DICE_BET, msg => {
             // logger.debug("game message: ", msg);
             if (msg !== null) {
                 callback(msg.content.toString());

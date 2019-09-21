@@ -15,9 +15,10 @@ async function getUserBetDetail(req,res,next){
         let resData = get_status(1);
 
         // 查出投注记录
-        const sql = `SELECT b.create_time,b.bet_num,b.betting_amount,b.game_rate,b.agent_account,b.reward,r.bet_block_num,r.reward_block_num,r.reward_block_id,r.reward_num
-                     FROM bet_order AS b INNER JOIN reward as r on 
-                     b.bet_block_num = r.bet_block_num where b.bet_block_num = $1 ;`
+        const sql = `
+        SELECT b.create_time,b.bet_block_num,b.reward_block_num,b.bet_num,b.betting_amount,b.game_rate,b.agent_account,b.reward,r.reward_block_id,r.reward_num
+                FROM bet_order AS b INNER JOIN reward as r on 
+                b.reward_block_num = r.reward_block_num where b.account_name =$1 ;`
         const { rows } = await pool.query(sql,[reqData.id]);
         if (!rows) {
             return res.send(get_status(1013, "can not found bet order"));

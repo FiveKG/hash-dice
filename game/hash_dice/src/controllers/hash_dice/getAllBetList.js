@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger").child({ [__filename]: "get banker" });
+const logger = require("../../common/logger").child({ [__filename]: "get Bet List" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { pool } = require("../../db");
 /**
@@ -15,7 +15,7 @@ async function getBetList(req,res,next){
         let resData = get_status(1);
 
         // 查出投注记录
-        const sql = 'SELECT account_name,betting_time,reward,game_rate FROM bet_order;'
+        const sql = 'SELECT account_name,create_time,reward,game_rate FROM bet_order;'
         const { rows } = await pool.query(sql);
         if (!rows) {
             return res.send(get_status(1013, "can not found bet order"));

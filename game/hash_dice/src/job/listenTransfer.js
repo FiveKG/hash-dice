@@ -1,15 +1,15 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@": "listening invest transfer" });
+const logger = require("../common/logger.js").child({ "@": "listening hash_dice transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
-const { WALLET_RECEIVER, EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN } = require("../common/constant/eosConstants.js");
+const { BANKER, EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN } = require("../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
-const INVEST_KEY = "tbg:invest:account_action_seq";
-
+const HASH_DICE = "tbg:hash_dice:account_action_seq";
+const handlerBet = require("./handlerBet");
 logger.debug(`handlerTransferActions running...`);
 // 每秒中执行一次,有可能上一条监听的还没有执行完毕,下一次监听又再执行了一次,从而造成多条数据重复
-const INVEST_LOCK = `tbg:lock:invest`;
+const INVEST_LOCK = `tbg:lock:hash_dice`;
 let count = 1;
 scheduleJob("*/1 * * * * *", begin);
 // 如果中途断开，再次启动时计数到 10 以后清除缓存
@@ -35,27 +35,22 @@ async function begin() {
 async function handlerTransferActions() {
     try {
         await redis.set(INVEST_LOCK, 1);
-        const actionSeq = await getLastPos();
-        const actions = await getTrxAction(WALLET_RECEIVER, actionSeq);
-        logger.debug("actionSeq: ", actionSeq);
+        const actionSeq = await getLastPos(); //获取上次扫描位置
+        const actions = await getTrxAction(BANKER, actionSeq);
+        // logger.debug("actionSeq: ", actionSeq);
         for (const action of actions) {
             const result = await parseEosAccountAction(action);
-            const trxSeq = await redis.get(`tbg:invest:trx:${ result.account_action_seq }`);
+            const trxSeq = await redis.get(`tbg:hash_dice:trx:${ result.account_action_seq }`);
             logger.debug("result: ", result, "trxSeq: ", trxSeq);
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
             if (trxSeq || !result.invest_type) {
                 await setLastPos(result.account_action_seq);
-                await redis.set(INVEST_KEY, result.account_action_seq);
+                await redis.set(HASH_DICE, result.account_action_seq);
                 continue;
             }
-            let userInvestmentRemark = ``;
-            logger.debug("result.from: ", result.from, typeof result.from, "result.invest_type: ", result.invest_type, typeof result.invest_type, result.from !== result.invest_type);
-            if (result.from !== result.invest_type) {
-                userInvestmentRemark = `user ${ result.from } help user ${ result.invest_type } invest ${ result.amount } UE`;
-            } else {
-                userInvestmentRemark = `${ result.from } investment ${ result.amount } UE`;
-            }
-            await redis.set(`tbg:invest:trx:${ result.account_action_seq }`, result.trx_id);
+            //投注处理
+            //handlerBet()
+            await redis.set(`tbg:hash_dice:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
         }
         await redis.del(INVEST_LOCK);
@@ -114,17 +109,17 @@ async function parseEosAccountAction(action) {
             return result;
         }
         let { from, to, quantity, memo } = act.data;
-        if (to !== WALLET_RECEIVER) {
+        if (to !== BANKER) {
             // todo
             // 收款帐号不符
-            logger.debug(`receipt receiver does not match, ${ to } !== ${ WALLET_RECEIVER }`);
+            logger.debug(`receipt receiver does not match, ${ to } !== ${ BANKER }`);
             return result;
         }
-        let [ invest, user ] = memo.split(":");
-        if (invest !== "tbg_invest") {
+        let [ hash_dice, user ] = memo.split(":");
+        if (hash_dice !== "tbg_invest") {
             // todo
             // memo 格式不符
-            logger.debug(`invalid memo, ${ invest } !== "tbg_invest"`);
+            logger.debug(`invalid memo, ${ hash_dice } !== "tbg_invest"`);
             return result;
         }
         let [ amount, symbol ] = quantity.split(" ");
@@ -158,9 +153,9 @@ async function parseEosAccountAction(action) {
 }
 
 async function getLastPos(){    
-    let lastPosStr = await redis.get(INVEST_KEY);
+    let lastPosStr = await redis.get(HASH_DICE);
     if(!lastPosStr){
-        await redis.set(INVEST_KEY, 0);
+        await redis.set(HASH_DICE, 0);
         return 0;
     }
     return parseInt(lastPosStr) + 1;
@@ -171,7 +166,7 @@ async function getLastPos(){
  * @param { number } seq
  */
 async function setLastPos(seq){
-    await redis.set(INVEST_KEY , seq);
+    await redis.set(HASH_DICE , seq);
 }
 
 module.exports = handlerTransferActions;
