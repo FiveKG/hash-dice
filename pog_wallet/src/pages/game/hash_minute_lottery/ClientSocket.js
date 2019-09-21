@@ -37,7 +37,8 @@ export default class ClientSocket {
 			}
 
 			const trySocket = () => {
-				const host = `ws://192.168.1.141:50007${suffix}`;
+				// const host = `ws://192.168.1.141:50007${suffix}`;
+				const host = `ws://global_lotto.tbg.isecsp.com${suffix}`;
 				const s = new WebSocket(host);
 				s.onerror = err => {
 					console.log('err',err);

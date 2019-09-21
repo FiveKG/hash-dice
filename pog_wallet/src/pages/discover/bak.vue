@@ -58,7 +58,7 @@
                 </div>
               </div>
               </v-ons-col>
-               <v-ons-col>
+               <!-- <v-ons-col>
               <div class="type_item"  @click="goHashDice()">
                 <img src="@/assets/invitation2/u4.svg">
                 <div class="type_detail">
@@ -66,7 +66,7 @@
                   <div class="summary">哈希骰子游戏</div>
                 </div>
               </div>
-             </v-ons-col>
+             </v-ons-col> -->
              <v-ons-col>
               <div class="type_item"  @click="goTreasure()">
                 <img src="@/assets/invitation2/u3.png">
@@ -238,11 +238,18 @@ export default {
         this.gotoExchange();
         return;
       }
-
+      // this.$router.push({
+      //   name: 'Iframe',
+      //   query: {
+      //     url: item.site_url,
+      //     name: item.name
+      //   }
+      // })
       if (this.wallet) {
         ClientSocket.link().then(conn => {
           if (conn) {
             ClientSocket.setAccount(this.wallet.account).then(res => {
+              this.$ons.notification.alert('成功运行!!!!!!')
               this.$router.push({
                 name: 'Iframe',
                 query: {

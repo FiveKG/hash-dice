@@ -643,7 +643,7 @@ watch: {
           this.selected_ipt=this.selected_ipt==true?this.selected_ipt=false:this.selected_ipt=true;
        },
        logBuySell() {  //切换买入卖出
-          this.buySell=this.buySell==true?this.buySell=false:this.buySell=true;
+          this.buySell = !this.buySell;
        },
        logPartnerList() {  //切换全球合伙人买入卖出列表
           this.buyPartnerList=this.buyPartnerList==true?this.buyPartnerList=false:this.buyPartnerList=true;

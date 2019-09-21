@@ -75,6 +75,13 @@
         </div>
       </div>
     </v-ons-dialog>
+    <ons-modal ref='modal' direction="up">
+      <div style="text-align: center">
+        <p>
+          <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Loading...
+        </p>
+      </div>
+    </ons-modal>
   </v-ons-page>
 </template>
 
@@ -117,7 +124,8 @@ export default {
       // type: 'wallet',
       showDialog: false,
       showExDialog: false,
-      noPadding: false
+      noPadding: false,
+      modal: ''
     }
   },
   computed: {
@@ -147,38 +155,40 @@ export default {
         }
       }
     })
-    nodejs.channel.setListener(msg => {
-      if (msg === 'serverOpen') {
-        // ClientSocket.link().then(conn => {
-        //   console.log(conn)
-        //   if (conn) {
-        //     ClientSocket.setAccount(this.$store.state.wallet.assets.account)
-        //   }
-        // }).catch(err => {
-        //   console.log(err)
-        // })
-        const s = new WebSocket('ws://127.0.0.1:50005/socket.io/?EIO=3&transport=websocket')
-        s.onmessage = msg => {
-          if(msg.data.indexOf('42/app') === -1) return false;
-          const [data] = JSON.parse(msg.data.replace('42/app,', ''));
-          console.log('onmessage', data)
-          if (data.type && data.type === 'requestSignature') {
-            this.$store.commit('wallet/setSignatureData',data.data)
-            this.$store.commit('wallet/setSignatureRequest',data.request)
+    if (typeof nodejs !== "undefined") {
+      nodejs.channel.setListener(msg => {
+        if (msg === 'serverOpen') {
+          // ClientSocket.link().then(conn => {
+          //   console.log(conn)
+          //   if (conn) {
+          //     ClientSocket.setAccount(this.$store.state.wallet.assets.account)
+          //   }
+          // }).catch(err => {
+          //   console.log(err)
+          // })
+          const s = new WebSocket('ws://127.0.0.1:50005/socket.io/?EIO=3&transport=websocket')
+          s.onmessage = msg => {
+            if(msg.data.indexOf('42/app') === -1) return false;
+            const [data] = JSON.parse(msg.data.replace('42/app,', ''));
+            console.log('onmessage', data)
+            if (data.type && data.type === 'requestSignature') {
+              this.$store.commit('wallet/setSignatureData',data.data)
+              this.$store.commit('wallet/setSignatureRequest',data.request)
+            }
+          }
+          s.onerror = err => {
+            console.log('onerror',err)
+          }
+          s.onopen = () => {
+            console.log('onopen')
+            s.send('40/app')
+          }
+          s.onclose = () => {
+            console.log('onclose')
           }
         }
-        s.onerror = err => {
-          console.log('onerror',err)
-        }
-        s.onopen = () => {
-          console.log('onopen')
-          s.send('40/app')
-        }
-        s.onclose = () => {
-          console.log('onclose')
-        }
-      }
-    })  
+      })
+    }  
   },
   mounted() {
     const url = 'http://www.eos.isecsp.com/app/versionInfo.json'
@@ -234,9 +244,12 @@ export default {
       const currentAcc = this.$store.state.wallet.assets
       if (selectedTab == 'xx') {
         // 当前不存在账户放弃跳转
-
-        if (!currentAcc || !currentAcc.account) return
-
+      let modal = this.$refs.modal
+        if (!currentAcc || !currentAcc.account) {
+          this.$ons.notification.toast('当前无账号，无法跳转',{timeout:1000})
+          return
+        }
+        modal.show()
         // 存在用户的话判断是否绑定
         const response = await api.isBind({account_name: currentAcc.account})
         if (response.code == 1){
@@ -245,17 +258,24 @@ export default {
             // this.selectTab='xx'
             console.log('前往xx页面')
             this.$store.commit('wallet/setSelectedTab', 'xx')
+            setTimeout(function() {
+              modal.hide();
+            }, 800);
             return
           }else{
             this.$store.commit('wallet/setTbgBindStatus', false)
             // this.selectTab='Binding'
-            console.log('前往binding页面')
+            this.$ons.notification.toast('请您先绑定',{timeout:1000})
             this.$store.commit('wallet/setSelectedTab', 'Binding')
             return
           }
         }else{
+          this.$ons.notification.toast('网络请求错误',{timeout:1000})
           return
         }
+        setTimeout(function() {
+          modal.hide();
+        }, 800);
       } else if (selectedTab === 'assets') {
         if (this.$store.state.wallet.localFile.wallets.length) {
           // this.type = 'assets'
@@ -288,7 +308,7 @@ export default {
         window.plugins.launcher.launch({packageName:'com.isecsp.pogex'}, function success(params) {
           
         }, function error(params) {
-          console.log('error', params)
+          this.$ons.notification.toast(params,{timeout:1000})
         });
       }
       function errorCallback(err) {

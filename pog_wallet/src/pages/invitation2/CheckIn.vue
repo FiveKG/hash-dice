@@ -25,28 +25,22 @@
 import api from '@/servers/invitation'
 
 export default {
-    props: {
-
-    },
     data () {
         return {
-            list: [
-                '1','2','3','4','5','6','7',
-            ],
+            list: [],
             disableClick: false
         }
     },
     created() {
-        console.log('this.$store.state.wallet.assets',this.$store.state.wallet.assets)
         this.initCheckinState()
     },
-     methods: {
+    methods: {
         jumpSignDetails() {        //跳转签到奖励明细
           this.$router.push({
           name: 'SignDetails',
         })
        },
-       userCheckin () {
+        userCheckin () {
             if(this.disableClick) return
             this.disableClick = true
             api.UseCheckin({
@@ -63,8 +57,8 @@ export default {
             }).catch(() => {
                 this.disableClick = false
             })
-       },
-       initCheckinState () {
+        },
+        initCheckinState () {
             api.CheckIn({
                 account_name: this.$store.state.wallet.assets.account
             }).then(res => {

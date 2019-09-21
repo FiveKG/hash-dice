@@ -3,7 +3,7 @@ import axios from 'axios';
 // var baseURL = 'http://172.81.224.11/api';
 // var baseURL = 'http://192.168.1.135:9527';
 var baseURL
-if (process.env === 'development') {
+if (process.env.NODE_ENV === 'development') {
     baseURL = 'http://192.168.1.141:9527';
 } else {
     baseURL = 'http://pog.tbg.isecsp.com';

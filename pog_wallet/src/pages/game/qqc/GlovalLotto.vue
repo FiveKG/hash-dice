@@ -23,8 +23,7 @@ export default {
       goLottoGame(){
          setTimeout(()=>{
             this.$router.push('LottoGame');
-         },3000)
-          
+         },3000) 
       }
   },
   mounted(){

@@ -1,7 +1,7 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import Api from '@/servers/invitation';
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -160,5 +160,68 @@ export default new Vuex.Store({
         }
       }
     },
+    profit: {
+      strict: true,
+      namespaced: true,
+      state: {
+        // 是不是第一次启动
+        refferIncome: '',
+        modeIncome: '',
+        sortIncome: '',
+        otherIncome: '',
+        totalIncome: ''
+      },
+      mutations: {
+        setRefferIncome (state, income) {
+          state.refferIncome = income
+        },
+        setModeIncome (state, income) {
+          state.modeIncome = income
+        },
+        setSortIncome (state, income) {
+          state.sortIncome = income
+        },
+        setOtherIncome (state, income) {
+          state.otherIncome = income
+        },
+        setTotalIncome (state, income) {
+          state.totalIncome = income
+        }
+      },
+      actions: {
+        fetchRefferIncome ({commit}, accName) {
+          Api.incomeReferrer({account_name: accName})
+          .then( res => {
+            if (res.code === 1) {
+              commit('setRefferIncome', res.data)
+            }
+          })
+        },
+        setModeIncome ({commit}, accName) {
+          Api.incomeMode({account_name: accName})
+          .then( res => {
+            if (res.code === 1) {
+              commit('setModeIncome', res.data)
+            }
+          })
+        },
+        setSortIncome ({commit}, accName) {
+          Api.incomeSort({account_name: accName})
+          .then( res => {
+            if (res.code === 1) {
+              commit('setSortIncome', res.data)
+            }
+          })
+        },
+        setOtherIncome ({commit}, accName) {
+          Api.incomeOther({account_name: accName})
+          .then( res => {
+            if (res.code === 1) {
+              commit('setOtherIncome', res.data)
+            }
+          })
+        },
+      }
+    }
   }
 })

@@ -490,6 +490,12 @@ export default {
       const index = wallets.findIndex(ele => ele.publicKey === this.deleteKey)
       wallets.splice(index, 1)
       localStorage.setItem('isecsp_wallet',JSON.stringify(localFile))
+      if (this.$store.state.wallet.localFile.wallets.length > 0) {
+        const currentWallet = this.$store.state.wallet.localFile.wallets[0]
+        this.$store.commit('wallet/setAssets', wallet)
+      } else {
+        this.$store.commit('wallet/setAssets', null)
+      }
       this.dialogVisible = false
       this.deleteDialogVisible = false
       this.actionSheetVisible = false
