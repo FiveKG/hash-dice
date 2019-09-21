@@ -1,11 +1,13 @@
 // @ts-check
 const logger = require("../../common/logger").child({ [__filename]: "betting" });
-const { get_status, inspect_req_data, xhr } = require("../../common/index.js");
-const { pool } = require("../../db");
+const { get_status, inspect_req_data, xhr,generate_primary_key } = require("../../common/index.js");
+const { pool ,psBet} = require("../../db");
 const { Decimal } = require("decimal.js");
 const url = require("url");
-const shortid = require('shortid')
+const {AGENT_ACCOUNT} = require('../../common/constant/eosConstants')
 const {game_rate} = require('./config')
+const getCurrencyBalance = require("../../job/getCurrencyBalance")
+
 /**
  * 获取所有的投注
  * @param {any} req 
@@ -18,10 +20,10 @@ async function betting(req,res,next){
 
         logger.debug(`the param is: %j`,reqData);
 
-        let resData                           = get_status(1);
+
         let {account_name,bet_num,bet_amount} = reqData;
-        let id                                = shortid.generate();
-        let bet_block_num                     = shortid.generate();  //从区块链中获取
+        let id                                = generate_primary_key();
+       // let bet_block_num                     = shortid.generate();  //从区块链中获取
         let odds_rate                         = null;
         let obj                               = null;
 
@@ -39,19 +41,67 @@ async function betting(req,res,next){
 
 
         //查出玩家余额
-        // const TBG_SERVER = process.env.TBG_SERVER || "http://localhost:13022/";
-        // const opts = { data: { account_name: "gametestuser" } };
-        // const { data: resp } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
+        const TBG_SERVER = process.env.TBG_SERVER || "http://192.168.1.141:9527/";
+        const opts = { data: { account_name: account_name} };
 
-        let sql = `INSERT INTO public.bet_order(
-            id, bet_block_num,extra, account_name, betting_time, bet_num, betting_amount, reward, game_rate, agent_account, create_time)
-            VALUES ($1,$2,'{}',$3, now(),$4,$5,'',$6,'', now());`
-        let {rows} = await pool.query(sql,[id,bet_block_num,account_name,bet_num,bet_amount,odds_rate])
-        
-        //@ts-ignore
+        const { data: resp } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
+        let eos_currency =(await getCurrencyBalance(account_name)).pop().replace(' UE','')
+
+       
+        // 可提现余额，游戏码,区块链余额
+        const withdrawEnable = new Decimal(resp.withdraw_enable);
+        const gameCurrency   = new Decimal(resp.game_currency);
+        const eosCurrency    = new Decimal(eos_currency)
+        //保留下注总数小数点后4位，取消四舍五入
+        bet_amount = new Decimal(bet_amount).toFixed(4)
+
+        let psData = {
+                "account_name" : account_name,
+                "bet_num"      : bet_num,
+                "odds_rate"    : odds_rate,
+                "bet_amount"   : bet_amount,
+                "agent_account": AGENT_ACCOUNT
+                
+        };
+
+        let resData
+        //如果游戏码额度小于下注额度
+        if(gameCurrency.lessThan(bet_amount)){
+            //如果余额额度小于下注额度
+            if(withdrawEnable.lessThan(bet_amount))
+            {   
+                //如果区块链余额小于下注额度
+                if(eosCurrency.lessThan(bet_amount)){
+                    //提示所有账户没钱
+                    resData =  res.send(get_status(1011, "完全不够钱"));
+                }else{
+                    //仅剩区块链有钱
+                    resData = get_status(1011, "只有区块链够钱");
+                }
+            }else{
+                //用余额下注
+                //@ts-ignore
+                psData['pay_type'] = 'withdraw_enable';
+                //提交投注信息到消息队列
+                await psBet.pub(psData);
+                resData = get_status(1011, "余额下注");
+            }
+        }
+        else{
+            //用游戏码下注
+            //@ts-ignore
+            psData["pay_type"]= "game_currency"
+            //提交投注信息到消息队列
+            await psBet.pub(psData);
+            resData = get_status(1011, "游戏码下注");
+        }  
         res.send(resData);
+        
+        // //test
+        // await psBet.pub(psData);
+ 
     } catch (err) {
-        logger.error("request getGameRate error, the error stock is %O", err);
+        logger.error("request bet error, the error stock is %O", err);
         throw err;
     }
 }

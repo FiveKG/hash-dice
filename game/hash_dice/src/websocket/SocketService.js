@@ -86,8 +86,10 @@ async function getBlockInfo() {
     // 获取区块链信息
     const { head_block_num } = await rpc.get_info();
     getBlocks(head_block_num)
-  } catch(err) { 
-    logger.log('getBlockInfo',err)
+    
+  } catch(err) {
+    logger.debug('getBlockInfo',err)
+
     throw err;
   }
 }
@@ -103,7 +105,7 @@ const openCount = 0;
 async function getBlocks(block_num) {
   rpc.get_block(block_num).then(res => {
     try {
-      // logger.debug("res: ", res.block_num, res.id, res.timestamp);
+      //logger.debug("res: ", res.block_num, res.id, res.timestamp);
       block_num++;
       if (!!block_server) {
         block_server.to('block').emit({ type: 'block', result: res });

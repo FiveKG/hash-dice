@@ -2,9 +2,9 @@
 require("./setEnv.js")();
 const express = require("express");
 const logger = require("./src/common/logger.js");
-
 const app = express();
 const nginx_host = `127.0.0.1`;
+const { socketService } = require('./src/websocket/SocketService');
 
 logger.info(`init server of pools server.`);
 app.set("x-powered-by", false);
@@ -47,6 +47,7 @@ server.on('listening', async () => {
   // require("@yz/yue-service-register")(`${service_name}`, port);
   // 初始化系统服务数据;
   require("./src/build/initDate");
+  await socketService.initialize(server);
   logger.info(`**** server of pools running at http://localhost:${port}/  ****`)
 
 });

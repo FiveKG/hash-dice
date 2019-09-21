@@ -93,7 +93,6 @@ unlock
 # 生成一批测试账号，同时导入私钥
 blukImportKey
 
-<<<<<<< HEAD
 # recharger
 
 cleos -u http://45.251.109.187:8888 push action tbgtokencoin transfer '["tbgtokencoin","yujinsheng11","1000000.0000 TBG","recharger"]' -p tbgtokencoin
@@ -108,6 +107,3 @@ cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinshe
 cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","10.0000 UE","recharger"]' -p yujinsheng11
 cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","1000.0000 UE","recharger"]' -p yujinsheng11
 cleos -u http://45.251.109.187:8888 push action tbgtokencoin transfer '["tbgtokencoin","tbgfreepool","100.0000 TBG","recharger"]' -p tbgtokencoin
-=======
-# recharger
->>>>>>> developer

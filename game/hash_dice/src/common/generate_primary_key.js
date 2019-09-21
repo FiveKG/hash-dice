@@ -1,5 +1,5 @@
 // const uuidv4 = require("uuid/v4");
-const instauuid = require('instauuid');
+const shortid = require('shortid');
 
 // /**
 //  * 生成主键值
@@ -10,7 +10,7 @@ const instauuid = require('instauuid');
 // }
 
 function generate_primary_key() {
-  return instauuid('hex');
+  return shortid.generate()
 }
 
 module.exports = generate_primary_key;
