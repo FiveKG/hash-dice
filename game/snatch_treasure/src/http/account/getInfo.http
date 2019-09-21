@@ -11,10 +11,10 @@ GET http://localhost:13025/snatch_treasure/game_session_info?game_id=3
 GET http://localhost:13025/snatch_treasure/game_session_detail?game_id=3&periods=1
 
 ### get account information
-GET http://localhost:13025/snatch_treasure/game_session?game_id=3
+GET http://localhost:13025/snatch_treasure/game_session?game_id=1
 
 ### get account information
-GET http://localhost:13025/snatch_treasure/game_session_mine?account_name=yujinsheng11&game_id=3
+GET http://localhost:13025/snatch_treasure/game_session_mine?account_name=yujinsheng11&game_id=1
 
 ### get account information
 GET http://localhost:13025/snatch_treasure/game_session_mine_detail?account_name=yujinsheng11&game_id=1&periods=1
@@ -27,6 +27,6 @@ Content-Type: application/json
     "game_id": 1,
     "periods": 1,
     "account_name": "yujinsheng11",
-    "bet_key": 1,
-    "bet_amount": 0.1
+    "bet_key": 10,
+    "bet_amount": 1 
 }

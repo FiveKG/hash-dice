@@ -212,7 +212,8 @@
                             "game_name": { "type": "text",  "is_require": true,  "desc": "游戏名称" },  
                             "total_amount": { "type": "number",  "is_require": true,  "desc": "总 UE 数量" },
                             "quantity": { "type": "number",  "is_require": true,  "desc": "key 与 UE 比， 1 key = 0.1 UE" },
-                            "pay_type": { "type": "text",  "is_require": true,  "desc": "使用哪种余额投注" }
+                            "pay_type": { "type": "text",  "is_require": true,  "desc": "使用哪种余额投注" },
+                            "bonus_amount": { "type": "text",  "is_require": true,  "desc": "奖金" }
                         }
                     }
                 }

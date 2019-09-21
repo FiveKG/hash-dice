@@ -66,7 +66,6 @@ void globallotto::open(string reward_num, uint64_t game_id, time_point_sec rewar
             game.game_id = game_id;
             game.reward_num = reward_num;
             game.reward_time = reward_time;
-            game.reward_time = reward_time;
         });
 
         // todo 开奖以后,结束这一期, 可以调用 setstate 方法设置

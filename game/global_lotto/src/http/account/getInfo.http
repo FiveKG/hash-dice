@@ -38,3 +38,11 @@ Content-Type: application/json
     "bet_key": 4,
     "bet_amount": 0.4
 }
+
+####
+curl -XPOST http://45.251.109.187:8888/v1/history/get_actions -H "Content-Type: application/json" -d '
+{
+    "pos": 1,
+    "offset": 9,
+    "account_name": "lottobanker"
+}'

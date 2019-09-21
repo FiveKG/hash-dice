@@ -46,7 +46,7 @@ async function one() {
         const id = gsId[i].gs_id;
         let extra = { agent_account: "globallotto", transaction_id: trxIds[i], pay_type: "game_currency" }
         if (i === 1) {
-            extra.agent_account = "dengderong";
+            extra.agent_account = "gametestuser";
             extra.pay_type = "UE";
         }
 
@@ -60,7 +60,7 @@ async function one() {
         const betAmount = new Decimal(0.1).mul(betKey).toNumber();
         sqlList.push({
             sql: insertBetOrder,
-            values: [ generate_primary_key(), id, extra, "dengderong", "now()", betNum, betKey, betAmount ]
+            values: [ generate_primary_key(), id, extra, "gametestuser", "now()", betNum, betKey, betAmount ]
         });
     }
     

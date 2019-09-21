@@ -211,19 +211,6 @@ async function awardGame(data) {
                 ]
             });
         }
-        
-        actList.push({
-            account: GLOBAL_LOTTO_CONTRACT,
-            name: "setstate",
-            authorization: [{
-                actor: GLOBAL_LOTTO_CONTRACT,
-                permission: 'active',
-            }],
-            data: {
-                game_id: rewardInfo.periods,
-                state: GAME_STATE.REWARDING
-            }
-        });
 
         // 调用 globallotto 合约开奖，记录相关信息
         actList.push({

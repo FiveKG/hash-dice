@@ -72,7 +72,7 @@ class SocketService {
 function socketHandler(socket) {
   socket.emit('connected');
   socket.on('api', async request => {
-    logger.debug("request: ", request);
+    // logger.debug("request: ", request);
     // let result = await ApiService.handler(Object.assign({}, request))
     // logger.debug("socketHandler: ", result);
     // socket.emit(result)

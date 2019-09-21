@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@": "listening invest transfer" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "listening treasure bet transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
 const { BANKER, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
@@ -139,14 +139,21 @@ async function parseEosAccountAction(action) {
             logger.debug("invalid memo, memo must be include game_name, account_name, bet_key, bet_amount, periods, g_id format like 'game_name:account_name:bet_key:bet_amount:periods:g_id'")
             return result;
         }
-        if (game_name !== "snatch_treasure") {
+        if (game_name !== "treasure") {
             // todo
             // memo 格式不符
-            logger.debug(`invalid memo, ${ game_name } !== "snatch_treasure"`);
+            logger.debug(`invalid memo, ${ game_name } !== "treasure"`);
             return result;
         }
 
         let [ amount, symbol ] = quantity.split(" ");
+
+        if (!new Decimal(amount).eq(bet_amount)) {
+            // memo 格式不符
+            logger.debug(`金额不匹配, transfer is ${ amount }, memo bet_amount is ${ bet_amount }`);
+            return result;
+       }
+       
         if (symbol === UE_TOKEN_SYMBOL) {
             result.account_name = account_name;
             result.bet_key = bet_key;

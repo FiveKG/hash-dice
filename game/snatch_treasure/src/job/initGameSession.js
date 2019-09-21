@@ -2,7 +2,7 @@
 const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "初始化游戏期数" });
 const { Decimal } = require("decimal.js");
 const { pool, psTrx } = require("../db");
-const { SNATCH_TREASURE_CONTRACT } = require("../common/constant/eosConstants");
+const { SNATCH_TREASURE_CONTRACT, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants");
 const { GAME_STATE, INIT_SESSION_COUNT, INIT_SESSION_LIMIT } = require("../common/constant/gameConstants");
 const { redis, generate_primary_key } = require("../common");
 const { getGameInfo, insertGameSession, getLastGameSession } = require("../models/game");
@@ -65,7 +65,7 @@ async function initGameSession(g_id, periods) {
                     const now = new Date();
                     const opts = [ 
                         generate_primary_key(), oneGameInfo.g_id, SNATCH_TREASURE_CONTRACT, 
-                        tmpPeriods, {}, GAME_STATE.START, "", df.format(now, "YYYY-MM-DDTHH:mm:ss.SSZ")
+                        tmpPeriods, {}, GAME_STATE.START, "", df.format(now, "YYYY-MM-DDTHH:mm:ssZ")
                     ]
                     sqlList.push({ sql: insertToGameSessionSql, values: opts });
                     // 调用 snatch 合约初始化期数
@@ -78,10 +78,10 @@ async function initGameSession(g_id, periods) {
                         }],
                         data: {
                             game_id: tmpPeriods,
-                            create_time: now,
+                            create_time: df.format(now, "YYYY-MM-DDTHH:mm:ss"),
                             rule: {
                                 id: oneGameInfo.g_id,
-                                quantity: oneGameInfo.quantity,
+                                quantity: `${ new Decimal(oneGameInfo.quantity).toFixed(4)} ${ UE_TOKEN_SYMBOL }`,
                                 key: oneGameInfo.key_count
                             }
                         }

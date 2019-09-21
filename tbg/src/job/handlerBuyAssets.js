@@ -6,8 +6,6 @@ const { getAllTrade } = require("../models/trade");
 const buyAlloc = require("./buyAlloc");
 const sellAlloc = require("./sellAlloc");
 
-handlerBuyAssets({account_name: "yujinsheng11", price: 1, amount: 100, trId: "ef4099f0f480933f"});
-
 /**
  * 卖出资产
  * 用户卖出 TBG，可以得到 UE
