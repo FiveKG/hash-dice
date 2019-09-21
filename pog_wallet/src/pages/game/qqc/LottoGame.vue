@@ -47,7 +47,7 @@
           <div @click="btnLess()" class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five" style="line-height:1rem;text-align: center;color: rgb(228, 228, 228);">-</p></div>
           <div class="display_ib vertical_top" style="width:1.8rem;height:1rem;"><p class=" font_five orange" style="line-height:1rem;text-align: center;">{{inputNumber}}</p></div>
           <div @click="btnAdd()" class="display_ib vertical_top" style="width:1rem;height:1rem;background:rgb(67,67,67);"><p class=" font_five orange" style="line-height:1rem;text-align: center;">+</p></div>
-          <div class="display_ib vertical_top" style="width:3rem;height:1rem;"><p class=" font_five" style="line-height:1rem;text-align: center;color: #E4E4E4;">@ {{openInfo.quantity}} UE</p></div>
+          <div class="display_ib vertical_top" style="width:3rem;height:1rem;"><p class=" font_five" style="line-height:1rem;text-align: center;color: #E4E4E4;">@ {{UEnumber}} UE</p></div>
         </div>
 
       <!-- key -->
@@ -73,16 +73,19 @@
           <span># {{item.periods}} 期</span>  
           <span style="color:#FF9900" v-if="item.reward_num =='' ">待开奖 - 开奖倒计时 {{tiemer}}</span>
           <span v-if="item.reward_num">{{item.reward_num}}</span>
-          <span>{{item.key}}</span> 
-          <img src="@/assets/img/invitation_profitarrow.png" alt="">
+          <span>{{item.key}} <img src="@/assets/img/invitation_profitarrow.png" alt=""></span> 
+          
         </p>
       </div>
 
 
       <!-- 如果状态等于1 显示我的 -->
       <div class="myList" v-if="btnId == 1">
-        <p v-for="(item,index) in openList" :key="index"><span># {{item.time}}</span>   <span>{{item.num}}</span>
-          <span>{{item.key}}</span> <img src="@/assets/img/invitation_profitarrow.png" alt="">
+        <p v-for="(item,index) in openMyList" :key="index">
+          <span># {{item.periods}} 期 - <span style="color:#FF9900" v-if="item.win_type== 'waiting'">待开奖</span> </span>   
+          <span>{{item.bet_time}}</span>
+          <span>{{item.bet_key}} Key<img src="@/assets/img/invitation_profitarrow.png" alt=""></span> 
+          
         </p>
       </div>
       
@@ -111,8 +114,6 @@
             </v-ons-row>
          </div>
       </v-ons-action-sheet> 
-
-
         </div>
     </ons-page>
 </template>
@@ -124,6 +125,7 @@
 import ClientSocket from '@/socket/scrollClientSocket'
 import api from '@/servers/game'
 import { format, parse } from 'date-fns'
+import {Decimal} from 'decimal.js';
 
 export default {
    name: '',
@@ -134,12 +136,14 @@ export default {
           treasureKey:1,  //滚动KEY
           tiemer:'', //倒计时
           inputNumber:1,  //加减框数字
+          UEnumber:0,
           items:[    // 滚动
             // {timestamp:"15:23:02.0",block_num:33283278,
             //   id:'...'+"F7B195473D4F09BC8F1",treasureKey:1
             //   }
           ],  
           openAllList:[],
+          openMyList:[],
           openInfo:{},
        }
    },
@@ -220,6 +224,7 @@ export default {
       getOpen(){
             api.getOpen().then(res => {
                 this.openInfo = res.data
+                this.UEnumber = this.openInfo.quantity 
                 //倒计时
 
                 var allSecond =Math.abs(this.openInfo.count_down) 
@@ -262,15 +267,31 @@ export default {
           if(this.inputNumber<1){
               this.inputNumber = 1
           }
+          this.UEnumber =new Decimal(this.inputNumber).mul(new Decimal(this.openInfo.quantity) )
+          console.log(this.inputNumber)
+          console.log(this.openInfo.quantity)
+          console.log(this.UEnumber)
       },
       btnAdd(){
           this.inputNumber++
+          this.UEnumber =new Decimal(this.inputNumber).mul(new Decimal(this.openInfo.quantity) )   
+          console.log(this.inputNumber)
+          console.log(this.openInfo.quantity)
+          console.log(this.UEnumber)
       },
       getAllGame(){
           api.getOpenlist().then(res => this.openAllList = res.data)
       },
       getMyGame(){
-          api.getOpenlist().then(res => this.openAllList = res.data)
+          api.getUserBet({account_name:this.$store.state.wallet.assets.account}).then(res => {
+                this.openMyList = res.data.detail;
+                
+                for(var i=0; i<this.openMyList.length; i++){
+                     this.openMyList[i].bet_time = format(parse(this.openMyList[i].bet_time), 'MM/DD HH:mm:ss')
+                }
+                console.log(111111111,this.openMyList)
+                // this.openMyList.
+            })
       },
       randomBetting(){
           this.$toast('随机投注成功')
@@ -291,17 +312,24 @@ export default {
         },
     },
 
-   created(){
+  created(){
 
 
      //轮播滚动
-     this.initSocket();
+    //  this.initSocket();
 
      //获取全球彩奖池，倒计时，期数
      this.getOpen()
 
      //获取全部开奖信息列表
      this.getAllGame()
+
+     //获取我的开奖信息列表
+     this.getMyGame()
+
+     
+     
+
 
 
     
@@ -593,30 +621,42 @@ export default {
       background-color:#1b1b1b;
       height:10.5rem;
       overflow-y:scroll;
+ 
   }
+  // .allList p, .myList p{
+  //     text-align:center;
+  //     line-height: 1.5rem;
+  //     font-size:.44rem;
+  //     font-family: '微軟正黑體 Regular', '微軟正黑體';
+  //     font-weight: 400;
+  //     font-style: normal;
+  // }
   .allList p, .myList p{
-      text-align:center;
-      line-height: 1.5rem;
-      font-size:.44rem;
+      display:flex;
+      flex-wrap:nowrap;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 0.35rem 0 0.35rem;
+      height:1.1rem;
       font-family: '微軟正黑體 Regular', '微軟正黑體';
-      font-weight: 400;
-      font-style: normal;
+      font-size:0.42rem;
+
   }
   .allList p span:nth-child(1), .myList p span:nth-child(1){
      color:#BCBCBC;
-     padding-right:.7rem;
+  
     
   }
   .allList p span:nth-child(2), .myList p span:nth-child(2){
      color:#BCBCBC;
-     padding-right:1rem;
+
   }
   .allList p span:nth-child(3), .myList p span:nth-child(3){
      color:#BCBCBC;
  
   }
   .allList{
-    padding:.2rem 0;
+  
   }
   .allList p img, .myList p img{
     vertical-align: middle;
