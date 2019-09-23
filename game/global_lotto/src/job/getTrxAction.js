@@ -4,8 +4,6 @@ const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // developme
 const fetch = require('node-fetch');                                // node only
 const { TextDecoder, TextEncoder } = require('util');               // node only
 const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN, UE_TOKEN } = require("../common/constant/eosConstants.js");
-
-// @ts-ignore
 const rpc = new JsonRpc(END_POINT, { fetch });
 
 /**

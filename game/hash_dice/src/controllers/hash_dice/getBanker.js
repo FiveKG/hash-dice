@@ -1,6 +1,8 @@
 // @ts-check
 const logger = require("../../common/logger").child({ [__filename]: "get banker" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
+const {BANKER} =  require("../../common/constant/eosConstants")
+const getBalance = require("../../job/getCurrencyBalance")
 /**
  * 
  * @param {any} req 
@@ -8,8 +10,8 @@ const { get_status, inspect_req_data } = require("../../common/index.js");
  * @param {any} next 
  */
 async function getBanker(req,res,next){
-    let banker =  111111;
     try {
+        let banker =  await getBalance(BANKER)
         let reqData = await inspect_req_data(req);
         logger.debug(`the param is: %j`,reqData);
         let resData = get_status(1);
