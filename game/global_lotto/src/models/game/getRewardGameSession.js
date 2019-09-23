@@ -10,7 +10,7 @@ const { GAME_STATE } = require("../../common/constant/gameConstants.js");
 async function getRewardGameSession() {
     try {
         let sql = `
-            SELECT * FROM game_session WHERE game_state = $1 OR game_state = $2 ORDER BY end_time DESC LIMIT 1;
+            SELECT * FROM game_session WHERE game_state = $1 OR game_state = $2 ORDER BY end_time DESC;
         `
         let { rows: info } = await pool.query(sql, [ GAME_STATE.AWARDED, GAME_STATE.START ]);
         return info;

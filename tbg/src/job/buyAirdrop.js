@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@src/job/buyAirdrop.js": "购买资产包空投" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "购买资产包空投" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const { getUserReferrer } = require("../models/referrer");

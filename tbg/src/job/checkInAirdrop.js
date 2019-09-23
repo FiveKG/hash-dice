@@ -1,6 +1,6 @@
 // @ts-check
 const { pool, psTrx } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/checkInAirdrop.js": "签到空投" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "签到空投" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");

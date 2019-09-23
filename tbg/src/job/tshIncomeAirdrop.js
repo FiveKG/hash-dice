@@ -1,6 +1,6 @@
 // @ts-check
 const { psTrx } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/tshIncomeAirdrop.js": "多出的部分空投到股东池账户" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "多出的部分空投到股东池账户" });
 const { Decimal } = require("decimal.js");
 const { TSH_INCOME, TBG_TOKEN_COIN } = require("../common/constant/accountConstant.js");
 const { TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");

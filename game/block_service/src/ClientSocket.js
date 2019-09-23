@@ -63,8 +63,8 @@ class ClientSocket {
 
 			const trySocket = () => {
 				// const host = `wss://lottery-api.eoscrown.com${suffix}`;
-				const host = `ws://192.168.1.141:13021${suffix}`;
-				// const host = `ws://global_lotto.tbg.isecsp.com${suffix}`;
+				// const host = `ws://192.168.1.141:13021${suffix}`;
+				const host = `ws://global_lotto.tbg.isecsp.com${suffix}`;
 				// const host = `ws://hash_dice.tbg.isecsp.com${suffix}`;
 				// const host = `ws://treasure.tbg.isecsp.com${suffix}`;
 				// global_lotto: hash_dice.tbg.isecsp.com

@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@src/job/adjustPrice.js": "调整价格" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "调整价格" });
 const { Decimal } = require("decimal.js");
 const { MAX_RISE_PRICE, MIN_RISE_PRICE, OPENING_PRICE_KEY } = require("../common/constant/tradeConstant");
 const { redis } = require("../common");

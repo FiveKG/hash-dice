@@ -10,7 +10,6 @@ const { getGameInfo, selectGameSessionByPeriods } = require("../models/game");
 const { scheduleJob } = require("node-schedule");
 const df = require("date-fns");
 const { newApi } = require("./getTrxAction");
-
 /**
  * 处理用户投注
  * @param {{ periods: number, account_name: string, 
@@ -31,67 +30,24 @@ async function handlerBet(data) {
         // 所有游戏种类
         const gameInfo = await getGameInfo();
         const oneGameInfo = gameInfo.find(it => it.g_id === data.g_id);
+        logger.debug("oneGameInfo: ", oneGameInfo);
         // 如果找不到，直接返回
         if (!oneGameInfo) {
             return;
         }
 
-        // 获取游戏期数详情
-        const selectGameSessionSql = `SELECT * FROM game_session WHERE g_id = $1 AND periods = $2`
-        const { rows: [ gameSessionInfo ] } = await pool.query(selectGameSessionSql, [ oneGameInfo.g_id, data.periods ]);
-        // 如果找不到，或者这一期的状态不是开始状态, 不可投注, 直接返回
-        if (!gameSessionInfo || (!!gameSessionInfo && gameSessionInfo.game_state !== GAME_STATE.START)) {
-            logger.debug(`${ data.periods } periods game can't not bet`);
-            return;
-        }
-
-        // 根据用户投注的额度计算出用户可以获得几组幸运码
-        // const keyCount = betAmount.div(oneGameInfo.quantity).toNumber();
-        // 查找这一期的投注记录
-        const selectBetOrder = `SELECT * FROM bet_order WHERE gs_id = $1`
-        const { rows: betOrderList } = await pool.query(selectBetOrder, [ gameSessionInfo.gs_id ]);
-        let totalKeyCount = 0;
-        // 累加这一期投注的 key 的数量
-        if (betOrderList.length !== 0) {
-            totalKeyCount = betOrderList.map(it => it.key_count).reduce((pre, curr) => pre + curr);
-        };
-
-        // 如果用户的投注 key 数超过了当前这一期的累记总数,则放到下一期
-        let currBetKey = data.bet_key;
-        let nextBetKey = 0;
         const betAmount = new Decimal(data.bet_amount);
         let currBetAmount = betAmount;
-        let nextBetAmount = new Decimal(0);
-        let keyCount = totalKeyCount + data.bet_key;
-        let nextData = null;
-        if (keyCount > oneGameInfo.key_count) {
-            // 多出的这一部分投到下一期
-            nextBetKey = keyCount - oneGameInfo.key_count;
-            // 补足这一期不足的部分
-            currBetKey =  oneGameInfo.key_count - totalKeyCount;
-            // 这一期的投注额度
-            currBetAmount = currBetAmount.add(currBetKey * oneGameInfo.quantity);
-            // 下一期的投注额度
-            nextBetAmount = betAmount.minus(currBetKey * oneGameInfo.quantity);
-
-            // 获取下一期游戏期数详情
-            const selectGameSessionSql = `SELECT * FROM game_session WHERE periods = $2`
-            const { rows: [ nextGameSessionInfo ] } = await pool.query(selectGameSessionSql, [ data.periods + 1 ]);
-            // 如果找不到，或者这一期的状态不是开始状态, 不可投注, 直接返回
-            if (!nextGameSessionInfo || (!!nextGameSessionInfo && nextGameSessionInfo.game_state !== GAME_STATE.START)) {
-                logger.debug(`${ data.periods + 1 } periods game can't not bet`);
-                return;
-            }
-            nextData = {
-                "periods": data.periods + 1, 
-                "account_name":  data.account_name,
-                "bet_key": nextBetKey, 
-                "bet_amount": nextBetAmount.toNumber(), 
-                "pay_type": data.pay_type, 
-                "g_id": nextGameSessionInfo.g_id
-            }
+        // 如果直接使用区块链 UE 代币投注，不需要扣除用户的数据库余额
+        if (data.pay_type !== UE_TOKEN_SYMBOL) {
+            await psModifyBalance.pub({
+                game_type: "treasure",
+                account_name: data.account_name,
+                change_amount: -betAmount.toNumber(),
+                pay_type: data.pay_type
+            })
         }
-        
+
         // 90% 拨入全球彩奖池；
         const toPrizePool = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_SNATCH_PRIZE_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
         // 1% 拨入 TBG 股东分红池
@@ -106,17 +62,81 @@ async function handlerBet(data) {
         const toTshIncome = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_TSH_INCOME).div(ALLOC_CONSTANTS.BASE_RATE);
 
         // 代投用户
-        let extra = { agent_account: "", transaction_id: "", pay_type: "" }
+        let extra = { agent_account: "", transaction_id: "", pay_type: data.pay_type }
         if (data.pay_type === UE_TOKEN_SYMBOL) {
             extra.agent_account = data.account_name;
         } else {
             extra.agent_account = AGENT_ACCOUNT;
         }
+        
+        // 记录投到了第几期
+        const SNATCH_BET_PERIODS = `tbg:snatch_treasure:g_id:${ oneGameInfo.g_id }`;
+        let periods = await redis.get(SNATCH_BET_PERIODS);
+        if (!periods) {
+            await redis.set(SNATCH_BET_PERIODS, data.periods);
+            periods = `${ data.periods }`;
+        }
+
+        // 获取游戏期数详情
+        const selectGameSessionSql = `SELECT * FROM game_session WHERE g_id = $1 AND periods = $2`
+        const { rows: [ gameSessionInfo ] } = await pool.query(selectGameSessionSql, [ oneGameInfo.g_id, Number(periods) ]);
+        logger.debug("gameSessionInfo: ", gameSessionInfo);
+        // 如果找不到, 直接返回
+        if (!gameSessionInfo) {
+            return;
+        }
+
+        // 记录某期投了多少个 key
+        const SNATCH_BET_KEY = `tbg:snatch_treasure:key_count:${ gameSessionInfo.gs_id }`;
+        let totalKeyCount = await redis.get(SNATCH_BET_KEY);
+        if (!totalKeyCount) {
+            await redis.set(SNATCH_BET_KEY, data.periods);
+            totalKeyCount = '0';
+        }
+
+        // 如果用户的投注 key 数超过了当前这一期的累记总数,则放到下一期
+        let currBetKey = data.bet_key;
+        let nextBetKey = 0;
+        let nextBetAmount = new Decimal(0);
+        let keyCount = Number(totalKeyCount) + data.bet_key;
+        let nextData = null;
+        if (keyCount > oneGameInfo.key_count) {
+             // 多出的这一部分投到下一期
+             nextBetKey = keyCount - oneGameInfo.key_count;
+             // 补足这一期不足的部分
+             currBetKey =  oneGameInfo.key_count - Number(totalKeyCount);
+             // 这一期的投注额度
+             currBetAmount = currBetAmount.add(currBetKey * oneGameInfo.quantity);
+             // 下一期的投注额度
+             nextBetAmount = betAmount.minus(currBetKey * oneGameInfo.quantity);
+             // 获取下一期游戏期数详情
+             const { rows: [ nextGameSessionInfo ] } = await pool.query(selectGameSessionSql, [ oneGameInfo.g_id, Number(periods) + 1  ]);
+             // 如果找不到，或者这一期的状态不是开始状态, 不可投注, 直接返回
+             if (!nextGameSessionInfo || (!!nextGameSessionInfo && nextGameSessionInfo.game_state !== GAME_STATE.START)) {
+                 logger.debug(`${ Number(periods) + 1 } periods game can't not bet`);
+                 return;
+             }
+             await redis.set(`tbg:snatch_treasure:key_count:${ nextGameSessionInfo.gs_id }`, nextBetKey);
+             await redis.set(SNATCH_BET_PERIODS, Number(periods) + 1);
+             await redis.del(SNATCH_BET_KEY);
+             nextData = {
+                 "periods": Number(periods) + 1, 
+                 "account_name":  data.account_name,
+                 "bet_key": nextBetKey, 
+                 "bet_amount": nextBetAmount.toNumber(), 
+                 "pay_type": data.pay_type, 
+                 "g_id": nextGameSessionInfo.g_id
+             }
+        } else if (keyCount === oneGameInfo.key_count) {
+            await redis.set(SNATCH_BET_PERIODS, Number(periods) + 1);
+            await redis.del(SNATCH_BET_KEY);
+        } else {
+            await redis.set(SNATCH_BET_KEY, keyCount);
+        }
 
         // 当前这一期的投注幸运码
         const randomKey = `tbg:snatch_treasure:lucky_code:${data.g_id}`;
         const betCode = await genBetCode(currBetKey, oneGameInfo.key_count, randomKey);
-
         // 在数据库中插入投注记录
         const insertBetOrder = `
             INSERT INTO bet_order(bo_id,gs_id,extra,account_name,bet_code,key_count,amount,bonus_code,bonus_amount,create_time) 
@@ -137,10 +157,10 @@ async function handlerBet(data) {
                 key: data.bet_key,
                 quantity: `${ currBetAmount.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
                 game_id: data.periods,
-                bet_time: new Date(),
+                bet_time: df.format(new Date(), "YYYY-MM-DDTHH:mm:ss"),
                 rule: {
                     id: oneGameInfo.g_id,
-                    quantity: oneGameInfo.quantity,
+                    quantity: `${ new Decimal(oneGameInfo.quantity).toFixed(4)} ${ UE_TOKEN_SYMBOL }`,
                     key: oneGameInfo.key_count
                 }
             }
@@ -163,7 +183,7 @@ async function handlerBet(data) {
             extra.transaction_id = result.transaction_id;
             const opts = [ 
                 generate_primary_key(), gameSessionInfo.gs_id, extra, data.account_name, 
-                betCode, data.bet_key, 0, 0, data.bet_amount, "now()" 
+                betCode, data.bet_key, data.bet_amount, "000000", 0, "now()" 
             ];
             sqlList.push({
                 sql: insertBetOrder,
@@ -174,10 +194,11 @@ async function handlerBet(data) {
             }));
             await client.query("COMMIT");
             // 如果投注的 key 刚好投满,那么最后这一注作为开奖 id
+            logger.debug("keyCount: %d, oneGameInfo.key_count: %d", keyCount, oneGameInfo.key_count);
             if (keyCount === oneGameInfo.key_count) {
                 await psSnatchOpen.pub({
                     "account_name": data.account_name,
-                    "periods": data.periods,
+                    "periods": gameSessionInfo.periods,
                     "g_id": gameSessionInfo.g_id,
                     "transaction_id": result.transaction_id
                 });
@@ -190,11 +211,6 @@ async function handlerBet(data) {
             await client.release();
         }
 
-        // 如果有下一期的投注信息,再执行一次投注
-        if (!!nextData) {
-            await handlerBet(nextData);
-        }
-
         if (flag && actList.length !== 0) {
             await psGame.pub({
                 account_name: data.account_name,
@@ -204,15 +220,11 @@ async function handlerBet(data) {
                 toProtectionPool: toProtectionPool,
                 toReferrer: toReferrer
             });
-
-            // 如果直接使用区块链 UE 代币投注，不需要扣除用户的数据库余额
-            if (data.pay_type !== UE_TOKEN_SYMBOL) {
-                await psModifyBalance.pub({
-                    account_name: data.account_name,
-                    change_amount: currBetAmount,
-                    pay_type: data.pay_type
-                })
-            }
+        }
+        
+        if (!!nextData) {
+            // 如果有下一期的投注信息,再执行一次投注
+            await handlerBet(nextData);
         }
     } catch (err) {
         logger.error("handlerBet error: ", err);
@@ -240,7 +252,7 @@ async function genBetCode(betKey, keyCount, randomKey) {
             for (let i = 1; i <= keyCount; i++) {
                 randomCode.push(baseNum + i);
             }
-            console.debug("add general partner invite code");
+            logger.debug("add lucky code");
             await redis.sadd(randomKey, randomCode);
             randomNum = await redis.spop(randomKey);
         }
@@ -255,7 +267,7 @@ async function genBetCode(betKey, keyCount, randomKey) {
         for (let i = 1; i <= keyCount; i++) {
             randomCode.push(baseNum + i);
         }
-        console.debug("add general partner invite code");
+        logger.debug("add lucky code");
         await redis.sadd(randomKey, randomCode);
     }
 

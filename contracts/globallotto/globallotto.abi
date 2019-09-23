@@ -60,6 +60,24 @@
             ]
         },
         {
+            "name": "clear",
+            "base": "",
+            "fields": [
+                {
+                    "name": "game_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "table_name",
+                    "type": "string"
+                },
+                {
+                    "name": "flag",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
             "name": "game",
             "base": "",
             "fields": [
@@ -166,6 +184,11 @@
         {
             "name": "bet",
             "type": "bet",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "clear",
+            "type": "clear",
             "ricardian_contract": ""
         },
         {

@@ -1,6 +1,6 @@
 // @ts-check
 const { pool, psTrx } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@src/job/mining.js": "挖矿" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "挖矿" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const TBG_ALLOCATE = require("../common/constant/tbgAllocateRate");

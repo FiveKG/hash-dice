@@ -32,6 +32,7 @@ async function openGameSession(data) {
         // 所有游戏种类
         const gameInfo = await getGameInfo();
         const oneGameInfo = gameInfo.find(it => it.g_id === data.g_id);
+        logger.debug("oneGameInfo: ", oneGameInfo);
         // 如果找不到，直接返回
         if (!oneGameInfo) {
             return;
@@ -40,6 +41,7 @@ async function openGameSession(data) {
         // 获取游戏期数详情
         const selectGameSessionSql = `SELECT * FROM game_session WHERE g_id = $1 AND periods = $2`
         const { rows: [ gameSessionInfo ] } = await pool.query(selectGameSessionSql, [ oneGameInfo.g_id, data.periods ]);
+        logger.debug("gameSessionInfo: ", gameSessionInfo);
         // 如果找不到，或者这一期的状态不是开始状态, 不可投注, 直接返回
         if (!gameSessionInfo || (!!gameSessionInfo && gameSessionInfo.game_state !== GAME_STATE.START)) {
             logger.debug(`${ data.periods } periods game can't not open`);
@@ -59,11 +61,11 @@ async function openGameSession(data) {
         // 查找这一期的投注记录
         const selectBetOrder = `SELECT * FROM bet_order WHERE gs_id = $1`
         const { rows: betOrderList } = await pool.query(selectBetOrder, [ gameSessionInfo.gs_id ]);
-        
+        logger.debug("betOrderList: ", betOrderList);
         const updateBetOrderSql = `
             UPDATE bet_order 
                 SET bonus_code = $1, bonus_amount = $2 
-                WHERE gs_id = $3 AND account_name = $4
+                WHERE bo_id = $3
         `
 
         // 遍历投注记录
@@ -86,10 +88,11 @@ async function openGameSession(data) {
             }
             sqlList.push({
                 sql: updateBetOrderSql,
-                values: [ openCode.toString(), bonusAmount, info.gs_id, info.account_name ]
+                values: [ openCode.toString(), bonusAmount.toNumber(), info.bo_id ]
             })
         }
 
+        logger.debug("bonusData: ", bonusData);
         // 修改游戏状态为已开奖
         // 如果没有这一期投注记录,直接记录开奖信息即可
         const updateGameSession = `
@@ -121,25 +124,26 @@ async function openGameSession(data) {
             data: {
                 lucky_code: openCode.toString(),
                 game_id: data.periods,
-                reward_time: new Date(),
+                reward_time: df.format(new Date(), "YYYY-MM-DDTHH:mm:ss"),
                 rule: {
                     id: oneGameInfo.g_id,
-                    quantity: oneGameInfo.quantity,
+                    quantity: `${ new Decimal(oneGameInfo.quantity).toFixed(4)} ${ UE_TOKEN_SYMBOL }`,
                     key: oneGameInfo.key_count
                 }
             }
         });
 
+        logger.debug("sqlList: ", sqlList);
         // 分配奖金
         // 根据用户投注类型发放奖金
-        let bonus = new Decimal(bonusData.bonusAmount);
+        let bonus = new Decimal(bonusData.bonus_amount);
         let returnsCurrency = new Decimal(0);
         if (bonusData.pay_type !== UE_TOKEN_SYMBOL) {
             // 如果用户使用游戏码或者可提现余额投注,投注金额需返回用户的账户中,奖金为 总的金额 - 退还额度
             returnsCurrency = new Decimal(bonusData.bet_amount);
-            bonus = new Decimal(bonusData.bonusAmount).minus(returnsCurrency)
+            bonus = new Decimal(bonusData.bonus_amount).minus(returnsCurrency)
         }
-        const memo = `user ${ bonusData.account_name } bingo ${ bonusData.openCode } , get ${ bonus.toFixed(4) } ${ UE_TOKEN_SYMBOL } bonus`;
+        const memo = `user ${ bonusData.account_name } bingo ${ openCode } , get ${ bonus.toFixed(4) } ${ UE_TOKEN_SYMBOL } bonus`;
         actList.push({
             account: UE_TOKEN,
             name: "transfer",
@@ -175,7 +179,7 @@ async function openGameSession(data) {
             await psTrx.pub(actList);
 
             // 如果直接使用区块链 UE 代币投注，不需要扣除用户的数据库余额
-            if (bonusData.pay_typee !== UE_TOKEN_SYMBOL) {
+            if (bonusData.pay_type !== UE_TOKEN_SYMBOL) {
                 await psModifyBalance.pub({
                     account_name: data.account_name,
                     change_amount: returnsCurrency,

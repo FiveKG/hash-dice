@@ -28,9 +28,9 @@
             "name"        : "globalLottoInitGameSession",
             "script"      : "./initGameSession.js",
             "watch"       : false,
-            "cwd"         : "./",
-            "error_file"  : "./../../logs/globalLottoInitGameSession-err.log",
-            "out_file"    : "./../../logs/globalLottoInitGameSession-out.log"
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/globalLottoInitGameSession-err.log",
+            "out_file"    : "../../../logs/globalLottoInitGameSession-out.log"
         }
     ]
 }

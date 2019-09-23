@@ -28,12 +28,25 @@ async function handlerBet(data) {
          * 3. 投注后修改余额
          * 4. 游戏空投
          */
+
+
+        // 先扣除用户的额度，再记录投注信息
+        const betAmount = new Decimal(data.bet_amount);
+        // 如果直接使用区块链 UE 代币投注，不需要扣除用户的数据库余额
+        if (data.pay_type !== UE_TOKEN_SYMBOL) {
+            await psModifyBalance.pub({
+                game_type: "globallotto",
+                account_name: data.account_name,
+                change_amount: -betAmount.toNumber(),
+                pay_type: data.pay_type
+            })
+        }
+        
         const sqlList = [];
         // 记录区块链相关调用信息
         const actList = [];
         const gameInfo = await getGameInfo();
         const gameSessionInfo = await selectGameSessionByPeriods(data.periods);
-        const betAmount = new Decimal(data.bet_amount);
         // 80% 拨入全球彩奖池；
         const toPrizePool = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_PRIZE_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
         // 5% 拨入全球彩底池
@@ -59,7 +72,7 @@ async function handlerBet(data) {
         const updateGameSql = `
             UPDATE game SET prize_pool = prize_pool + $1, bottom_pool = bottom_pool + $2, reserve_pool = reserve_pool + $3 WHERE g_id = $4;
         `
-        sqlList.push({ sql: updateGameSql, values: [ toPrizePool, toBottomPool, toReservePool, gameSessionInfo.g_id ] });
+        sqlList.push({ sql: updateGameSql, values: [ toPrizePool.toNumber(), toBottomPool.toNumber(), toReservePool.toNumber(), gameSessionInfo.g_id ] });
         const insertPrizePoolLog = `
             INSERT INTO prize_pool_log(gs_id,pool_type,change_amount,current_balance,op_type,extra,remark,create_time) 
                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
@@ -68,33 +81,34 @@ async function handlerBet(data) {
         // 添加奖池变动记录
         sqlList.push({
             sql: insertPrizePoolLog,
-            values: [ gameSessionInfo.gs_id, 'prize_pool', toPrizePool, toPrizePool.add(gameInfo.prize_pool), 'bet', 
-                {}, `user ${ data.account_name } bet ${ data.bet_amount }, prize_pool add ${ toPrizePool }`, "now()" 
+            values: [ gameSessionInfo.gs_id, 'prize_pool', toPrizePool.toNumber(), toPrizePool.add(gameInfo.prize_pool).toNumber(), 
+                'bet', {}, `user ${ data.account_name } bet ${ data.bet_amount }, prize_pool add ${ toPrizePool }`, "now()" 
             ]
         });
 
         sqlList.push({
             sql: insertPrizePoolLog,
-            values: [ gameSessionInfo.gs_id, 'bottom_pool', toBottomPool, toBottomPool.add(gameInfo.bottom_pool), 'bet', 
-                {}, `user ${ data.account_name } bet ${ data.bet_amount }, bottom_pool add ${ toBottomPool }`, "now()" 
+            values: [ gameSessionInfo.gs_id, 'bottom_pool', toBottomPool.toNumber(), toBottomPool.add(gameInfo.bottom_pool).toNumber(), 
+                'bet', {}, `user ${ data.account_name } bet ${ data.bet_amount }, bottom_pool add ${ toBottomPool }`, "now()" 
             ]
         });
 
         sqlList.push({
             sql: insertPrizePoolLog,
-            values: [ gameSessionInfo.gs_id, 'reserve_pool', toReservePool, toReservePool.add(gameInfo.reserve_pool), 'bet', 
-                {}, `user ${ data.account_name } bet ${ data.bet_amount }, reserve_pool add ${ toReservePool }`, "now()" 
+            values: [ gameSessionInfo.gs_id, 'reserve_pool', toReservePool.toNumber(), toReservePool.add(gameInfo.reserve_pool).toNumber(), 
+                'bet', {}, `user ${ data.account_name } bet ${ data.bet_amount }, reserve_pool add ${ toReservePool }`, "now()" 
             ]
         });
 
         // 判断投注的类型
         let betNum = ''
-        let extra = { agent_account: "", transaction_id: "", pay_type: "" }
+        let extra = { agent_account: "", transaction_id: "", pay_type: data.pay_type }
         if (data.bet_type === "random") {
             const tmp = [];
             // 每个 key 生成一组号码
             for (let i = 0; i < data.bet_key; i++) {
-                tmp.push(Math.ceil(Math.random() * 899999999 + 100000000).toString().split("").join(","));
+                const random = Math.random() * 1000000000;
+                tmp.push(parseInt(random, 10).toString().split("").join(","));
             }
             betNum = tmp.join("|");
         } else {
@@ -118,12 +132,12 @@ async function handlerBet(data) {
             }],
             data: {
                 bet_name: data.account_name,
-                bet_num: data.bet_num,
+                bet_num: betNum,
                 quantity: `${ betAmount.toFixed(4) } UE`,
                 game_id: data.periods,
-                bet_time: new Date()
+                bet_time: df.format(new Date(), "YYYY-MM-DDTHH:mm:ss")
             }
-        });
+        });       
 
         let flag = false;
         const privateKeys = PRIVATE_KEY_TEST.split(",");
@@ -142,11 +156,12 @@ async function handlerBet(data) {
             extra.transaction_id = result.transaction_id;
             sqlList.push({
                 sql: insertBetOrder,
-                values: [ generate_primary_key(), gameSessionInfo.gs_id, extra, "now()", betNum, data.bet_key, betAmount ]
+                values: [ generate_primary_key(), gameSessionInfo.gs_id, extra, data.account_name, "now()", betNum, data.bet_key, betAmount.toNumber() ]
             });
             await Promise.all(sqlList.map(it => {
                 client.query(it.sql, it.values)
             }));
+            logger.debug("sqlList: ", sqlList);
             await client.query("COMMIT");
             flag = true;
         } catch (err) {
@@ -167,15 +182,6 @@ async function handlerBet(data) {
                 toDistributionCenter: toDistributionCenter,
                 toTshPool: toTshPool
             });
-
-            // 如果直接使用区块链 UE 代币投注，不需要扣除用户的数据库余额
-            if (data.pay_type !== UE_TOKEN_SYMBOL) {
-                await psModifyBalance.pub({
-                    account_name: data.account_name,
-                    change_amount: betAmount,
-                    pay_type: data.pay_type
-                })
-            }
         }
     } catch (err) {
         logger.error("handlerBet error: ", err);

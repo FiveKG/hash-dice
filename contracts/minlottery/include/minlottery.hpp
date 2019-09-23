@@ -51,6 +51,14 @@ class [[eosio::contract("minlottery")]] minlottery : public contract {
      * @param reward_time    开奖时间
      */
     ACTION open(string reward_num, uint64_t game_id, time_point_sec reward_time);
+
+    /***
+     * @brief 清除数据
+     * @param game_id 游戏的期数 id
+     * @param table_name 表名
+     * @param flag 是否全部删除
+     */
+    ACTION clear(uint64_t game_id, string table_name, bool flag);
     
 private:
     // 一期的时间

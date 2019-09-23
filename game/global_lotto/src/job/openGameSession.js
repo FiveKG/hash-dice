@@ -1,7 +1,7 @@
 // @ts-check
 const logger = require("../common/logger.js").child({ [`@${__filename}`]: "游戏开奖" });
 const { Decimal } = require("decimal.js");
-const { pool, psTrx } = require("../db");
+const { pool, psTrx, psModifyBalance } = require("../db");
 const { xhr } = require("../common");
 const { GLOBAL_LOTTO_CONTRACT } = require("../common/constant/eosConstants");
 const { OPEN_CODE_COUNT, GAME_STATE } = require("../common/constant/gameConstants");
@@ -39,20 +39,22 @@ async function awardGame(data) {
         let reservePoolSurplus = new Decimal(gameInfo.reserve_pool);
         // 查找正在开奖的期数
         const rewardingSql = `SELECT * FROM game_session WHERE game_state = $1 ORDER BY reward_time DESC LIMIT 1;`;
-        const { rows: [ rewardInfo ] } = await pool.query(rewardingSql, [ GAME_STATE.START ]);
+        const { rows: [ rewardInfo ] } = await pool.query(rewardingSql, [ GAME_STATE.REWARDING ]);
+        logger.debug("rewardInfo: ", rewardInfo);
         if (!rewardInfo) {
             return;
         }
         // 查找这一期所有用户的投注记录
         const betInfoSql = `SELECT * FROM bet_order WHERE gs_id = $1`
         const { rows : betOrderList } = await pool.query(betInfoSql, [ rewardInfo.gs_id ]);
-        
+        logger.debug("betOrderList: ", betOrderList);
         const insertRewardSql = `
             INSERT INTO award_session (aw_id, gs_id, extra, account_name, create_time, bet_num, win_key, win_type, one_key_bonus, bonus_amount)
                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         `
 
         const rewardMap = await accReward(openCode, betOrderList);
+        logger.debug("rewardMap: ", rewardMap);
         // 是否开出超级全球彩大奖
         let isLotteryAward = false;
         // 遍历用户中奖情况
@@ -148,7 +150,7 @@ async function awardGame(data) {
                             ...info.extra,
                         }
                         const opts = [
-                            generate_primary_key(), info.gs_id, extra, "now()", info.bet_num,
+                            generate_primary_key(), info.gs_id, extra, info.account_name, "now()", info.bet_num,
                             winCount, winType, oneKeyBonus, oneKeyBonus
                          ]
                         sqlList.push({ sql: insertRewardSql, values: opts });
@@ -178,28 +180,37 @@ async function awardGame(data) {
         `
 
         // 添加奖池变动记录
-        sqlList.push({
-            sql: insertPrizePoolLog,
-            values: [ 
-                rewardInfo.gs_id, 'prize_pool', prizePoolSurplus.minus(gameInfo.prize_pool).toNumber(), prizePoolSurplus.toNumber(), 'award', 
-                { is_lottery_award: isLotteryAward, bottom_pool_change: !!isLotteryAward ? bottomPoolSurplus.toNumber() : 0, reserve_pool_change: reservePoolSurplus.minus(gameInfo.reserve_pool).toNumber() }, 
-                `${ new Date() } award`, "now()" 
-            ]
-        });
+        if (!prizePoolSurplus.minus(gameInfo.prize_pool).eq(0)) {
+            sqlList.push({
+                sql: insertPrizePoolLog,
+                values: [ 
+                    rewardInfo.gs_id, 'prize_pool', prizePoolSurplus.minus(gameInfo.prize_pool).toNumber(), prizePoolSurplus.toNumber(), 'award', 
+                    { 
+                        is_lottery_award: isLotteryAward, 
+                        bottom_pool_change: !!isLotteryAward ? bottomPoolSurplus.toNumber() : 0, 
+                        reserve_pool_change: reservePoolSurplus.minus(gameInfo.reserve_pool).toNumber() 
+                    }, `${ new Date() } award`, "now()" 
+                ]
+            });
+        }
+        
+        if (!bottomPoolSurplus.minus(gameInfo.bottom_pool).eq(0)) {
+            sqlList.push({
+                sql: insertPrizePoolLog,
+                values: [ rewardInfo.gs_id, 'bottom_pool', bottomPoolSurplus.minus(gameInfo.bottom_pool).toNumber(), 
+                    bottomPoolSurplus.toNumber(), 'award', {}, `${ new Date() } award`, "now()" 
+                ]
+            });
+        }
 
-        sqlList.push({
-            sql: insertPrizePoolLog,
-            values: [ rewardInfo.gs_id, 'bottom_pool', bottomPoolSurplus.minus(gameInfo.bottom_pool).toNumber(), bottomPoolSurplus.toNumber(), 
-                'award', {}, `${ new Date() } award`, "now()" 
-            ]
-        });
-
-        sqlList.push({
-            sql: insertPrizePoolLog,
-            values: [ rewardInfo.gs_id, 'reserve_pool', reservePoolSurplus.minus(gameInfo.reserve_pool).toNumber(), reservePoolSurplus.toNumber(), 'award',
-                {}, `${ new Date() } award`, "now()" 
-            ]
-        });
+        if (!reservePoolSurplus.minus(gameInfo.reserve_pool).eq(0)) {
+            sqlList.push({
+                sql: insertPrizePoolLog,
+                values: [ rewardInfo.gs_id, 'reserve_pool', reservePoolSurplus.minus(gameInfo.reserve_pool).toNumber(), 
+                    reservePoolSurplus.toNumber(), 'award',{}, `${ new Date() } award`, "now()" 
+                ]
+            });
+        }
 
         // 调用 globallotto 合约开奖，记录相关信息
         actList.push({
@@ -212,7 +223,7 @@ async function awardGame(data) {
             data: {
                 reward_num: openCode.join(","),
                 game_id: rewardInfo.periods,
-                reward_time: rewardInfo.reward_time,
+                reward_time: df.format(rewardInfo.reward_time, "YYYY-MM-DDTHH:mm:ss"),
             }
         });
 
@@ -236,6 +247,16 @@ async function awardGame(data) {
         if (flag && actList.length !== 0) {
             await psTrx.pub(actList);
         }
+
+        // 如果直接使用区块链 UE 代币投注，不需要扣除用户的数据库余额
+        // if (data.pay_type !== UE_TOKEN_SYMBOL) {
+        //     await psModifyBalance.pub({
+        //         game_type: "globallotto",
+        //         account_name: data.account_name,
+        //         change_amount: betAmount,
+        //         pay_type: data.pay_type
+        //     })
+        // }
     } catch (err) {
         logger.debug("award err: ", err);
     }

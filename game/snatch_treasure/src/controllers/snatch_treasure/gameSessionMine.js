@@ -11,30 +11,41 @@ const { GAME_STATE } = require("../../common/constant/gameConstants");
 async function gameSessionMine(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
-        logger.debug(`the param is %j: `, reqData);
+        logger.debug(`betOrderList: `, reqData);
         const latestGameSession = await getLatestGameSession(reqData.game_id);
+        logger.debug(`latestGameSession: `, latestGameSession);
         if (!latestGameSession) {
             return res.send(get_status(1012, "game not exists"));
         }
-        const selectBetOrder = `SELECT * FROM bet_order WHERE gs_id = $1 AND account_name = $2`
-        const { rows: betOrderList } = await pool.query(selectBetOrder, [ latestGameSession.gs_id, reqData.account_name ]);
+        const selectBetOrder = `SELECT * FROM bet_order bo JOIN game_session gs ON gs.gs_id = bo.gs_id WHERE account_name = $1`
+        const { rows: betOrderList } = await pool.query(selectBetOrder, [ reqData.account_name ]);
+        logger.debug(`betOrderList: `, betOrderList);
+        const detail = []
+        for (const info of betOrderList) {
+            let awardCode = "000000";
+            if (info.periods === latestGameSession.periods) {
+                awardCode = "000000";
+            } else {
+                awardCode = info.reward_code;
+            }
+
+            const result = detail.find(it => it.periods === info.periods);
+            if (!!result) {
+                result.key_count = result.key_count + info.key_count;
+                result.bonus_amount = new Decimal(result.bonus_amount).add(info.bonus_amount);
+            } else {
+                detail.push({
+                    "periods": info.periods,
+                    "reward_code": awardCode,
+                    "bonus_amount": info.bonus_amount,
+                    "key_count": info.key_count
+                })
+            }
+        }
+
         let resData = get_status(1);
         resData.data = {
-            "detail": betOrderList.map(it => {
-                let awardCode = "000000";
-                if (it.periods === latestGameSession.periods) {
-                    awardCode = "000000";
-                } else {
-                    awardCode = it.reward_code;
-                }
-
-                return {
-                    "periods": it.periods,
-                    "reward_code": awardCode,
-                    "bonus_amount": it.bonus_amount,
-                    "key_count": it.key_count
-                }
-            })
+            "detail": detail
         }
         res.send(resData);
     } catch (err) {

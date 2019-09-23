@@ -17,8 +17,13 @@ async function getInfo(req, res, next) {
         if (!sessionInfo) {
             return res.send(get_status(1012, "game not exists"));
         }
+        const now = new Date();
+        const diff = df.differenceInSeconds(sessionInfo.end_time, now);
+        // logger.debug("now: ", now);
+        // logger.debug("sessionInfo.end_time: ", sessionInfo.end_time);
+        // logger.debug("diff: ", diff);
         const data = {
-            "count_down": df.differenceInSeconds(new Date(), sessionInfo.end_time),
+            "count_down": diff,
             "periods": sessionInfo.periods,
             "prize_pool": new Decimal(gameInfo.prize_pool).toFixed(4),
             "quantity": 0.1

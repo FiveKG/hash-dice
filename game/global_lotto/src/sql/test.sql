@@ -16,6 +16,33 @@ SELECT 'INSERT INTO prize_pool_log(' || array_to_string(
 SELECT 'SELECT ' || array_to_string(
         ARRAY(SELECT 'o' || '.' || c.column_name 
                 FROM information_schema.columns As c 
+                WHERE table_name = 'game_session' 
+                AND  c.column_name 
+                NOT IN('create_time', 'reward_time', 'start_time', 'end_time')
+        ), ',') || ' FROM game_session As o' As sqlstmt;
+
+--- 
+SELECT 'SELECT ' || array_to_string(
+        ARRAY(SELECT 'o' || '.' || c.column_name 
+                FROM information_schema.columns As c 
+                WHERE table_name = 'prize_pool_log' 
+                AND  c.column_name 
+                NOT IN('summary')
+        ), ',') || ' FROM prize_pool_log As o' As sqlstmt;
+
+--- 
+SELECT 'SELECT ' || array_to_string(
+        ARRAY(SELECT 'o' || '.' || c.column_name 
+                FROM information_schema.columns As c 
+                WHERE table_name = 'prize_pool_log' 
+                AND  c.column_name 
+                NOT IN('summary')
+        ), ',') || ' FROM prize_pool_log As o' As sqlstmt;
+
+--- 
+SELECT 'SELECT ' || array_to_string(
+        ARRAY(SELECT 'o' || '.' || c.column_name 
+                FROM information_schema.columns As c 
                 WHERE table_name = 'prize_pool_log' 
                 AND  c.column_name 
                 NOT IN('summary')

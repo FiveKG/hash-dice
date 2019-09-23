@@ -14,15 +14,24 @@ async function bet(req, res, next) {
         let reqData = await inspect_req_data(req);
         logger.debug(`the param is %j: `, reqData);
 
-        const latestGameSession = await getLatestGameSession(reqData.game_id);
-        if (!latestGameSession) {
+        let sql = `
+            SELECT gs.periods, gs.gs_id, game.game_name, game.key_count, game.quantity, gs.game_state
+                FROM game_session gs 
+                JOIN game ON game.g_id = gs.g_id 
+                WHERE gs.g_id = $1 
+                AND gs.game_state = $2
+                ORDER BY periods ASC 
+                LIMIT 1
+        `
+        let { rows: [ gameSessionInfo ] } = await pool.query(sql, [ reqData.game_id, GAME_STATE.START ]);
+        if (!gameSessionInfo) {
             return res.send(get_status(1012, "game not exists"));
         }
 
-        logger.debug("latestGameSession: ", latestGameSession);
+        logger.debug("gameSessionInfo: ", gameSessionInfo);
 
         // 如果游戏不是开始状态, 不可投注
-        if (latestGameSession.game_state !== GAME_STATE.START) {
+        if (gameSessionInfo.game_state !== GAME_STATE.START || gameSessionInfo.periods !== reqData.periods) {
             return res.send(get_status(1013, "game is not start, can not bet"));
         }
 
