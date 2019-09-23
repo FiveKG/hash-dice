@@ -1,0 +1,704 @@
+{
+    "service_name" : "pk10_api",
+    "service_type" : "monomer",
+    "port": 8889,
+    "summary" : "",
+    "relate_tables": [
+        "staff", "eos_account", "account_refer", "agent_account",
+        "account_log", "game", "game_rate", "pk_session",
+        "pk_bet", "pk_reward", "notice", "staff_menu",
+        "op_log", "system_config"
+    ],
+    "api": [
+        {
+            "name" : "获取配置" ,
+            "summary": "" ,
+            "remark": [ 
+                
+            ],
+            "isFunctionPoint" : false,
+            "url" : "/common/config",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功"] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "eos_connection_info":{ 
+                        "httpEndPoint" : { "type" :"string" , "remark":"" },
+                        "chainId"      : { "type" :"string" , "remark":"" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "用户登陆" ,
+            "summary": "" ,
+            "remark": [
+                "前端每次进入页面的时候，都要请求 scatter 获取用户信息（或者缓存的用户信息）， 然后提交到此接口。此接口返回此用户的登陆token",
+                "此接口 确保 account 表里有此用户的记录，然后 插入 登陆日志"
+            ],
+            "isFunctionPoint" : false,
+            "url" : "/account/login",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "account_name": { "type": "string",    "is_require": true , "desc": "eos的账户名称" }
+            },
+            "res": {
+                "code": { "type":"number" , "desc" : "" , "values":[ "成功"] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "token":	{ "type": "string" , "desc": "",    "is_require": true }
+                }
+            }
+        },
+        {
+            "name" : "获取用户俱乐部" ,
+            "summary": "" ,
+            "remark": [
+                "登陆以后, 在查看我的俱乐部中调用",
+                "从 token 中获取 account_name"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/myclub",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "club_id":	{ "type": "number" , "desc": "俱乐部 id",    "is_require": true }
+                }
+            }
+        },
+        {
+            "name" : "获取用户余额" ,
+            "summary": "" ,
+            "remark": [
+                "获取用户充值的余额",
+                "需要验证 token "
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/get_balance",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功"] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "balance":	{ "type": "number" , "desc": "用户余额",    "is_require": true }
+                }
+            }
+        },
+        {
+            "name" : "获取官方的俱乐部信息" ,
+            "summary": "" ,
+            "remark": [
+
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/club/get_office_room",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功"] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type":"objectArray" , "itemField":{
+                        "room_id"     : { "type": "string", "is_require": true, "desc": "房间ID" },
+                        "amount"      : { "type": "number", "is_require": true, "desc": "红包总额" },
+                        "quantity"    : { "type": "number", "is_require": true, "desc": "红包数量" },
+                        "online_count": { "type": "number", "is_require": true, "desc": "在线人数" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "获取用户加入的俱乐部信息 " ,
+            "summary": "" ,
+            "remark": [
+                "用户登陆成功之后， 获取此用户加入的俱乐部的信息",
+                "需要带上 登陆token"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/club/get_account_club",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功"] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type":"objectArray" , "itemField":{
+                        "club_id":	    { "type": "number" , "desc": "俱乐部id",    "is_require": true },
+                        "club_name":	{ "type": "string" , "desc": "",    "is_require": true }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "加入俱乐部" ,
+            "summary": "" ,
+            "remark": [
+                "用户输入 俱乐部 id， 加入一个俱乐部",
+                "需要带上 token , 接口将 从中取出 account_name ",
+                "插入一条 club_account 记录。（不能重复）"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/club/join",
+            "type" : "post",
+            "requireRole" : [ "?" ],
+            "req": {
+                "club_id":	    { "type": "number" , "desc": "俱乐部id。 默认为0",    "is_require": true }
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功" ,"俱乐部id错误" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "boolean", "is_require": false, "desc": "是否操作成功"
+                }
+            }
+        },
+        {
+            "name" : "获取俱乐部信息" ,
+            "summary": "" ,
+            "remark": [
+                "获取俱乐部的信息。比如 名字， 当前有多少人， 有多少个 红包房间。"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/club/summary",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                "club_id":	{ "type": "number" , "desc": "",    "is_require": true }
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功"] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "club_id": { "type": "number", "is_require": true, "desc": "俱乐部ID" },
+                        "club_name": { "type": "string", "is_require": true, "desc": "俱乐部名称" },
+                        "type_list": {
+                            "type": "objectArray", "desc": "",
+                            "itemField": {
+                                "type": { "type": "number", "is_require": true, "desc": "房间类型, 比如 5 人房, 10 人房, 15 人房" },
+                                "room_list": { 
+                                    "type": "objectArray", "is_require": true, "desc": "每种类型对应的房间列表" ,
+                                    "itemField": {
+                                        "room_id"     : { "type": "string", "is_require": true, "desc": "房间ID" },
+                                        "amount"      : { "type": "number", "is_require": true, "desc": "红包金额" },
+                                        "online_count": { "type": "number", "is_require": true, "desc": "在线人数" }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "获取房间中的红包" ,
+            "summary": "" ,
+            "remark": [
+                "选择一个房间后， 显示此房间中的红包"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/room/get_red_envelope",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                "room_id": { "type": "number", "is_require": true, "desc": "房间id" },
+                "limit"  : { "type": "number", "is_require": false, "default": 10, "desc": "显示条数" }
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功"] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "page_info": {
+                    "page" : { "type": "number", "is_require": true, "desc": "页码" },
+                    "limit": { "type": "number", "is_require": true, "desc": "页大小" },
+                    "total": { "type": "number", "is_require": true, "desc": "总条数" }
+                },
+                "data": {
+                    "type":"objectArray" , "itemField":{
+                        "game_id":	{ "type": "number" , "desc": "游戏id",    "is_require": true },
+                        "room_id":	{ "type": "number" , "desc": "房间id",    "is_require": true },
+                        "total_count":	{ "type": "number" , "desc": "此红包总共的数量.",    "is_require": true },
+                        "left_count":	{ "type": "number" , "desc": "剩下的数量",    "is_require": true },
+                        "game_result":	{ 
+                            "type": "objectArray" , "desc": "此红包的分配结果详情.",    "is_require": true  , "itemField":{
+                                "account_name":	{ "type": "string" , "desc": "",    "is_require": true },
+                                "amount":	{ "type": "number" , "desc": "抢到的数量",    "is_require": true }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "创建俱乐部" ,
+            "summary": "" ,
+            "remark": [
+                "登陆之后, 点击创建俱乐部"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/club/create",
+            "type" : "post",
+            "requireRole" : [ "?" ],
+            "req": {
+                "club_id"      : { "type": "number", "is_require": true, "desc": "俱乐部 id" },
+                "club_name"    : { "type": "string", "is_require": true, "desc": "俱乐部名称" },
+                "refer_club_id": { "type": "string", "is_require": false, "desc": "俱乐部推荐 id" }
+            },
+            "res": {
+                "code": { "type":"number" , "desc" : "" , "values":[ "成功"] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "boolean", "is_require": false, "desc": "是否操作成功"
+                }
+            }
+        },
+        {
+            "name" : "创建红包房间" ,
+            "summary": "" ,
+            "remark": [
+                "创建完俱乐部之后, 点击创建房间",
+                "0. 从 token 中获取账号名",
+                "1. 先检查俱乐部是否存在, 如果存在, 检查此俱乐部是否属于该账号"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/room/create",
+            "type" : "post",
+            "requireRole" : [ "?" ],
+            "req": {
+                "club_id" : { "type": "number", "is_require": true, "desc": "俱乐部 id" },
+                "amount"  : { "type": "number", "is_require": true, "desc": "红包的金额" },
+                "quantity": { "type": "number", "is_require": true, "desc": "抢红包的人数" }
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功"] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "boolean", "is_require": false, "desc": "是否操作成功"
+                }
+            }
+        },
+        {
+            "name" : "抢红包" ,
+            "summary": "" ,
+            "remark": [
+                "检查前端发送的请求参数"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/room/snatch_red_envelope",
+            "type" : "post",
+            "requireRole" : [ "?" ],
+            "req": {
+                "room_id" : { "type": "number", "is_require": true, "desc": "房间ID" }
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功"] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "boolean", "is_require": false, "desc": "是否操作成功"
+                }
+            }
+        },
+        {
+            "name" : "检查用户是否已抢红包" ,
+            "summary": "" ,
+            "remark": [
+                "检查前端发送的请求参数"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/room/check_snatched",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                "room_id" : { "type": "number", "is_require": true, "desc": "房间ID" }
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    
+                }
+            }
+        },
+        {
+            "name" : "检查是否已建立推荐关系" ,
+            "summary": "",
+            "remark": [
+                "从 token 中获取 account_name"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/check_relation",
+            "type" : "post",
+            "requireRole" : [ "?" ],
+            "req": {
+                
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "refer_name": { "type": "string", "is_require": true, "desc": "账号名, 如果存在关系, 返回上级账号名, 如果不存在, 返回空字符串" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "设置推荐关系" ,
+            "summary": "",
+            "remark": [
+                ""
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/add_referrer",
+            "type" : "post",
+            "requireRole" : [ "?" ],
+            "req": {
+                "account_name": { "type": "string",   "is_require": true, "desc": "被邀请者账号" },
+                "refer_name"  : { "type": "string",   "is_require": true, "desc": "邀请者账号" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "boolean", "desc": "建立成功"
+                }
+            }
+        },
+        {
+            "name" : "用户提现",
+            "summary": "",
+            "remark": [
+                "一次性提现完该用户的所有存在本地数据库的余额",
+                "需要添加用户操作日志",
+                "需要 token, 可以从 token 中获取 account_name "
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/withdraw",
+            "type" : "post",
+            "requireRole" : [ "?" ],
+            "req": {
+                
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "account_name"   : { "type": "string",   "is_require": true, "desc": "用户账号" },
+                        "withdraw_amount": { "type": "number",   "is_require": true, "desc": "提现的数量" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "获取用户余额变动日志列表",
+            "summary": "",
+            "remark": [
+                "从 token 中获取 account_name"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account_balance_log/search",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                "page": { "type": "number", "is_require": false, "desc": "页码", "default": 1 },
+                "limit": { "type": "number", "is_require": false, "desc": "页大小", "default": 20 }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" , "desc": "" },
+                "page_info": {
+                    "page" : { "type": "number", "is_require": true, "desc": "页码" },
+                    "limit": { "type": "number", "is_require": true, "desc": "页大小" }
+                },
+                "data": {
+                    "type": "objectArray", "desc": "",
+                    "itemField": {
+                        "id"             : { "type": "number",     "is_require": true, "desc": "id" },
+                        "account_name"   : { "type": "string",     "is_require": true, "desc": "用户账号" },
+                        "change_amount"  : { "type": "number",     "is_require": true, "desc": "数量变动" },
+                        "current_balance": { "type": "number",     "is_require": true, "desc": "当前余额" },
+                        "op_type"        : { "type": "string",     "is_require": true, "desc": "操作类型" },
+                        "remark"         : { "type": "string",     "is_require": true, "desc": "注意项" },
+                        "create_time"    : { "type": "dateTime",   "is_require": true, "desc": "创建时间" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "获取用户下级列表",
+            "summary": "",
+            "remark": [
+                "从 token 中获取 account_name"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/get_lower_list",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "objectArray", "desc": "",
+                    "itemField": {
+                        "refer_id"    : { "type": "string",   "is_require": true, "desc": "主键id" },
+                        "account_name": { "type": "string",   "is_require": true, "desc": "被推荐者账号, (下级)" },
+                        "refer_name"  : { "type": "string",   "is_require": true, "desc": "推荐者账号, (代理)" },
+                        "create_time" : { "type": "dateTime", "is_require": true, "desc": "创建时间" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "分红池",
+            "summary": "",
+            "remark": [
+                "1. 当前未分配分红累计: 从 common_data 的 data_key = bonus_pool_amount 中获取",
+                "2. 累计已发放分红: 从 system_bonus_log 的 amount 字段累加获得",
+                "3. 已释放 RB 数量: 从 system_symbol_log 的 amount 字段累加获得"
+            ],
+            "isFunctionPoint" : false,
+            "url" : "/game/bonus_pool",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "unallocate_bonus"     : { "type": "number",   "is_require": true, "desc": "未分配的分红" },
+                        "allocate_bonus"       : { "type": "number",   "is_require": true, "desc": "已分配的分红" },
+                        "release_symbol_amount": { "type": "number",   "is_require": true, "desc": "已释放的代币数量" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "我的分红",
+            "summary": "",
+            "remark": [
+                "account_name 从 token 中获取",
+                "1. 分红总计: 从 account_balance_log 的 op_type = 分红 的 change_amount 字段累加获得",
+                "2. 分红列表: 从 account_balance_log 获得"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/my_bonus",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                "page" : { "type": "number", "is_require": true, "default": 1,  "desc": "页码" },
+                "limit": { "type": "number", "is_require": true, "default": 15, "desc": "页大小" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "page_info": {
+                    "page" : { "type": "number", "is_require": true, "desc": "页码" },
+                    "limit": { "type": "number", "is_require": true, "desc": "页大小" },
+                    "total": { "type": "number", "is_require": true, "desc": "总条数" }
+                },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "bonus_amount" : { "type": "number",   "is_require": true, "desc": "分红总金额" },
+                        "bonus_log_list": { 
+                            "type": "objectArray",   "is_require": true, "desc": "分红列表" ,
+                            "itemField": {
+                                "create_time": { "type": "dateTime", "is_require": true, "desc": "创建时间" },
+                                "amount"     : { "type": "number", "is_require"  : true, "desc": "金额" },
+                                "symbol"     : { "type": "string", "is_require"  : true, "desc": "代币符号" }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "已空投的代币数量",
+            "summary": "",
+            "remark": [
+                "1. 已空投 RB 数量: 从 system_symbol_log 的 amount 字段累加获得"
+            ],
+            "isFunctionPoint" : false,
+            "url" : "/game/airdrop_amount",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "amount" : { "type": "number",   "is_require": true, "desc": "已空投的代币数量" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "俱乐部排行榜",
+            "summary": "",
+            "remark": [
+                "1. 当前未分配分红累计: 从 common_data 的 data_key = bonus_pool_amount 中获取",
+                "2. 排名列表: 找出所有俱乐部, 找出俱乐部下的所有房间, 找出房间内的所有红包, 计算出总金额, 排序, 获取前十名",
+                "todo: 使用 redis 缓存"
+            ],
+            "isFunctionPoint" : false,
+            "url" : "/club/leaderboard",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "bonus_amount" : { "type": "number",   "is_require": true, "desc": "未分配分红累计" },
+                        "rank_list": {
+                            "type": "objectArray",   "is_require": true, "desc": "排名列表" ,
+                            "itemField": {
+                                "rank"          : { "type": "number", "is_require": true, "desc": "排名" },
+                                "club_name"     : { "type": "string", "is_require": true, "desc": "俱乐部名称" },
+                                "produce_amount": { "type": "string", "is_require": true, "desc": "发出的红包金额" }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "奖金排行榜",
+            "summary": "",
+            "remark": [
+                "从 account_balance_log 的 op_type = 抢到的金额 的 change_amount 字段累加获得, 排序, 获取前 10 名"
+            ],
+            "isFunctionPoint" : false,
+            "url" : "/account/reward_leaderboard",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "objectArray",   "is_require": true, "desc": "排名列表" ,
+                    "itemField": {
+                        "rank"         : { "type": "number", "is_require": true, "desc": "排名" },
+                        "account_name" : { "type": "string", "is_require": true, "desc": "账号名称" },
+                        "reward_amount": { "type": "number", "is_require": true, "desc": "抢到的红包金额" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "我的奖金列表",
+            "summary": "",
+            "remark": [
+                "account_name 从 token 中获取",
+                "从 red_envelope_game_result 的 amount , 根据 game_id 获取从 system_symbol_log 对应的 空投数量"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/account/my_reward_list",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                "page" : { "type": "number", "is_require": true, "default": 1,  "desc": "页码" },
+                "limit": { "type": "number", "is_require": true, "default": 10, "desc": "页大小" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "page_info": {
+                    "page" : { "type": "number", "is_require": true, "desc": "页码" },
+                    "limit": { "type": "number", "is_require": true, "desc": "页大小" },
+                    "total": { "type": "number", "is_require": true, "desc": "总条数" }
+                },
+                "data": {
+                    "type": "objectArray",   "is_require": true, "desc": "" ,
+                    "itemField": {
+                        "create_time"   : { "type": "dateTime", "is_require": true, "desc": "创建时间" },
+                        "reward_amount" : { "type": "number",   "is_require": true, "desc": "抢到的红包金额" },
+                        "airdrop_amount": { "type": "number",   "is_require": true, "desc": "空投代币的数量" }
+                    }
+                }
+            }
+        },
+        {
+            "name" : "获取专场红包" ,
+            "summary": "" ,
+            "remark": [
+                "获取五人抢专场信息"
+            ],
+            "isFunctionPoint" : true,
+            "url" : "/club/get_red_special_envelope",
+            "type" : "get",
+            "requireRole" : [ "?" ],
+            "req": {
+                
+            },
+            "res": {
+                "code":{ "type":"number" , "desc" : "" , "values":[ "成功"] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "type": "object", "desc": "",
+                    "properties": {
+                        "club_id": { "type": "number", "is_require": true, "desc": "俱乐部ID" },
+                        "club_name": { "type": "string", "is_require": true, "desc": "俱乐部名称" },
+                        "type_list": {
+                            "type": "objectArray", "desc": "",
+                            "itemField": {
+                                "type": { "type": "number", "is_require": true, "desc": "房间类型, 比如 5 人房, 10 人房, 15 人房" },
+                                "room_list": { 
+                                    "type": "objectArray", "is_require": true, "desc": "每种类型对应的房间列表" ,
+                                    "itemField": {
+                                        "room_id"     : { "type": "string", "is_require": true, "desc": "房间ID" },
+                                        "amount"      : { "type": "number", "is_require": true, "desc": "红包金额" },
+                                        "online_count": { "type": "number", "is_require": true, "desc": "在线人数" }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

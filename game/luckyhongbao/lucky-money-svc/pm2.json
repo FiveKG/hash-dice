@@ -1,0 +1,28 @@
+{
+    "apps": [
+        {
+            "name"        : "luckyhongbaoListenTransfer",
+            "script"      : "./listenTransfer.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../logs/luckyhongbaoListenTransfer-err.log",
+            "out_file"    : "../logs/luckyhongbaoListenTransfer-out.log"
+        },
+        {
+            "name"        : "doSyncRedEnvelopGameResult",
+            "script"      : "./doSyncRedEnvelopGameResult.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../logs/doSyncRedEnvelopGameResult-err.log",
+            "out_file"    : "../logs/doSyncRedEnvelopGameResult-out.log"
+        },
+        {
+            "name"        : "luckyhongbaoMqListenJob",
+            "script"      : "./mqListenJob.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../logs/luckyhongbaoMqListenJob-err.log",
+            "out_file"    : "../logs/luckyhongbaoMqListenJob-out.log"
+        }
+    ]
+}
