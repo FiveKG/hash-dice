@@ -1,0 +1,16 @@
+###
+GET http://192.168.1.141:8089/account/get_balance?account_name=yujinsheng11
+
+###
+POST http://192.168.1.141:8089/account/login
+Content_Type: application/json
+
+{
+    account_name: "yujinsheng11"
+}
+
+###
+GET http://192.168.1.141:8089/club/summary?club_id=952795
+
+###
+GET http://192.168.1.141:8089/room/get_red_envelope?room_id=1
