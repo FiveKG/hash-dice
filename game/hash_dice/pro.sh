@@ -38,4 +38,4 @@ then
     npm i -g pm2
 fi
 
-npm start pm2.json
+pm2 start pm2.json
