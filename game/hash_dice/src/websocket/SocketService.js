@@ -3,7 +3,7 @@ const logger = require("../common/logger.js").child({ "@": "socket server" });
 const io = require('socket.io')();
 const { rpc } = require("../job/getTrxAction");
 const ApiService = require('./ApiService');
-const { psGlobalLottoOpen } = require("../db");
+const { hashDiceOpen } = require("../db");
 const df = require("date-fns");
 
 /**

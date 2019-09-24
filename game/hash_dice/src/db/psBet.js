@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({"@": "游戏投注"});
+const logger = require("../common/logger.js").child({ [__filename]: "betting" });
 const getAmqpChannel = require("./amqp.js");
 const { HASH_DICE_BET } = require("../common/constant/optConstants");
 

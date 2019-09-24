@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../common/logger.js").child({"@": "publish - subscribe game"});
+const logger = require("../common/logger.js").child({ [__filename]: "subscribe game" });
 const getAmqpChannel = require("./amqp.js");
 const { HASH_DICE_MQ } = require("../common/constant/optConstants.js");
 

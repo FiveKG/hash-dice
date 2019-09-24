@@ -44,27 +44,26 @@ async function betting(req,res,next){
         const TBG_SERVER = process.env.TBG_SERVER || "http://192.168.1.141:9527/";
         const opts = { data: { account_name: account_name} };
 
-        const { data: resp } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
+        const { data: [resp] } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
         let eos_currency =(await getCurrencyBalance(account_name)).pop().replace(' UE','')
-
-       
+        
         // 可提现余额，游戏码,区块链余额
         const withdrawEnable = new Decimal(resp.withdraw_enable);
         const gameCurrency   = new Decimal(resp.game_currency);
         const eosCurrency    = new Decimal(eos_currency)
         //保留下注总数小数点后4位，取消四舍五入
         bet_amount = new Decimal(bet_amount).toFixed(4)
-
+    
         let psData = {
                 "account_name" : account_name,
                 "bet_num"      : bet_num,
                 "odds_rate"    : odds_rate,
                 "bet_amount"   : bet_amount,
                 "agent_account": AGENT_ACCOUNT
-                
         };
 
         let resData
+        
         //如果游戏码额度小于下注额度
         if(gameCurrency.lessThan(bet_amount)){
             //如果余额额度小于下注额度
@@ -94,6 +93,7 @@ async function betting(req,res,next){
             //提交投注信息到消息队列
             await psBet.pub(psData);
             resData = get_status(1011, "游戏码下注");
+            
         }  
         res.send(resData);
         

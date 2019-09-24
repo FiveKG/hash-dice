@@ -71,7 +71,6 @@ async function getTrxAction(accountName, fromPosition) {
         }
         const url = `${ END_POINT }/v1/history/get_actions`
         const result = await post(url, { data: opts });
-        console.debug("this getTrxAction.js result:",result);
         let actions = result.actions;
         return actions;
     } catch (err) {

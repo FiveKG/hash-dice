@@ -1,25 +1,21 @@
 // @ts-check
-const logger = require("../common/logger.js").child({ "@src/job/handlerBet.js": "处理用户投注" });
+const logger = require("../common/logger.js").child({ "@src/job/handlerBet.js": "hander users' bet" });
 const { Decimal } = require("decimal.js");
-const { pool, psGame ,psModifyBalance } = require("../db");
+const { pool, psGame ,psModifyBalance ,hashDiceOpen} = require("../db");
 const { HASH_DICE_CONTRACT, AGENT_ACCOUNT } = require("../common/constant/eosConstants");
 const { END_POINT, PRIVATE_KEY_TEST } = require("../common/constant/eosConstants.js");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");;
 const { redis, generate_primary_key } = require("../common");
-const { scheduleJob } = require("node-schedule");
-const df = require("date-fns");
 const { Api, JsonRpc, RpcError } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
 const fetch = require('node-fetch');                                // node only
 const { TextDecoder, TextEncoder } = require('util');               // node only
-const { format } = require("date-fns");
-const sleep = require("./sleep.js");
 
 /**
  * 处理用户投注
  * @param {{ account_name:string, 
  *          bet_num: string,
- *          bet_amount: number,
+ *          bet_amount: string,
  *          odds_rate:string,
  *          pay_type:string,
  *          agent_account:string
@@ -33,7 +29,7 @@ async function handlerBet(data) {
          * 3. 投注后修改余额
          * 4. 游戏空投
          */
-
+        
         const sqlList = [];
         // 记录区块链相关调用信息
         const actList = [];
@@ -55,18 +51,18 @@ async function handlerBet(data) {
 
         // 调用 hash_dice 合约投注
         actList.push({
-            account: HASH_DICE_CONTRACT,
-            name: "bet",
+            account      : HASH_DICE_CONTRACT,
+            name         : "bet",
             authorization: [{
-                actor: HASH_DICE_CONTRACT,
-                permission: 'active',
+            actor        : HASH_DICE_CONTRACT,
+            permission   : 'active',
             }],
             data: {
-                bet_name: data.account_name,
-                bet_num: data.bet_num,
-                quantity: `${ betAmount.toFixed(4) } UE`,
-                odds_rate  : data.odds_rate,
-                bet_time: new Date()
+                bet_name : data.account_name,
+                bet_num  : data.bet_num,
+                quantity : `${ betAmount.toFixed(4) } UE`,
+                odds_rate: data.odds_rate,
+                bet_time : new Date()
             }
         });
 
@@ -74,10 +70,14 @@ async function handlerBet(data) {
         // 如果是代投，则需要扣除数据库的余额
         if (data.agent_account === AGENT_ACCOUNT) {
             await psModifyBalance.pub({
-                account_name: data.account_name,
-                change_amount: data.bet_amount,
-                pay_type: data.pay_type
+                account_name : data.account_name,
+                cost_amount: data.bet_amount,
+                pay_type     : data.pay_type,
+                agent_account:AGENT_ACCOUNT
             })
+        }
+        else{
+            data.agent_account = "";
         }
 
 
@@ -115,6 +115,9 @@ async function handlerBet(data) {
             );
             await client.query("COMMIT");
             flag = true;
+            //通知开奖
+            await hashDiceOpen.pub(block_num+7)
+
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
@@ -126,14 +129,16 @@ async function handlerBet(data) {
         if (flag && actList.length !== 0) {
             // await psTrx.pub(actList);
             await psGame.pub({
-                account_name: data.account_name,
-                bet_amount: data.bet_amount,
-                toTshIncome: toTshIncome,
+                account_name    : data.account_name,
+                bet_amount      : data.bet_amount,
+                toTshIncome     : toTshIncome,
                 toProtectionPool: toProtectionPool,
-                toReferrer: toReferrer,
-                toTshPool: toTshPool
+                toReferrer      : toReferrer,
+                toTshPool       : toTshPool
             });
         }
+
+
     } catch (err) {
         logger.error("handlerBet error: ", err);
         throw err;

@@ -1,4 +1,7 @@
-const logger = require("../../common/logger.js").child({ "@controllers/hash_dice/getConfig.js": "get config" });
+const BIG = "big";
+const SMALL = "small";
+const TWINS = "twins";
+
 
 module.exports ={
     game_rate : [
@@ -33,6 +36,9 @@ module.exports ={
     bet_type :{
         big : 50,
         small : 50,
-        twins : [0,11,22,33,44,55,66,77,88,99],
-    }
+        twins : [00,11,22,33,44,55,66,77,88,99],
+    },
+    BIG:BIG,
+    SMALL:SMALL,
+    TWINS:TWINS
 }
