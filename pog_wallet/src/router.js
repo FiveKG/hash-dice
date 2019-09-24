@@ -131,6 +131,9 @@ import LotteryRule from './pages/game/hash_minute_lottery/LotteryRule'
     
 // 哈希分分彩部分==============================================================_end
 
+import tradePage from './pages/Trade/tradePage'
+
+
 Vue.use(Router)
 
 const router = new Router({
@@ -721,7 +724,11 @@ const router = new Router({
       component: LotteryRule,
     },
     // 哈希分分彩部分==============================================================_end
-    
+    {
+      path: '/tradePage',
+      name: 'tradePage',
+      component: tradePage,
+    },
   ]
 })
 
