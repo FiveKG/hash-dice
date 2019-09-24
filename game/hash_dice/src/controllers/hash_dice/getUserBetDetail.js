@@ -18,7 +18,7 @@ async function getUserBetDetail(req,res,next){
         const sql = `
         SELECT b.create_time,b.bet_block_num,b.reward_block_num,b.bet_num,b.betting_amount,b.game_rate,b.agent_account,b.reward,r.reward_block_id,r.reward_num
                 FROM bet_order AS b INNER JOIN reward as r on 
-                b.reward_block_num = r.reward_block_num where b.account_name =$1 ;`
+                b.reward_block_num = r.reward_block_num where b.id =$1 ;`
         const { rows } = await pool.query(sql,[reqData.id]);
         if (!rows) {
             return res.send(get_status(1013, "can not found bet order"));

@@ -140,7 +140,7 @@ async function parseEosAccountAction(action) {
         if (!game_name && !account_name && !bet_key && !bet_num && !bet_amount && !periods && !bet_type) {
             logger.debug("invalid memo, memo must be include game_name, account_name, bet_key, bet_num, bet_amount, periods, bet_type format like 'game_name:account_name:bet_key:bet_num:bet_amount:periods:bet_type'")
             return result;
-        }
+        }   
         if (game_name !== "global_lotto") {
             // todo
             // memo 格式不符

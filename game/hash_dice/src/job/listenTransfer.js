@@ -2,7 +2,8 @@
 const logger = require("../common/logger.js").child({ "@": "listening hash_dice transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
-const { BANKER, EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN } = require("../common/constant/eosConstants.js");
+const { EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN } = require("../common/constant/eosConstants.js");
+const BANKER = 'luckyhongbao';
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
 const HASH_DICE = "tbg:hash_dice:account_action_seq";
@@ -34,6 +35,7 @@ async function begin() {
 
 async function handlerTransferActions() {
     try {
+
         await redis.set(INVEST_LOCK, 1);
         const actionSeq = await getLastPos(); //获取上次扫描位置
         const actions = await getTrxAction(BANKER, actionSeq);
@@ -41,15 +43,25 @@ async function handlerTransferActions() {
         for (const action of actions) {
             const result = await parseEosAccountAction(action);
             const trxSeq = await redis.get(`tbg:hash_dice:trx:${ result.account_action_seq }`);
-            logger.debug("result: ", result, "trxSeq: ", trxSeq);
+
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
-            if (trxSeq || !result.invest_type) {
+            if (trxSeq || !result.game_name || !result.account_name || !result.bet_num || !result.amount || !result.pay_type) {
                 await setLastPos(result.account_action_seq);
-                await redis.set(HASH_DICE, result.account_action_seq);
                 continue;
             }
             //投注处理
-            //handlerBet()
+            const betData = {
+
+                account_name : result.from,
+                bet_num      : result.bet_num,
+                bet_amount   : result.amount,
+                odds_rate    : result.odds_rate,
+                pay_type     : result.pay_type,
+                agent_account: result.from
+            }
+            //下注
+            //console.log('=========>',betData)
+            await handlerBet(betData)
             await redis.set(`tbg:hash_dice:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
         }
@@ -66,15 +78,19 @@ async function handlerTransferActions() {
 async function parseEosAccountAction(action) {
     try {
         let result = {
-            "global_action_seq": action.global_action_seq,
-            "account_action_seq" : action.account_action_seq,
-            "block_num": action.block_num,
-            "block_time": action.block_time,
-            "trx_id": "",
-            "amount": "",
-            "from": "",
-            "symbol": "",
-            "invest_type": "",
+            "global_action_seq" : action.global_action_seq,
+            "account_action_seq": action.account_action_seq,
+            "block_num"         : action.block_num,
+            "block_time"        : action.block_time,
+            "trx_id"            : "",
+            "amount"            : "",
+            "from"              : "",
+            "symbol"            : "",
+            "game_name"         : "",
+            "account_name"      : "",
+            "bet_num"           : "",
+            "pay_type"          : "UE_current",
+            "odds_rate"         : ""
         }
         let actionTrace = action.action_trace;
         if (!actionTrace) {
@@ -115,31 +131,34 @@ async function parseEosAccountAction(action) {
             logger.debug(`receipt receiver does not match, ${ to } !== ${ BANKER }`);
             return result;
         }
-        let [ hash_dice, user ] = memo.split(":");
-        if (hash_dice !== "tbg_invest") {
+        result["from"] = from;
+
+        let [game_name, account_name, bet_num,odds_rate ] = memo.split(":");
+        if (!game_name && !account_name && !bet_num && !odds_rate) {
+            logger.debug("invalid memo, memo must be include game_name, account_name, bet_key, bet_num, bet_amount, periods, bet_type format like 'game_name:account_name:bet_key:bet_num:bet_amount:periods:bet_type'")
+            return result;
+        } 
+        if (game_name !== "hash_dice") {
             // todo
             // memo 格式不符
-            logger.debug(`invalid memo, ${ hash_dice } !== "tbg_invest"`);
+            logger.debug(`invalid memo, ${ game_name } !== "hash_dice"`);
             return result;
         }
         let [ amount, symbol ] = quantity.split(" ");
-        if (symbol === "UE" || symbol === "TBG") {
-            if (!new  Decimal(amount).eq(BASE_AMOUNT)) {
+        if (symbol === "UE" ) {
+            if (new  Decimal(amount).greaterThanOrEqualTo(BASE_AMOUNT)) {
                 // todo
                 // 转帐额度不符
-                logger.debug(`invalid quantity, amount must be ${ BASE_AMOUNT }, but get ${ amount }`);
+                logger.debug(`invalid quantity, amount must be less than ${ BASE_AMOUNT }, but get ${ amount }`);
                 return result;
             }
+            result.amount       = new Decimal(amount).toFixed(4);
+            result.symbol       = symbol;
+            result.game_name    = game_name;
+            result.account_name = account_name;
+            result.bet_num      = bet_num;
+            result.odds_rate    = odds_rate;
 
-            if (user !== from) {
-                result["invest_type"] = user;
-            } else {
-                result["invest_type"] = from;
-            }
-
-            result["from"] = from;
-            result["amount"] = amount;
-            result["symbol"] = symbol;
             return result;
         } else {
             // todo

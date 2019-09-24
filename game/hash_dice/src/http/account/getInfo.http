@@ -14,10 +14,10 @@ GET http://localhost:13022/hash_dice/game_rate?account_name=110
 GET http://localhost:13022/hash_dice/bet_list
 
 ### get user bet list
-GET http://localhost:13022/hash_dice/bet_list_mine?account_name=yujinsheng11
+GET http://localhost:13022/hash_dice/bet_list_mine?account_name=uetokencoin
 
 ### get user bet detail
-GET http://localhost:13022/hash_dice/bet_list_mine_detail?id=yujinsheng11
+GET http://localhost:13022/hash_dice/bet_list_mine_detail?id=9WOMDyub
 
 ### betting
 POST http://localhost:13022/hash_dice/bet
@@ -26,5 +26,5 @@ content-type: application/json
 {
     "account_name": "yujinsheng11",
     "bet_num"     : "twins",
-    "bet_amount"  : "0.2"
+    "bet_amount"  : "1"
 }

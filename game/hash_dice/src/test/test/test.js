@@ -3,39 +3,110 @@ const sleep = require("../../job/sleep.js");
 const { redis } = require("../../common");
 const { pool } = require("../../db");
 const GLOBAL_LOTTO_KEY = "tbg:hash_dice:account_action_seq";
-
+const { OPEN_CODE_COUNT } = require("../../common/constant/gameConstants");
 // @ts-check
 const { Api, JsonRpc } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
 const fetch = require('node-fetch');                                   // node only
 const { TextDecoder, TextEncoder } = require('util');               // node only
-const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN, UE_TOKEN } = require("../../common/constant/eosConstants.js");
+const { END_POINT, PRIVATE_KEY_TEST, TBG_TOKEN, BANKER,UE_TOKEN } = require("../../common/constant/eosConstants.js");
 // @ts-ignore
 const rpc = new JsonRpc(END_POINT, { fetch });
+const logger = require("../../common/logger.js").child({ "@test.js": "test" });
+
+const openGameSession = require("../../job/openGameSession")
+const isReward = require("../../job/isReward")
+let open_num = "";
+let count = 0;
+
 /**
  * 
- * @param { number } a 
- * @param { number } b 
- * @param { number } c 
- * @param { number } d 
- * @param { number } e 
+ * @param { String[] } privateKeyList 私钥数组
  */
-function getInfo(a, b, c, d, e) {
-    console.debug(a, b, c, d, e);
-}
-
-
-;(async () => {
-    let result= await getLastPos()
-    console.log(result)
-})();
-
-
-async function getLastPos(){    
-    let lastPosStr = await redis.get(GLOBAL_LOTTO_KEY);
-    if(!lastPosStr){
-        await redis.set(GLOBAL_LOTTO_KEY, 0);
-        return 0;
+async function newApi(privateKeyList) {
+    try {
+        const signatureProvider = new JsSignatureProvider(privateKeyList);
+        // @ts-ignore
+        const rpc = new JsonRpc(END_POINT, { fetch });
+        // @ts-ignore
+        const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
+        return api;
+    } catch (err) {
+        throw err;
     }
-    return parseInt(lastPosStr) + 1;
 }
+/**
+ * 转帐
+ * @param { String } tokenContract 代币合约用户
+ * @param { String } from 转帐用户
+ * @param { String } to 收款人
+ * @param { String } quantity  额度
+ * @param { String } memo 备注
+ * @param { String[] } privateKeyList 私钥数组
+ */
+async function transfer(tokenContract, from, to, quantity, memo, privateKeyList) {
+    try {
+        let api = await newApi(privateKeyList);
+        let actions = {
+            actions: [{
+              account: tokenContract,
+              name: "transfer",
+              authorization: [{
+                actor: from,
+                permission: 'active',
+              }],
+              data: {
+                from: from,
+                to: to,
+                quantity: quantity,
+                memo: memo,
+              }
+            }]
+          }
+        const result = await api.transact(actions, {
+            blocksBehind: 3,
+            expireSeconds: 30,
+          });
+
+          return result;
+    } catch (err) {
+        throw err;
+    }
+}
+// for(let num of resp.id){
+//     console.log(num)
+//     if(!isNaN(Number(num))){
+//         open_num += num;
+//         console.log('aa')
+//         count ++;
+//         if (count === OPEN_CODE_COUNT) {
+//             open_num =open_num.split('').reverse().join('')
+//             //openResult.open_num = open_num
+//             console.log("yes:",open_num)
+//             break;
+//         }
+//     }
+// }
+
+// for(let index=resp.id.length;index>1;index--){
+//         let num = resp.id[index];
+//         if(!isNaN(Number(num))){
+//         open_num += num;
+//         count ++;
+//         if (count === OPEN_CODE_COUNT) {
+//             open_num =open_num.split('').reverse().join('')
+//             //openResult.open_num = open_num
+//             console.log("yes:",open_num)
+//             break;
+//         }
+//     }
+        
+// }
+
+// openGameSession(14081360)
+
+// isReward({open_num:88,open_block_num:14087157})
+let memo = "hash_dice:yujinsheng11:78:2.0770"  
+transfer(UE_TOKEN, UE_TOKEN, "luckyhongbao", '1.0000 UE', memo, PRIVATE_KEY_TEST.split(","))
+.then(res => console.error(res))
+.catch(err => console.error(err));

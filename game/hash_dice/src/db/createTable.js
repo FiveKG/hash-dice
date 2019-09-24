@@ -40,12 +40,14 @@ async function createTable() {
         CREATE TABLE IF NOT EXISTS reward(
             reward_block_num TEXT  PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
             reward_block_id TEXT NOT NULL DEFAULT '',
-            reward_num TEXT NOT NULL DEFAULT ''
+            reward_num TEXT NOT NULL DEFAULT '',
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         comment on table reward is '区块中奖信息';
         comment on column reward.reward_block_num is '开奖区块编号';
         comment on column reward.reward_block_id is '开奖区块ID';
         comment on column reward.reward_num is '开奖数字';
+        comment on column reward.create_time is '开奖时间';
     `
 
 
