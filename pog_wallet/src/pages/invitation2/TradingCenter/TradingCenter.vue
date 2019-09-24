@@ -427,7 +427,7 @@
 <script>
 import MyPage from '@/components/MyPage'
 import {getType,partnerPlacement,PlacementTransactionList,getSellHistoryList,getGeneralBuy,normalTransactionList,getGeneralSell,sellTransactionList,getSellList,
-globalPartnerPlacement,buyAsset,sellAsset} from '@/servers/invitation';
+globalPartnerPlacement,buyAsset,sellAsset} from '@/servers/invitation'
 import api from '@/servers/invitation'
 
 import { format, parse } from 'date-fns'
@@ -437,7 +437,7 @@ import MDialog from '@/components/MDialog'
 import PasswordService from '@/services/PasswordService'
 import CryptoAES from '@/util/CryptoAES'
 import eos from '@/plugins/pog'
-import serverApi from '@/servers/invitation';
+import serverApi from '@/servers/invitation'
 
 export default {
   components: {

@@ -89,7 +89,7 @@ export default {
           const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
           // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
           const adm = await eos.contract('uetokencoin')
-          const trx = await adm.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+          const trx = await adm.transfer(this.reqParams.account, config.wallet_receiver, `1000.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
           console.log(111111111111111111,trx);
           return true
         } catch (error) {

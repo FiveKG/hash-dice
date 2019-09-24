@@ -109,7 +109,40 @@
         <div v-if="betFailure" class="failure">
             <p style=" font-size: 0.5rem;color: rgb(51, 51, 51);margin-top: 0.4rem;">余额不足</p>
         </div>
-
+         <!-- 键盘 -->
+        <transition name="slide">
+         <div class="keyboard"  v-if="keyboard">
+          <div class="list_row">
+            <div style="display:flex;justify-content: center;align-items: center;flex: 1;font-size:.6rem;"><span>请输入密码</span></div>
+            <div style="display:flex;justify-content: center;align-items: center;flex: 1;font-size:.4rem;"><span> {{password}}</span></div>
+            <div style="display:flex;justify-content: center;align-items: center;flex: 1;font-size:.6rem;"><span><span @click="handleConfirm">确认</span></span></div>
+          </div>
+          <div class="list_row">
+            <div class="key" @click="enterAmount('1')">1</div>
+            <div class="key" @click="enterAmount('2')">2</div>
+            <div class="key" @click="enterAmount('3')">3</div>
+          </div>
+          <div class="list_row">
+            <div class="key" @click="enterAmount('4')">4</div>
+            <div class="key" @click="enterAmount('5')">5</div>
+            <div class="key" @click="enterAmount('6')">6</div>
+          </div>
+          <div class="list_row">
+            <div class="key" @click="enterAmount('7')">7</div>
+            <div class="key" @click="enterAmount('8')">8</div>
+            <div class="key" @click="enterAmount('9')">9</div>
+          </div>
+          <div class="list_row">
+            <div @click="logKeyboard" class="key"  style="width:100%;">
+              <img src="../../.././components/keyboard/icon-keyboard.svg" alt="">
+            </div>
+            <div class="key" @click="enterAmount('0')">0</div>
+            <div class="key" @click="deleteAmout">
+              <i class="iconfont icon-keyboard-delete del"></i>
+            </div>
+          </div>
+         </div> 
+        </transition>
 
        </div>
      </slot>
@@ -126,7 +159,12 @@ import api from '@/pages/game/treasure/game'
 
 //滚动区域
 import ClientSocket from '@/socket/scrollClientSocket'
-
+//转站
+import MDialog from '@/components/MDialog'
+import PasswordService from '@/services/PasswordService'
+import CryptoAES from '@/util/CryptoAES'
+import eos from '@/plugins/pog'
+import serverApi from '@/servers/invitation'
 
 export default {
   components: {
@@ -154,6 +192,12 @@ export default {
         // {periods:1,reward_code:10000,key_count:1}
       ],
       socket:'',
+      keyboard:false,  //下拉键盘
+      //区块链转站
+      reqParams: {
+        account: '',
+      },
+      password: '',
     }
   },
   methods: {
@@ -214,13 +258,27 @@ export default {
         api.Betting({game_id:this.twenty,periods:this.TreasureBettin.periods,account_name:this.account_name,bet_key:this.betKey,bet_amount:this.betKey*this.TreasureBettin.quantity}).then(res => {
           console.log(res)
           if (res.code === 1) {
-              console.log('成功')
               this.betSuccess=true;
               setTimeout(() => {
-                this.betSuccess=false;
+                this.betSuccess=false;this.logKeyboard();
+              }, 2500);
+            }else if(res.code === 1011){
+              this.betSuccess=true;
+              setTimeout(() => {
+                this.betFailure=false;
+                this.logKeyboard();
               }, 2500);
             }
         })
+       },
+        logKeyboard(){    //切换下拉键盘
+          this.keyboard=!this.keyboard;
+       },
+       enterAmount(data){//  输入数字
+        if(this.password.length<16){this.password+=data;}
+       },
+       deleteAmout(){//   删除数字
+        this.password=this.password.substr(0,this.password.length-1);
        },
     //滚动区域
     initSocket() {
@@ -296,6 +354,87 @@ export default {
                 }
             })
     },
+    //区块链转站
+      async verifyPassword() {        // 验证密码
+        const seed = await PasswordService.encrypt(this.password);
+        const wallets = this.$store.state.wallet.localFile.wallets;
+        const current = wallets.find(ele => ele.accountNames[0] === this.reqParams.account);
+        const privateKey = CryptoAES.decrypt(current.privateKey,seed);
+        return privateKey
+        // return '5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h';
+      },
+      async goPay(privateKey,quantity,memo ) {
+        if (privateKey) {
+          try {
+            const config = await this.getConfig()
+            const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
+            // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+            const adm = await eos.contract('uetokencoin')
+            // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
+            const trx = await adm.transfer(this.reqParams.account, config.trade_receiver, quantity.toFixed(4)+' UE', memo, opts)
+            console.log(11221111,trx);
+            return true
+          } catch (error) {
+            console.log(error)
+            error = JSON.parse(error)
+            if (error.error.code == 3050003) {
+              this.$toast(this.$t('common.overdrawn_balance'))
+            }
+            if (error.error.code == 3080004) {
+              this.$toast('CPU资源受限')
+            }
+            return false
+          }
+        } else {
+          this.$toast(this.$t('common.wrong_pwd'))
+        }
+      },
+      async sellgoPay(privateKey,quantity,memo ) {
+        if (privateKey) {
+          try {
+            const config = await this.getConfig()
+            const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
+            // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+            const adm = await eos.contract('tbgtokencoin')
+            // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
+            const trx = await adm.transfer(this.reqParams.account, config.trade_receiver, quantity, memo, opts)
+            console.log(11221111,trx);
+            return true
+          } catch (error) {
+            console.log(error)
+            error = JSON.parse(error)
+            if (error.error.code == 3050003) {
+              this.$toast(this.$t('common.overdrawn_balance'))
+            }
+            if (error.error.code == 3080004) {
+              this.$toast('CPU资源受限')
+            }
+            return false
+          }
+        } else {
+          this.$toast(this.$t('common.wrong_pwd'))
+        }
+      },
+      async getConfig() {
+        try {
+          const res = await serverApi.getConfig()
+          if (res.code === 1) {
+            console.log('getConfig',res)
+            return res.data
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      },
+      async handleConfirm() {
+        const privateKey = await this.verifyPassword()
+        if (privateKey) {
+              let quantity=new Decimal(this.betKey).mul(this.TreasureBettin.quantity);
+              let memo='treasure'+':'+this.account_name+':'+this.betKey+':'+quantity+':'+this.TreasureBettin.periods+':'+this.GameData[this.twenty-1].game_id
+              this.goPay(privateKey,quantity,memo);
+              this.logKeyboard();
+        } 
+      },
        
   },
   watch: {
@@ -312,6 +451,7 @@ export default {
     },
   created(){
     this.account_name=this.$store.state.wallet.assets.account;
+    this.reqParams.account = this.account_name;   //转站
     //滚动区域
     this.initSocket();
     //获取配置信息
@@ -534,6 +674,45 @@ span{
 }
 .scroll-move{
   transition:transform .5s;
+}
+
+/* 下拉键盘 */
+.slide-enter-active, .slide-leave-active {
+  transition: all .8s;
+}
+.slide-enter, .slide-leave-to{
+  transform: translateY(100%);
+}
+.keyboard {
+  height: 500px;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 10000;
+  font-size: 50px;
+  background-color: #fff;
+}
+.list_row {
+  display: flex;
+  height: 20%;
+}
+.key {
+  flex: 1;
+  border-right: 1PX solid #d6d6d6;
+  border-top: 1PX solid #d6d6d6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.key img {
+  height: 60px;
+}
+.key:nth-child(3n) {
+  border-right: none;
+}
+.del {
+  font-size: 50px;
 }
 
 

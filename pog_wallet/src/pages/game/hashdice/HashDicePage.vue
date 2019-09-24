@@ -76,7 +76,7 @@
         <!--  --> 
         <div style="width: 100%;height: 1.2rem;">
           <div class="display_ib" style="width: 2%;height: 100%;"></div>
-          <div @click="logKeyboard" class="display_ib vertical_top  p_A " style="width: 26%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
+          <div @click="logKeyboard(true)" class="display_ib vertical_top  p_A " style="width: 26%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
             <div class="display_ib" style="width: 45%;height:100%;"><img  style="width: 100%;height: 100%;" src="@/assets/invitation2/u10.svg"></div>
             <div class="display_ib vertical_top" style="width: 55%;height:100%;">
               <p class=" Centered font_five orange" style="margin-top: .24rem;">{{betAmount}}</p>
@@ -101,7 +101,7 @@
         </div>
         <!--  -->
         <div style="width: 100%;height: 20px;"></div>
-        <div v-if="!Betting" class="background_orange" style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;"><p @click="selectBetting();betting();" class="Centered font_white font_five" style="line-height: 1.4rem;">{{publicDataButton[twenty]}}</p></div>
+        <div v-if="!Betting" class="background_orange" style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;"><p @click="selectBetting();betting();" class="Centered font_white font_five" style="line-height: 1.4rem;">{{publicDataButton[twenty][0]}}<span v-if="twenty==0">{{fadeInDuration}}</span>{{publicDataButton[twenty][1]}}</p></div>
         <div v-if="Betting" style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;"><p class="Centered font_white font_five" style="line-height: 1.4rem;">开奖中...</p></div>
         <div style="width: 100%;height: 20px;"></div>
         <div style="width: 100%;">
@@ -119,7 +119,7 @@
               <div style="width:100%;height:1.1rem;">
                 <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.create_time}}</p></div>
                 <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.account_name}}</p></div>
-                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.bonus}}</p></div>
+                <div class="display_ib vertical_top" style="width:33.3%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.reward}}</p></div>
               </div>
             </div>
           </div>
@@ -134,9 +134,9 @@
               <div style="width:100%;height:1.1rem;">
                 <div class="display_ib vertical_top" style="width:25%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.create_time}}</p></div>
                 <div class="display_ib vertical_top" style="width:25%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.bet_num}}</p></div>
-                <div class="display_ib vertical_top" style="width:25%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.bet_amount}}</p></div>
+                <div class="display_ib vertical_top" style="width:25%;height:1.1rem;"><p  style="font-size: .45rem;line-height:1.1rem;text-align: center;">{{item.betting_amount}}</p></div>
                 <div class="display_ib vertical_top" style="width:25%;margin-left: 0%;height:1.1rem;" @click="jumpHashDiceDetails(item.id)">
-                  <div class="display_ib vertical_top Centered" style="width:70%;height: 1.1rem;"><p style="font-size: .45rem;line-height:1.1rem;">{{item.bonus}}</p></div>
+                  <div class="display_ib vertical_top Centered" style="width:70%;height: 1.1rem;"><p style="font-size: .45rem;line-height:1.1rem;">{{item.reward}}</p></div>
                   <div class="display_ib vertical_top" style="width:30%;height: 1.1rem;"><img style="width: .5rem;height: .5rem;margin-top: .3rem;" src="@/assets/img/invitation_profitarrow.png"></div>
                 </div>
               </div>
@@ -179,10 +179,16 @@
               <p class="orange p_A" style="font-size: 1.2rem;line-height: 1rem;color:rgb(0, 204, 102);">35</p><p class="orange p_A" style="font-size: .8rem;color:rgb(0, 204, 102);">lose</p>
             </div>
         </div>
+        <!-- 键盘 -->
         <transition name="slide">
          <div class="keyboard" v-if="keyboard">
-          <div class="list_row">
+          <div class="list_row" v-if="logPassword">
             <div class="key">{{betAmount}}</div>
+          </div>
+          <div class="list_row" v-if="!logPassword">
+            <div style="display:flex;justify-content: center;align-items: center;flex: 1;font-size:.6rem;"><span>请输入密码</span></div>
+            <div style="display:flex;justify-content: center;align-items: center;flex: 1;font-size:.4rem;"><span> {{password}}</span></div>
+            <div style="display:flex;justify-content: center;align-items: center;flex: 1;font-size:.6rem;"><span><span @click="handleConfirm">确认</span></span></div>
           </div>
           <div class="list_row">
             <div class="key" @click="enterAmount('1')">1</div>
@@ -200,7 +206,7 @@
             <div class="key" @click="enterAmount('9')">9</div>
           </div>
           <div class="list_row">
-            <div @click="logKeyboard" class="key"  style="width:100%;">
+            <div @click="logKeyboard(true)" class="key"  style="width:100%;">
               <img src="../../.././components/keyboard/icon-keyboard.svg" alt="">
             </div>
             <div class="key" @click="enterAmount('0')">0</div>
@@ -223,9 +229,14 @@ import { format, parse } from 'date-fns'
 import {Decimal} from 'decimal.js'
 import api from '@/pages/game/hashdice/game'
 
-
 //滚动区域
 import ClientSocket from '@/socket/HashSocket'
+//转站
+import MDialog from '@/components/MDialog'
+import PasswordService from '@/services/PasswordService'
+import CryptoAES from '@/util/CryptoAES'
+import eos from '@/plugins/pog'
+import serverApi from '@/servers/invitation'
 
 
 export default {
@@ -252,7 +263,7 @@ export default {
       winningBonus:0,//可赢奖金
       publicData:[],  //公用界面数据       小于0   大于1   对子3   小2
       publicDataButton:[ //按钮
-        '小于 50 赢 - 去投注','50 - 99 且不是对子赢 - 去投注','00 - 49 且不是对子赢 - 去投注','对子赢 - 去投注'
+        ['小于 ',' 赢 - 去投注'],['50 - 99 ','且不是对子赢 - 去投注'],['00 - 49 ','且不是对子赢 - 去投注'],['对子赢 - ','去投注'],
       ],  
       items:[    // 滚动
               // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:1,ids:10},
@@ -268,9 +279,15 @@ export default {
       ],   
       aLLBetting:[],//所有投注
       myBetting:[   //我的投注
-        {create_time:1,bet_num:1,bet_amount:1,bonus:1}
+        // {create_time:1,bet_num:1,bet_amount:1,bonus:1}
       ],
       socket:'',
+      //区块链转站
+      reqParams: {
+        account: '',
+      },
+      password: '',
+      logPassword:true,//输入密码的键盘显示
 
     }
   },
@@ -316,21 +333,35 @@ export default {
         api.Betting({account_name:this.account_name,bet_num:this.publicData[this.twenty].bet_type,bet_amount:this.betAmount}).then(res => {
           if (res.code === 1) {
                 console.log(res)
+              }else if(res.code === 1011){
+                this.logKeyboard(false);
               }
+
           })
        },
        selectBetAmount(data){ //选择投注额度
           this.betAmount=data;
        },
-       logKeyboard(){    //切换下拉键盘
+       logKeyboard(data){    //切换下拉键盘
           this.keyboard=!this.keyboard;
+          this.logPassword=data;
        },
        enterAmount(data){//  输入数字
-        this.betAmount+=data;
-        if(this.betAmount>100){this.betAmount='100';}
+          if(this.logPassword==true){
+            this.betAmount+=data;
+            if(this.betAmount>100){this.betAmount='100';}
+          }else{
+            if(this.password.length<16){
+              this.password+=data;
+              }
+          }
        },
        deleteAmout(){//   删除数字
-        this.betAmount=this.betAmount.substr(0,this.betAmount.length-1);
+          if(this.logPassword==true){
+            this.betAmount=this.betAmount.substr(0,this.betAmount.length-1);
+              }else{
+                this.password=this.password.substr(0,this.password.length-1);
+              }
        },
        addComma(data){
         var a=data;var b='';var c=a.length+1;
@@ -420,6 +451,95 @@ export default {
                 }
             })
         },
+    //区块链转站
+      async verifyPassword() {        // 验证密码
+        const seed = await PasswordService.encrypt(this.password);
+        const wallets = this.$store.state.wallet.localFile.wallets;
+        const current = wallets.find(ele => ele.accountNames[0] === this.reqParams.account);
+        const privateKey = CryptoAES.decrypt(current.privateKey,seed);
+        return privateKey
+        // return '5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h';
+      },
+      async goPay(privateKey,quantity,memo ) {
+        if (privateKey) {
+          try {
+            const config = await this.getConfig()
+            const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
+            // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+            const adm = await eos.contract('uetokencoin')
+            // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
+            const trx = await adm.transfer(this.reqParams.account, config.trade_receiver, quantity+' UE', memo, opts)
+            console.log(11221111,trx);
+            return true
+          } catch (error) {
+            console.log(error)
+            error = JSON.parse(error)
+            if (error.error.code == 3050003) {
+              this.$toast(this.$t('common.overdrawn_balance'))
+            }
+            if (error.error.code == 3080004) {
+              this.$toast('CPU资源受限')
+            }
+            return false
+          }
+        } else {
+          this.$toast(this.$t('common.wrong_pwd'))
+        }
+      },
+      async sellgoPay(privateKey,quantity,memo ) {
+        if (privateKey) {
+          try {
+            const config = await this.getConfig()
+            const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
+            // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+            const adm = await eos.contract('tbgtokencoin')
+            // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
+            const trx = await adm.transfer(this.reqParams.account, config.trade_receiver, quantity, memo, opts)
+            console.log(11221111,trx);
+            return true
+          } catch (error) {
+            console.log(error)
+            error = JSON.parse(error)
+            if (error.error.code == 3050003) {
+              this.$toast(this.$t('common.overdrawn_balance'))
+            }
+            if (error.error.code == 3080004) {
+              this.$toast('CPU资源受限')
+            }
+            return false
+          }
+        } else {
+          this.$toast(this.$t('common.wrong_pwd'))
+        }
+      },
+      async getConfig() {
+        try {
+          const res = await serverApi.getConfig()
+          if (res.code === 1) {
+            console.log('getConfig',res)
+            return res.data
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      },
+      async handleConfirm() {
+        const privateKey = await this.verifyPassword()
+        if (privateKey) {
+              var gameType='';
+              switch (this.twenty) {
+                case 0: gameType=this.fadeInDuration;break;
+                case 1: gameType='big';break;
+                case 2: gameType='small';break;
+                case 3: gameType='twins';break;
+              }
+            // let memo='hash_dice'+':'+this.account_name+':'+gameType+':'+this.betAmount+':'+this.publicData[this.twenty].odds_rate
+            let memo='hash_dice'+':'+this.account_name+':'+gameType+':'+this.publicData[this.twenty].odds_rate
+            let quantity=new Decimal(this.betAmount).toFixed(4)
+            this.goPay(privateKey,quantity,memo);
+        }
+        this.logKeyboard(true); 
+      },
        
         
         
@@ -427,12 +547,12 @@ export default {
   watch: {
         '$store.state.wallet.block': {
             handler(newVal, oldVal) {
-                console.log(12311111111111,this.$store.state.wallet.block);
-                this.treasureKey+=1;
-                this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
-                id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey
-                });
-                this.items.splice(10);
+                // console.log(12311111111111,this.$store.state.wallet.block);
+                // this.treasureKey+=1;
+                // this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
+                // id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey
+                // });
+                // this.items.splice(10);
             }
         },
          betAmount: {   //可赢奖金
@@ -448,6 +568,7 @@ export default {
   },
   created(){
     this.account_name=this.$store.state.wallet.assets.account;
+    this.reqParams.account = this.account_name;   //转站
     //滚动区域
     this.initSocket();
     //获取配置信息
@@ -471,13 +592,25 @@ export default {
     //获取所有的投注
     api.getAllBets().then(res => {
         if (res.code === 1) {
+             for(let i=0;i<res.data.length;i++){
+              res.data[i].create_time=format(new Date(res.data[i].create_time), 'YYYY-MM-DD')
+            }
             this.aLLBetting=res.data;
           }
       })
     //获取我的投注
     api.getSomeUserBettingList({account_name:this.account_name}).then(res => {
         if (res.code === 1) {
-            // this.myBetting=res.data;
+             for(let i=0;i<res.data.length;i++){
+              res.data[i].create_time=format(new Date(res.data[i].create_time), 'YYYY-MM-DD')
+              switch (res.data[i].bet_num) {
+                case 'smaller': res.data[i].bet_num='小于';break;
+                case 'small': res.data[i].bet_num='小';break;
+                case 'twins': res.data[i].bet_num='对子';break;
+                case 'big': res.data[i].bet_num='大';break;
+              }
+            }
+            this.myBetting=res.data;
           }
       })
 

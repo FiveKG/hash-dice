@@ -761,7 +761,7 @@ export default {
               // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
               const adm = await eos.contract('uetokencoin')
               // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
-              const trx = await adm.transfer(this.account_name , config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.account_name }`, opts)
+              const trx = await adm.transfer(this.account_name , config.wallet_receiver, `1000.0000 UE`, `tbg_invest:${this.account_name }`, opts)
               this.is_active()
               console.log(11221111,trx);
               return true
