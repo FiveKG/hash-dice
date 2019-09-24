@@ -249,7 +249,7 @@ export default {
       treasureKey:1,  //滚动KEY
       allMy:true,   //区分我的 全部
       actionSheetVisible: false,   //下拉框
-      keyboard:false,  //下拉键盘
+      keyboard:false,  //下拉键盘betAmount
       betSuccess:false,        //成功显示
       betFailure:false,        //失败显示
       fadeInDuration:0,      //滑块骰子的值

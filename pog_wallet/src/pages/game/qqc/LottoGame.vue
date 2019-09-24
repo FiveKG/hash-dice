@@ -56,7 +56,7 @@
       <!-- 投注按钮 -->
       <div class="bettingBtn">
           <div class="btn1" @click="randomBetting()">随机投注</div>
-          <div class="btn2">选号投注</div>
+          <div class="btn2" @click="logKeyboard()">选号投注</div>
       </div>
 
       <!-- 选项 -->
@@ -114,6 +114,95 @@
             </v-ons-row>
          </div>
       </v-ons-action-sheet> 
+
+
+      <!-- 键盘 -->
+      <!-- <transition name="slide">
+         <div class="keyboard" v-if="keyboard">
+          <div class="list_row">
+            <div class="key">{{betAmount}}</div>
+          </div>
+          <div class="list_row">
+            <div class="key" @click="enterAmount('1')">1</div>
+            <div class="key" @click="enterAmount('2')">2</div>
+            <div class="key" @click="enterAmount('3')">3</div>
+          </div>
+          <div class="list_row">
+            <div class="key" @click="enterAmount('4')">4</div>
+            <div class="key" @click="enterAmount('5')">5</div>
+            <div class="key" @click="enterAmount('6')">6</div>
+          </div>
+          <div class="list_row">
+            <div class="key" @click="enterAmount('7')">7</div>
+            <div class="key" @click="enterAmount('8')">8</div>
+            <div class="key" @click="enterAmount('9')">9</div>
+          </div>
+          <div class="list_row">
+            <div @click="logKeyboard" class="key"  style="width:100%;">
+              <img src="../../.././components/keyboard/icon-keyboard.svg" alt="">
+            </div>
+            <div class="key" @click="enterAmount('0')">0</div>
+            <div class="key" @click="deleteAmout">
+              <i class="iconfont icon-keyboard-delete del"></i>
+            </div>
+          </div>
+         </div> 
+        </transition> -->
+        
+         <transition name="slide">
+           <div class="keyboardBox" v-if="keyboard" >
+              <div class="keyboard">
+                  <div class="top">
+                      <div class="numbers">
+                          <div class="rows">
+                              <div class="col" @click="enterAmount('1')">1</div>
+                              <div class="col" @click="enterAmount('2')">2</div>
+                              <div class="col" @click="enterAmount('3')">3</div>
+                              <div class="col" @click="enterAmount('4')">4</div>
+                          </div>
+                          <div class="rows">
+                              <div class="col" @click="enterAmount('5')">5</div>
+                              <div class="col" @click="enterAmount('6')">6</div>
+                              <div class="col" @click="enterAmount('7')">7</div>
+                              <div class="col" @click="enterAmount('8')">8</div>
+                          </div>
+                          <div class="rows">
+                              <div class="col" @click="enterAmount('9')">9</div>
+                              <div class="col" @click="enterAmount('0')">0</div>
+                              <div class="col" @click="deleteAmout()"><p class="numberClose"><span></span>  X</p></div>
+                          </div>
+                      </div>
+                      <div class="inputNumbers">
+                          <p>{{inputNumberList}}</p>
+                          <!-- <p>3</p>
+                          <p>4</p>
+                          <p>1</p>
+                          <p>2</p>
+                          <p>3</p>
+                          <p>4</p>
+                          <p>5</p>
+                          <p>6</p> -->
+                          <div @click="deleteAll()" ><img src="@/assets/img/u9556.png" alt=""></div>
+                      </div>
+                  </div>
+                  
+                   <div class="middle">
+                      <div class="inputBetting">
+                          <span @click="lessBtn()">-</span>
+                          <span>{{bettingNumber}}</span>
+                          <span @click="addBtn()">+</span>
+                      </div>
+                      <div class="UeBetting">{{bettingUe}} UE</div>
+                  </div>
+                  <div class="bottom">
+                     <div class="cancel" @click="logKeyboard()">取消</div>
+                     <div class="betting" @click="postBetting()">投注</div>
+                  </div> 
+                 
+              </div>
+           </div>
+         </transition>
+
         </div>
     </ons-page>
 </template>
@@ -137,17 +226,22 @@ export default {
           tiemer:'', //倒计时
           inputNumber:1,  //加减框数字
           UEnumber:0,
+          keyboard:false,  //下拉键盘
+          betAmount:'0',//投注的总额度
+          bettingNumber:0,
+          bettingUe:0,
           items:[    // 滚动
             // {timestamp:"15:23:02.0",block_num:33283278,
             //   id:'...'+"F7B195473D4F09BC8F1",treasureKey:1
             //   }
-          ],  
+          ], 
+          inputNumberList:'',
           openAllList:[],
           openMyList:[],
           openInfo:{},
        }
    },
-
+ 
    methods:{
      //关闭按钮
      close(){
@@ -267,17 +361,11 @@ export default {
           if(this.inputNumber<1){
               this.inputNumber = 1
           }
-          this.UEnumber =new Decimal(this.inputNumber).mul(new Decimal(this.openInfo.quantity) )
-          console.log(this.inputNumber)
-          console.log(this.openInfo.quantity)
-          console.log(this.UEnumber)
+          this.UEnumber = new Decimal(this.inputNumber).mul(new Decimal(this.openInfo.quantity) )
       },
       btnAdd(){
           this.inputNumber++
-          this.UEnumber =new Decimal(this.inputNumber).mul(new Decimal(this.openInfo.quantity) )   
-          console.log(this.inputNumber)
-          console.log(this.openInfo.quantity)
-          console.log(this.UEnumber)
+          this.UEnumber = new Decimal(this.inputNumber).mul(new Decimal(this.openInfo.quantity) )   
       },
       getAllGame(){
           api.getOpenlist().then(res => this.openAllList = res.data)
@@ -285,17 +373,50 @@ export default {
       getMyGame(){
           api.getUserBet({account_name:this.$store.state.wallet.assets.account}).then(res => {
                 this.openMyList = res.data.detail;
-                
                 for(var i=0; i<this.openMyList.length; i++){
                      this.openMyList[i].bet_time = format(parse(this.openMyList[i].bet_time), 'MM/DD HH:mm:ss')
                 }
-                console.log(111111111,this.openMyList)
-                // this.openMyList.
             })
       },
       randomBetting(){
-          this.$toast('随机投注成功')
+          api.getRandomBetting({periods:this.openInfo.periods,account_name:this.$store.state.wallet.assets.account,bet_key:this.inputNumber,bet_amount:this.UEnumber}).then(res=> {
+              if(res.code != 1){
+                this.$toast('随机投注失败，请检查再重试！')
+                return false;
+              }
+              if(res.code == 1){
+                this.$toast('恭喜你，随机投注成功！')
+              }
+          })
+      },
+      logKeyboard(){    //切换下拉键盘
+        this.keyboard=!this.keyboard;
+      },
+      enterAmount(data){//  输入数字
+      if(this.inputNumberList.length < 9){
+           this.inputNumberList+=data;
       }
+
+      },
+      deleteAmout(){//   删除数字
+      this.inputNumberList=this.inputNumberList.substr(0,this.inputNumberList.length-1);
+      },
+      deleteAll(){//   删除数字
+      this.inputNumberList='';
+      },
+      addBtn(){
+          this.bettingNumber++
+      },
+      lessBtn(){
+          this.bettingNumber--
+           if(this.bettingNumber<0){
+              this.bettingNumber = 0
+          }
+      },
+      postBetting(){
+          api.getBetting({periods:this.openInfo.periods,account_name:this.$store.state.wallet.assets.account,bet_num:this.inputNumberList,bet_key:this.bettingNumber,bet_amount:this.bettingUe}).then( res => console.log(res))
+      }
+
 
 
    },
@@ -310,13 +431,18 @@ export default {
                 this.items.splice(10);
             }
         },
+         bettingNumber: {   //
+          handler(newVal, oldVal){ 
+            this.bettingUe=new Decimal(this.openInfo.quantity).mul(new Decimal(this.bettingNumber));
+          }
+         }
     },
 
   created(){
 
 
      //轮播滚动
-    //  this.initSocket();
+     this.initSocket();
 
      //获取全球彩奖池，倒计时，期数
      this.getOpen()
@@ -711,4 +837,239 @@ export default {
 .orange{
   color: rgba(255, 153, 51, 1);
 }
-</style>
+
+
+/* 下拉键盘 */
+// .slide-enter-active, .slide-leave-active {
+//   transition: all .8s;
+// }
+// .slide-enter, .slide-leave-to{
+//   transform: translateY(100%);
+// }
+// .keyboard {
+//   height: 500px;
+//   width: 100%;
+//   position: fixed;
+//   bottom: 0;
+//   left: 0;
+//   z-index: 10000;
+//   font-size: 50px;
+//   background-color: #fff;
+// }
+// .list_row {
+//   display: flex;
+//   height: 20%;
+// }
+// .key {
+//   flex: 1;
+//   border-right: 1PX solid #d6d6d6;
+//   border-top: 1PX solid #d6d6d6;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
+// .key img {
+//   height: 60px;
+// }
+// .key:nth-child(3n) {
+//   border-right: none;
+// }
+// .del {
+//   font-size: 50px;
+// }
+
+
+//键盘样式
+.keyboardBox{
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  background-color:  rgba(0, 0, 0, 0.509803921568627);
+  z-index:99;
+  display:flex;
+  align-items:center;
+  justify-content: center;
+}
+.keyboard{
+  flex:1;
+  display: flex;
+  align-items:center;
+  justify-content: center;
+  flex-direction: column;
+  width:100%;
+  margin:0 10%;
+  // background-color:#fff;
+  z-index: 101;
+}
+
+.keyboard .top{
+  height:7.5rem;
+  width:100%;
+  border-radius: .15rem;
+  padding:.7rem;
+  background-color: rgba(40, 40, 40, 0.909803921568627);
+  box-sizing:border-box;
+}
+.top .numbers{
+  border:1px solid rgba(107, 107, 107, 1);
+  color:#E4E4E4;
+  font-family: 'Arial Normal', 'Arial';
+  font-size:.5rem;
+  font-weight:400;
+  
+}
+.top .numbers .rows{
+  display:flex;
+
+}
+.top .numbers .rows{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  line-height:1.65rem;
+}
+.top .numbers .rows:nth-child(1) .col{
+  flex:1;
+  border-right:1px solid  rgba(107, 107, 107, 1);
+  border-bottom:1px solid  rgba(107, 107, 107, 1);
+}
+.top .numbers .rows:nth-child(1) .col:nth-child(4){
+  border-right:0;
+}
+.top .numbers .rows:nth-child(2) .col{
+  flex:1;
+  border-right:1px solid  rgba(107, 107, 107, 1);
+  border-bottom:1px solid  rgba(107, 107, 107, 1);
+}
+.top .numbers .rows:nth-child(2) .col:nth-child(4){
+  border-right:0;
+}
+.top .numbers .rows:nth-child(3) .col:nth-child(1), .top .numbers .rows:nth-child(3) .col:nth-child(2){
+   flex:1;
+   border-right:1px solid rgba(107, 107, 107, 1);
+}
+.top .numbers .rows:nth-child(3) .col:nth-child(3){
+  flex:2;
+}
+.numberClose{
+  margin:0 auto;
+  height:.7rem;
+  line-height:.7rem;
+  width: 1.2rem;
+  font-size:.45rem;
+  color:#fff;
+  background-color:#FF9900;
+  position:relative;
+  left:6px;
+}
+.numberClose span{
+  display:block;
+  width:0;
+  height:0;
+  border-width: 0.36rem 0.4rem 0.36rem 0;
+  border-style:solid;
+  border-color:transparent #FF9900 transparent transparent;/*透明 黄 透明 透明 */
+  position:absolute;
+  top:0px;
+  left:-0.36rem;
+}
+.inputNumbers{
+  display:flex;
+  padding-top:.4rem;
+  font-size:.6rem;
+  color:#fff;
+  justify-content: center;
+  align-items: center;
+}
+.inputNumbers p{
+  flex:1;
+  text-align: center;
+  border-bottom:1px solid #fff;
+  box-sizing: border-box;
+  color:#FF9900;
+  margin: 0 3px;
+  padding-bottom:.1rem;
+}
+.inputNumbers div{
+  flex:2;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 5px;
+}
+.middle{
+  width:100%;
+  margin-top:.8rem;
+  display:flex;
+  color:#fff;
+  align-items: center;
+  justify-content:center;
+  text-align:center;
+}
+.inputBetting, .UeBetting{
+  flex:1;
+  background-color:rgba(54, 54, 54, 1);
+  border-radius: 5px;
+  height:1.1rem;
+  font-family: 'Arial Normal', 'Arial';
+  line-height:1.1rem;
+  font-size:.5rem;
+}
+.inputBetting{
+  margin-right:.5rem;
+  display:flex;
+  border-radius: 8px;
+}
+.inputBetting span:nth-child(1){
+  flex:2;
+  background-color: rgba(67, 67, 67, 1);
+  border-bottom-left-radius: 8px;
+  border-top-left-radius: 8px;
+}
+.inputBetting span:nth-child(2){
+  flex:3;
+  color: #FF9900;
+}
+.inputBetting span:nth-child(3){
+  flex:2;
+  background-color: rgba(67, 67, 67, 1);
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  color: #FF9900;
+}
+.UeBetting{
+  border-radius:8px;
+}
+
+
+.keyboard .bottom{
+    display:flex;
+    margin-top:.5rem;
+    width:100%;
+    height:1.3rem;
+    line-height:1.3rem;
+    font-family: '微軟正黑體 Regular', '微軟正黑體';
+    font-size:.5rem;
+    color:#fff;
+    align-items:center;
+    justify-content:center;
+    text-align: center;
+}
+.bottom .cancel{
+    flex:3;
+    margin-right:.3rem;
+    background-color: rgba(148, 148, 148, 1);
+    box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);
+    border-radius: 8px;
+}
+.bottom .betting{
+    flex:7;
+    background-color: rgba(107, 107, 107, 1);
+    box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);
+    border-radius: 8px;
+}
+
+</style> 

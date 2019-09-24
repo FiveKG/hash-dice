@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 import welcome from './pages/welcome/index.vue'
 import Index from './pages/Index'
+// import Index from './pages/zTest'
 import Scanner from './pages/scanner/Scanner'
 import Transfer from './pages/assets/Transfer'
 import Receive from './pages/assets/eos/receive/Receive'
@@ -67,7 +68,8 @@ import DappSearch from './pages/discover/DappSearch'
 import SimpleLogin from './pages/discover/SimpleLogin'
 import FingerprintWarn from './pages/assets/FingerprintWarn'
 import MyInvitationPage from './pages/invitation/MyInvitationPage'
-import Profit from './pages/invitation/Profit'
+import Profit2 from './pages/invitation/Profit'
+import Profit from './pages/invitation2/Profit'
 import SubAccount from './pages/invitation/SubAccount'
 import Invitation from './pages/me/Invitation'
 import TBGFAQ from './pages/invitation/FAQ'
@@ -332,6 +334,11 @@ const router = new Router({
       path: '/profit',
       name: 'Profit',
       component: Profit,
+    },
+    {
+      path: '/profit2',
+      name: 'Profit2',
+      component: Profit2,
     },
     {
       path: '/subAccount',

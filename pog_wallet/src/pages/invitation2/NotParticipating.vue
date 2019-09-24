@@ -274,13 +274,13 @@
             </div>
           </div>
 
-          <!-- TBG-I 收益 -->
+          <!-- TBG-II 收益 -->
           <div>
             <div class="section2-head jc_sb-al_c">
               <span>TBG-II收益</span>
               <span>规则</span>
             </div>
-            <div class="common-wrap">
+            <div  @click="jumpProfit" class="common-wrap">
               <div class="common-box jc_sb-al_c">
                 <span>总计</span>
                 <div class="common-number">
@@ -650,7 +650,9 @@ export default {
             this.Amount[1] = this.addSpace(this.Amount[1]);
             this.Amount[1] = this.Amount[1].split(' ');
           }}).then(() =>{
-          (this.Balance[0]+'.'+this.Balance[1][0]+this.Balance[1][1])>(this.Amount[0]+'.'+this.Amount[1][0]+this.Amount[1][1])?this.Quantity=this.Amount:this.Quantity=this.Balance;
+            if (this.Balance.length && this.Amount) {
+              (this.Balance[0]+'.'+this.Balance[1][0]+this.Balance[1][1])>(this.Amount[0]+'.'+this.Amount[1][0]+this.Amount[1][1])?this.Quantity=this.Amount:this.Quantity=this.Balance;
+            }
           })        
         },
       //跳转路由
@@ -742,7 +744,7 @@ export default {
         async verifyPassword() {
           const seed = await PasswordService.encrypt(this.password);
           const wallets = this.$store.state.wallet.localFile.wallets;
-          const current = wallets.find(ele => ele.accountNames[0] === this.account_name );
+          const current = wallets.find(ele => ele.accountNames?ele.accountNames[0] === this.account_name:false );
           const privateKey = CryptoAES.decrypt(current.privateKey,seed);
           return privateKey
           // return '5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h';

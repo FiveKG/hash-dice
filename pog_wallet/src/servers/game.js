@@ -3,8 +3,8 @@ import axios from 'axios';
 // var baseURL = 'http://172.81.224.11/api';
 // var baseURL = 'http://192.168.1.135:9527';
 
-// var baseURL = 'http://global_lotto.tbg.isecsp.com';
-var baseURL = 'http://192.168.1.141:13021';
+var baseURL = 'http://global_lotto.tbg.isecsp.com';
+// var baseURL = 'http://192.168.1.141:13021';
 
 const xhr = axios.create({
     baseURL,
@@ -94,14 +94,14 @@ const getUserBetWeek = (reqData) => {
 const getBetting = (reqData) => {
   const url = '/global_lotto/bet';
   const data = reqData;
-  return getData(url, data);
+  return postData(url, data);
 }
 
 // 随机投注
 const getRandomBetting = (reqData) => {
   const url = '/global_lotto/random_bet';
   const data = reqData;
-  return getData(url, data);
+  return postData(url, data);
 }
 
 
