@@ -135,7 +135,7 @@ async function startNewGame(eventArgv) {
         const memo = {
             "game_name": "luckyhongbao",
             "account_name": eventArgv.account_name,
-            ""
+            "amount": eventArgv.amount.toString()
         }
         // 分配给 TBG 钱包可得的收益
         symbolTransferList.push({

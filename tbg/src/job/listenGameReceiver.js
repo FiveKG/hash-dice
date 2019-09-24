@@ -1,20 +1,17 @@
 // @ts-check
 // require("../../setEnv.js")();
-const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "listening trade transfer" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "listening game receiver" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis, generate_primary_key } = require("../common");
-const { TBG_TOKEN, UE_TOKEN, UE_TOKEN_SYMBOL, TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
+const { UE_TOKEN, UE_TOKEN_SYMBOL, TBG_WALLET_RECEIVER } = require("../common/constant/eosConstants.js");
+const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
-const { TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
-const buyAssets = require("./buyAssets");
-const raiseAirdrop = require("./raiseAirdrop");
-const { RAISE, BUY, SELL } = require("../common/constant/optConstants");
-const sellAssets = require("./sellAssets.js");
-const SEQ_KEY = "tbg:trade:account_action_seq"
+const handlerGameReceiver = require("./handlerGameReceiver.js");
+const SEQ_KEY = "tbg:tbg_game:account_action_seq"
 
 logger.debug(`listenTrade running...`);
 // 每秒中执行一次,有可能上一条监听的还没有执行完毕,下一次监听又再执行了一次,从而造成多条数据重复
-const TRADE_LOCK = `tbg:lock:trade`;
+const TRADE_LOCK = `tbg:lock:tbg_game`;
 let count = 1;
 scheduleJob("*/1 * * * * *", begin);
 // redis.del(TRADE_LOCK);
@@ -42,34 +39,29 @@ async function listenTrade() {
     try {
         await redis.set(TRADE_LOCK, 1);
         const actionSeq = await getLastPos();
-        const actions = await getTrxAction(TBG_FREE_POOL, actionSeq);
+        const actions = await getTrxAction(TBG_WALLET_RECEIVER, actionSeq);
         logger.debug("actionSeq: ", actionSeq);
         for (const action of actions) {
             const result = await parseEosAccountAction(action);
-            const trxSeq = await redis.get(`tbg:trade:trx:${ result.account_action_seq }`);
+            const trxSeq = await redis.get(`tbg:tbg_game:trx:${ result.account_action_seq }`);
             logger.debug("result: ", result, "trxSeq: ", trxSeq);
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
-            if (trxSeq || !result.trx_type) {
+            if (trxSeq || !result.game_name || !result.game_amount || !result.account_name) {
                 await setLastPos(result.account_action_seq);
                 await redis.set(SEQ_KEY, result.account_action_seq);
                 continue;
             }
-
-            // 监听到用户购买资产包后，执行相应的逻辑
-            if (result.trx_type === RAISE) {
-                await raiseAirdrop({ accountName: result.from, price: Number(result.price) });
-            } 
             
-            if (result.trx_type === BUY) {
-                await buyAssets({ accountName: result.from, price: Number(result.price), apId: Number(result.assets_package_id) })
-            }
-
-            // 监听到用户购买资产包后，执行相应的逻辑
-            if (result.trx_type === SELL) {
-                await sellAssets({ accountName: result.from, price: Number(result.price), trade_amount: Number(result.trade_amount)});
-            }
+            const data = { 
+                "account_name": result.account_name, 
+                "game_name": result.game_name, 
+                "game_amount": result.game_amount, 
+                "amount": result.amount 
             
-            await redis.set(`tbg:trade:trx:${ result.account_action_seq }`, result.trx_id);
+            }
+            // @ts-ignore
+            await handlerGameReceiver(data)
+            await redis.set(`tbg:tbg_game:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
         }
         await redis.del(TRADE_LOCK);
@@ -90,14 +82,13 @@ async function parseEosAccountAction(action) {
             "block_num": action.block_num,
             "block_time": action.block_time,
             "trx_id": "",
-            "amount": "",
+            "amount": null,
             "from": "",
             "symbol": "",
-            "invest_type": "",
+            "game_name": "",
             "trade_amount": "",
-            "price": "",
-            "trx_type": "",
-            "assets_package_id": ""
+            "account_name": "",
+            "game_amount": null,
         }
         let actionTrace = action.action_trace;
         if (!actionTrace) {
@@ -124,7 +115,8 @@ async function parseEosAccountAction(action) {
         logger.debug(`trx_id: ${ actionTrace.trx_id } -- account_action_seq: ${ action.account_action_seq }`);
         let { receipt, act } = actionTrace;
         // logger.debug("act: ", act);
-        let isTransfer = (act.account === UE_TOKEN || act.account === TBG_TOKEN) && act.name === "transfer"
+        // 只监听 UE 转账
+        let isTransfer = act.account === UE_TOKEN && act.name === "transfer"
         if (!isTransfer) {
             // todo
             // 调用的不是 EOS 或代币的转账方法
@@ -132,36 +124,29 @@ async function parseEosAccountAction(action) {
             return result;
         }
         let { from, to, quantity, memo } = act.data;
-        if (to === TBG_FREE_POOL) {
+        if (to === TBG_WALLET_RECEIVER) {
             let [ amount, symbol ] = quantity.split(" ");
             if (symbol === UE_TOKEN_SYMBOL) {
-                // "account_name,price,trx_type,assets_package_id"
-                let [ account_name, price, trx_type, assets_package_id ] = memo.split(",");
-                if (!account_name || !price || !trx_type) {
-                    logger.debug("invalid memo, memo must be include account_name, price, trx_type, assets_package_id format like 'account_name,price,trx_type,assets_package_id'")
+                let { game_name, account_name, amount: game_amount } = JSON.parse(memo);
+                if (!account_name || !account_name || !account_name) {
+                    logger.debug("invalid memo, memo must be include game_name, account_name, amount format like '{ game_name: string, account_name: string, amount: number }'")
                     return result;
                 }
-                result["price"] = price;
-                result["from"] = from;
-                result["amount"] = amount;
-                result["symbol"] = symbol;
-                result["trx_type"] = trx_type;
-                result["assets_package_id"] = assets_package_id;
-                return result;
-            } else if (symbol === TBG_TOKEN_SYMBOL) {
-                // "account_name,price,trx_type,amount"
-                let [ account_name, price, trx_type, tradeAmount ] = memo.split(",");
-                if (!account_name || !price || !trx_type) {
-                    logger.debug("invalid memo, memo must be include account_name, price, trx_type, amount format like 'account_name,price,trx_type,amount'")
+
+                const game = [ "globallotto", "treasure", "luckyhongbao", "hashdice", "minlottery" ]
+                if (game.includes(game_name)) {
+                    result["amount"] = amount;
+                    result["symbol"] = symbol;
+                    result["from"] = from;
+                    result["amount"] = amount;
+                    result["game_name"] = game_name;
+                    result["account_name"] = account_name;
+                    result["game_amount"] = game_amount;
                     return result;
-                }
-                result["price"] = price;
-                result["from"] = from;
-                result["amount"] = amount;
-                result["symbol"] = symbol;
-                result["trx_type"] = trx_type;
-                result["trade_amount"] = tradeAmount;
-                return result;
+                } else {
+                    logger.debug("invalid game type");
+                    return result;
+                }               
             } else {
                 // todo
                 // 代币符号不符
@@ -169,7 +154,7 @@ async function parseEosAccountAction(action) {
                 return result;
             }
         } else {
-            logger.debug(`receipt receiver does not match, ${ to } !== ${ TBG_FREE_POOL }`);
+            logger.debug(`receipt receiver does not match, ${ to } !== ${ TBG_WALLET_RECEIVER }`);
             return result;
         }
     } catch (err) {
