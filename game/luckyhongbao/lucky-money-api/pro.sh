@@ -38,6 +38,10 @@ module.exports = {
 }
 EOF
 
+export TBG_SERVER=http://pog.tbg.isecsp.com
+export LUCKY_MONEY_SERVER_HOST=0.0.0.0
+export LUCKY_MONEY_SERVER_PORT=8089
+
 export LUCKY_MONEY_DB_HOST=127.0.0.1
 export LUCKY_MONEY_DB_PORT=54321
 export LUCKY_MONEY_DB_USER=lucky_money_user

@@ -18,7 +18,8 @@ async function symbolTransferAction() {
           symbolTransferInfo.account_name, 
           symbolTransferInfo.symbol,
           symbolTransferInfo.amount, 
-          symbolTransferInfo.memo
+          symbolTransferInfo.memo,
+          symbolTransferInfo.opts
         );
       } catch (err) {
         await queue.symbolTransfer.push([symbolTransferInfo]);

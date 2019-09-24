@@ -9,6 +9,7 @@ const { endGame, notify_user_grab_red_envelope } = require("@fjhb/mq-pub-sub");
 const { db } = require("@fjhb/db-op");
 const padStart = require("../common/padStart.js");
 const redis = require("@fjhb/lm-redis");
+const { symbolTransfer } = require("../common/redis_queue");
 const Redlock = require("redlock");
 const { generate } = require("shortid");
 const psModifyBalance = require("../common/psModifyBalance");
@@ -28,7 +29,7 @@ async function grabRedEnvelope(data) {
         const startTime = Date.now();
         logger.debug(`执行抢红包操作, data: ${JSON.stringify(data)}, beginning....`);
 
-        const balance_type_ary = ["balance", "transfer"];
+        const balance_type_ary = ["withdraw_enable", "game_currency", "transfer"];
         if (balance_type_ary.indexOf(data.balance_type) == -1) {
             logger.warn(`抢红包时,不合法的 balance_type:${data.balance_type}`);
             return;
@@ -152,6 +153,24 @@ async function grabRedEnvelope(data) {
                     change_amount: zero.sub(data.transferAmount).toNumber(),
                     pay_type: data.balance_type
                 })
+
+                // 代投
+                let symbolTransferList = [];
+                const transferInfo = {
+                    "account_name": data.accountName,
+                    "amount": data.transferAmount,
+                    "symbol": "UE",
+                    "memo": `用户使用 ${ data.balance_type } 抢红包`,
+                    "opts": "agent"
+                };
+                logger.debug(`用户使用抢红包, %j`, transferInfo);
+
+                symbolTransferList.push(transferInfo);
+                logger.debug(`symbolTransferList: ${JSON.stringify(symbolTransferList)}`);
+                if (symbolTransferList.length !== 0) {
+                    await symbolTransfer.push(symbolTransferList);
+                    symbolTransferList = null;
+                }
             }
 
             let count = gameResultAry.length + 1;

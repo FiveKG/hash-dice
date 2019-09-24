@@ -1,6 +1,6 @@
 // @ts-check
 const amqplib = require("amqplib");
-const logger = require("../common/logger.js").child({"@":"amqplib"});
+const logger = require("@fjhb/logger").child({ [`@${ __filename }`]: "amqplib" });
 const { rabbitmq } = require("../../config.js");
 
 const port = process.env.GLOBAL_LOTTO_RABBIT_PORT || rabbitmq.port

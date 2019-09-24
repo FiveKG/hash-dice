@@ -33,7 +33,7 @@ async function bet(req, res, next) {
         const TBG_SERVER = process.env.TBG_SERVER || "http://localhost:9527/";
         const opts = { data: { account_name: reqData.account_name } };
         // 获取用户彩码，游戏码，余额
-        const { data: resp } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
+        const { data: [ resp ] } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
         // 全球彩彩码
         const lottoCurrency = new Decimal(resp.lotto_currency);
         // 可提现余额
