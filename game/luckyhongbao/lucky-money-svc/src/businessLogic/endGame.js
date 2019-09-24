@@ -38,55 +38,10 @@ async function endGame(game_id) {
         let room = await gameManager.getRoom(game.room_id);//注意 room_id 小于 200 ， 是官方俱乐部的房间
         logger.debug(`endGame. 当前要结束game: ${JSON.stringify(game)} . room:${JSON.stringify(room)}`);
 
-        // let allDbOpAry = [];
-        //按照 用户 来处理。先拿出每个用户的余额，然后在这个余额的基础上， 计算此用户的账户余额变动的日志。
-
-        //拿出涉及到的所有用户的 账户余额。 包括 代理的账户
-        // let allAccountName = gameResultAry.map(t => { return t.account_name });
-        // logger.debug(`allAccountName: `, allAccountName);
-        //当前游戏用户的 代理信息。
-        // allAccountName = Array.from(new Set(allAccountName)); //去重
-
-        // // 获取用户彩码，游戏码，余额
-        // const TBG_SERVER = process.env.TBG_SERVER || "http://localhost:9527/";
-        // const opts = { data: { account_name: allAccountName.join(",") } };
-        // const { data: resp } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
-        // logger.debug("resp: ", resp);
-        // //计算每个用户的账户变动信息
-
-        // let allAccountBalanceInfo = {};
-        // for (let balanceInfo of resp) {
-        //     allAccountBalanceInfo[balanceInfo.account_name] = {
-        //         "current_balance": Number(balanceInfo.balance),
-        //         "origin_balance": Number(balanceInfo.balance)
-        //     };
-        // }
-
-        // logger.debug(`allAccountBalanceInfo: ${JSON.stringify(allAccountBalanceInfo)}`);
         let symbolTransferList = [];
         //首先 , 对 other_game_result 用户进行 预扣除的金额的退款
         for (let idx = 0; idx < other_game_result.length; idx++) {
             const gameResult = other_game_result[idx];
-            //拿出这个账户的余额，生成数据库的操作信息
-            // let accountBalanceInfo = allAccountBalanceInfo[gameResult.account_name];
-            // logger.debug(`debug_balance ${gameResult.account_name} 抵押退还 前 ${accountBalanceInfo.current_balance} , 要增加 ${gameResult.transfer_amount} `);
-            // let result_balance = Decimal.add(accountBalanceInfo.current_balance, gameResult.transfer_amount);
-
-            // allDbOpAry.push({
-            //     "sql": "insert into account_balance_log(account_name , change_amount ,current_balance , op_type , remark , create_time ) values ($account_name , $change_amount , $current_balance , $op_type , $remark , $create_time)",
-            //     "bind": {
-            //         "account_name": gameResult.account_name,
-            //         "change_amount": gameResult.transfer_amount,//预扣除的金额
-            //         "current_balance": result_balance.toNumber(),
-            //         "op_type": "抵押退还",
-            //         "remark": `退还参与游戏:${gameResult.game_id}抵押的 :${gameResult.transfer_amount} UE .`,
-            //         "create_time": new Date()
-            //     },
-            //     "type": dbOp.db.Sequelize.QueryTypes.INSERT
-            // });
-            // accountBalanceInfo.current_balance = result_balance.toNumber();  //每次生成  update eos_account balance 的操作， 都把最新的余额，更新到 缓存中
-            // logger.debug(`debug_balance 抵押退还 后，${gameResult.account_name}  余额 ${accountBalanceInfo.current_balance}`);
-
             // 如果直接使用区块链 UE 代币投注，不需要扣除用户的数据库余额
             if (gameResult.balance_type !== "transfer") {
                 await psModifyBalance.pub({
@@ -100,62 +55,20 @@ async function endGame(game_id) {
                     "account_name": gameResult.account_name,
                     "amount": gameResult.transfer_amount,
                     "symbol": "UE",
-                    "memo": `用户使用抢红包，退还余额`
+                    "memo": `用户使用余额抢红包，退还余额`,
+                    "opts": "returns"
                 };
-                logger.debug(`用户使用抢红包，退还余额, %j`, transferInfo);
+                logger.debug(`用户使用余额抢红包，退还余额, %j`, transferInfo);
 
                 symbolTransferList.push(transferInfo);
             }
         }
-
-        // //更新每个 用户 抢到的 余额
-        // for (let idx = 0; idx < gameResultAry.length; idx++) {
-        //     const gameResult = gameResultAry[idx];
-        //     //拿出这个账户的余额，生成数据库的操作信息
-        //     let accountBalanceInfo = allAccountBalanceInfo[gameResult.account_name];
-        //     logger.debug(`debug_balance ${gameResult.account_name} 抢到的金额 前 ${accountBalanceInfo.current_balance} , 要增加 ${gameResult.amount} `);
-        //     let result_balance = Decimal.add(accountBalanceInfo.current_balance, gameResult.amount);
-
-        //     allDbOpAry.push({
-        //         "sql": "insert into account_balance_log(account_name , change_amount ,current_balance , op_type , remark , create_time ) values ($account_name , $change_amount , $current_balance , $op_type , $remark , $create_time)",
-        //         "bind": {
-        //             "account_name": gameResult.account_name,
-        //             "change_amount": gameResult.amount,//抢到的金额
-        //             "current_balance": result_balance.toNumber(),
-        //             "op_type": "抢到的金额",
-        //             "remark": `游戏 ${game_id} ,抢到了:${gameResult.amount} UE.`,
-        //             "create_time": new Date()
-        //         },
-        //         "type": dbOp.db.Sequelize.QueryTypes.INSERT
-        //     });
-        //     accountBalanceInfo.current_balance = result_balance.toNumber();  //每次生成  update eos_account balance 的操作， 都把最新的余额，更新到 缓存中
-        //     logger.debug(`debug_balance 抢到的金额 后，${gameResult.account_name} 余额 ${accountBalanceInfo.current_balance}`);
-        // }
-
-        // //最后，每个用户，写一条 最终的 余额更新 数据库操作 以及 系统的余额更新操作。
-        // for (let accountName in allAccountBalanceInfo) {
-        //     let accountBalanceInfo = allAccountBalanceInfo[accountName];
-        //     if (accountBalanceInfo.current_balance !== accountBalanceInfo.origin_balance) {
-        //         logger.debug(`debug_balance 最终 ${accountName} 余额 ${accountBalanceInfo.current_balance}`);
-        //         allDbOpAry.push({
-        //             "sql": "update eos_account set balance = $new_balance where account_name = $account_name",
-        //             "bind": { "new_balance": accountBalanceInfo.current_balance, "account_name": accountName },
-        //             "type": dbOp.db.Sequelize.QueryTypes.UPDATE
-        //         });
-        //     } else {
-        //         logger.info(`在本轮游戏game_id:${game_id} 期间，${accountName} 的余额没有变化。`);
-        //     }
-        // }
 
         logger.debug(`symbolTransferList: ${JSON.stringify(symbolTransferList)}`);
         if (symbolTransferList.length !== 0) {
             await symbolTransfer.push(symbolTransferList);
             symbolTransferList = null;
         }
-
-        // logger.debug(`执行 结束游戏时的 批量数据库事务操作. game_id:${game_id}. allDbOpAry:${JSON.stringify(allDbOpAry)}`);
-        // db_op_flag = await dbOp.batch_trans_db_op(allDbOpAry);
-        // logger.debug(`结束游戏时的 批量数据库事务操作. game_id:${game_id}。db_op_flag：${db_op_flag}`);
 
         //// 中奖的 max_game_result 信息里， 发布开始新游戏的事件
         var msg = {

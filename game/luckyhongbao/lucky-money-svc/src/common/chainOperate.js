@@ -290,8 +290,9 @@ async function withdraw(account_name, amount, symbol, memo) {
  * @param {number} amount 转账数量
  * @param {string} symbol 代币符号
  * @param {string} memo 备注
+ * @param {string} opts 操作类型 退款 | 代投
  */
-async function directTransfer(userAccountName, symbol, amount, memo) {
+async function directTransfer(userAccountName, symbol, amount, memo, opts) {
     try {
         logger.info(`directTransfer, userAccountName: ${userAccountName}, symbol: ${symbol}, amount: ${amount}, memo: ${memo}`);
 
@@ -304,18 +305,18 @@ async function directTransfer(userAccountName, symbol, amount, memo) {
             sysConfig.transferAccount.get(),
             sysConfig.publish_symbol_account.get()
         ]);
+        let from = transferAccountInfo.account_name;
+        let to = userAccountName;
+
+        if (opts !== "returns") {
+          from = transferAccountInfo.agent_account;
+          to = transferAccountInfo.accountName;
+        }
 
         const tokenCode = symbol.toUpperCase();
-
-        const option = {
-            keyProvider: transferAccountInfo.privateKey,
-            httpEndpoint: eosConnectInfo.httpEndpoint,
-            chainId: eosConnectInfo.chainId,
-        };
-
-        const signatureProvider = new JsSignatureProvider([ option.keyProvider ]);
+        const signatureProvider = new JsSignatureProvider([ transferAccountInfo.privateKey, transferAccountInfo.agent_account_private_key ]);
         // @ts-ignore
-        const rpc = new JsonRpc(httpEndpoint, { fetch });
+        const rpc = new JsonRpc(eosConnectInfo.httpEndpoint, { fetch });
         // @ts-ignore
         const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         let actions = {
@@ -323,12 +324,12 @@ async function directTransfer(userAccountName, symbol, amount, memo) {
               account: "uetokencoin",
               name: "transfer",
               authorization: [{
-                actor: transferAccountInfo.accountName,
+                actor: from,
                 permission: 'active',
               }],
               data: {
-                from: transferAccountInfo.accountName,
-                to: userAccountName,
+                from: from,
+                to: to,
                 quantity: `${new Decimal(amount).toFixed(4)} ${tokenCode}`,
                 memo: memo,
               }

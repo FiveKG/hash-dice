@@ -16,9 +16,12 @@ const ALLOC_TO_TSH_INCOME = 0.6;
 const THIRD_PARTY_RATE = 0.2;
 // 第三方游戏开发团队	游戏方账号
 const THIRD_PARTY_ACCOUNT = DISTRIBUTION_CENTER_ACCOUNT;
+// 拨入 TBG 钱包
+const TBG_WALLET_RECEIVER_RATE = 3.6;
 // 代投注账号，除全球彩外，所有游戏的代投帐号
 const AGENT_ACCOUNT = "eosbankereos"
 const AGENT_ACCOUNT_PRIVATE_KEY = "5J3QDbiCJDFpqxWwZ2jBdjwktn1LGV1T4JjaYiPwG4P3hCHjfyx";
+const TBG_WALLET_RECEIVER = 'tbgreceiver'
 
 ;( async ()=> {
 
@@ -56,7 +59,7 @@ const AGENT_ACCOUNT_PRIVATE_KEY = "5J3QDbiCJDFpqxWwZ2jBdjwktn1LGV1T4JjaYiPwG4P3h
                 "accountName": "luckyhongbao", 
                 "privateKey": "5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo",
                 "agent_account": AGENT_ACCOUNT,
-                "agent_account_private_key": ""
+                "agent_account_private_key": AGENT_ACCOUNT_PRIVATE_KEY
             });
         }
 
@@ -82,7 +85,9 @@ const AGENT_ACCOUNT_PRIVATE_KEY = "5J3QDbiCJDFpqxWwZ2jBdjwktn1LGV1T4JjaYiPwG4P3h
                 "third_party_rate": THIRD_PARTY_RATE,
                 "third_party_account": THIRD_PARTY_ACCOUNT,
                 "alloc_to_referrer": ALLOC_TO_REFERRER,
-                "alloc_to_tsh_income": ALLOC_TO_TSH_INCOME
+                "alloc_to_tsh_income": ALLOC_TO_TSH_INCOME,
+                "tbg_wallet_receiver": TBG_WALLET_RECEIVER,
+                "tbg_wallet_receiver_rate": TBG_WALLET_RECEIVER_RATE
             }
             await sysConfig.red_packet_allocation.set(red_packet_allocation);        
             //#endregion

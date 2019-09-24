@@ -64,4 +64,5 @@ module.exports = instance;
  * @property {String} symbol 代币符号
  * @property {Number} amount 代币数量
  * @property {String} memo 备注
+ * @property {string} opts 操作类型 退款 | 代投
  */
