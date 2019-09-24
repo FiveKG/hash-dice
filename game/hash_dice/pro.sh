@@ -38,4 +38,4 @@ then
     npm i -g pm2
 fi
 
-node hash_dice.js
+npm start pm2.json
