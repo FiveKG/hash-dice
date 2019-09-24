@@ -1,10 +1,10 @@
 <template>
   <div>
     <!--头部-->
-    <HeadPart @childshow="toogleShow"></HeadPart>
+    <HeadPart :amount='room_info.amount' @childshow="toogleShow" @roomShow="toogleRoomShow"></HeadPart>
     <!-- <div class="club_type" v-if="!$store.state.sideBar">{{roomAmount}}UE {{roomType}}人抢专场</div> -->
     <!-- 房间信息 -->
-    <div class="info" v-if="!$store.state.sideBar">
+    <!-- <div class="info" v-if="!$store.state.sideBar">
       <div class="account_info" @click="()=>{show=true}">
         <div class="text">
           {{room_info.amount}} UE 5 人抢专场
@@ -24,12 +24,13 @@
             </svg>
           </span>
         </div>
-        <!-- <div class="text">余额 | {{Number($store.state.eosBalance).toFixed(4)}}UE</div>
-        <div class="text">房间人数:{{onlineNum}}人 | 房间号{{roomId}}</div>-->
       </div>
-      <div class="recharge" @click="$store.commit('setRechargeDialog',true)">充值抢红包</div>
-      <!-- <div style="display: flex;margin-right: 10px;"><img src="../../assets/refresh.png" alt="" style="height:20px;margin:auto;" @click="refresh()"></div> -->
-    </div>
+    </div> -->
+    <!-- <div class="text">余额 | {{Number($store.state.eosBalance).toFixed(4)}}UE</div>
+    <div class="text">房间人数:{{onlineNum}}人 | 房间号{{roomId}}</div>-->
+    <!-- <div class="recharge" @click="$store.commit('setRechargeDialog',true)">充值抢红包</div> -->
+    <!-- <div style="display: flex;margin-right: 10px;"><img src="../../assets/refresh.png" alt="" style="height:20px;margin:auto;" @click="refresh()"></div> -->
+
     <!-- 红包列表 -->
     <div class="pack_list" ref="packList" :style="{height:clientHeight+'px'}">
       <!-- 已开奖红包 -->
@@ -552,7 +553,12 @@ export default {
     },
     // 接收子向父传值
     toogleShow(show) {
+      console.log(111);
       this.usershow = true;
+    },
+    toogleRoomShow(show) {
+      console.log(show);
+      this.show = show;
     },
     // 获取开奖结果
     getPackResult() {
@@ -862,10 +868,10 @@ export default {
 }
 .userinfo > div > img {
   vertical-align: middle;
-  
+
   width: 30px;
   height: 20px;
-  
+
   border: none;
 }
 .userinfo > div > img:nth-of-type(2) {
@@ -956,7 +962,7 @@ export default {
 .pack_list {
   /* overflow-y: scroll;
   height: 800px; */
-  padding-top: 19.5vh;
+  padding-top: 10.5vh;
   /* padding-bottom: 5vh; */
 }
 .red_pack {

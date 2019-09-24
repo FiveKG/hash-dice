@@ -28,7 +28,7 @@ async function grabRedEnvelope(data) {
         const startTime = Date.now();
         logger.debug(`执行抢红包操作, data: ${JSON.stringify(data)}, beginning....`);
 
-        const balance_type_ary = ["balance", "transfer"];
+        const balance_type_ary = ["withdraw_enable", "game_currency", "transfer"];
         if (balance_type_ary.indexOf(data.balance_type) == -1) {
             logger.warn(`抢红包时,不合法的 balance_type:${data.balance_type}`);
             return;

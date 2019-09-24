@@ -1,7 +1,28 @@
 <template>
   <div class="header">
     <div class="header_a" @click="selecetGame" v-if="indextrue" style="display:flex;">
-      <div style="text-align:center;margin-top:10px"> <img src="../../assets/02.png" alt /></div>
+      <div style="text-align:center;margin-top:10px">
+        <div class="account_info" @click="toogleRoomShow">
+          <div class="text">
+            {{amount}}UE 5 人抢专场
+            <span>
+              <svg
+                class="icon"
+                width="18px"
+                height="18px"
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill="#fff"
+                  d="M845.73750784 310.06631558c11.09419837 11.20906823 20.13556271 20.35048032 31.14453548 31.47432293-121.43960347 124.00379403-242.4271389 247.54069789-364.70047497 372.39675162C390.0527457 589.68162356 268.72060139 466.23735673 147.11795668 342.52259023c10.96450709-9.79728131 20.93224036-18.70524869 26.40152463-23.59647866C215.4321334 358.44873076 260.2906406 398.96812377 303.11484019 441.54035152c65.17934399 64.79767943 129.21369503 130.75517321 193.07018343 196.86088611 11.65372557 12.06503364 18.47550896 13.01363611 30.76657736 0.32608175 101.29663005-104.55003835 203.3232385-208.39233111 305.05711445-312.51994567C836.68502706 321.42360292 840.7128809 316.00990072 845.73750784 310.06631558z"
+                />
+              </svg>
+            </span>
+          </div>
+        </div>
+      </div>
       <!-- <img src="../../assets/68.png" style="width:8vw;margin:auto;" />
       <van-icon name="arrow-up" style="margin-left:2vw;line-height: 4vh;margin:auto;" v-if="openGameList" />
       <van-icon name="arrow-down" style="margin-left:2vw;line-height: 4vh;margin:auto;" v-else />
@@ -14,7 +35,7 @@
       </div>-->
     </div>
     <div class="header_a" @click="goPre" v-else>
-      <img src="../../assets/02.png" alt />
+      <img src="../../assets/02.png" alt />123123
       {{text}}
     </div>
     <div class="header_b">
@@ -182,6 +203,10 @@ export default {
   components: {
     Recharge
   },
+  props: {
+      amount: String,
+      required: true
+    },
   data() {
     return {
       text: "",
@@ -196,7 +221,7 @@ export default {
       rand: "",
       code_img: "",
       show: true,
-      rlen:history.length
+      rlen: history.length
     };
   },
   mounted() {
@@ -259,13 +284,16 @@ export default {
     this.getConfig();
   },
   methods: {
-     goBack () {
-        let len = this.rlen - history.length - 1;//-1是不进入iframe页面的下级页面直接退出的话，执行后退一步的操作
-        console.log('len',len);
-        this.$router.go(len);
+    goBack() {
+      let len = this.rlen - history.length - 1; //-1是不进入iframe页面的下级页面直接退出的话，执行后退一步的操作
+      console.log("len", len);
+      this.$router.go(len);
     },
     toogleShow() {
       this.$emit("childshow", this.show);
+    },
+    toogleRoomShow(){
+      this.$emit("roomShow", this.show);
     },
     getConfig: function() {
       return new Promise((resolve, reject) => {
@@ -701,6 +729,23 @@ export default {
 .header_title1 ul li img {
   padding: 0px !important;
   /* margin: 0px 0px 5px 20% !important; */
+}
+.account_info {
+  display: flex;
+  align-self: center;
+  margin-top: 2px;
+  color: rgb(241, 231, 215);
+  border: 1px solid #ff9900;
+  padding: 7px 10px;
+  border-radius: 4px;
+}
+.account_info .text {
+  line-height: 2.5vh;
+  font-size: 16px;
+  font-weight: 500;
+}
+.account_info .text span {
+  margin-left: 10px;
 }
 </style>
 

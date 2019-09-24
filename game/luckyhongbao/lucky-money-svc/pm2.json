@@ -1,12 +1,12 @@
 {
     "apps": [
         {
-            "name"        : "luckyhongbaoListenTransfer",
-            "script"      : "./listenTransfer.js",
+            "name"        : "luckyHongBaoListenTransfer",
+            "script"      : "./doListenChainTransferActionJob.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../logs/luckyhongbaoListenTransfer-err.log",
-            "out_file"    : "../logs/luckyhongbaoListenTransfer-out.log"
+            "error_file"  : "../logs/luckyHongBaoListenTransfer-err.log",
+            "out_file"    : "../logs/luckyHongBaoListenTransfer-out.log"
         },
         {
             "name"        : "doSyncRedEnvelopGameResult",
@@ -17,12 +17,12 @@
             "out_file"    : "../logs/doSyncRedEnvelopGameResult-out.log"
         },
         {
-            "name"        : "luckyhongbaoMqListenJob",
+            "name"        : "luckyHongBaoMqListenJob",
             "script"      : "./mqListenJob.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../logs/luckyhongbaoMqListenJob-err.log",
-            "out_file"    : "../logs/luckyhongbaoMqListenJob-out.log"
+            "error_file"  : "../logs/luckyHongBaoMqListenJob-err.log",
+            "out_file"    : "../logs/luckyHongBaoMqListenJob-out.log"
         }
     ]
 }

@@ -15,6 +15,10 @@ unset LUCKY_MONEY_RABBIT_PORT
 unset LUCKY_MONEY_RABBIT_USER
 unset LUCKY_MONEY_RABBIT_PASS
 
+export TBG_SERVER=http://192.168.1.141:9527/
+export LUCKY_MONEY_SERVER_HOST=0.0.0.0
+export LUCKY_MONEY_SERVER_PORT=8089
+
 postgreshost=$(docker inspect postgres | grep IPAddress | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sed -n '1p')
 redishost=$(docker inspect redis | grep IPAddress | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sed -n '1p')
 rabbitmqhost=$(docker inspect rabbitmq | grep IPAddress | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sed -n '1p')

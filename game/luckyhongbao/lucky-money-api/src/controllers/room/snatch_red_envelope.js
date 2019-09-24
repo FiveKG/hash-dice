@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("@fjhb/logger").child({ "@": "lucky_money_service/room/snatch_red_envelope" });
+const logger = require("@fjhb/logger").child({ [`@${ __filename }`]: "snatch_red_envelope" });
 const {
     red_envelope_game       : redEnvelopeGameBiz,
     red_envelope_game_result: redEnvelopeGameResultBiz,
@@ -13,6 +13,7 @@ const format = require("date-fns/format");
 const url = require("url");
 const xhr = require("../../common/xhr")
 const symbol = get_config("symbol");
+const { Decimal } = require("decimal.js");
 
 /**
  * 用户尝试抢红包
@@ -26,7 +27,7 @@ async function snatch_red_envelope(req, res, next) {
         logger.debug(`snatch red envelope request data: ${JSON.stringify(req_data)}`);
 
         // 检查请求参数
-        const account_name = req.account_name;
+        const account_name = req_data.account_name;
         const room_id = Number(req_data.room_id);
         if (isNaN(room_id)) {
             logger.info(`该用户抢红包时, 参数不合法. account_name: ${account_name}, room_id: ${room_id}, ip: ${req.ip}`);
@@ -69,8 +70,10 @@ async function snatch_red_envelope(req, res, next) {
 
         const TBG_SERVER = process.env.TBG_SERVER || "http://localhost:9527/";
         const opts = { data: { account_name: account_name } };
+        logger.debug("opts: ", opts);
         // 获取用户彩码，游戏码，余额
-        const { data: resp } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
+        const { data: [ resp ] } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
+        logger.debug("resp: ", resp);
         if (!resp.withdraw_enable) {
             return res.send(get_status(2014, "can not find this eos account"));
         }
@@ -79,6 +82,7 @@ async function snatch_red_envelope(req, res, next) {
         // 可提现余额
         const withdrawEnable = new Decimal(resp.withdraw_enable);
         let psData = null;
+        logger.debug("symbol: ", symbol);
         // 如果游戏码额度低于红包额度
         if (gameCurrency.lessThan(room_amount)) {
             // 如果可提现余额低于红包额度

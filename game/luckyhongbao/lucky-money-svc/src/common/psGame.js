@@ -1,12 +1,13 @@
 // @ts-check
-const logger = require("@fjhb/logger").child({ [`@${ __filename }`]: "修改账户余额"});
+const logger = require("@fjhb/logger").child({ [`@${ __filename }`]: "tbg game mq" });
 const getAmqpChannel = require("./amqp.js");
 
-const opts = 'psModifyBalance';
+const TBG_GAME_MQ = 'tbg_game_mq';
+
 async function publish(data) {
     try {
-        let channel = await getAmqpChannel(opts);
-        await channel.sendToQueue(opts, Buffer.from(JSON.stringify(data)));
+        let channel = await getAmqpChannel(TBG_GAME_MQ);
+        await channel.sendToQueue(TBG_GAME_MQ, Buffer.from(JSON.stringify(data)));
     } catch (err) {
         throw err;
     }
@@ -14,8 +15,8 @@ async function publish(data) {
 
 async function subscribe(callback) {
     try {
-        let channel = await getAmqpChannel(opts);
-        channel.consume(opts, msg => {
+        let channel = await getAmqpChannel(TBG_GAME_MQ);
+        channel.consume(TBG_GAME_MQ, msg => {
             // logger.debug("game message: ", msg);
             if (msg !== null) {
                 callback(msg.content.toString());

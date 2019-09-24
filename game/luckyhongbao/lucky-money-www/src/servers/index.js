@@ -26,8 +26,9 @@ let str = location.host.split(".");
 
 // var baseURL = location.protocol+'//192.168.1.123:8081';//App端接口服务器地址
 // var baseURL = location.protocol +'//192.168.1.146:8081';//App端接口服务器地址
-var baseURL = location.protocol + '//192.168.1.141:8089';//App端接口服务器地址
+// var baseURL = location.protocol + '//192.168.1.141:8081';//App端接口服务器地址
 // var baseURL = location.protocol + '//172.81.224.11:8089';//App端接口服务器地址
+var baseURL = 'http://luckyhongbao.tbg.isecsp.com';//App端接口服务器地址
 // var baseURL = location.protocol +'//127.0.0.1:8081';//App端接口服务器地址
 // var baseURL = 'https://api.luckymoney.club';//App端接口服务器地址
 

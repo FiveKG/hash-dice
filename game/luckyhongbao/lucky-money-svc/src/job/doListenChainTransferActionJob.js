@@ -6,16 +6,3 @@ const listenChainTransferAction = require("../businessLogic/listenChainTransferA
 logger.debug(`doListenChainTransferActionJob starting...`);
 
 schedule.scheduleJob("*/1 * * * * *", listenChainTransferAction);
-
-// function doListenChainTransferActionJob() {
-//     setTimeout(async () => {
-//         try {
-//             await listenChainTransferAction();
-//         } catch (err) {
-//             logger.error(err, 'doListenChainTransferActionJob failed');
-//         }
-//         doListenChainTransferActionJob()
-//     }, 1000)
-// }
-
-// doListenChainTransferActionJob();

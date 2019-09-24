@@ -3,39 +3,15 @@
 //消息队列监听服务
 // 监听 startNewGame  以及 endGame  事件。分别调用 对应的业务逻辑处理
 // require("../initEnv.js")();
-const {
-    startNewGame,
-    endGame, 
-    grabRedEnvelope, 
-    user_recharge,
-    userWithdraw
-} = require("@fjhb/mq-pub-sub");
+const { startNewGame, endGame, grabRedEnvelope } = require("@fjhb/mq-pub-sub");
 const logger = require("@fjhb/logger").child({[`@${ __filename }`]:"mqListenJob"});
 const { format } = require("date-fns");
 const startNewGameBiz = require("../businessLogic/startNewGame.js");
 const endGameBiz = require("../businessLogic/endGame.js");
 const grabRedEnvelopeBiz = require("../businessLogic/grabRedEnvelope.js")
-const userRechargeBiz = require("../businessLogic/user_recharge.js");
 const isNativeError = require("util").types.isNativeError;
 
 logger.info(`message queen Listen Job started. ${getCurrentTimeString()}`);
-
-// /**
-//  * 订阅 用户充值事件
-//  */
-// user_recharge.sub( async (data) => {
-//     logger.debug(`user_recharge event fired. ${getCurrentTimeString()}.%j`, data);
-//     try {
-//         await userRechargeBiz(data);
-//     } catch (error) {
-//         if(isNativeError(error)){
-//             logger.error(`userRechargeBiz error.`, error.message , error.stack);
-//         }
-//         else{
-//             logger.error(`userRechargeBiz error.`, JSON.stringify(error));
-//         }
-//     }
-// });
 
 /**
  * 订阅 开始新游戏的事件
@@ -50,7 +26,7 @@ startNewGame.sub( async (data) => {
             logger.error(`startNewGameBiz error.`, error.message , error.stack);
         }
         else{
-            logger.error(`startNewGameBiz error.`, JSON.stringify(error));
+            logger.error(`startNewGameBiz error.`, error);
         }
     }
 });
@@ -69,7 +45,7 @@ endGame.sub(  async (data) => {
             logger.error(`endGameBiz error.`, error.message , error.stack);
         }
         else{
-            logger.error(`endGameBiz error.`, JSON.stringify(error));
+            logger.error(`endGameBiz error.`, error);
         }
     }
 });
@@ -88,7 +64,7 @@ grabRedEnvelope.sub( async (data) => {
             logger.error(`grabRedEnvelopeBiz error.`, error.message , error.stack);
         }
         else{
-            logger.error(`grabRedEnvelopeBiz error.`, JSON.stringify(error));
+            logger.error(`grabRedEnvelopeBiz error.`, error);
         }
     }
 });

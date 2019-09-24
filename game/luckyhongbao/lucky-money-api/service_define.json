@@ -310,7 +310,8 @@
             "type" : "post",
             "requireRole" : [ "?" ],
             "req": {
-                "room_id" : { "type": "number", "is_require": true, "desc": "房间ID" }
+                "room_id" : { "type": "number", "is_require": true, "desc": "房间ID" },
+                "account_name": { "type": "string",    "is_require": true , "desc": "eos的账户名称" }
             },
             "res": {
                 "code":{ "type":"number" , "desc" : "" , "values":[ "成功"] } ,
