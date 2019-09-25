@@ -260,7 +260,8 @@ export default {
           if (res.code === 1) {
               this.betSuccess=true;
               setTimeout(() => {
-                this.betSuccess=false;this.logKeyboard();
+                this.betSuccess=false;
+                // this.logKeyboard();
               }, 2500);
             }else if(res.code === 1011){
               this.betSuccess=true;
