@@ -23,9 +23,7 @@ export default {
     };
   },
   mounted() {},
-  created() {
-    this.rechargeEos();
-  },
+  created() {},
   methods: {
     // 充值POG
     rechargeEos() {
@@ -33,36 +31,29 @@ export default {
         Toast("充值金额不能少于0");
         return;
       }
-      const network = {
-        blockchain: "eos",
-        chainId:
-          "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906",
-        host: "45.251.109.187",
-        port: 8888,
-        protocol: "http"
-      };
-      const eos = this.$store.state.scatter.eos(network, Eos);
-      console.log("eos: ", eos)
-      const opts = { authorization: [`${this.$route.query.name}`] };
-      console.log("opt", opts);
-      console.log(
-        "this.$store.state.collectionAccount",
-        this.$route.query.name,
-        Number(this.rechargeNum).toFixed(4) + " UE",
-        this.$store.state.collectionAccount
+      const eos = this.$store.state.scatter.eos(this.$store.state.network, Eos);
+      const account = this.$store.state.scatter.identity.accounts.find(
+        x => x.blockchain === "eos"
       );
-      eos.transfer(this.$route.query.name, "luckyhongbao", Number(this.rechargeNum).toFixed(4) + " UE", this.$route.query.name, opts)
+      const opts = { authorization: [`${account.name}`] };
+      eos
+        .transfer(
+          account.name,
+          this.$store.state.collectionAccount,
+          Number(this.rechargeNum).toFixed(4) + " POG",
+          account.name,
+          opts
+        )
         .then(async trx => {
-          console.log("scatter充值成功:", trx);
-          this.$store.commit("setRechargeDialog", false);
+          console.log("scatter充值成功:", trx);;
           Toast("充值成功 , 充值资金可能会延迟到账.");
           // 轮询获取用户账号余额
-          // this.timer = setInterval(() => {
-          //   this.getAccountBalance();
-          // }, 5000);
+          this.timer = setInterval(() => {
+            this.getAccountBalance();
+          }, 5000);
         })
         .catch(err => {
-          console.log("err", err);
+          console.log(typeof err);
           if (typeof err == "object") {
             if (err.code == 402) {
               Toast("你拒绝了该请求");

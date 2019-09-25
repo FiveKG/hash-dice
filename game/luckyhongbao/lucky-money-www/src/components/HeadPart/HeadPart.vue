@@ -281,7 +281,7 @@ export default {
     console.log("当前路由:", this.$route.path);
   },
   created() {
-    // this.getConfig();
+    this.getConfig();
   },
   methods: {
     goBack() {
