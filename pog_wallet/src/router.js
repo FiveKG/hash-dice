@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import welcome from './pages/welcome/index.vue'
 import Index from './pages/Index'
+// import Index from './pages/zTest'
 import Scanner from './pages/scanner/Scanner'
 import Transfer from './pages/assets/Transfer'
 import Receive from './pages/assets/eos/receive/Receive'
@@ -66,7 +68,8 @@ import DappSearch from './pages/discover/DappSearch'
 import SimpleLogin from './pages/discover/SimpleLogin'
 import FingerprintWarn from './pages/assets/FingerprintWarn'
 import MyInvitationPage from './pages/invitation/MyInvitationPage'
-import Profit from './pages/invitation/Profit'
+import Profit2 from './pages/invitation/Profit'
+import Profit from './pages/invitation2/Profit'
 import SubAccount from './pages/invitation/SubAccount'
 import Invitation from './pages/me/Invitation'
 import TBGFAQ from './pages/invitation/FAQ'
@@ -76,8 +79,60 @@ import HelpFriend from './pages/invitation/HelpFriend'
 import Withdraw from './pages/invitation/Withdraw'
 import BingoPool from './pages/invitation/BingoPool'
 import ShareholderPool from './pages/invitation/ShareholderPool'
+import ShareholderPoolDetails from './pages/invitation/ShareholderPoolDetails'
 import FivePool from './pages/invitation/FivePool'
+import FivePoolDetails from './pages/invitation/FivePoolDetails'
 import PkPool from './pages/invitation/PkPool'
+import level from './pages/invitation/level'
+
+import UnBind from './pages/invitation/UnBind'
+import IsBind from './pages/invitation/IsBind'
+import IndexT from './pages/invitation/Index'
+import NotParticipating from './pages/invitation2/NotParticipating'
+
+import TradingCenter from './pages/invitation2/TradingCenter/TradingCenter'
+import AssetPool from './pages/invitation2/AssetPool/AssetPool'
+import MiningDetails from './pages/invitation2/AssetPool/MiningDetails'
+import AssetLinearPool from './pages/invitation2/AssetLinearPool/AssetLinearPool'
+import AssetLinearDetails from './pages/invitation2/AssetLinearPool/AssetLinearDetails'
+import SaleableBalance from './pages/invitation2/SaleableBalance'
+import SaleableLimit from './pages/invitation2/SaleableLimit'
+import SignDetails from './pages/invitation2/SignDetails'
+import DestructionDetails from './pages/invitation2/DestructionDetails'
+import Notice from './pages/invitation2/Notice'
+
+import Otc from './pages/game/otc/Otc'
+import OtcGo from './pages/game/otc/OtcGo'
+import HaGo from './pages/game/ha/HaGo'
+import HaNine from './pages/game/ha/HaNine'
+import TreasureGo from './pages/game/treasure/TreasureGo'
+import TreasurePage from './pages/game/treasure/TreasurePage'
+import LotteryDetailsNoLottery from './pages/game/treasure/LotteryDetailsNoLottery'
+import BettingDetails from './pages/game/treasure/BettingDetails'
+import TreasureRule from './pages/game/treasure/TreasureRule'
+import HashDiceGo from './pages/game/hashdice/HashDiceGo'
+import HashDicePage from './pages/game/hashdice/HashDicePage'
+import HashDiceRule from './pages/game/hashdice/HashDiceRule'
+import HashDiceDetails from './pages/game/hashdice/HashDiceDetails'
+
+
+import GlovalLotto from './pages/game/qqc/GlovalLotto'
+import LottoGame from './pages/game/qqc/LottoGame'
+import awardOpening from './pages/game/qqc/awardOpening'
+
+// import LottoGame from './pages/game/qqc/LottoGame'
+
+// 哈希分分彩部分==============================================================_start
+import LotteryGo from './pages/game/hash_minute_lottery/LotteryGo'
+import Lottery from './pages/game/hash_minute_lottery/Lottery'
+import LotteryRecord from './pages/game/hash_minute_lottery/LotteryRecord'
+import BetDetail from './pages/game/hash_minute_lottery/BetDetail'
+import LotteryRule from './pages/game/hash_minute_lottery/LotteryRule'
+    
+// 哈希分分彩部分==============================================================_end
+
+import tradePage from './pages/Trade/tradePage'
+
 
 Vue.use(Router)
 
@@ -87,6 +142,11 @@ const router = new Router({
       path: '/',
       name: 'index',
       component: Index,
+    },
+    {
+      path: '/welcome',
+      name: 'welcome',
+      component: welcome,
     },
     {
       path: '/selectBlockchain',
@@ -279,6 +339,11 @@ const router = new Router({
       component: Profit,
     },
     {
+      path: '/profit2',
+      name: 'Profit2',
+      component: Profit2,
+    },
+    {
       path: '/subAccount',
       name: 'SubAccount',
       component: SubAccount,
@@ -324,14 +389,29 @@ const router = new Router({
       component: ShareholderPool,
     },
     {
+      path: '/shareholderPoolDetails',
+      name: 'ShareholderPoolDetails',
+      component: ShareholderPoolDetails,
+    },
+    {
       path: '/fivePool',
       name: 'FivePool',
       component: FivePool,
     },
     {
+      path: '/fivePoolDetails',
+      name: 'FivePoolDetails',
+      component: FivePoolDetails,
+    },
+    {
       path: '/pkPool',
       name: 'PkPool',
       component: PkPool,
+    },
+    {
+      path: '/level',
+      name: 'level',
+      component: level,
     },
     {
       path: '/ethAddWallet',
@@ -462,7 +542,193 @@ const router = new Router({
       path: '/pogSearchToken',
       name: 'PogSearchToken',
       component: PogSearchToken,
-    }
+    },
+
+    {
+      path: '/tradingCenter',
+      name: 'TradingCenter',
+      component: TradingCenter,
+    },
+    {
+      path: '/unBind',
+      name: 'UnBind',
+      component: UnBind,
+    },
+    {
+      path: '/isBind',
+      name: 'IsBind',
+      component: IsBind,
+    },
+    {
+      path: '/indexT',
+      name: 'IndexT',
+      component: IndexT,
+    },
+    {
+      path: '/notParticipating',
+      name: 'NotParticipating',
+      component: NotParticipating,
+    },
+
+    {
+      path: '/assetPool',
+      name: 'AssetPool',
+      component: AssetPool,
+    },
+    {
+      path: '/miningDetails',
+      name: 'MiningDetails',
+      component: MiningDetails,
+    },
+    {
+      path: '/assetLinearPool',
+      name: 'AssetLinearPool',
+      component: AssetLinearPool,
+    },
+    {
+      path: '/assetLinearDetails',
+      name: 'AssetLinearDetails',
+      component: AssetLinearDetails,
+    },
+    {
+      path: '/saleableBalance',
+      name: 'SaleableBalance',
+      component: SaleableBalance,
+    },
+    {
+      path: '/saleableLimit',
+      name: 'SaleableLimit',
+      component: SaleableLimit,
+    },
+    {
+      path: '/signDetails',
+      name: 'SignDetails',
+      component: SignDetails,
+    },
+    {
+      path: '/DestructionDetails',
+      name: 'DestructionDetails',
+      component: DestructionDetails,
+    },
+    {
+      path: '/Notice',
+      name: 'Notice',
+      component: Notice,
+    },
+
+    {
+      path: '/otc',
+      name: 'Otc',
+      component: Otc,
+    },
+    {
+      path: '/otcGo',
+      name: 'OtcGo',
+      component: OtcGo,
+    },
+    {
+      path: '/haGo',
+      name: 'HaGo',
+      component: HaGo,
+    },
+    {
+      path: '/haNine',
+      name: 'HaNine',
+      component: HaNine,
+    },
+    {
+      path: '/treasureGo',
+      name: 'TreasureGo',
+      component: TreasureGo,
+    },
+    {
+      path: '/treasurePage',
+      name: 'TreasurePage',
+      component: TreasurePage,
+    },
+    {
+      path: '/lotteryDetailsNoLottery',
+      name: 'LotteryDetailsNoLottery',
+      component: LotteryDetailsNoLottery,
+    },
+    {
+      path: '/bettingDetails',
+      name: 'BettingDetails',
+      component: BettingDetails,
+    },
+    {
+      path: '/treasureRule',
+      name: 'TreasureRule',
+      component: TreasureRule,
+    },
+    {
+      path: '/hashDiceGo',
+      name: 'HashDiceGo',
+      component: HashDiceGo,
+    },
+    {
+      path: '/hashDicePage',
+      name: 'HashDicePage',
+      component: HashDicePage,
+    },
+    {
+      path: '/hashDiceRule',
+      name: 'HashDiceRule',
+      component: HashDiceRule,
+    },
+    {
+      path: '/hashDiceDetails',
+      name: 'HashDiceDetails',
+      component: HashDiceDetails,
+    },
+    {
+      path: '/GlovalLotto',
+      name: 'GlovalLotto',
+      component: GlovalLotto,
+    },
+    {
+      path: '/LottoGame',
+      name: 'LottoGame',
+      component: LottoGame,
+    },
+    {
+      path: '/awardOpening',
+      name: 'awardOpening',
+      component: awardOpening,
+    },
+
+    // 哈希分分彩部分==============================================================_start
+    {
+      path: '/LotteryGo',
+      name: 'LotteryGo',
+      component: LotteryGo,
+    },
+    {
+      path: '/Lottery',
+      name: 'Lottery',
+      component: Lottery,
+    },
+    {
+      path: '/LotteryRecord',
+      name: 'LotteryRecord',
+      component: LotteryRecord,
+    },
+    {
+      path: '/BetDetail',
+      name: 'BetDetail',
+      component: BetDetail,
+    },
+    {
+      path: '/LotteryRule',
+      name: 'LotteryRule',
+      component: LotteryRule,
+    },
+    // 哈希分分彩部分==============================================================_end
+    {
+      path: '/tradePage',
+      name: 'tradePage',
+      component: tradePage,
+    },
   ]
 })
 

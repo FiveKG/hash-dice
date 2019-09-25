@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--头部-->
-    <HeadPart :amount='room_info.amount' @childshow="toogleShow" @roomShow="toogleRoomShow"></HeadPart>
+    <HeadPart :amount="room_info.amount" @childshow="toogleShow" @roomShow="toogleRoomShow"></HeadPart>
     <!-- <div class="club_type" v-if="!$store.state.sideBar">{{roomAmount}}UE {{roomType}}人抢专场</div> -->
     <!-- 房间信息 -->
     <!-- <div class="info" v-if="!$store.state.sideBar">
@@ -25,7 +25,7 @@
           </span>
         </div>
       </div>
-    </div> -->
+    </div>-->
     <!-- <div class="text">余额 | {{Number($store.state.eosBalance).toFixed(4)}}UE</div>
     <div class="text">房间人数:{{onlineNum}}人 | 房间号{{roomId}}</div>-->
     <!-- <div class="recharge" @click="$store.commit('setRechargeDialog',true)">充值抢红包</div> -->
@@ -333,7 +333,8 @@ import {
   openPack,
   checkPack,
   debugTest,
-  getClubInfo
+  getClubInfo,
+  
 } from "@/servers";
 export default {
   name: "moneyroom",
@@ -369,6 +370,7 @@ export default {
       packTotal: 0, //该房间红包总数
       datalist: {}, //5人抢所有红包信息
       room_list: [], //房间列表
+      room_id: 1, //当前房间id
       room_info: {}
     };
   },
@@ -387,7 +389,8 @@ export default {
     var socket = io.connect(baseURL);
     this.$store.commit("setSocket", socket);
     setTimeout(() => {
-      this.name = this.$store.state.eosAccount.name;
+      console.log(this.$route.query.name);
+      this.name = this.$route.query.name;
     }, 650);
     this.timer = setInterval(() => {
       if (that.$store.state.configIsOk != 0) {
@@ -400,7 +403,7 @@ export default {
           let data = {
             club_id: storage.get("clubId"),
             room_id: storage.get("roomId"),
-            account_name: this.$store.state.eosAccount.name
+            account_name: this.$route.query.name
           };
           // 轮询ping
           this.timer = setInterval(() => {
@@ -431,7 +434,7 @@ export default {
           });
           // 监听最新已开奖红包
           this.$store.state.socket.on("get_envelope_result", function(data) {
-            that.getAccountBalance();
+            // that.getAccountBalance();
             console.log("最新已开奖红包:", data);
             // data.endTime = new Date(data.endTime).toLocaleString();
             // data.startTime  = new Date(data.startTime).toLocaleString();
@@ -514,7 +517,8 @@ export default {
     },
     // 切换场次
     tooglePage(val) {
-      console.log(val);
+      console.log(222222222, val);
+      this.room_id = val.room_id;
       localStorage.setItem("roomId", val.room_id);
       this.room_info = val;
       this.roomAmount = Number(val.amount);
@@ -628,57 +632,58 @@ export default {
         console.log("余额充足 , 调用接口抢红包");
         this.openPack();
       } else {
-        Toast("余额不足");
-        this.openLoad = false;
-        console.log("余额不足 , 调用scatter转账抢红包");
-        const eos = this.$store.state.scatter.eos(
-          this.$store.state.network,
-          Eos
-        );
-        const account = this.$store.state.scatter.identity.accounts.find(
-          x => x.blockchain === "eos"
-        );
-        // let accountName = 'pcoinaccount';
-        const opts = { authorization: [`${account.name}`] };
-        eos
-          .transfer(
-            account.name,
-            this.$store.state.collectionAccount,
-            Number(this.roomAmount).toFixed(4) + " UE",
-            this.roomId,
-            opts
-          )
-          .then(async trx => {
-            console.log(
-              "scatter转账抢红包成功 , 等待websocket返回抢红包结果:",
-              trx
-            );
-          })
-          .catch(err => {
-            this.openLoad = false;
-            if (typeof err == "object") {
-              if (err.code == 402) {
-                Toast("你拒绝了该请求");
-              }
-            } else if (typeof err == "string") {
-              var error = JSON.parse(err);
-              console.log("错误信息:", error);
-              if (error.error.code == 3050003) {
-                Toast("账户余额不足");
-              } else if (error.error.code == 3080001) {
-                Toast("内存不足");
-              } else if (error.error.code == 3080002) {
-                Toast("网络资源不足");
-              } else if (error.error.code == 3080004) {
-                Toast("CPU不足");
-              } else if (error.error.code == 3090003) {
-                Toast("请检查权限，签名等是否正确");
-              } else {
-                Toast("操作失败");
-              }
-            }
-            console.error("scatter转账失败:", err);
-          });
+        this.$store.commit("setRechargeDialog", true);
+        // Toast("余额不足");
+        // this.openLoad = false;
+        // console.log("余额不足 , 调用scatter转账抢红包");
+        // const eos = this.$store.state.scatter.eos(
+        //   this.$store.state.network,
+        //   Eos
+        // );
+        // // const account = this.$store.state.scatter.identity.accounts.find(
+        // //   x => x.blockchain === "eos"
+        // // );
+        // // let accountName = 'pcoinaccount';
+        // const opts = { authorization: [`${this.$route.query.name}`] };
+        // eos
+        //   .transfer(
+        //     this.$route.query.name,
+        //     this.$store.state.collectionAccount,
+        //     Number(this.roomAmount).toFixed(4) + " UE",
+        //     this.roomId,
+        //     opts
+        //   )
+        //   .then(async trx => {
+        //     console.log(
+        //       "scatter转账抢红包成功 , 等待websocket返回抢红包结果:",
+        //       trx
+        //     );
+        //   })
+        //   .catch(err => {
+        //     this.openLoad = false;
+        //     if (typeof err == "object") {
+        //       if (err.code == 402) {
+        //         Toast("你拒绝了该请求");
+        //       }
+        //     } else if (typeof err == "string") {
+        //       var error = JSON.parse(err);
+        //       console.log("错误信息:", error);
+        //       if (error.error.code == 3050003) {
+        //         Toast("账户余额不足");
+        //       } else if (error.error.code == 3080001) {
+        //         Toast("内存不足");
+        //       } else if (error.error.code == 3080002) {
+        //         Toast("网络资源不足");
+        //       } else if (error.error.code == 3080004) {
+        //         Toast("CPU不足");
+        //       } else if (error.error.code == 3090003) {
+        //         Toast("请检查权限，签名等是否正确");
+        //       } else {
+        //         Toast("操作失败");
+        //       }
+        //     }
+        //     console.error("scatter转账失败:", err);
+          // });
         // eos.contract(accountName).then(async adm => {
         //   adm.transfer(account.name, 'luckyhongbao', Number(this.roomAmount).toFixed(4)+' UE', this.packNotOpen.game_id , opts).then( async trx => {
         //     console.log('scatter转账抢红包成功 , 等待websocket返回抢红包结果:', trx);
@@ -696,7 +701,7 @@ export default {
      */
     getAccountBalance() {
       let data = {
-        account_name: this.$store.state.eosAccount.name
+        account_name: this.$route.query.name
       };
       getAccountBalance(data)
         .then(res => {
@@ -756,7 +761,7 @@ export default {
     checkPack() {
       let data = {
         room_id: this.packNotOpen.room_id,
-        account_name: this.$store.state.eosAccount.name
+        account_name: this.$route.query.name
       };
       checkPack(data)
         .then(res => {
@@ -781,7 +786,7 @@ export default {
               for (let i = 0; i < res.data.grabbed_list.length; i++) {
                 if (
                   res.data.grabbed_list[i].account_name ==
-                  this.$store.state.eosAccount.name
+                  this.$route.query.name
                 ) {
                   res.data.grabbed_list[i].amount = res.data.amount;
                 } else {
@@ -818,7 +823,7 @@ export default {
         msg:
           "监听到 WebSocket 返回的抢红包结果后 , 发送调试信息" +
           new Date() +
-          this.$store.state.eosAccount.name
+          this.$route.query.name
       };
       debugTest(data)
         .then(res => {
@@ -832,13 +837,22 @@ export default {
     // 刷新当前页
     refresh() {
       this.$router.go(0);
-    }
+    },
+    // //scatter连接
+    // createScatterConnect() {
+    //   scatterConnect().then((res) => {
+    //     console.log(res)
+    //   })
+    //   .catch((err)=>{
+    //     console.log(err)
+    //   });
+    // }
   },
   destroyed() {
     console.log("destroyed 时 断开 websocket");
     let data = {
       room_id: this.roomId,
-      account_name: this.$store.state.eosAccount.name
+      account_name: this.$route.query.name
     };
 
     this.$store.state.socket.disconnect();
@@ -960,8 +974,8 @@ export default {
   font-size: 16px;
 }
 .pack_list {
-  /* overflow-y: scroll;
-  height: 800px; */
+  overflow-y: scroll;
+  /* height: 800px; */
   padding-top: 10.5vh;
   /* padding-bottom: 5vh; */
 }

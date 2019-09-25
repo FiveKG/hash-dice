@@ -89,7 +89,7 @@
 
 <script>
 import MyPage from '@/components/MyPage'
-import { teamInvite,teamMode,teamSort } from '@/servers/invitation';
+import api from '@/servers/invitation'
 
 export default {
   components: {
@@ -113,13 +113,12 @@ export default {
     }
   },
   created() {
-    console.log(this.$route.query)
-    this.account = this.$route.query.account
-    this.teamInvite()
+    this.account=this.$store.state.wallet.assets.account;
+    this.teamInvite();
   },
   methods: {
     teamSort() {
-      teamSort({account_name: this.account}).then(res => {
+      api.teamSort({account_name: this.account}).then(res => {
         console.log(res)
         if (res.code === 1) {
           this.oneRank = res.data
@@ -131,7 +130,7 @@ export default {
       this.accountTotal = 0
       this.accountInvite = 0
       this.accountRepeat = 0
-      teamMode({account_name: this.account}).then(res => {
+      api.teamMode({account_name: this.account}).then(res => {
         console.log(res)
         if (res.code === 1) {
           this.threeRank = res.data
@@ -144,7 +143,7 @@ export default {
       })
     },
     teamInvite() {
-      teamInvite({account_name: this.account}).then(res => {
+      api.teamInvite({account_name: this.account}).then(res => {
         console.log(res)
         if (res.code === 1) {
           this.invitation.myInvitation = res.data.referrer_account

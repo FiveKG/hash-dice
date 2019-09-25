@@ -85,12 +85,14 @@ function runInCordova() {
         //   console.log('readFile', err)
         // })
 
-        nodejs.start('main.js', function() {
-            console.log('startupCallback')
-        })
+        if (typeof nodejs !== 'undefined') {
+            nodejs.start('main.js', function() {
+                console.log('startupCallback')
+            })
+        }
     }
 }
 
 
-//runInCordova()
+// runInCordova()
 runInBrowser()

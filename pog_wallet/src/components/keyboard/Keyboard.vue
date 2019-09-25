@@ -2,6 +2,11 @@
   <transition name="slide">
       <div class="keyboard" v-show="show">
           <div class="list_row">
+            <div class="key"  style="width:100%;" @touchstart="typing('hide',$event)" @touchend="inputEnd($event)">
+              <img src="./icon-keyboard.svg" alt="">
+            </div>
+          </div>
+          <div class="list_row">
             <div class="key" @touchstart="typing('1',$event)" @touchend="inputEnd($event)">1</div>
             <div class="key" @touchstart="typing('2',$event)" @touchend="inputEnd($event)">2</div>
             <div class="key" @touchstart="typing('3',$event)" @touchend="inputEnd($event)">3</div>
@@ -17,9 +22,7 @@
             <div class="key" @touchstart="typing('9',$event)" @touchend="inputEnd($event)">9</div>
           </div>
           <div class="list_row">
-            <div class="key" @touchstart="typing('hide',$event)" @touchend="inputEnd($event)">
-              <img src="./icon-keyboard.svg" alt="">
-            </div>
+            <div class="key" @touchstart="typing('W',$event)" @touchend="inputEnd($event)">W</div>
             <div class="key" @touchstart="typing('0',$event)" @touchend="inputEnd($event)">0</div>
             <div class="key" @touchstart="typing('del',$event)" @touchend="inputEnd($event)">
               <i class="iconfont icon-keyboard-delete del"></i>
@@ -94,7 +97,7 @@ export default {
 }
 .list_row {
   display: flex;
-  height: 25%;
+  height: 20%;
 }
 .key {
   flex: 1;
