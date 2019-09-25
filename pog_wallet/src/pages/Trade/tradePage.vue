@@ -1,12 +1,13 @@
 <template>
-   <div class="wrap">
+   <div class="wrap" >
      <div class="header">
         <div class="header_line"></div>
         <div class="header_content">
-            <span>UE兑换</span> 
+            <span style="">UE兑换</span> 
             <img src="@/assets/img/u2568.svg" alt="">
         </div>
-         <div class="exchange">
+     </div>
+     <div class="exchange">
             <!-- 兑出金额 -->
             <div class="exchange_row amount_paid">
                 <p>兑出金额</p>
@@ -40,8 +41,49 @@
             </div>
             <p class="post_txt">1 UE = 1 PAX</p>
          </div>
-     </div>
-   </div>
+
+          
+          
+          <div class="list_title">
+            <p @click="titleTogle(0)" :class="{'active':switchNum === 0}">公众审计</p>
+            <p @click="titleTogle(1)" :class="{'active':switchNum === 1}">最近兑换</p>
+          </div>
+
+          <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
+            :index.sync="switchNum"
+          >
+          <v-ons-carousel-item>
+            <!-- 公众审计 -->
+            <div class="audit">
+                <div class="audit_row">
+                  <img src="@/assets/img/u2485.svg" alt="">
+                  <div class="audit_txt">
+                    <p>1 UE = 1 PAX = 1 USD</p>
+                    <p>恒定价值，实时审计，随时兑换</p>
+                  </div>
+                </div>
+
+                 <div class="audit_row">
+                  <img src="@/assets/img/u2507.svg" alt="">
+                  <div class="audit_txt">
+                    <p>每兑换 1 PAX 则在银行存入 1 美元</p>
+                    <p>受纽约金融服务署 ( NYDFS ) 监管</p>
+                  </div>
+                </div>
+
+            </div>
+            
+
+          </v-ons-carousel-item>
+
+
+          <v-ons-carousel-item>
+            <div>222222222</div>
+          </v-ons-carousel-item>
+
+          </v-ons-carousel>
+
+      </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -49,12 +91,14 @@ export default {
    name: '',
    data() {
        return {
-         
+         switchNum:0,
        }
    },
   components: {},
   methods:{
-    
+      titleTogle(num){
+        this.switchNum = num
+      }
 
   },
 
@@ -65,7 +109,7 @@ export default {
 .wrap{
   background:rgba(242, 242, 242, 1);
   position:relative;
-  height:1000px;
+  
 }
 .header_line{
   position:absolute;
@@ -79,7 +123,7 @@ export default {
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding-top:.2rem;
+  padding-top:.4rem;
   height:1.6rem;
   color: #FF9900;
   font-family: 'Bahnschrift Regular', 'Bahnschrift';
@@ -166,6 +210,55 @@ export default {
   font-size:.5rem;
   font-family: 'Bahnschrift Regular', 'Bahnschrift';
 }
-
-
+.list_title{
+  margin:.8rem .5rem 0;
+  line-height:1rem;
+  font-size:.45rem;
+  color: #BCBCBC;
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+  display:flex;
+}
+.list_title p{
+  margin-right:.4rem;
+  padding:0 .1rem;
+  box-sizing:border-box;
+  transition: all .3s;
+}
+.list_title>.active{
+  border-bottom:.05rem solid #FF9900;
+  color: #FF9900;
+  font-size:.5rem;
+} 
+.audit_row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:.5rem .5rem;
+  padding-bottom:.5rem;
+  flex-wrap:nowrap;
+  border-bottom:0.018rem solid rgba(204, 204, 204, 0.658);
+  // box-sizing:border-box;
+}
+.audit_row img{
+  width:2.3rem;
+  height:2.3rem;
+}
+.audit_txt{
+  flex:1;
+  font-size:.44rem;
+  line-height:.7rem;
+  padding-left:.1rem;
+  white-space: nowrap;  
+  text-overflow:ellipsis; 
+  overflow:hidden;
+}
+.audit_txt p{
+  white-space: nowrap;  
+  text-overflow:ellipsis; 
+  overflow:hidden;
+}
+.audit .audit_row:last-child{
+  border-bottom:0px;
+  margin-bottom:0px;
+}
 </style>
