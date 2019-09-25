@@ -56,28 +56,42 @@
           <v-ons-carousel-item>
             <!-- 公众审计 -->
               <div class="audit">
-                <div class="audit_row">
-                  <img src="@/assets/img/u2485.svg" alt="">
-                  <div class="audit_txt">
-                    <p>1 UE = 1 PAX = 1 USD</p>
-                    <p>恒定价值，实时审计，随时兑换</p>
+                  <div class="audit_row">
+                    <img src="@/assets/img/u2485.svg" alt="">
+                    <div class="audit_txt">
+                      <p>1 UE = 1 PAX = 1 USD</p>
+                      <p>恒定价值，实时审计，随时兑换</p>
+                    </div>
                   </div>
-                </div>
 
-                 <div class="audit_row">
-                  <img src="@/assets/img/u2507.svg" alt="">
-                  <div class="audit_txt">
-                    <p>每兑换 1 PAX 则在银行存入 1 美元</p>
-                    <p>受纽约金融服务署 ( NYDFS ) 监管</p>
+                  <div class="audit_row">
+                    <img src="@/assets/img/u2507.svg" alt="">
+                    <div class="audit_txt">
+                      <p>每兑换 1 PAX 则在银行存入 1 美元</p>
+                      <p>受纽约金融服务署 ( NYDFS ) 监管</p>
+                    </div>
                   </div>
-                </div>
+               </div> 
 
-            </div> 
+               <!-- 实时公众审计 -->
+               
+
           </v-ons-carousel-item>
 
 
           <v-ons-carousel-item>
-            <div>222222222</div>
+            <div class="recentexchange_row" v-for="(item,index) in recentexchangeList " :key="index">
+                <p>
+                  <span>{{item.date}}</span>
+                </p>
+                <p>
+                  <span>{{item.exchange}}</span>
+                </p>
+                <p>
+                  <span>{{item.number}}</span>
+                  <img class="morePic" src="@/assets/img/u29.png" alt="">
+                </p>
+            </div>
           </v-ons-carousel-item>
 
           </v-ons-carousel>
@@ -91,6 +105,11 @@ export default {
    data() {
        return {
          switchNum:0,
+         recentexchangeList:[
+           {date:'2019-06-10 17:15:23',exchange:'PAX 兑 UE',number:'1,200.0000'},
+           {date:'2019-06-05 17:15:23',exchange:'UE 兑 PAX',number:'1,600.0000'},
+           {date:'2019-06-01 17:15:23',exchange:'PAX 兑 UE',number:'1,000.0000'},
+         ],
        }
    },
   components: {},
@@ -258,5 +277,28 @@ export default {
 .audit .audit_row:last-child{
   border-bottom:0px;
   margin-bottom:0px;
+}
+.recentexchange_row{
+  display:flex;
+  flex-wrap:nowrap;
+  justify-content:center;
+  align-items:center;
+  font-family: 'Bahnschrift Regular', 'Bahnschrift';
+  color:#000;
+  font-weight: 400;
+  padding:.2rem 0;
+  font-size:.5rem;
+}
+.recentexchange_row p{
+  flex:1 1;
+  text-align:center;
+  font-size:.4rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.morePic{
+  width:.5rem;
+  height:.5rem;
 }
 </style>
