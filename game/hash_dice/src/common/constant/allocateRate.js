@@ -12,14 +12,9 @@
 const BASE_RATE = 100;
 
 
-// 0.1% 拨入 TBG 股东分红池；
-const ALLOC_TO_TSH_POOL = 0.1;
-// 0.1% 拨入 TBG 三倍收益保障池；
-const ALLOC_TO_PROTECTION_POOL = 0.1;
-// 0.3% 拨入 TBG 共享推荐佣金分配；
-const ALLOC_TO_REFERRER = 0.3;
-// 0.3% TSH投资股东收益
-const ALLOC_TO_TSH_INCOME =0.3;
+
+// 0.8% TGG钱包
+const ALLOC_TO_TBG =0.8;
 
 
 
@@ -29,10 +24,7 @@ const ALLOC_TO_TSH_INCOME =0.3;
  */
 const CONSTANT = {
     "BASE_RATE": BASE_RATE,
-    "ALLOC_TO_TSH_INCOME": ALLOC_TO_TSH_INCOME,
-    "ALLOC_TO_PROTECTION_POOL": ALLOC_TO_PROTECTION_POOL,
-    "ALLOC_TO_REFERRER": ALLOC_TO_REFERRER,
-    "ALLOC_TO_TSH_POOL": ALLOC_TO_TSH_POOL,
+    "ALLOC_TO_TBG": ALLOC_TO_TBG
 }
 
 module.exports = CONSTANT
@@ -41,8 +33,5 @@ module.exports = CONSTANT
  * @description 常量
  * @typedef { Object } Constant
  * @property { number } BASE_RATE 
- * @property { number } ALLOC_TO_TSH_POOL 0.1% 拨入 TBG 股东分红池；
- * @property { number } ALLOC_TO_PROTECTION_POOL 0.1% 拨入 TBG 三倍收益保障池；
- * @property { number } ALLOC_TO_REFERRER 0.3% 拨入 TBG 共享推荐佣金分配；
- * @property { number } ALLOC_TO_TSH_INCOME 0.3% TSH投资股东收益
+ * @property { number } ALLOC_TO_TBG 0.8% TSH投资股东收益
  */

@@ -53,13 +53,13 @@ const PRIVATE_KEY_TEST = "5J2GxxF4xCfAZjP9R26jwnVY8rp8FYqXRE1fJPq5KDMSxa5NRuW,5K
         console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
         // const resp = await rpc.history_get_actions(BANKER, 1, 9);
         // console.log('=======================',resp.actions)
-        transfer(UE_TOKEN, UE_TOKEN, BANKER, '1.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
-        .then(res => console.error(res))
-        .catch(err => console.error(err));
-
-        // getCurrencyBalance(UE_TOKEN, 'dicebanker', 'UE')
+        // transfer(UE_TOKEN, UE_TOKEN, BANKER, '1.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
         // .then(res => console.error(res))
         // .catch(err => console.error(err));
+
+        getCurrencyBalance(UE_TOKEN, 'yujinsheng11', 'UE')
+        .then(res => console.error(res))
+        .catch(err => console.error(err));
 
     } catch (err) {
         throw err;
