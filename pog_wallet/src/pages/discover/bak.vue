@@ -32,7 +32,14 @@
               </div>
             </v-ons-col>
             <v-ons-col>
-              <div class="type_item" v-for="dapp in item.list" v-if="dapp.odd_even === 'even'" @click="clickDapp(dapp)">
+              <!-- <div class="type_item" v-for="dapp in item.list" v-if="dapp.odd_even === 'even'" @click="clickDapp(dapp)">
+                <img :src="dapp.img">
+                <div class="type_detail">
+                  <div class="type_name">{{dapp.name}}</div>
+                  <div class="summary">{{dapp.summary}}</div>
+                </div>
+              </div> -->
+              <div class="type_item" v-for="dapp in item.list" v-if="dapp.odd_even === 'even'" @click="clickluck()">
                 <img :src="dapp.img">
                 <div class="type_detail">
                   <div class="type_name">{{dapp.name}}</div>
@@ -358,6 +365,11 @@ export default {
     },
     goTreasure(){
       this.$router.push('TreasureGo')
+    },
+    clickluck(){
+      var names=this.$store.state.wallet.assets.account;
+      
+      window.location.href = `http://localhost:8388/#/?name=${names}`;
     },
     
   },

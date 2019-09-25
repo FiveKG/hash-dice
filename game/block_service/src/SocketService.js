@@ -81,7 +81,7 @@ SocketService.prototype.initialize =  async function() {
 
   // HTTP protocol (port 50005)
   const httpServer = http.createServer();
-  httpServer.listen(50007, ip);
+  httpServer.listen(50005, ip);
   io.attach(httpServer,options);
   this.open()
 }
