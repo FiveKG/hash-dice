@@ -749,14 +749,7 @@ export default {
       overflow-y:scroll;
  
   }
-  // .allList p, .myList p{
-  //     text-align:center;
-  //     line-height: 1.5rem;
-  //     font-size:.44rem;
-  //     font-family: '微軟正黑體 Regular', '微軟正黑體';
-  //     font-weight: 400;
-  //     font-style: normal;
-  // }
+  
   .allList p, .myList p{
       display:flex;
       flex-wrap:nowrap;
@@ -838,45 +831,6 @@ export default {
   color: rgba(255, 153, 51, 1);
 }
 
-
-/* 下拉键盘 */
-// .slide-enter-active, .slide-leave-active {
-//   transition: all .8s;
-// }
-// .slide-enter, .slide-leave-to{
-//   transform: translateY(100%);
-// }
-// .keyboard {
-//   height: 500px;
-//   width: 100%;
-//   position: fixed;
-//   bottom: 0;
-//   left: 0;
-//   z-index: 10000;
-//   font-size: 50px;
-//   background-color: #fff;
-// }
-// .list_row {
-//   display: flex;
-//   height: 20%;
-// }
-// .key {
-//   flex: 1;
-//   border-right: 1PX solid #d6d6d6;
-//   border-top: 1PX solid #d6d6d6;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// }
-// .key img {
-//   height: 60px;
-// }
-// .key:nth-child(3n) {
-//   border-right: none;
-// }
-// .del {
-//   font-size: 50px;
-// }
 
 
 //键盘样式
