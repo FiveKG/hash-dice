@@ -52,6 +52,8 @@ async function isReward(data){
                         WHERE reward_block_num = $2;`;
 
             client.query(sql,[reward,data.block_num])
+            .then(res=>console.debug('update reward from table bet_order'))
+            .catch(err=>logger.debug(err));
 
         })
     }catch(err){

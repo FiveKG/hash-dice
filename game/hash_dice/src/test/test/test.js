@@ -106,7 +106,32 @@ async function transfer(tokenContract, from, to, quantity, memo, privateKeyList)
 // openGameSession(14081360)
 
 // isReward({open_num:88,open_block_num:14087157})
-let memo = "hash_dice:yujinsheng11:78:2.0770"  
-transfer(UE_TOKEN, UE_TOKEN, "luckyhongbao", '1.0000 UE', memo, PRIVATE_KEY_TEST.split(","))
+
+/**
+ * 获取用户代币资产
+ * @param { string } code 代币合约
+ * @param { string } account 账户名
+ * @param { string } [symbol] 代币符号
+ */
+async function getCurrencyBalance(code, account, symbol) {
+    try {
+        // @ts-ignore
+        const rpc = new JsonRpc(END_POINT, { fetch });
+        const resp = await rpc.get_currency_balance(code, account, symbol);
+        // const { [TBG_TOKEN_SYMBOL]: { max_supply: maxSupply } } = resp;
+        //console.debug("resp: ", resp);
+        return resp;
+    } catch (err) {
+        throw err;
+    }
+}
+
+
+let memo = "hash_dice:yujinsheng11:twins:2.0770"  
+transfer(UE_TOKEN, UE_TOKEN, BANKER, '10.0000 UE', memo, PRIVATE_KEY_TEST.split(","))
 .then(res => console.error(res))
 .catch(err => console.error(err));
+
+// getCurrencyBalance(UE_TOKEN, 'yujinsheng11', 'UE')
+//         .then(res => console.error(res))
+//         .catch(err => console.error(err));

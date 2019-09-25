@@ -8,5 +8,5 @@ module.exports = {
     "psTrx"          : require("./psTrx"),
     "psBet"          : require("./psBet"),
     "psModifyBalance": require("./psModifyBalance"),
-    "hashDiceOpen"   : require("./psHashDiceOpen"),
+    "psHashDiceOpen" : require("./psHashDiceOpen")
 }

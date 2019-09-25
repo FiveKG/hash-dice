@@ -2,8 +2,7 @@
 const logger = require("../common/logger.js").child({ "@": "listening hash_dice transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
-const { EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN } = require("../common/constant/eosConstants.js");
-const BANKER = 'luckyhongbao';
+const { EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN,BANKER } = require("../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
 const HASH_DICE = "tbg:hash_dice:account_action_seq";

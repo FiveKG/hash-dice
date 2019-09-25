@@ -4,7 +4,7 @@
 // 参与 TBG1 所需 UE 额度
 const BASE_AMOUNT = "100";
 // TBG1 收款账户
-const WALLET_RECEIVER = "tbgjoin";
+const TBG_WALLET_RECEIVER = 'tbgreceiver'
 // TBG1 出款账户
 const DISPENSE_ACCOUNT = "tbgjoin";
 // EOS token 合约账户
@@ -18,7 +18,7 @@ const TBG_TOKEN = "tbgtokencoin"
 const TBG_TOKEN_SYMBOL = "TBG"
 
 // 庄家
-const BANKER = "dicebanker"
+const BANKER = "luckyhongbao"
 
 // 代投注账号(超级用户)
 const AGENT_ACCOUNT = "eoshashdice"
@@ -41,7 +41,7 @@ const PRIVATE_KEY_TEST = "5J2GxxF4xCfAZjP9R26jwnVY8rp8FYqXRE1fJPq5KDMSxa5NRuW,5K
  */
 const CONSTANT = {
     "BASE_AMOUNT": BASE_AMOUNT,
-    "WALLET_RECEIVER": WALLET_RECEIVER,
+    "TBG_WALLET_RECEIVER": TBG_WALLET_RECEIVER,
     "DISPENSE_ACCOUNT": DISPENSE_ACCOUNT,
     "EOS_TOKEN": EOS_TOKEN,
     "TBG_TOKEN": TBG_TOKEN,
@@ -63,7 +63,7 @@ module.exports = CONSTANT
  * @description 
  * @typedef { Object } Constant
  * @property { String } BASE_AMOUNT 投资额度
- * @property { String } WALLET_RECEIVER 收款帐号
+ * @property { String } TBG_WALLET_RECEIVER 收款帐号
  * @property { String } DISPENSE_ACCOUNT 出款帐号
  * @property { String } EOS_TOKEN EOS 代币合约帐号 eosio.token
  * @property { String } TBG_TOKEN TBG 代币合约帐号
