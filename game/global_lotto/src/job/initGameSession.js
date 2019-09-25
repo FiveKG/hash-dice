@@ -11,9 +11,9 @@ const df = require("date-fns");
 
 logger.debug(`beginListenAction running...`);
 // 每天 0：00 执行一次
-// scheduleJob("0 0 0 */1 * *", initGameSession);
+scheduleJob("0 0 0 */1 * *", initGameSession);
 
-initGameSession();
+// initGameSession();
 
 /**
  * 初始化游戏期数

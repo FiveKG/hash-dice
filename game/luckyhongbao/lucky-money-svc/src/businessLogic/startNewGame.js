@@ -331,19 +331,7 @@ async function calculate_allocation_nbr(roomId, red_envelope_amount, club_info) 
     logger.debug(`toDistributionCenter:`, toDistributionCenter);
     const toTbgWallet = Decimal.div(redEnvelopeAllocation.tbg_wallet_receiver_rate, 100).mul(red_envelope_amount).toFixed(6);
     logger.debug(`toTbgWallet:`, toTbgWallet);
-    // // 拨入 TBG 股东分红池
-    // const toTshPool = Decimal.div(redEnvelopeAllocation.alloc_to_tsh_pool, 100).mul(red_envelope_amount).toFixed(6);
-    // logger.debug(`toTshPool:`, toTshPool);
-    // // 拨入 TBG 三倍收益保障池
-    // const toProtectionPool = Decimal.div(redEnvelopeAllocation.alloc_to_protection_pool, 100).mul(red_envelope_amount).toFixed(6);
-    // logger.debug(`toProtectionPool:`, toProtectionPool);
-    // // 拨入 TBG 共享推荐佣金分配；
-    // const toReferrer = Decimal.div(redEnvelopeAllocation.alloc_to_referrer, 100).mul(red_envelope_amount).toFixed(6);
-    // logger.debug(`toReferrer:`, toReferrer);
-    // // TSH投资股东收益
-    // const toTshIncome = Decimal.div(redEnvelopeAllocation.alloc_to_tsh_income, 100).mul(red_envelope_amount).toFixed(6);
-    // logger.debug(`toTshIncome:`, toTshIncome);
-    // // 实际发的红包的数量  ,
+    // 实际发的红包的数量  ,
     const redEnvelopeAmount = Decimal.div(redEnvelopeAllocation.redEnvelopRate, 100).mul(red_envelope_amount).toFixed(6);
     logger.debug(`实际发的红包的数量:`, redEnvelopeAmount);
     

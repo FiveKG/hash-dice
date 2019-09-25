@@ -3,12 +3,12 @@
 const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "listening game receiver" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis, generate_primary_key } = require("../common");
-const { UE_TOKEN, UE_TOKEN_SYMBOL, TBG_WALLET_RECEIVER } = require("../common/constant/eosConstants.js");
+const { UE_TOKEN, UE_TOKEN_SYMBOL, TBG_WALLET_RECEIVER: a } = require("../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
 const handlerGameReceiver = require("./handlerGameReceiver.js");
 const SEQ_KEY = "tbg:tbg_game:account_action_seq"
-
+const TBG_WALLET_RECEIVER = 'luckyhongbao'
 logger.debug(`listenTrade running...`);
 // 每秒中执行一次,有可能上一条监听的还没有执行完毕,下一次监听又再执行了一次,从而造成多条数据重复
 const TRADE_LOCK = `tbg:lock:tbg_game`;
@@ -127,6 +127,12 @@ async function parseEosAccountAction(action) {
         if (to === TBG_WALLET_RECEIVER) {
             let [ amount, symbol ] = quantity.split(" ");
             if (symbol === UE_TOKEN_SYMBOL) {
+                // 判断是不是 json 字符串
+                if (memo.search("{") < 0) {
+                    logger.debug("invalid memo format");
+                    return result;
+                }
+                console.debug("memo")
                 let { game_name, account_name, amount: game_amount } = JSON.parse(memo);
                 if (!account_name || !account_name || !account_name) {
                     logger.debug("invalid memo, memo must be include game_name, account_name, amount format like '{ game_name: string, account_name: string, amount: number }'")

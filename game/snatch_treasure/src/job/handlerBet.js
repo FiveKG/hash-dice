@@ -50,16 +50,8 @@ async function handlerBet(data) {
 
         // 90% 拨入全球彩奖池；
         const toPrizePool = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_SNATCH_PRIZE_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1% 拨入 TBG 股东分红池
-        // const toTshPool = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_TSH_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1% 拨入 TBG 三倍收益保障池
-        // const toProtectionPool = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_PROTECTION_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 3% 拨入 TBG 共享推荐佣金分配；
-        // const toReferrer = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_REFERRER).div(ALLOC_CONSTANTS.BASE_RATE);
         // 3.5% 分发中心收益
         const toDistributionCenter = currBetAmount.mul(ALLOC_CONSTANTS.DISTRIBUTION_CENTER).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1.5% TSH投资股东收益
-        // const toTshIncome = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_TSH_INCOME).div(ALLOC_CONSTANTS.BASE_RATE);
         // 6.5% 转入 TBG 钱包帐号
         const toTgbWallet = currBetAmount.mul(ALLOC_CONSTANTS.TBG_WALLET_RECEIVER).div(ALLOC_CONSTANTS.BASE_RATE);
 

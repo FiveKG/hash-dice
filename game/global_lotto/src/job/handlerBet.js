@@ -53,16 +53,8 @@ async function handlerBet(data) {
         const toBottomPool = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_BOTTOM_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
         // 3% 拨入全球彩储备池
         const toReservePool = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_RESERVE_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1% 拨入 TBG 股东分红池
-        const toTshPool = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_TSH_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1% 拨入 TBG 三倍收益保障池
-        const toProtectionPool = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_PROTECTION_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 5% 拨入 TBG 共享推荐佣金分配；
-        const toReferrer = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_REFERRER).div(ALLOC_CONSTANTS.BASE_RATE);
         // 3.5% 分发中心收益
         const toDistributionCenter = betAmount.mul(ALLOC_CONSTANTS.DISTRIBUTION_CENTER).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1.5% TSH投资股东收益
-        const toTshIncome = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_TSH_INCOME).div(ALLOC_CONSTANTS.BASE_RATE);
         // 8.5% 转入 TBG 钱包帐号
         const toTgbWallet = betAmount.mul(ALLOC_CONSTANTS.TBG_WALLET_RECEIVER).div(ALLOC_CONSTANTS.BASE_RATE);
         // 在数据库中插入投注记录

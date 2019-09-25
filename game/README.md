@@ -19,4 +19,4 @@
 * 夺宝庄家帐号: `snatchbanker` 私钥: `5K1HYKMacELeKM3Rcz2HNDLZpVXmBthHM6nxJroQfJgwy9yHzgz`
 * 夺宝代投帐号: `eosbankereos` 私钥: `5J3QDbiCJDFpqxWwZ2jBdjwktn1LGV1T4JjaYiPwG4P3hCHjfyx`
 
-* TBG 钱包帐号: `tbgreceiver` 私钥: `5J3QDbiCJDFpqxWwZ2jBdjwktn1LGV1T4JjaYiPwG4P3hCHjfyx`
+* TBG 钱包帐号: `tbgreceiver` 私钥: `5KVhjmjECkFr5NZgeux9RFXJemKntYPaHwYEtfGB3bbau1jgZKx`
