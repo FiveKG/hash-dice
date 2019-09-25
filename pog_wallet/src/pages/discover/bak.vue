@@ -11,7 +11,7 @@
       <swiper class="swiper_box" dots-position="center" dots-class="dots" loop auto :list="swiperList" @on-click-list-item="clickSwiper" height="180px"></swiper>
       <v-ons-row class="list_title">热门推荐</v-ons-row>
       <v-ons-row class="hot_dapp">
-        <v-ons-col class="dapp_item" v-for="item in hotDapp" @click="clickHot(item)">
+        <v-ons-col class="dapp_item" v-for="(item, index) in hotDapp" :key="index" @click="clickHot(item)">
           <img class="dapp_logo" :src="item.logo_url" v-if="item.logo_url">
           <span class="dapp_name" v-if="item.name">{{item.name}}</span>
         </v-ons-col>
@@ -40,6 +40,43 @@
                 </div>
               </div>
             </v-ons-col>
+             <v-ons-col>
+              <div class="type_item"  @click="gogame()">
+                <div><img src="@/assets/invitation2/u1.png"></div>
+                <div class="type_detail">
+                  <div class="type_name">全球彩</div>
+                  <div class="summary">全球彩游戏</div>
+                </div>
+              </div>
+              </v-ons-col>
+               <v-ons-col>
+              <div class="type_item"  @click="goLottery()">
+                <img src="@/assets/invitation2/u1.png">
+                <div class="type_detail">
+                  <div class="type_name">哈希分分彩</div>
+                  <div class="summary">哈希分分彩游戏</div>
+                </div>
+              </div>
+              </v-ons-col>
+               <v-ons-col>
+              <div class="type_item"  @click="goHashDice()">
+                <img src="@/assets/invitation2/u4.svg">
+                <div class="type_detail">
+                  <div class="type_name">哈希骰子</div>
+                  <div class="summary">哈希骰子游戏</div>
+                </div>
+              </div>
+             </v-ons-col>
+             <v-ons-col>
+              <div class="type_item"  @click="goTreasure()">
+                <img src="@/assets/invitation2/u3.png">
+                <div class="type_detail">
+                  <div class="type_name">夺宝</div>
+                  <div class="summary">夺宝游戏</div>
+                </div>
+              </div>
+             </v-ons-col>
+
           </v-ons-row>
           <v-ons-row class="dapp_more" v-if="item.list.length > 5" @click="clickMore(index)">查看更多 <img src="@/assets/img/discover_arrow.png"> </v-ons-row>
         </swiper-item>
@@ -201,11 +238,18 @@ export default {
         this.gotoExchange();
         return;
       }
-
+      // this.$router.push({
+      //   name: 'Iframe',
+      //   query: {
+      //     url: item.site_url,
+      //     name: item.name
+      //   }
+      // })
       if (this.wallet) {
         ClientSocket.link().then(conn => {
           if (conn) {
             ClientSocket.setAccount(this.wallet.account).then(res => {
+              this.$ons.notification.alert('成功运行!!!!!!')
               this.$router.push({
                 name: 'Iframe',
                 query: {
@@ -303,6 +347,19 @@ export default {
         }
       })
     },
+    gogame(){
+      this.$router.push('GlovalLotto')
+    },
+    goLottery(){
+      this.$router.push('LotteryGo')
+    },
+    goHashDice(){
+      this.$router.push('HashDiceGo')
+    },
+    goTreasure(){
+      this.$router.push('TreasureGo')
+    },
+    
   },
   watch: {
     index(val) {

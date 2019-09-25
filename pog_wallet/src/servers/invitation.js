@@ -1,7 +1,13 @@
 import axios from 'axios';
 
 // var baseURL = 'http://172.81.224.11/api';
-var baseURL = 'http://192.168.1.141:9527';
+// var baseURL = 'http://192.168.1.135:9527';
+var baseURL
+if (process.env.NODE_ENV === 'development') {
+    baseURL = 'http://192.168.1.141:9527';
+} else {
+    baseURL = 'http://pog.tbg.isecsp.com';
+}
 
 const xhr = axios.create({
     baseURL,
@@ -205,7 +211,183 @@ const withdrawHistory = (reqData) => {
     return getData(url, data);
 }
 
-export {
+
+
+// 获取账号类型
+const getType= (reqData) => {
+    const url = '/account/info';
+    const data = reqData;
+    return getData(url, data);
+}
+// 获取全球合伙人私募信息
+const partnerPlacement= (reqData) => {
+    const url = '/trade/raise_buy';
+    const data = reqData;
+    return getData(url, data);
+}
+// 私募交易列表
+const PlacementTransactionList= (reqData) => {
+    const url = '/trade/raise_list';
+    const data = reqData;
+    return getData(url, data);
+}
+// 正常和合伙人历史买入列表数据
+const getSellHistoryList= (reqData) => {
+    const url = '/trade/buy_assets_history';
+    const data = reqData;
+    return getData(url, data);
+}
+// 全球合伙人私募
+const globalPartnerPlacement = (reqData) => {
+    const url = '/trade/global_raise_buy';
+    const data = reqData;
+    return postData(url, data);
+}
+// 买入资产
+const buyAsset = (reqData) => {
+    const url = '/trade/user_buy_assets';
+    const data = reqData;
+    return postData(url, data);
+}
+// 卖出资产
+const sellAsset = (reqData) => {
+    const url = '/trade/user_sell_assets';
+    const data = reqData;
+    return postData(url, data);
+}
+// 获取普通买入交易信息
+const getGeneralBuy = (reqData) => {
+    const url = '/trade/buy_assets';
+    const data = reqData;
+    return getData(url, data);
+}
+// 买入交易列表
+const normalTransactionList = (reqData) => {
+    const url = '/trade/buy_list';
+    const data = reqData;
+    return getData(url, data);
+}
+// 获取普通卖出交易信息
+const getGeneralSell = (reqData) => {
+    const url = '/trade/sell_assets';
+    const data = reqData;
+    return getData(url, data);
+}
+// 卖出交易列表
+const sellTransactionList = (reqData) => {
+    const url = '/trade/sell_list';
+    const data = reqData;
+    return getData(url, data);
+}
+// 资产包卖出记录
+const getSellList = (reqData) => {
+    const url = '/trade/sell_history';
+    const data = reqData;
+    return getData(url, data);
+}
+
+
+
+
+//有效资产包矿机
+const effectiveAssets= (reqData) => {
+    const url = '/mine_pool/mining';
+    const data = reqData;
+    return getData(url, data);
+}
+// 已结束资产包矿机
+const overAssets= (reqData) => {
+    const url = '/mine_pool/mined';
+    const data = reqData;
+    return getData(url, data);
+}
+//资产包挖矿详情
+const assetMiningDetails= (reqData) => {
+    const url = '/mine_pool/detail';
+    const data = reqData;
+    return getData(url, data);
+}
+//资产包挖矿收益收取
+const assetMiningCharge= (reqData) => {
+    const url = '/mine_pool/collect';
+    const data = reqData;
+    return postData(url, data);
+}
+//线性释放池
+const LinearReleasePool= (reqData) => {
+    const url = '/release_pool/account';
+    const data = reqData;
+    return getData(url, data);
+}
+//线性释放池明细
+const LinearReleaseDetail= (reqData) => {
+    const url = '/release_pool/detail';
+    const data = reqData;
+    return getData(url, data);
+}
+//可售余额
+const SaleableBalance= (reqData) => {
+    const url = '/saleable_balance';
+    const data = reqData;
+    return getData(url, data);
+}
+//可售额度
+const SaleableAmount= (reqData) => {
+    const url = '/saleable_amount';
+    const data = reqData;
+    return getData(url, data);
+}
+//签到状态
+const CheckIn= (reqData) => {
+    const url = '/check_in';
+    const data = reqData;
+    return getData(url, data);
+}
+//签到奖励明细
+const CheckInDetail= (reqData) => {
+    const url = '/check_in/detail';
+    const data = reqData;
+    return getData(url, data);
+}
+// 用户签到
+const UseCheckin = (reqData) => {
+    const url = '/user_check_in';
+    const data = reqData;
+    return postData(url, data);
+}
+//交易价格
+const getTradePrice= (reqData) => {
+    const url = '/trade/price';
+    const data = reqData;
+    return getData(url, data);
+}
+//会员等级
+const getLevel= (reqData) => {
+    const url = '/account/level';
+    const data = reqData;
+    return getData(url, data);
+}
+
+//TBG销毁数量
+const getDestory= (reqData) => {
+    const url = '/tbg/destroy';
+    const data = reqData;
+    return getData(url, data);
+}
+const getBalanceAlloc = (reqData) => {
+    const url = '/balance/balance_alloc';
+    const data = reqData;
+    return getData(url, data);
+}
+//系统公告
+const getSystemNtf= (reqData) => {
+    const url = '/tbg/system_notification';
+    const data = reqData;
+    return getData(url, data);
+}
+
+
+export default{
     getConfig,
     setInvitation,
     getInvitation,
@@ -235,4 +417,34 @@ export {
     withdraw,
     friendInvest,
     withdrawHistory,
+
+    getType,
+    partnerPlacement,
+    PlacementTransactionList,
+    getSellHistoryList,
+    getGeneralBuy,
+    normalTransactionList,
+    getGeneralSell,
+    sellTransactionList,
+    getSellList,
+    globalPartnerPlacement,
+    buyAsset,
+    sellAsset,
+    getLevel,
+
+    effectiveAssets,
+    overAssets,
+    assetMiningDetails,
+    assetMiningCharge,
+    LinearReleasePool,
+    LinearReleaseDetail,
+    SaleableBalance,
+    SaleableAmount,
+    CheckIn,
+    UseCheckin,
+    CheckInDetail,
+    getTradePrice,
+    getDestory,
+    getBalanceAlloc,
+    getSystemNtf
 }

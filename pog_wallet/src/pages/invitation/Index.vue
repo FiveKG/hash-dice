@@ -49,7 +49,8 @@ export default {
       eosWallets: []
     }
   },
-  created() {
+  mounted() {
+    console.log('welcome bingding')
     this.initData()
   },
   methods: {
@@ -114,8 +115,10 @@ export default {
     },
     initData() {
       const localFile = this.$store.state.wallet.localFile
+      console.log('isbind active')
       // this.account = this.$store.state.wallet.assets.account
-      this.account = localFile.invitationAccount
+      this.accodunt = localFile.invitationAccount
+      this.account = this.$store.state.wallet.assets.account;
       const wallets = localFile.wallets
       for (const item of wallets) {
         if (item.chain === 'eos') {

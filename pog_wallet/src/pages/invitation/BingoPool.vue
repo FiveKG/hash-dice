@@ -16,12 +16,12 @@
         <div class="bingo_pool">
           <div>Bingo 奖池</div>
           <div>{{total}}</div>
-          <div class="symbol">EOS</div>
+          <div class="symbol">UE</div>
           <div>{{poolRate}}</div>
         </div>
         <div> <img class="line"> </div>
         <div class="bonus_amount">{{currentBonus}}</div>
-        <div class="bonus_symbol">EOS</div>
+        <div class="bonus_symbol">UE</div>
         <div>为本期奖金</div>
         <div> <img class="line"> </div>
         <div class="last_invest">
@@ -29,7 +29,7 @@
           <div class="last_account">{{lastAccount}}</div>
           <div>可独得{{lastRate}}奖金</div>
           <div class="bonus_amount">{{lastBonus}}</div>
-          <div>EOS</div>
+          <div>UE</div>
         </div>
         <div> <img class="line"> </div>
         <div class="other_invest">
@@ -37,13 +37,13 @@
           <div>余下奖金均分</div>
           <div>每账户可获奖金</div>
           <div class="bonus_amount">{{otherBonus}}</div>
-          <div>EOS</div>
+          <div>UE</div>
         </div>
         <div><img class="divider" src="@/assets/img/u8.png" alt=""></div>
         <div class="table_title">当前最后三十名投资主账户</div>
         <div class="account_layout">
           <div class="account_list">
-            <div class="account_item" v-for="item in accountList">{{item}}</div>
+            <div class="account_item" v-for="(item,index) in accountList" :key="index">{{item}}</div>
           </div>
         </div>
         <div><img class="divider" src="@/assets/img/u8.png" alt=""></div>
@@ -74,7 +74,7 @@
 
 <script>
 import MyPage from '@/components/MyPage'
-import { poolBingo } from '@/servers/invitation';
+import api from '@/servers/invitation';
 
 export default {
   components: {
@@ -99,7 +99,8 @@ export default {
   },
   methods: {
     poolBingo() {
-      poolBingo({account_name: this.$route.query.account}).then(res => {
+      console.log(this.$store.state.wallet.localFile.wallets[0].accountNames[0]);
+      api.poolBingo({account_name: this.$store.state.wallet.localFile.wallets[0].accountNames[0]}).then(res => {
         console.log('poolBingo',res)
         if (res.code === 1) {
           this.countdown = res.data.bingo_countdown

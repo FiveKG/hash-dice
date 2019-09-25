@@ -7,15 +7,15 @@
       </div>
       <div class="layout">
         <div class="ipt_layout">
-          <input type="text" class="text-input" placeholder="请输入伙伴的EOS账号" v-model="reqParams.friendAccountName">
+          <input type="text" class="text-input" placeholder="请输入伙伴的账号" v-model="reqParams.friendAccountName">
         </div>
         <div class="btn" @click="clickConfirm">确定</div>
         <div class="tips">
           <div>注：</div>
           <ol>
             <li>帮助伙伴投资后，伙伴的账号为您直接推荐的账号；</li>
-            <li>伙伴投资的 EOS 账号应为未投资账号，已投资账号无效；</li>
-            <li>投资的 30 EOS 将优先从您可提现账户中扣除，当可提现账户不足时，从您的钱包账户中扣除。</li>
+            <li>伙伴投资的账号应为未投资账号，已投资账号无效；</li>
+            <li>投资的 100 UE 将优先从您可提现账户中扣除，当可提现账户不足时，从您的钱包账户中扣除。</li>
           </ol>
         </div>
       </div>
@@ -25,7 +25,7 @@
         style="background: rgba(0,0,0,0.5);"
       >
         <div class="action_layout">
-          <div class="btn_active" @click="showDialog = true">支付 30EOS 投资</div>
+          <div class="btn_active" @click="showDialog = true">支付 30 UE 投资</div>
         </div>
       </v-ons-action-sheet>
       <v-ons-dialog
@@ -68,16 +68,18 @@ export default {
     }
   },
   created() {
-    this.reqParams.account = this.$route.query.account
+    // this.reqParams.account = this.$route.query.account
+    this.reqParams.account = "yujinsheng11";
   },
   methods: {
     // 验证密码
     async verifyPassword() {
-      const seed = await PasswordService.encrypt(this.password)
-      const wallets = this.$store.state.wallet.localFile.wallets
-      const current = wallets.find(ele => ele.accountNames[0] === this.reqParams.account)
-      const privateKey = CryptoAES.decrypt(current.privateKey,seed)
+      const seed = await PasswordService.encrypt(this.password);
+      const wallets = this.$store.state.wallet.localFile.wallets;
+      const current = wallets.find(ele => ele.accountNames[0] === this.reqParams.account);
+      const privateKey = CryptoAES.decrypt(current.privateKey,seed);
       return privateKey
+      // return '5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h';
     },
     async goPay(privateKey) {
       if (privateKey) {
@@ -85,7 +87,10 @@ export default {
         try {
           const config = await this.getConfig()
           const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
-          await eos.transfer(this.reqParams.account, config.wallet_receiver, `0.0001 EOS`, `tbg_invest:${this.reqParams.account}`, opts)
+          // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+          const adm = await eos.contract('uetokencoin')
+          const trx = await adm.transfer(this.reqParams.account, config.wallet_receiver, `1000.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+          console.log(111111111111111111,trx);
           return true
         } catch (error) {
           console.log(error)
@@ -140,12 +145,12 @@ export default {
     },
     async clickConfirm() {
       if (this.reqParams.friendAccountName) {
-        const res = await this.friendInvest()
-        if (res === 1) {
-          this.$toast('投资成功')
-        } else {
+        // const res = await this.friendInvest()
+        // if (res === 1) {
+        //   this.$toast('投资成功')
+        // } else {
           this.actionSheetVisible = true
-        }
+        // }
       }
     },
     back() {

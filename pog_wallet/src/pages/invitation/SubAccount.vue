@@ -34,9 +34,9 @@
           <div class="total_input">
             <div>当前复投余额</div>
             <div class="balance_amount">{{repeatBalance}}</div>
-            <div class="symbol">EOS</div>
+            <div class="symbol">UE</div>
             <div class="desc">
-              <div>每当复投余额满 30 EOS 时</div>
+              <div>每当复投余额满 100 UE 时</div>
               <div>系统将自动复投产生一个子账号</div>
             </div>
           </div>
@@ -57,6 +57,8 @@
 <script>
 import MyPage from '@/components/MyPage'
 import { subAccount } from '@/servers/invitation';
+import api from '@/servers/invitation';
+
 
 export default {
   components: {
@@ -72,7 +74,7 @@ export default {
   },
   created() {
     console.log(this.$route.query)
-    subAccount({account_name: this.$route.query.account}).then(res => {
+    api.subAccount({account_name: this.$store.state.wallet.assets.account}).then(res => {
       console.log(res)
       if (res.code === 1) {
         this.subAccountTotal = res.data.total_sub_account
