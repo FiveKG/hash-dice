@@ -1,8 +1,8 @@
 const http = require('http');
 const io = require('socket.io')();
 const AppService = require('./AppService');
-// const appModule = require('../models/AppModule');
-// const cordova = require('cordova-bridge');
+const appModule = require('../models/AppModule');
+const cordova = require('cordova-bridge');
 
 const socketHandler = (socket) => {
 
@@ -37,14 +37,14 @@ class SocketService {
     static async open() {
         const namespace = io.of(`/scatter`);
         console.log("socket server open......");
-        // cordova.channel.send('serverOpen')
+        cordova.channel.send('serverOpen')
         namespace.on('connection', socket => {
             console.log("client connection");
             socketHandler(socket);
         });
         io.of('/app').on('connection', socket => {
             console.log('my connection')
-            // appModule.socket = socket
+            appModule.socket = socket
         })
     }
 
