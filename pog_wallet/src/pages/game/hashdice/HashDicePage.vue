@@ -468,7 +468,8 @@ export default {
             // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
             const adm = await eos.contract('uetokencoin')
             // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
-            const trx = await adm.transfer(this.reqParams.account, config.trade_receiver, quantity+' UE', memo, opts)
+            // const trx = await adm.transfer(this.reqParams.account, config.trade_receiver, quantity+' UE', memo, opts)
+            const trx = await adm.transfer(this.reqParams.account,'luckyhongbao', quantity+' UE', memo, opts)
             console.log(11221111,trx);
             return true
           } catch (error) {
