@@ -1,4 +1,5 @@
 <template>
+<v-ons-page>  
    <div class="wrap" >
      <div class="header">
         <div class="header_line"></div>
@@ -54,7 +55,7 @@
           >
           <v-ons-carousel-item>
             <!-- 公众审计 -->
-            <div class="audit">
+              <div class="audit">
                 <div class="audit_row">
                   <img src="@/assets/img/u2485.svg" alt="">
                   <div class="audit_txt">
@@ -71,9 +72,7 @@
                   </div>
                 </div>
 
-            </div>
-            
-
+            </div> 
           </v-ons-carousel-item>
 
 
@@ -82,8 +81,8 @@
           </v-ons-carousel-item>
 
           </v-ons-carousel>
-
       </div>
+</v-ons-page> 
 </template>
 
 <script type="text/ecmascript-6">
@@ -108,8 +107,7 @@ export default {
 <style scoped lang="less">
 .wrap{
   background:rgba(242, 242, 242, 1);
-  position:relative;
-  
+  position:relative;  
 }
 .header_line{
   position:absolute;
