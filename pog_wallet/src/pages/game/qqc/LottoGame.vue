@@ -774,9 +774,7 @@ export default {
      color:#BCBCBC;
  
   }
-  .allList{
   
-  }
   .allList p img, .myList p img{
     vertical-align: middle;
     width:.5rem;
