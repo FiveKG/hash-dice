@@ -46,7 +46,6 @@ async function handlerTransferActions() {
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
             if (trxSeq || !result.game_name || !result.account_name || !result.bet_key || !result.bet_num || !result.bet_amount || !result.periods || !result.bet_type) {
                 await setLastPos(result.account_action_seq);
-                await redis.set(GLOBAL_LOTTO_KEY, result.account_action_seq);
                 continue;
             }
 
