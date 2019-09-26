@@ -2,7 +2,11 @@
 const logger = require("../common/logger.js").child({ [`@${__filename}`]: "处理用户投注" });
 const { Decimal } = require("decimal.js");
 const { pool, psTrx, psModifyBalance, psGame } = require("../db");
-const { GLOBAL_LOTTO_CONTRACT, AGENT_ACCOUNT, UE_TOKEN_SYMBOL, UE_TOKEN, BANKER, TBG_WALLET_RECEIVER, DISTRIBUTION_CENTER_ACCOUNT } = require("../common/constant/eosConstants");
+const { 
+    GLOBAL_LOTTO_CONTRACT, AGENT_ACCOUNT, UE_TOKEN_SYMBOL, 
+    UE_TOKEN, BANKER, TBG_WALLET_RECEIVER, DISTRIBUTION_CENTER_ACCOUNT,
+    GLOBAL_LOTTO_BOTTOM_ACCOUNT, GLOBAL_LOTTO_RESERVE_ACCOUNT 
+} = require("../common/constant/eosConstants");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");
 const { GAME_STATE } = require("../common/constant/gameConstants.js");
 const { redis, generate_primary_key } = require("../common");
@@ -136,9 +140,9 @@ async function handlerBet(data) {
         // 分配给底池
         const toBottomPoolData = {
             from: AGENT_ACCOUNT,
-            to: BANKER,
+            to: GLOBAL_LOTTO_BOTTOM_ACCOUNT,
             quantity: `${ toBottomPool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
-            memo: `user ${ data.account_name } bet ${ toBottomPool.toFixed(4) } ${ UE_TOKEN_SYMBOL }, prize add ${ toBottomPool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+            memo: `user ${ data.account_name } bet ${ toBottomPool.toFixed(4) } ${ UE_TOKEN_SYMBOL }, bottom prize add ${ toBottomPool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
         }
         actList.push(setAction(UE_TOKEN, "transfer", AGENT_ACCOUNT, toBottomPoolData));
 
@@ -146,9 +150,9 @@ async function handlerBet(data) {
         // 分配给储备池
         const toReservePoolData = {
             from: AGENT_ACCOUNT,
-            to: BANKER,
+            to: GLOBAL_LOTTO_RESERVE_ACCOUNT,
             quantity: `${ toReservePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
-            memo: `user ${ data.account_name } bet ${ toReservePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }, prize add ${ toReservePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+            memo: `user ${ data.account_name } bet ${ toReservePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }, reserve prize add ${ toReservePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
         }
         actList.push(setAction(UE_TOKEN, "transfer", AGENT_ACCOUNT, toReservePoolData));
 

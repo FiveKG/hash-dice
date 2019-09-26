@@ -1,6 +1,8 @@
 ### global_lottery
 * 全球彩智能合约帐号: `globallotto` 私钥: `5KNrMrmiQ1fu3cwMdRCdh1bAfBcbyte2nJwB6evcB1By3fmwF6s`
-* 全球彩庄家帐号: `lottobanker` 私钥: `5KN7eEYR6xqCARDDCDRKNbqdL4q6oW24hK22qGvrRWiWbje41tB`
+* 全球彩奖池帐号: `lottobanker` 私钥: `5KN7eEYR6xqCARDDCDRKNbqdL4q6oW24hK22qGvrRWiWbje41tB`
+* 全球彩底池帐号: `lottobottom` 私钥: `5JqHq1EgRUX1sdizAzd2WQHmnRGemBQapCxYRGUBy6Te5WcFXQa`
+* 全球彩储备池帐号: `lottoreserve` 私钥: `5JaS6SpozjBr3dipLhGKHxLvxfd1NF8irkzciFD4ByEKsxHhA18`
 * 全球彩代投帐号: `eoslottoeos` 私钥: `5JfAs6FQZ6pjr82BExuSBYUQMJR86bppEtWUcujMKGbv4BQ4BCn`
 * 游戏分发中心帐号: `eoscentereos` 私钥: `5JXK3gnpUiLvnbxLbcHDTbgKHfVGNJTyVUkfWFGYJZ6Ucihj2sB`
 

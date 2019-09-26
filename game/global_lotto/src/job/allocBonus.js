@@ -3,7 +3,7 @@ const logger = require("../common/logger.js").child({ [`@${__filename}`]: "分�
 const { Decimal } = require("decimal.js");
 const { xhr } = require("../common");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");
-const { UE_TOKEN_SYMBOL, BANKER, GLOBAL_LOTTO_CONTRACT, UE_TOKEN } = require("../common/constant/eosConstants");
+const { UE_TOKEN_SYMBOL, BANKER, GLOBAL_LOTTO_CONTRACT, UE_TOKEN, GLOBAL_LOTTO_RESERVE_ACCOUNT } = require("../common/constant/eosConstants");
 const { redis, generate_primary_key } = require("../common");
 const url = require("url");
 
@@ -75,34 +75,34 @@ async function handleOpenResult(gameInfo, rewardMap) {
                 // 五等奖
                 // 当五、六、七等奖奖金总额奖池不足以支付时，超出部分由全球彩储备池拨出；
                 const winType = "fifth_price"
-                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.FIFTH_PRICE, bonusMap);
+                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.FIFTH_PRICE, bonusMap, reservePoolSurplus);
                 if (res.length !== 0) {
                     sqlList.push(...res);
-                    const { pr, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
-                    prizePoolSurplus = pr;
-                    reservePoolSurplus = re;
+                    // const { pr, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
+                    // prizePoolSurplus = pr;
+                    // reservePoolSurplus = re;
                     actList.push(...tmpActList);
                 }
             } else if (winCount === ALLOC_CONSTANTS.SIXTH_PRICE_COUNT) {
                 // 六等奖
                 const winType = "sixth_price"
-                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.SIXTH_PRICE, bonusMap);
+                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.SIXTH_PRICE, bonusMap, reservePoolSurplus);
                 if (res.length !== 0) {
                     sqlList.push(...res);
-                    const { pr, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
-                    prizePoolSurplus = pr;
-                    reservePoolSurplus = re;
+                    // const { pr, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
+                    // prizePoolSurplus = pr;
+                    // reservePoolSurplus = re;
                     actList.push(...tmpActList);
                 }
             } else if (winCount === ALLOC_CONSTANTS.SEVENTH_PRICE_COUNT) {
                 // 七等奖
                 const winType = "seventh_price"
-                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.LOTTERY_AWARD, bonusMap);
+                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.LOTTERY_AWARD, bonusMap, reservePoolSurplus);
                 if (res.length !== 0) {
                     sqlList.push(...res);
-                    const { pr, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
-                    prizePoolSurplus = pr;
-                    reservePoolSurplus = re;
+                    // const { pr, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
+                    // prizePoolSurplus = pr;
+                    // reservePoolSurplus = re;
                     actList.push(...tmpActList);
                 }
             } else {
@@ -138,14 +138,15 @@ async function handleOpenResult(gameInfo, rewardMap) {
 
 /**
  * 分配奖金，买中的奖金全部转入区块链帐号中
- * @param { any } prize_pool 奖池
+ * @param { any } prizePool 奖池
  * @param { number } winCount 中奖号码个数数
  * @param { any[] } bonusAccList 中奖列表
  * @param { string } winType 中奖类型
  * @param { number | string } awardRate 分配比例
  * @param { Map<string, any> } bonusMap
+ * @param { any } [ reservePoolSurplus ]
  */
-async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate, bonusMap) {
+async function allocBonus(prizePool, winCount, bonusAccList, winType, awardRate, bonusMap, reservePoolSurplus) {
     const sqlList = [];
     // 存放 区块链转账
     const tmpActList = [];
@@ -155,7 +156,7 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
     `
     // 发放的金额
     let issued = new Decimal(0);
-    const prizePool = new Decimal(prize_pool);
+    // const prizePool = new Decimal(prize_pool);
     const len = bonusAccList.length;
     
     // 五、六、七等奖奖金为固定额度
@@ -163,6 +164,7 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
         if (len !== 0) {
             // 一个 key 可得的奖金
             const oneKeyBonus = new Decimal(awardRate).toFixed(4);
+            prizePool = prizePool.minus(oneKeyBonus);
             for (const info of bonusAccList) {
                 let bonus = new Decimal(oneKeyBonus);
                 let returnsCurrency = new Decimal(0);
@@ -180,15 +182,34 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
                 }
                 
                 // 如果奖池不够支付，那么使用
+                let from = BANKER;
+                if (prizePool.lessThan(0)) {
+                    // 检查储备池是否足够支付
+                    if (!reservePoolSurplus.lessThan(oneKeyBonus)) {
+                        // 算出差额
+                        const diff = issued.minus(prizePool);
+                        // 发放完底池
+                        prizePool = prizePool.minus(prizePool);
+                        // 从储备池减去差额
+                        reservePoolSurplus = reservePoolSurplus.minus(diff);
+                    } else {
+                        // todo
+                        // 余额不足
+                        prizePool = prizePool.minus(prizePool);
+                        reservePoolSurplus = reservePoolSurplus.minus(reservePoolSurplus);
+                    }
+                } else {
+                    from = GLOBAL_LOTTO_RESERVE_ACCOUNT;
+                }
                 tmpActList.push({
                     account: UE_TOKEN,
                     name: "transfer",
                     authorization: [{
-                        actor: BANKER,
+                        actor: from,
                         permission: 'active',
                     }],
                     data: {
-                        from: BANKER,
+                        from: from,
                         to: info.account_name,
                         quantity: `${ bonus } ${ UE_TOKEN_SYMBOL }`,
                         memo: memo,
@@ -212,6 +233,7 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
         if (len !== 0) {
             // 总的奖金
             const totalBonus = prizePool.mul(awardRate).div(ALLOC_CONSTANTS.BASE_RATE);
+            prizePool = prizePool.minus(totalBonus);
             // 一个 key 可得的奖金
             const oneKeyBonus = totalBonus.div(len);
             for (const info of bonusAccList) {
@@ -259,6 +281,7 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
                 // 开出超级大奖后，推荐人可得 10%，从奖池中扣除
                 if (winType === "lottery_award") {
                     const bonus = oneKeyBonus.mul(ALLOC_CONSTANTS.SPECIAL_AWARD).div(ALLOC_CONSTANTS.BASE_RATE);
+                    prizePool = prizePool.minus(bonus);
                     const extra = {
                         ...info.extra,
                     };
@@ -296,39 +319,6 @@ async function allocBonus(prize_pool, winCount, bonusAccList, winType, awardRate
     }
 
     return { issued, sqlList, tmpActList, bonusMap };
-}
-
-/**
- * 扣除分配的额度
- * @param { any } prizePoolSurplus 
- * @param { any } issued 
- * @param { any } reservePoolSurplus 
- */
-async function minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus) {
-    // 比较剩余额度和分配的额度，看是否超出奖金池
-    if (prizePoolSurplus.lessThan(issued)) {
-        // 检查储备池是否足够支付
-        if (prizePoolSurplus.add(reservePoolSurplus).lessThan(issued)) {
-            // 算出差额
-            const diff = issued.minus(prizePoolSurplus);
-            // 发放完底池
-            prizePoolSurplus = prizePoolSurplus.minus(prizePoolSurplus);
-            // 从储备池减去差额
-            reservePoolSurplus = reservePoolSurplus.minus(diff);
-        } else {
-            // todo
-            // 余额不足
-            prizePoolSurplus = prizePoolSurplus.minus(prizePoolSurplus);
-            reservePoolSurplus = reservePoolSurplus.minus(reservePoolSurplus);
-        }
-    } else {
-        prizePoolSurplus = prizePoolSurplus.minus(issued);
-    }
-
-    return {
-        pr: prizePoolSurplus,
-        re: reservePoolSurplus
-    }
 }
 
 module.exports = handleOpenResult;

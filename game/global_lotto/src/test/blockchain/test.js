@@ -47,17 +47,17 @@ const PRIVATE_KEY_TEST = "5KNrMrmiQ1fu3cwMdRCdh1bAfBcbyte2nJwB6evcB1By3fmwF6s,5K
         .then(res => console.debug("res: ", res))
         .catch(err => console.error("caught exception: ", err));
         
-        // rpc.get_table_rows({
-        //     code: GLOBAL_LOTTO_CONTRACT,
-        //     json: true,
-        //     limit: 10,
-        //     lower_bound: 1,
-        //     scope: GLOBAL_LOTTO_CONTRACT,
-        //     table: 	"lottogame",
-        //     upper_bound: 10
-        // }).then(resp => {
-        //     console.debug("get_table_rows: ", resp)
-        // }).catch(err => console.error("caught exception: ", err));
+        rpc.get_table_rows({
+            code: GLOBAL_LOTTO_CONTRACT,
+            json: true,
+            limit: 10,
+            lower_bound: 1,
+            scope: GLOBAL_LOTTO_CONTRACT,
+            table: 	"lottogame",
+            upper_bound: 10
+        }).then(resp => {
+            console.debug("get_table_rows: ", resp)
+        }).catch(err => console.error("caught exception: ", err));
         // const contract = await api.getContract(GLOBAL_LOTTO_CONTRACT);
         // console.debug("contract: %O", contract);
 
@@ -102,9 +102,9 @@ const PRIVATE_KEY_TEST = "5KNrMrmiQ1fu3cwMdRCdh1bAfBcbyte2nJwB6evcB1By3fmwF6s,5K
         
         // console.debug("resp: ", resp)
 
-        transfer(UE_TOKEN, UE_TOKEN, 'eoslottoeos', '10000.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
-        .then(res => console.error(res))
-        .catch(err => console.error(err));
+        // transfer(UE_TOKEN, UE_TOKEN, 'eosbankereos', '10000.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
+        // .then(res => console.error(res))
+        // .catch(err => console.error(err));
     } catch (err) {
         throw err;
     }
