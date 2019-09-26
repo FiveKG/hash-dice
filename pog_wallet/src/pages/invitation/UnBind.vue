@@ -1,22 +1,31 @@
 <template>
   <div class="layout">
-    <div class="p_header">
-      <div class="row_account ">
-        <div class="account"> 
-          <div @click="clickAccount">
-            <span>{{account}}</span> <img src="@/assets/img/invitation_arrow_d.png" />
-          </div>
-        </div>
-        <div class="flex_center">
-          <span>未激活</span>
-          <img src="@/assets/img/invitation_arrow_r.png" />
-        </div>
-      </div>
-      <div class="row_logo flex_center">
-        <img src="@/assets/img/tbg_selected.png" alt="">
-        <div class="tbg_name">Token <span>•</span> Blockchain <span>•</span> Game</div>
-      </div>
+    <div class="header">
+      <p class="gray font_b" style="text-align: center;">{{account}}</p>
+      <p class="gray font_b" style="text-align: center;">未激活</p>
     </div>
+    <div class="content">
+        <img class="ion_tbg" src="@/assets/img/tbg_selected.png"> 
+        <p class="font_weight_bold">Token · Blockchain · Game</p>
+        <p >全球区块链去中心化游戏应用平台</p>
+    </div>
+    <div style="width:100%;height:.5rem"></div>
+    <div class="games">
+    <div style="width:100%;height:.25rem"></div>
+    <p class="games_title">查看 TBG 旗下游戏</p>
+    <div class="games_group" >
+      <img src="@/assets/invitation2/u1.png" alt="">
+      <img src="@/assets/invitation2/u2.svg" alt="">
+      <img src="@/assets/invitation2/u3.png" alt="">
+      <img src="@/assets/invitation2/u4.svg" alt="">
+      <img src="@/assets/invitation2/u5.png" alt="">
+      <img src="@/assets/invitation2/u6.png" alt="">
+      <span>></span>
+    </div>
+      <p>...</p>
+    <div style="width:100%;height:.2rem"></div>
+    </div>
+    <p style="text-align: center;margin: .2rem 0;">规则及常见问题</p>
     <div class="p_content">
       <div class="invitation_code" @click="clickInput">
         <span v-if="!keyboardVal[0]">请输入6位激活码</span>
@@ -29,16 +38,16 @@
       <div class="account_name">
         <div v-if="parentType">
           <div v-if="parentType === 'random'">系统将随机分配您的邀请人</div>
-          <div v-else-if="parentType === 'error'" style="color: #cd5150;">邀请码不存在</div>
+          <div v-else-if="parentType === 'error'" style="color: #cd5150;">您输入的推荐码不存在，请重新输入</div>
           <div v-else>{{parentAccount}}</div>
         </div>
       </div>
-      <div class="desc">请核对邀请人EOS账号</div>
-      <div class="desc">无误后立即绑定，绑定后无法更改</div>
+      <div  class="desc">请核对邀请人EOS账号</div>
+      <div  class="desc">无误后立即绑定，绑定后无法更改</div>
       <div class="btn">
         <div @click="clickBind" :style="{background: keyboardVal[5]&&parentType !== 'error' ? '#ff8e05':'#b4b4b4'}">立即绑定</div>
       </div>
-      <div class="desc tip">
+      <div class="desc">
         <div>若无邀请人，请输入000000</div>
         <div>由系统随机分配您的邀请人</div>
       </div>
@@ -63,7 +72,9 @@
 </template>
 
 <script>
-import { getCodeByAccount,bindReferrer } from '@/servers/invitation';
+// import { getCodeByAccount,bindReferrer } from '@/servers/invitation';
+
+import api from '@/servers/invitation'
 
 export default {
   props: ['keyboardVal','account'],
@@ -72,7 +83,8 @@ export default {
       showDialog: false,
       loading: false,
       parentType: '',
-      parentAccount: ''
+      parentAccount: '',
+
     }
   },
   watch: {
@@ -82,7 +94,7 @@ export default {
         if (code === '000000') {
           this.parentType = 'random'
         } else {
-          getCodeByAccount({account_name: this.account,refer_code: code}).then(res => {
+          api.getCodeByAccount({account_name: this.account,refer_code: code}).then(res => {
             console.log(res)
             if (res.code === 1) {
               this.parentType = 'account'
@@ -99,17 +111,19 @@ export default {
     }
   },
   methods: {
-    clickConfirm() {
+    clickConfirm() {            
       this.showDialog = false
       this.loading = true
-      bindReferrer({account_name: this.account,refer_code: this.keyboardVal.join('')}).then(res => {
-        console.log('bindReferrer',res)
-        if (res.code === 1) {
-          this.loading = false
-          this.$toast('绑定成功')
-          this.$emit('bind', true)
-        }
-      })
+      console.log(22222222,this.account,this.keyboardVal.join(''));
+       api.bindReferrer({account_name: this.account,refer_code:this.keyboardVal.join('')}).then(res => {
+            console.log('bindReferrer',res)
+          if (res.code === 1||res.code === 1020) {
+            this.$store.commit('wallet/setTbgBindStatus', true)
+            this.loading = false
+            this.$toast('绑定成功')
+            // this.$emit('bind', true)
+          }
+        })
     },
     clickBind() {
       if (this.keyboardVal[5] && this.parentType !== 'error') {
@@ -121,7 +135,11 @@ export default {
     },
     clickInput() {
       this.$emit('showKeyboard', true)
-    }
+    },
+    
+  },
+   created() {
+    
   },
 }
 </script>
@@ -139,52 +157,7 @@ export default {
   position: relative;
   padding-bottom: 120px;
   box-sizing: border-box;
-}
-.p_header {
-  height: 30vh;
-  background-image: url('~@/assets/img/invitation.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  display: flex;
-  flex-direction: column;
-}
-.row_account {
-  display: flex;
-  align-items: center;
-  color: #fff;
-  padding: 0 30px;
-  margin-top: 30px;
-  font-size: 34px;
-  font-weight: 800;
-}
-.row_account img {
-  height: 40px;
-  margin-left: 10px;
-}
-.account {
-  flex: 1;
-  display: flex;
-  align-items: center;
-}
-.row_logo {
-  flex: 1;
-  background-color: rgba(255, 255, 255, 0.8);
-  margin: 20px;
-  padding: 20px 50px;
-  border-radius: 15px;
-  position: relative;
-}
-.row_logo img {
-  height: 180px;
-}
-.tbg_name {
-  position: absolute;
-  bottom: 10px;
-  font-size: 32px;
-}
-.tbg_name span {
-  font-size: 40px;
-  font-weight: bold;
+  background: rgb(255, 255, 255)
 }
 .p_content {
   flex: 1;
@@ -241,9 +214,6 @@ export default {
   font-weight: 450;
   line-height: 1.8;
 }
-.btn {
-  margin-top: 50px;
-}
 .btn div {
   display: inline-block;
   background-color: #ff8e05;
@@ -253,11 +223,7 @@ export default {
   font-size: 34px;
   font-weight: bold;
 }
-.tip {
-  width: calc(100vw - 30px);
-  position: absolute;
-  bottom: 50px;
-}
+
 .dialog_layout {
   padding: 35px 50px;
   font-size: 32px;
@@ -275,5 +241,57 @@ export default {
 }
 .cancel {
   margin-right: 80px;
+}
+
+
+.header {
+  padding: 15px 55px;
+  position: relative;
+  font-size: 34px;
+  background-color: RGB(243,243,243);
+}
+.content{
+  position: relative;
+  text-align: center;
+}
+.ion_tbg{
+  width: 100px;
+  height: 70px;
+  padding: 20px 0 0 0;
+}
+.games{
+  /* padding:0.5rem 0; */
+  background-color:#fff;
+  margin-bottom:0.04rem;
+  text-align:center;
+  border: 2px solid rgb(242, 242, 242);;
+}
+.games_title{
+  font-size:0.43rem;
+}
+.games_group{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .2rem 1rem;
+}
+.games_group img{
+  width: 11vw;
+  height: 11vw;
+}
+
+.font_weight_bold{
+  font-weight: 600;
+}
+p{
+  font-family: '微軟正黑體 Regular', '微軟正黑體';
+  color: #000000;
+  font-size: 0.4rem;
+}
+.font_b{
+  font-family: 'Bahnschrift Regular', 'Bahnschrift';
+}
+.gray{
+  color:#A1A1A1;
 }
 </style>

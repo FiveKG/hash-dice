@@ -30,6 +30,8 @@ const AGENT_ACCOUNT = "globallotto"
 const GLOBAL_LOTTO_CONTRACT = "globallotto";
 
 const GLOBAL_LOTTO_ACCOUNT = "eoslottoeos"
+// 钱包收款帐号
+const TBG_WALLET_RECEIVER = 'tbgreceiver'
 
 // 节点信息
 const END_POINT = "http://45.251.109.187:8888"
@@ -56,7 +58,8 @@ const CONSTANT = {
     "GLOBAL_LOTTO_CONTRACT": GLOBAL_LOTTO_CONTRACT,
     "BANKER": BANKER,
     "AGENT_ACCOUNT": AGENT_ACCOUNT,
-    "DISTRIBUTION_CENTER_ACCOUNT": DISTRIBUTION_CENTER_ACCOUNT
+    "DISTRIBUTION_CENTER_ACCOUNT": DISTRIBUTION_CENTER_ACCOUNT,
+    "TBG_WALLET_RECEIVER": TBG_WALLET_RECEIVER
 }
 
 module.exports = CONSTANT
@@ -79,4 +82,5 @@ module.exports = CONSTANT
  * @property { string } BANKER 庄家
  * @property { string } AGENT_ACCOUNT 代投注账号
  * @property { string } DISTRIBUTION_CENTER_ACCOUNT 分发中心收益账号
+ * @property { string } TBG_WALLET_RECEIVER 钱包收款帐号
  */

@@ -8,6 +8,7 @@ const { grabRedEnvelope, user_recharge } = require("@fjhb/mq-pub-sub");
 // const gameManager  = require("../common/gameManager.js");
 const { Decimal } = require("decimal.js");
 const { addHours, format } = require("date-fns");
+const gameResultLastPosKey = `lm:chain:last_pos`;
 
 /**
  * 监听链上 对某个用户的 转账事件
@@ -18,37 +19,28 @@ async function listenChainTransferAction() {
 
     //获取最后一个位置，
     let lastPos = await getLastPos();
-    //logger.info(`lastPos:${lastPos}`);
     //获取收款账户信息
     let collectionAccount = await sysConfig.collectionAccount.get();
 
     //获取 收款账户的 最新的10条转账信息.
     let actions = await chainOperate.getAccountAction(collectionAccount.accountName, lastPos);
-    for (let idx = 0; idx < actions.length; idx++) {
-        const action = actions[idx];
+    for (const action of actions) {
         var parseResult = await parseTransferAction(action);
-
         //检查当前 action 是否已经处理过.
         var action_flag_key = `lm:chain:trx:${parseResult.trx_id}`;
         var action_flag = await redis.get(action_flag_key);
-        if (action_flag != null) {
+        if (action_flag != null || parseResult.action_type !== "grab_red_envelop") {
             //处理完之后， 要把当前块设置缓存
             await setLastPos(parseResult.account_action_seq);
-            continue;  //当前块已经处理过了。
-        }
-        //未处理， 才继续进行下面的操作.
-        logger.debug(`parseResult:`, parseResult);
-
-        if (parseResult.action_type == "recharge") {
-            //当前是充值，那么发出充值的事件
-            await user_recharge.pub({ "account_name": parseResult.from, "amount": parseResult.amount, "symbol": parseResult.symbol, "trx_id": parseResult.trx_id });
-        }
-        else if (parseResult.action_type == "grab_red_envelop") {
+            // continue;  //当前块已经处理过了。
+        } else {
+            //未处理， 才继续进行下面的操作.
+            logger.debug(`parseResult:`, parseResult);
             //当前是抢红包
             /**  
              发布用户抢红包事件，在该事件处理函数里，
-             1.调用抢红包合约。
-             2. 发出一个 用户抢红包的事件，web 接口将监听此事件，把事件再通过websocket转发给前端。
+                1.调用抢红包合约。
+                2. 发出一个 用户抢红包的事件，web 接口将监听此事件，把事件再通过websocket转发给前端。
             */
 
             await grabRedEnvelope.pub({
@@ -60,15 +52,12 @@ async function listenChainTransferAction() {
                 "createTime": parseResult.block_time,
                 "balance_type": "transfer"
             });
-        }
-        else {
-            //logger.warn(`不支持的action. `);
-        }
 
-        //处理完之后， 要把当前块设置缓存
-        await setLastPos(parseResult.account_action_seq);   //每解析了一个 action ， 就设置一次 lastPos
-        //var seq_key = `lm:transfer:${parseResult.account_action_seq}`;
-        await redis.set(action_flag_key, JSON.stringify(parseResult), "EX", 2 * 24 * 60 * 60);
+            //处理完之后， 要把当前块设置缓存
+            await setLastPos(parseResult.account_action_seq);   //每解析了一个 action ， 就设置一次 lastPos
+            //var seq_key = `lm:transfer:${parseResult.account_action_seq}`;
+            await redis.set(action_flag_key, JSON.stringify(parseResult), "EX", 2 * 24 * 60 * 60);
+        }
     }
 }
 
@@ -116,7 +105,7 @@ async function parseTransferAction(action) {
     }
 
     var tokenAccount = action.action_trace.act.account ;
-    if(tokenAccount != "eosio.token"){
+    if(tokenAccount != "uetokencoin"){
         //非 eosio.token 。 洗币， 
         logger.warn(`洗币:`,action.action_trace.act);
         return result;
@@ -140,22 +129,15 @@ async function parseTransferAction(action) {
         result.amount = new Decimal(amountString).toNumber();
         result.symbol = symbol;
         result.block_time = format(addHours(action.block_time, 8)); //区块时间, 是 UTC时间 ,改成本地时间
-        if (from == memo) {
-            //充值时的转账 ， memo ，就是用户名
-            result.action_type = "recharge";
+        if (!isNaN(parseInt(memo))) {
+            //数字， 那么是 grab_red_envelop
+            result.action_type = "grab_red_envelop";
+            result.room_id = memo;
             return result;
         }
         else {
-            if (!isNaN(parseInt(memo))) {
-                //数字， 那么是 grab_red_envelop
-                result.action_type = "grab_red_envelop";
-                result.room_id = memo;
-                return result;
-            }
-            else {
-                //不支持的 格式.(act type 是 transfer , 但 data的格式不对)
-                return result;
-            }
+            //不支持的 格式.(act type 是 transfer , 但 data的格式不对)
+            return result;
         }
     } catch (error) {
         logger.error(`parseAction error.`, error.stack, error.message, JSON.stringify(action));
@@ -179,7 +161,6 @@ async function parseTransferAction(action) {
 
 
 
-const gameResultLastPosKey = `lm:chain:last_pos`;
 /**
  * 获取 收款账户 action 的最新的位置.
  *

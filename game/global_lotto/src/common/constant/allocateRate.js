@@ -31,6 +31,9 @@ const ALLOC_TO_RESERVE_POOL = 3;
 // 分发中心收益
 const DISTRIBUTION_CENTER = 3.5;
 
+// 拨入 TBG 钱包
+const TBG_WALLET_RECEIVER = 8.5;
+
 // 1% 拨入 TBG 股东分红池；
 const ALLOC_TO_TSH_POOL = 1;
 // 1% 拨入 TBG 三倍收益保障池；
@@ -119,6 +122,7 @@ const CONSTANT = {
     "FIFTH_PRICE_COUNT": FIFTH_PRICE_COUNT,
     "SIXTH_PRICE_COUNT": SIXTH_PRICE_COUNT,
     "SEVENTH_PRICE_COUNT": SEVENTH_PRICE_COUNT,
+    "TBG_WALLET_RECEIVER": TBG_WALLET_RECEIVER
 }
 
 module.exports = CONSTANT
@@ -153,4 +157,5 @@ module.exports = CONSTANT
  * @property { number } FIFTH_PRICE_COUNT 按顺序中全部 5 个数字
  * @property { number } SIXTH_PRICE_COUNT 按顺序中全部 4 个数字
  * @property { number } SEVENTH_PRICE_COUNT 按顺序中全部 3 个数字
+ * @property { number } TBG_WALLET_RECEIVER 拨入 TBG 钱包
  */

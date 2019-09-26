@@ -144,11 +144,14 @@ export default {
             })
             localStorage.setItem('isecsp_wallet',JSON.stringify(localFile))
             this.$store.commit('wallet/setAssets', null)
+            this.$store.commit('wallet/setSelectedTab', 'assets')
             if (this.$store.state.wallet.selectedTab === 'invitation') {
               this.$store.commit('wallet/setSelectedTab', 'assets')
             }
             setTimeout(() => {
-              this.$router.go(1-this.$route.query.back)
+              this.$router.push({
+                path: '/'
+              })
             }, 20);
           }
           this.loading = false

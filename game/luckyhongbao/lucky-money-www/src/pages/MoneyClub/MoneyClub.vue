@@ -2,35 +2,6 @@
   <div>
     <!--头部-->
     <HeadPart :amount='room_info.amount' @childshow="toogleShow" @roomShow="toogleRoomShow"></HeadPart>
-    <!-- <div class="club_type" v-if="!$store.state.sideBar">{{roomAmount}}UE {{roomType}}人抢专场</div> -->
-    <!-- 房间信息 -->
-    <!-- <div class="info" v-if="!$store.state.sideBar">
-      <div class="account_info" @click="()=>{show=true}">
-        <div class="text">
-          {{room_info.amount}} UE 5 人抢专场
-          <span>
-            <svg
-              class="icon"
-              width="18px"
-              height="18px"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill="#fff"
-                d="M845.73750784 310.06631558c11.09419837 11.20906823 20.13556271 20.35048032 31.14453548 31.47432293-121.43960347 124.00379403-242.4271389 247.54069789-364.70047497 372.39675162C390.0527457 589.68162356 268.72060139 466.23735673 147.11795668 342.52259023c10.96450709-9.79728131 20.93224036-18.70524869 26.40152463-23.59647866C215.4321334 358.44873076 260.2906406 398.96812377 303.11484019 441.54035152c65.17934399 64.79767943 129.21369503 130.75517321 193.07018343 196.86088611 11.65372557 12.06503364 18.47550896 13.01363611 30.76657736 0.32608175 101.29663005-104.55003835 203.3232385-208.39233111 305.05711445-312.51994567C836.68502706 321.42360292 840.7128809 316.00990072 845.73750784 310.06631558z"
-              />
-            </svg>
-          </span>
-        </div>
-      </div>
-    </div> -->
-    <!-- <div class="text">余额 | {{Number($store.state.eosBalance).toFixed(4)}}UE</div>
-    <div class="text">房间人数:{{onlineNum}}人 | 房间号{{roomId}}</div>-->
-    <!-- <div class="recharge" @click="$store.commit('setRechargeDialog',true)">充值抢红包</div> -->
-    <!-- <div style="display: flex;margin-right: 10px;"><img src="../../assets/refresh.png" alt="" style="height:20px;margin:auto;" @click="refresh()"></div> -->
-
     <!-- 红包列表 -->
     <div class="pack_list" ref="packList" :style="{height:clientHeight+'px'}">
       <!-- 已开奖红包 -->
@@ -63,9 +34,6 @@
               <!-- {{item.game_id}} -->
             </div>
           </div>
-          <!-- <div class="finish"><div class="text">36秒抢完 23:02:36 Block # 29,321,055</div></div> -->
-          <!-- <div class="block_id">Block ID:{{item.gameChainBlockId}}</div> -->
-          <!-- <div class="block_id">加入算法计算出随机数，透明公正不可预测</div> -->
           <div
             class="winner"
             v-for="(son_item, son_index) in item.results"
@@ -454,7 +422,7 @@ export default {
             // console.log("当前抢到红包的POG账号:", data.account_name);
             if (data.account_name == that.$store.state.eosAccount.name) {
               console.log("属于当前用户的socket消息:", data);
-              that.getAccountBalance();
+              // that.getAccountBalance();
               that.openLoad = false;
               if (data.is_success == true) {
                 that.packResult = data;
@@ -640,45 +608,39 @@ export default {
         );
         // let accountName = 'pcoinaccount';
         const opts = { authorization: [`${account.name}`] };
-        eos
-          .transfer(
-            account.name,
-            this.$store.state.collectionAccount,
-            Number(this.roomAmount).toFixed(4) + " UE",
-            this.roomId,
-            opts
-          )
-          .then(async trx => {
-            console.log(
-              "scatter转账抢红包成功 , 等待websocket返回抢红包结果:",
-              trx
-            );
-          })
-          .catch(err => {
-            this.openLoad = false;
-            if (typeof err == "object") {
-              if (err.code == 402) {
-                Toast("你拒绝了该请求");
+        // 执行转账动作
+        eos.contract('uetokencoin').then(adm => {
+          console.log("adm: ", adm)
+                // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
+          // const trx = await adm.transfer(this.reqParams.account, config.trade_receiver, quantity, memo, opts)
+          adm.transfer(account.name, this.$store.state.collectionAccount, Number(this.roomAmount).toFixed(4) + " UE", this.roomId, opts)
+            .then(async trx => { console.log("scatter转账抢红包成功 , 等待websocket返回抢红包结果:", trx) })
+            .catch(err => {
+              this.openLoad = false;
+              if (typeof err == "object") {
+                if (err.code == 402) {
+                  Toast("你拒绝了该请求");
+                }
+              } else if (typeof err == "string") {
+                var error = JSON.parse(err);
+                console.log("错误信息:", error);
+                if (error.error.code == 3050003) {
+                  Toast("账户余额不足");
+                } else if (error.error.code == 3080001) {
+                  Toast("内存不足");
+                } else if (error.error.code == 3080002) {
+                  Toast("网络资源不足");
+                } else if (error.error.code == 3080004) {
+                  Toast("CPU不足");
+                } else if (error.error.code == 3090003) {
+                  Toast("请检查权限，签名等是否正确");
+                } else {
+                  Toast("操作失败");
+                }
               }
-            } else if (typeof err == "string") {
-              var error = JSON.parse(err);
-              console.log("错误信息:", error);
-              if (error.error.code == 3050003) {
-                Toast("账户余额不足");
-              } else if (error.error.code == 3080001) {
-                Toast("内存不足");
-              } else if (error.error.code == 3080002) {
-                Toast("网络资源不足");
-              } else if (error.error.code == 3080004) {
-                Toast("CPU不足");
-              } else if (error.error.code == 3090003) {
-                Toast("请检查权限，签名等是否正确");
-              } else {
-                Toast("操作失败");
-              }
-            }
-            console.error("scatter转账失败:", err);
-          });
+              console.error("scatter转账失败:", err);
+            });
+        });
         // eos.contract(accountName).then(async adm => {
         //   adm.transfer(account.name, 'luckyhongbao', Number(this.roomAmount).toFixed(4)+' UE', this.packNotOpen.game_id , opts).then( async trx => {
         //     console.log('scatter转账抢红包成功 , 等待websocket返回抢红包结果:', trx);
@@ -694,21 +656,21 @@ export default {
     /**
      * 获取账号余额
      */
-    getAccountBalance() {
-      let data = {
-        account_name: this.$store.state.eosAccount.name
-      };
-      getAccountBalance(data)
-        .then(res => {
-          console.log("获取用户账号余额:", res);
-          if (res.code == 1) {
-            this.$store.commit("setEosBalance", res.data.balance);
-          }
-        })
-        .catch(err => {
-          console.log("获取用户账号余额失败:", err);
-        });
-    },
+    // getAccountBalance() {
+    //   let data = {
+    //     account_name: this.$store.state.eosAccount.name
+    //   };
+    //   getAccountBalance(data)
+    //     .then(res => {
+    //       console.log("获取用户账号余额:", res);
+    //       if (res.code == 1) {
+    //         this.$store.commit("setEosBalance", res.data.balance);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log("获取用户账号余额失败:", err);
+    //     });
+    // },
     /**
      * 调用接口抢红包
      */
@@ -717,7 +679,8 @@ export default {
       let data = {
         room_id: this.packNotOpen.room_id,
         symbol: "UE",
-        amount: this.roomAmount
+        amount: this.roomAmount,
+        account_name: this.$store.state.eosAccount.name
       };
       openPack(data)
         .then(res => {

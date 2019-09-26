@@ -2,7 +2,7 @@
 const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "处理用户投注" });
 const { Decimal } = require("decimal.js");
 const { pool, psTrx, psModifyBalance, psGame, psSnatchOpen } = require("../db");
-const { SNATCH_TREASURE_CONTRACT, AGENT_ACCOUNT, UE_TOKEN_SYMBOL, PRIVATE_KEY_TEST } = require("../common/constant/eosConstants");
+const { SNATCH_TREASURE_CONTRACT, AGENT_ACCOUNT, UE_TOKEN_SYMBOL, DISTRIBUTION_CENTER_ACCOUNT, PRIVATE_KEY_TEST, UE_TOKEN, BANKER, TBG_WALLET_RECEIVER } = require("../common/constant/eosConstants");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");
 const { GAME_STATE } = require("../common/constant/gameConstants.js");
 const { redis, generate_primary_key } = require("../common");
@@ -50,16 +50,10 @@ async function handlerBet(data) {
 
         // 90% 拨入全球彩奖池；
         const toPrizePool = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_SNATCH_PRIZE_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1% 拨入 TBG 股东分红池
-        const toTshPool = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_TSH_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1% 拨入 TBG 三倍收益保障池
-        const toProtectionPool = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_PROTECTION_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 3% 拨入 TBG 共享推荐佣金分配；
-        const toReferrer = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_REFERRER).div(ALLOC_CONSTANTS.BASE_RATE);
         // 3.5% 分发中心收益
         const toDistributionCenter = currBetAmount.mul(ALLOC_CONSTANTS.DISTRIBUTION_CENTER).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1.5% TSH投资股东收益
-        const toTshIncome = currBetAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_TSH_INCOME).div(ALLOC_CONSTANTS.BASE_RATE);
+        // 6.5% 转入 TBG 钱包帐号
+        const toTgbWallet = currBetAmount.mul(ALLOC_CONSTANTS.TBG_WALLET_RECEIVER).div(ALLOC_CONSTANTS.BASE_RATE);
 
         // 代投用户
         let extra = { agent_account: "", transaction_id: "", pay_type: data.pay_type }
@@ -166,7 +160,59 @@ async function handlerBet(data) {
             }
         });
 
-        let flag = false;
+        // 分配投注额度
+        actList.push({
+            account: UE_TOKEN,
+            name: "transfer",
+            authorization: [{
+                actor: AGENT_ACCOUNT,
+                permission: 'active',
+            }],
+            data: {
+                from: AGENT_ACCOUNT,
+                to: BANKER,
+                quantity: `${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+                memo: `user ${ data.account_name } bet ${ new Decimal(oneGameInfo.quantity).toFixed(4)} ${ UE_TOKEN_SYMBOL }, prize add ${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+            }
+        });
+
+        // 分配投注额度
+        actList.push({
+            account: UE_TOKEN,
+            name: "transfer",
+            authorization: [{
+                actor: AGENT_ACCOUNT,
+                permission: 'active',
+            }],
+            data: {
+                from: AGENT_ACCOUNT,
+                to: DISTRIBUTION_CENTER_ACCOUNT,
+                quantity: `${ toDistributionCenter.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+                memo: `user ${ data.account_name } bet ${ new Decimal(oneGameInfo.quantity).toFixed(4)} ${ UE_TOKEN_SYMBOL }, distribution center add ${ toDistributionCenter.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+            }
+        });
+
+        // 转到 tbg 钱包账户
+        const memo = {
+            "game_name": "treasure",
+            "account_name": data.account_name,
+            "amount": oneGameInfo.quantity
+        }
+        actList.push({
+            account: UE_TOKEN,
+            name: "transfer",
+            authorization: [{
+                actor: AGENT_ACCOUNT,
+                permission: 'active',
+            }],
+            data: {
+                from: AGENT_ACCOUNT,
+                to: TBG_WALLET_RECEIVER,
+                quantity: `${ toTgbWallet.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+                memo: JSON.stringify(memo),
+            }
+        });
+
         const privateKeys = PRIVATE_KEY_TEST.split(",");
         const api = await newApi(privateKeys);
         const client = await pool.connect();
@@ -203,25 +249,16 @@ async function handlerBet(data) {
                     "transaction_id": result.transaction_id
                 });
             }
-            flag = true;
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
         } finally {
             await client.release();
         }
-
-        if (flag && actList.length !== 0) {
-            await psGame.pub({
-                account_name: data.account_name,
-                bet_amount: currBetAmount,
-                toTshIncome: toTshIncome,
-                toTshPool: toTshPool,
-                toProtectionPool: toProtectionPool,
-                toReferrer: toReferrer
-            });
-        }
         
+        // 区块链转账
+        psTrx.pub(actList);
+
         if (!!nextData) {
             // 如果有下一期的投注信息,再执行一次投注
             await handlerBet(nextData);

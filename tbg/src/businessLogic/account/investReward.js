@@ -56,7 +56,9 @@ async function investReward(client, amount, accountName, referrerAccountList, sy
         }
 
         // 分配剩余的收益
-        await allocateSurplusAssets(client, systemAccount, referIncome, distributed, OPT_CONSTANTS.INVITE);
+        if (!referIncome.div(distributed).lessThanOrEqualTo(0)) {
+            await allocateSurplusAssets(client, systemAccount, referIncome, distributed, OPT_CONSTANTS.INVITE);
+        }
     } catch (err) {
         logger.error("allocate user investment assets error, the error stock is %O", err);
         throw err;

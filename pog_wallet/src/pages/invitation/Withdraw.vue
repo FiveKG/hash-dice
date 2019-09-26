@@ -11,9 +11,9 @@
           <div class="with_all" @click="reqParams.amount = balance">全部提现</div>
         </div>
         <div class="ipt_layout">
-          <input type="text" class="text-input" :placeholder="`余额：${balance}EOS`" v-model="reqParams.amount">
+          <input type="text" class="text-input" :placeholder="`余额：${balance}`" v-model="reqParams.amount">
         </div>
-        <div class="btn" @click="clickWithdraw">EOS提现</div>
+        <div class="btn" @click="clickWithdraw">提现</div>
       </div>
       <div class="record">
         <div class="record_title">

@@ -2,7 +2,7 @@
 const logger = require("../common/logger.js").child({ [`@${__filename}`]: "处理用户投注" });
 const { Decimal } = require("decimal.js");
 const { pool, psTrx, psModifyBalance, psGame } = require("../db");
-const { GLOBAL_LOTTO_CONTRACT, AGENT_ACCOUNT, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants");
+const { GLOBAL_LOTTO_CONTRACT, AGENT_ACCOUNT, UE_TOKEN_SYMBOL, UE_TOKEN, BANKER, TBG_WALLET_RECEIVER, DISTRIBUTION_CENTER_ACCOUNT } = require("../common/constant/eosConstants");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");
 const { GAME_STATE } = require("../common/constant/gameConstants.js");
 const { redis, generate_primary_key } = require("../common");
@@ -53,16 +53,10 @@ async function handlerBet(data) {
         const toBottomPool = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_BOTTOM_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
         // 3% 拨入全球彩储备池
         const toReservePool = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_RESERVE_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1% 拨入 TBG 股东分红池
-        const toTshPool = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_TSH_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1% 拨入 TBG 三倍收益保障池
-        const toProtectionPool = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_PROTECTION_POOL).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 5% 拨入 TBG 共享推荐佣金分配；
-        const toReferrer = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_REFERRER).div(ALLOC_CONSTANTS.BASE_RATE);
         // 3.5% 分发中心收益
         const toDistributionCenter = betAmount.mul(ALLOC_CONSTANTS.DISTRIBUTION_CENTER).div(ALLOC_CONSTANTS.BASE_RATE);
-        // 1.5% TSH投资股东收益
-        const toTshIncome = betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_TSH_INCOME).div(ALLOC_CONSTANTS.BASE_RATE);
+        // 8.5% 转入 TBG 钱包帐号
+        const toTgbWallet = betAmount.mul(ALLOC_CONSTANTS.TBG_WALLET_RECEIVER).div(ALLOC_CONSTANTS.BASE_RATE);
         // 在数据库中插入投注记录
         const insertBetOrder = `
             INSERT INTO bet_order(bo_id, gs_id, extra, account_name, create_time, bet_num, key_count, amount)
@@ -108,6 +102,7 @@ async function handlerBet(data) {
             // 每个 key 生成一组号码
             for (let i = 0; i < data.bet_key; i++) {
                 const random = Math.random() * 1000000000;
+                // @ts-ignore
                 tmp.push(parseInt(random, 10).toString().split("").join(","));
             }
             betNum = tmp.join("|");
@@ -137,9 +132,61 @@ async function handlerBet(data) {
                 game_id: data.periods,
                 bet_time: df.format(new Date(), "YYYY-MM-DDTHH:mm:ss")
             }
-        });       
+        });
+        
+        // 分配投注额度
+        actList.push({
+            account: UE_TOKEN,
+            name: "transfer",
+            authorization: [{
+                actor: AGENT_ACCOUNT,
+                permission: 'active',
+            }],
+            data: {
+                from: AGENT_ACCOUNT,
+                to: BANKER,
+                quantity: `${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+                memo: `user ${ data.account_name } bet ${ betAmount.toFixed(4) } ${ UE_TOKEN_SYMBOL }, prize add ${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+            }
+        });
 
-        let flag = false;
+        // 分配投注额度
+        actList.push({
+            account: UE_TOKEN,
+            name: "transfer",
+            authorization: [{
+                actor: AGENT_ACCOUNT,
+                permission: 'active',
+            }],
+            data: {
+                from: AGENT_ACCOUNT,
+                to: DISTRIBUTION_CENTER_ACCOUNT,
+                quantity: `${ toDistributionCenter.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+                memo: `user ${ data.account_name } bet ${ betAmount.toFixed(4) } ${ UE_TOKEN_SYMBOL }, distribution center add ${ toDistributionCenter.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+            }
+        });
+
+        // 转到 tbg 钱包账户
+        const memo = {
+            "game_name": "globallotto",
+            "account_name": data.account_name,
+            "amount": betAmount
+        }
+        actList.push({
+            account: UE_TOKEN,
+            name: "transfer",
+            authorization: [{
+                actor: AGENT_ACCOUNT,
+                permission: 'active',
+            }],
+            data: {
+                from: AGENT_ACCOUNT,
+                to: TBG_WALLET_RECEIVER,
+                quantity: `${ toTgbWallet.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+                memo: JSON.stringify(memo),
+            }
+        });
+
         const privateKeys = PRIVATE_KEY_TEST.split(",");
         const api = await newApi(privateKeys);
         const client = await pool.connect();
@@ -163,7 +210,6 @@ async function handlerBet(data) {
             }));
             logger.debug("sqlList: ", sqlList);
             await client.query("COMMIT");
-            flag = true;
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
@@ -171,17 +217,8 @@ async function handlerBet(data) {
             await client.release();
         }
 
-        if (flag && actList.length !== 0) {
-            // await psTrx.pub(actList);
-            await psGame.pub({
-                account_name: data.account_name,
-                bet_amount: betAmount,
-                toTshIncome: toTshIncome,
-                toProtectionPool: toProtectionPool,
-                toReferrer: toReferrer,
-                toDistributionCenter: toDistributionCenter,
-                toTshPool: toTshPool
-            });
+        if (actList.length !== 0) {
+            await psTrx.pub(actList);
         }
     } catch (err) {
         logger.error("handlerBet error: ", err);

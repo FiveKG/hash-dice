@@ -23,14 +23,8 @@ const storage = {
 
 let str = location.host.split(".");
 // var baseURL = location.protocol + '//api.' + str[str.length - 2] + "." + str[str.length - 1];//公网根据路由地址获取API地址
-
-// var baseURL = location.protocol+'//192.168.1.123:8081';//App端接口服务器地址
-// var baseURL = location.protocol +'//192.168.1.146:8081';//App端接口服务器地址
-// var baseURL = location.protocol + '//192.168.1.141:8081';//App端接口服务器地址
-// var baseURL = location.protocol + '//172.81.224.11:8089';//App端接口服务器地址
-var baseURL = 'http://luckyhongbao.tbg.isecsp.com';//App端接口服务器地址
-// var baseURL = location.protocol +'//127.0.0.1:8081';//App端接口服务器地址
-// var baseURL = 'https://api.luckymoney.club';//App端接口服务器地址
+var baseURL = location.protocol + '//192.168.1.141:8089';//App端接口服务器地址
+// var baseURL = 'http://luckyhongbao.tbg.isecsp.com';//App端接口服务器地址
 
 // 封装请求方法
 const xhr = axios.create({
@@ -75,11 +69,11 @@ const scatterConnect = () => {
   return new Promise((resolve,reject)=>{
     ScatterJS.scatter.connect("LuckyMoney").then(connected => {
       if(!connected){
-        console.log("Scatter连接失败:",connected);
+        console.log("Scatter连接失败:", connected);
         resolve({code:-1 , desc:'Scatter连接失败'});//Scatter连接失败
       }else{
         store.state.scatter = ScatterJS.scatter;
-        console.log("scatter连接成功:",store.state.scatter)
+        console.log("scatter连接成功:", store.state.scatter)
         resolve({code:1 , desc:'scatter连接成功'});
       }
     }).catch(err=>{
@@ -143,10 +137,6 @@ const scatterOneStop = () => {
       console.log('执行了1');
       return resolve(loginResult);//Scatter登录失败
     }
-    var balanceResult = await scatterGetBalance();
-    // if(balanceResult.code != 1){
-    //   return resolve(balanceResult);//Scatter查询余额失败
-    // }
     // Api接口登录
     let data = {
       account_name:store.state.eosAccount.name
@@ -156,43 +146,43 @@ const scatterOneStop = () => {
     // if (this.$route.query.invite) {
     //   data.refer_name = this.$route.query.invite
     // }
-    accountLogin(data).then(res => {
-      if(res.code == 1){
-        console.log("Api接口登录成功:",res);
-        storage.set('token',res.data);
-        // 获取我的俱乐部
-        console.log(889,data)
-        getMyClub("").then(res => {
-          if(res.code == 1){
-            console.log("获取我的俱乐部成功:",res);
-            store.state.myClubId = res.data.club_id;
-          }else{
-            console.log("获取我的俱乐部失败:",res)
-          }
-          // 获取我的余额
-          getAccountBalance(data).then(res => {
-            if(res.code == 1){
-              console.log("获取用户账号余额成功:",res)
-              store.state.eosBalance = res.data.balance;
-            }else{
-              console.log("获取用户账号余额失败:",res)
-            }
-            return resolve({code:1 , desc:'Api接口登录成功'});//Api接口登录成功
-          }).catch(err =>{
-            console.log("获取用户账号余额失败:",err);
-            return resolve({code:1 , desc:'Api接口登录成功'});//Api接口登录成功
-          });
-        }).catch(err =>{
-          console.log("获取我的俱乐部失败:",err);
-          return resolve({code:1 , desc:'Api接口登录成功'});//Api接口登录成功
-        });
-      }else{
-        console.log("Api接口登录失败:",res);
-        return resolve({code:-6 , desc:'Api接口登录失败'});//Api接口登录失败
-      }
-    }).catch( err => {
-      return resolve({code:-6 , desc:'Api接口登录失败'});//Api接口登录失败
-    });
+    // accountLogin(data).then(res => {
+    //   if(res.code == 1){
+    //     console.log("Api接口登录成功:",res);
+    //     storage.set('token',res.data);
+    //     // 获取我的俱乐部
+    //     console.log(889,data)
+    //     getMyClub("").then(res => {
+    //       if(res.code == 1){
+    //         console.log("获取我的俱乐部成功:",res);
+    //         store.state.myClubId = res.data.club_id;
+    //       }else{
+    //         console.log("获取我的俱乐部失败:",res)
+    //       }
+    //       // 获取我的余额
+    //       getAccountBalance(data).then(res => {
+    //         if(res.code == 1){
+    //           console.log("获取用户账号余额成功:",res)
+    //           store.state.eosBalance = res.data.balance;
+    //         }else{
+    //           console.log("获取用户账号余额失败:",res)
+    //         }
+    //         return resolve({code:1 , desc:'Api接口登录成功'});//Api接口登录成功
+    //       }).catch(err =>{
+    //         console.log("获取用户账号余额失败:",err);
+    //         return resolve({code:1 , desc:'Api接口登录成功'});//Api接口登录成功
+    //       });
+    //     }).catch(err =>{
+    //       console.log("获取我的俱乐部失败:",err);
+    //       return resolve({code:1 , desc:'Api接口登录成功'});//Api接口登录成功
+    //     });
+    //   }else{
+    //     console.log("Api接口登录失败:",res);
+    //     return resolve({code:-6 , desc:'Api接口登录失败'});//Api接口登录失败
+    //   }
+    // }).catch( err => {
+    //   return resolve({code:-6 , desc:'Api接口登录失败'});//Api接口登录失败
+    // });
   })
 }
 /**
