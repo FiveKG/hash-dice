@@ -17,6 +17,7 @@ async function gameSessionMine(req, res, next) {
                 FROM game_session gs 
                 JOIN bet_order bo ON gs.gs_id = bo.gs_id
                 WHERE bo.account_name = $1
+                ORDER BY create_time DESC
         `
         const { rows: myOrderList } = await pool.query(sql, [ reqData.account_name ]);
         logger.debug("myOrderList: ", myOrderList)

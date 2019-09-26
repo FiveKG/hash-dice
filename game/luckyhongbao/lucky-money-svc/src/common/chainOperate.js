@@ -82,23 +82,15 @@ async function post(api_url, options = {}) {
 async function getAccountAction(accountName, fromPosition) {
     try {
         var eosConnectInfo = await sysConfig.codeEosConnectInfo.get();
-        logger.debug("eosConnectInfo: %O", eosConnectInfo);
-        let option = {
-            "httpEndpoint": eosConnectInfo.httpEndpoint
-        };
-        // let eos = eosjs(option);
-        // let result = await eos.getActions(accountName, fromPosition, 9);
+        // logger.debug("eosConnectInfo: %O", eosConnectInfo);
         const opts = {
             "pos": fromPosition,
             "offset": 9,
             "account_name": accountName
         }
-        // console.debug("fromPosition: ", fromPosition)
+
         const url = `${ eosConnectInfo.httpEndpoint }/v1/history/get_actions`
         const result = await post(url, { data: opts });
-        // const rpc = new JsonRpc(eosConnectInfo.httpEndpoint, { fetch });
-        // const result = await rpc.history_get_actions(accountName, fromPosition, 9);
-        console.debug("result: ", result);
         let actions = result.actions;
         return actions;
     } catch (err) {
