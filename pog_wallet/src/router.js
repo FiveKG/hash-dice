@@ -118,7 +118,12 @@ import HashDiceDetails from './pages/game/hashdice/HashDiceDetails'
 
 import GlovalLotto from './pages/game/qqc/GlovalLotto'
 import LottoGame from './pages/game/qqc/LottoGame'
-import awardOpening from './pages/game/qqc/awardOpening'
+import OpenRecordList from './pages/game/qqc/OpenRecordList'
+import MyBetRecordList from './pages/game/qqc/MyBetRecordList'
+import GlovalLottoRule from './pages/game/qqc/GameRule'
+import QqcBetDetail from './pages/game/qqc/BetDetail'
+import QqcOpenDetail from './pages/game/qqc/OpenDetail'
+
 
 // import LottoGame from './pages/game/qqc/LottoGame'
 
@@ -678,6 +683,8 @@ const router = new Router({
       name: 'HashDiceDetails',
       component: HashDiceDetails,
     },
+
+    //  全球彩部分==============================================================_start
     {
       path: '/GlovalLotto',
       name: 'GlovalLotto',
@@ -689,10 +696,34 @@ const router = new Router({
       component: LottoGame,
     },
     {
-      path: '/awardOpening',
-      name: 'awardOpening',
-      component: awardOpening,
+      path: '/OpenRecordList',
+      name: 'OpenRecordList',
+      component: OpenRecordList,
     },
+    {
+      path: '/MyBetRecordList',
+      name: 'MyBetRecordList',
+      component: MyBetRecordList,
+    },
+    {
+      path: '/GlovalLottoRule',
+      name: 'GlovalLottoRule',
+      component: GlovalLottoRule,
+    },
+    {
+      path: '/QQC/BetDetail',
+      name: 'QqcBetDetail',
+      component: QqcBetDetail,
+    },
+    {
+      path: '/QQC/OpenDetail',
+      name: 'QqcOpenDetail',
+      component: QqcOpenDetail,
+    },
+    // 全球彩部分==============================================================_end
+    
+
+  
 
     // 哈希分分彩部分==============================================================_start
     {
@@ -709,11 +740,6 @@ const router = new Router({
       path: '/LotteryRecord',
       name: 'LotteryRecord',
       component: LotteryRecord,
-    },
-    {
-      path: '/BetDetail',
-      name: 'BetDetail',
-      component: BetDetail,
     },
     {
       path: '/LotteryRule',
