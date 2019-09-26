@@ -20,7 +20,7 @@ POST http://192.168.1.141:8089/room/snatch_red_envelope
 Content-Type: application/json
 
 {
-    "account_name": "irbucnefu5pr", 
-    "room_id": 2
+    "account_name": "jqb.lvsj5l4h", 
+    "room_id": 3
 }
 

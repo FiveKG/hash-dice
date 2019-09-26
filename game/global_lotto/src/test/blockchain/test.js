@@ -43,21 +43,21 @@ const PRIVATE_KEY_TEST = "5KNrMrmiQ1fu3cwMdRCdh1bAfBcbyte2nJwB6evcB1By3fmwF6s,5K
         // const { id, timestamp } = await rpc.get_block(head_block_num);
         // console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
 
-        // getCurrencyBalance(UE_TOKEN, 'dengderong', 'UE')
-        // .then(res => console.debug("res: ", res))
-        // .catch(err => console.error("caught exception: ", err));
+        getCurrencyBalance(UE_TOKEN, 'gametestuser', 'UE')
+        .then(res => console.debug("res: ", res))
+        .catch(err => console.error("caught exception: ", err));
         
-        rpc.get_table_rows({
-            code: GLOBAL_LOTTO_CONTRACT,
-            json: true,
-            limit: 10,
-            lower_bound: 1,
-            scope: GLOBAL_LOTTO_CONTRACT,
-            table: 	"lottogame",
-            upper_bound: 10
-        }).then(resp => {
-            console.debug("get_table_rows: ", resp)
-        }).catch(err => console.error("caught exception: ", err));
+        // rpc.get_table_rows({
+        //     code: GLOBAL_LOTTO_CONTRACT,
+        //     json: true,
+        //     limit: 10,
+        //     lower_bound: 1,
+        //     scope: GLOBAL_LOTTO_CONTRACT,
+        //     table: 	"lottogame",
+        //     upper_bound: 10
+        // }).then(resp => {
+        //     console.debug("get_table_rows: ", resp)
+        // }).catch(err => console.error("caught exception: ", err));
         // const contract = await api.getContract(GLOBAL_LOTTO_CONTRACT);
         // console.debug("contract: %O", contract);
 
@@ -73,7 +73,22 @@ const PRIVATE_KEY_TEST = "5KNrMrmiQ1fu3cwMdRCdh1bAfBcbyte2nJwB6evcB1By3fmwF6s,5K
             } 
         }
 
-        // await api.transact({ actions: [ act ] }, {
+        const actions = [
+            {
+                account: GLOBAL_LOTTO_CONTRACT,
+                name: "setstate",
+                authorization: [{
+                    actor: GLOBAL_LOTTO_CONTRACT,
+                    permission: 'active',
+                }],
+                data: {
+                    game_id: 105,
+                    state: 1
+                }
+            }
+        ]
+
+        // await api.transact({ actions: actions }, {
         //     blocksBehind: 3,
         //     expireSeconds: 30,
         // }).then(resp => {
@@ -87,9 +102,9 @@ const PRIVATE_KEY_TEST = "5KNrMrmiQ1fu3cwMdRCdh1bAfBcbyte2nJwB6evcB1By3fmwF6s,5K
         
         // console.debug("resp: ", resp)
 
-        // transfer(UE_TOKEN, UE_TOKEN, 'eoslottoeos', '10.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
-        // .then(res => console.error(res))
-        // .catch(err => console.error(err));
+        transfer(UE_TOKEN, UE_TOKEN, 'eoslottoeos', '10000.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
+        .then(res => console.error(res))
+        .catch(err => console.error(err));
     } catch (err) {
         throw err;
     }

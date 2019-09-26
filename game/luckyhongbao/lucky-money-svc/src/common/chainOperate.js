@@ -181,7 +181,7 @@ async function create_red_envelope(data) {
     try {
         var gameAdminAccount = await sysConfig.gameAdminAccount.get();
         var eos_connect_info = await sysConfig.codeEosConnectInfo.get();
-        logger.debug(`get gameAdminAccount:`, gameAdminAccount);
+        // logger.debug(`get gameAdminAccount:`, gameAdminAccount);
         var option = {
             keyProvider: gameAdminAccount.privateKey,
             httpEndpoint: eos_connect_info.httpEndpoint,
@@ -205,7 +205,7 @@ async function create_red_envelope(data) {
                 }
             }]
         }
-        console.debug(`actions: `, actions.actions[0].data);
+        // console.debug(`actions: `, actions.actions[0].data);
         const result = await api.transact(actions, {
             blocksBehind: 3,
             expireSeconds: 30,

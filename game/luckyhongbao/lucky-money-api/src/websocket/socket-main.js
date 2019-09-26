@@ -114,7 +114,7 @@ notify_user_grab_red_envelope.sub(async data => {
             data['grabbed_list'] = GrabbedList;
 
             WsServer.to(find_game.room_id).emit("grab_red_envelope", data);
-            logger.debug(`WsServer.to(${find_game.room_id}).emit("grab_red_envelope", data);`);
+            logger.debug(`WsServer.to(${find_game.room_id}).emit("grab_red_envelope", data);`, data);
             // }
         }
     } catch (error) {

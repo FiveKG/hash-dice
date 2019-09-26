@@ -41,7 +41,13 @@ async function modifyBalance(data) {
             withdrawEnable = new Decimal(data.change_amount);
         }
         sqlList.push({ sql: updateAmountSql, values: [ withdrawEnable.toNumber(), 0, lottoCurrency.toNumber(), gameCurrency.toNumber(), accountName ] });
-        const remark = `user ${ accountName } play ${ data.game_type } game, modify balance ${ changeAmount }`;
+        let remark = ``;
+        if (changeAmount.lessThan(0)) {
+            remark = `user ${ accountName } play ${ data.game_type } game, deduct ${ data.pay_type } balance ${ changeAmount }`;
+        } else {
+            remark = `user ${ accountName } play ${ data.game_type } game, return ${ data.pay_type } balance ${ changeAmount }`;
+        }
+
         sqlList.push({ 
             sql: insertBalanceLogSql, 
             values: [ 

@@ -9,7 +9,6 @@ const gameManager = require("../common/gameManager.js");
 const dbOp = require("@fjhb/db-op");
 const padStart = require("../common/padStart.js");
 const randomWeights = require("../common/randomWeights");
-const psGame = require("../common/psGame");
 const redis = require("@fjhb/lm-redis");
 const { symbolTransfer } = require("../common/redis_queue");
 /**
@@ -126,9 +125,9 @@ async function startNewGame(eventArgv) {
         // 分配给第三方
         symbolTransferList.push({
             "account_name": redEnvelopeAllocation.third_party_account,
-            "amount": Number(allocationNumber.toDistributionCenter),
+            "amount": Number(allocationNumber.toThirdParty),
             "symbol": "UE",
-            "memo": `用户发红包, 第三方获得收益 ${ allocationNumber.toDistributionCenter } UE`,
+            "memo": `用户发红包, 第三方获得收益 ${ allocationNumber.toThirdParty } UE`,
             "opts": "agent"
         });
 
@@ -311,15 +310,6 @@ async function calculate_allocation_nbr(roomId, red_envelope_amount, club_info) 
     // 0.20%	第三方游戏开发团队	游戏方账号
     // 1.20%	游戏分发	分发收益账号
     // 3.60%	TBG钱包	钱包账号
-    // "distribution_center_account": DISTRIBUTION_CENTER_ACCOUNT,
-    // "distribution_center_account_rate": DISTRIBUTION_CENTER_ACCOUNT_RATE,
-    // "alloc_to_tsh_pool": ALLOC_TO_TSH_POOL,
-    // "alloc_to_protection_pool": ALLOC_TO_PROTECTION_POOL,
-    // "third_party_rate": THIRD_PARTY_RATE,
-    // "third_party_account": THIRD_PARTY_ACCOUNT,
-    // "alloc_to_referrer": ALLOC_TO_REFERRER,
-    // "alloc_to_tsh_income": ALLOC_TO_TSH_INCOME
-
     //先拿出 红包的分配比例, 计算分红的 数量.
     let redEnvelopeAllocation = await sysConfig.red_packet_allocation.get();
     logger.debug(`redEnvelopeAllocation config :${JSON.stringify(redEnvelopeAllocation)}`);

@@ -29,9 +29,10 @@ const AGENT_ACCOUNT = "globallotto"
 // 全球彩合约帐号
 const GLOBAL_LOTTO_CONTRACT = "globallotto";
 
-const GLOBAL_LOTTO_ACCOUNT = "eoslottoeos"
+const GLOBAL_LOTTO_ACCOUNT = "eoslottoeos";
+
 // 钱包收款帐号
-const TBG_WALLET_RECEIVER = 'tbgreceiver'
+const TBG_WALLET_RECEIVER = 'tbgreceiver';
 
 // 节点信息
 const END_POINT = "http://45.251.109.187:8888"

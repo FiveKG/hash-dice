@@ -13,6 +13,11 @@ const { END_POINT, PRIVATE_KEY_TEST } = require("../common/constant/eosConstants
 const { newApi } = require("./getTrxAction");
 const { format } = require("date-fns");
 const sleep = require("./sleep.js");
+/**
+ * 1. 分配投注额度
+ * 2. 记录投注信息
+ * 3. 投注后修改余额
+ */
 
 /**
  * 处理用户投注
@@ -22,14 +27,6 @@ const sleep = require("./sleep.js");
  */
 async function handlerBet(data) {
     try {
-        /**
-         * 1. 分配投注额度
-         * 2. 记录投注信息
-         * 3. 投注后修改余额
-         * 4. 游戏空投
-         */
-
-
         // 先扣除用户的额度，再记录投注信息
         const betAmount = new Decimal(data.bet_amount);
         // 如果直接使用区块链 UE 代币投注，不需要扣除用户的数据库余额
@@ -118,53 +115,51 @@ async function handlerBet(data) {
 
 
         // 调用 globallotto 合约投注
-        actList.push({
-            account: GLOBAL_LOTTO_CONTRACT,
-            name: "bet",
-            authorization: [{
-                actor: GLOBAL_LOTTO_CONTRACT,
-                permission: 'active',
-            }],
-            data: {
-                bet_name: data.account_name,
-                bet_num: betNum,
-                quantity: `${ betAmount.toFixed(4) } UE`,
-                game_id: data.periods,
-                bet_time: df.format(new Date(), "YYYY-MM-DDTHH:mm:ss")
-            }
-        });
+        const betData = {
+            bet_name: data.account_name,
+            bet_num: betNum,
+            quantity: `${ betAmount.toFixed(4) } UE`,
+            game_id: data.periods,
+            bet_time: df.format(new Date(), "YYYY-MM-DDTHH:mm:ss")
+        }
+        actList.push(setAction(GLOBAL_LOTTO_CONTRACT, "bet", GLOBAL_LOTTO_CONTRACT, betData));
         
         // 分配投注额度
-        actList.push({
-            account: UE_TOKEN,
-            name: "transfer",
-            authorization: [{
-                actor: AGENT_ACCOUNT,
-                permission: 'active',
-            }],
-            data: {
-                from: AGENT_ACCOUNT,
-                to: BANKER,
-                quantity: `${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
-                memo: `user ${ data.account_name } bet ${ betAmount.toFixed(4) } ${ UE_TOKEN_SYMBOL }, prize add ${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
-            }
-        });
+        const toPrizePoolData = {
+            from: AGENT_ACCOUNT,
+            to: BANKER,
+            quantity: `${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+            memo: `user ${ data.account_name } bet ${ betAmount.toFixed(4) } ${ UE_TOKEN_SYMBOL }, prize add ${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+        }
+        actList.push(setAction(UE_TOKEN, "transfer", AGENT_ACCOUNT, toPrizePoolData));
+
+        // 分配给底池
+        const toBottomPoolData = {
+            from: AGENT_ACCOUNT,
+            to: BANKER,
+            quantity: `${ toBottomPool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+            memo: `user ${ data.account_name } bet ${ toBottomPool.toFixed(4) } ${ UE_TOKEN_SYMBOL }, prize add ${ toBottomPool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+        }
+        actList.push(setAction(UE_TOKEN, "transfer", AGENT_ACCOUNT, toBottomPoolData));
+
+
+        // 分配给储备池
+        const toReservePoolData = {
+            from: AGENT_ACCOUNT,
+            to: BANKER,
+            quantity: `${ toReservePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+            memo: `user ${ data.account_name } bet ${ toReservePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }, prize add ${ toReservePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+        }
+        actList.push(setAction(UE_TOKEN, "transfer", AGENT_ACCOUNT, toReservePoolData));
 
         // 分配投注额度
-        actList.push({
-            account: UE_TOKEN,
-            name: "transfer",
-            authorization: [{
-                actor: AGENT_ACCOUNT,
-                permission: 'active',
-            }],
-            data: {
-                from: AGENT_ACCOUNT,
-                to: DISTRIBUTION_CENTER_ACCOUNT,
-                quantity: `${ toDistributionCenter.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
-                memo: `user ${ data.account_name } bet ${ betAmount.toFixed(4) } ${ UE_TOKEN_SYMBOL }, distribution center add ${ toDistributionCenter.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
-            }
-        });
+        const toDistributionCenterData = {
+            from: AGENT_ACCOUNT,
+            to: DISTRIBUTION_CENTER_ACCOUNT,
+            quantity: `${ toDistributionCenter.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+            memo: `user ${ data.account_name } bet ${ betAmount.toFixed(4) } ${ UE_TOKEN_SYMBOL }, distribution center add ${ toDistributionCenter.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+        }
+        actList.push(setAction(UE_TOKEN, "transfer", AGENT_ACCOUNT, toDistributionCenterData));
 
         // 转到 tbg 钱包账户
         const memo = {
@@ -172,20 +167,13 @@ async function handlerBet(data) {
             "account_name": data.account_name,
             "amount": betAmount
         }
-        actList.push({
-            account: UE_TOKEN,
-            name: "transfer",
-            authorization: [{
-                actor: AGENT_ACCOUNT,
-                permission: 'active',
-            }],
-            data: {
-                from: AGENT_ACCOUNT,
-                to: TBG_WALLET_RECEIVER,
-                quantity: `${ toTgbWallet.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
-                memo: JSON.stringify(memo),
-            }
-        });
+        const toTgbWalletData = {
+            from: AGENT_ACCOUNT,
+            to: TBG_WALLET_RECEIVER,
+            quantity: `${ toTgbWallet.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+            memo: JSON.stringify(memo),
+        }
+        actList.push(setAction(UE_TOKEN, "transfer", AGENT_ACCOUNT, toTgbWalletData));
 
         const privateKeys = PRIVATE_KEY_TEST.split(",");
         const api = await newApi(privateKeys);
@@ -203,7 +191,10 @@ async function handlerBet(data) {
             extra.transaction_id = result.transaction_id;
             sqlList.push({
                 sql: insertBetOrder,
-                values: [ generate_primary_key(), gameSessionInfo.gs_id, extra, data.account_name, "now()", betNum, data.bet_key, betAmount.toNumber() ]
+                values: [ 
+                    generate_primary_key(), gameSessionInfo.gs_id, extra, data.account_name, 
+                    "now()", betNum, data.bet_key, betAmount.toNumber() 
+                ]
             });
             await Promise.all(sqlList.map(it => {
                 client.query(it.sql, it.values)
@@ -227,3 +218,22 @@ async function handlerBet(data) {
 }
 
 module.exports = handlerBet;
+
+/**
+ * 
+ * @param { string } account 合约帐号
+ * @param { string } name 合约方法名
+ * @param { string } actor 用户权限 
+ * @param { Object } data 调用参数
+ */
+function setAction(account, name, actor, data) {
+    return {
+        account: account,
+        name: name,
+        authorization: [{
+            actor: actor,
+            permission: 'active',
+        }],
+        data: data
+    }
+}

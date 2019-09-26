@@ -1,0 +1,71 @@
+[
+    {
+        "account": "globallotto",
+        "name": "bet",
+        "authorization": [
+            {
+                "actor": "globallotto",
+                "permission": "active"
+            }
+        ],
+        "data": {
+            "bet_name": "gametestuser",
+            "bet_num": "1,1,1,1,1,1,1,1,1",
+            "quantity": "0.1000 UE",
+            "game_id": 105,
+            "bet_time": "2019-09-26T11:34:28"
+        }
+    },
+    {
+        "account": "uetokencoin",
+        "name": "transfer",
+        "authorization": [
+            {
+                "actor": "globallotto",
+                "permission": "active"
+            }
+        ],
+        "data": {
+            "from": "globallotto",
+            "to": "lottobanker",
+            "quantity": "0.0800 UE",
+            "memo": "user gametestuser bet 0.1000 UE, prize add 0.0800 UE"
+        }
+    },
+    {
+        "account": "uetokencoin",
+        "name": "transfer",
+        "authorization": [
+            {
+                "actor": "globallotto",
+                "permission": "active"
+            }
+        ],
+        "data": {
+            "from": "globallotto",
+            "to": "eoscentereos",
+            "quantity": "0.0035 UE",
+            "memo": "user gametestuser bet 0.1000 UE, distribution center add 0.0035 UE"
+        }
+    },
+    {
+        "account": "uetokencoin",
+        "name": "transfer",
+        "authorization": [
+            {
+                "actor": "globallotto",
+                "permission": "active"
+            }
+        ],
+        "data": {
+            "from": "globallotto",
+            "to": "tbgreceiver",
+            "quantity": "0.0085 UE",
+            "memo": {
+                "game_name": "globallotto",
+                "account_name": "gametestuser",
+                "amount": "0.1"
+            }
+        }
+    }
+]

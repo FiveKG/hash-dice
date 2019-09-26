@@ -13,9 +13,10 @@ async function gameSessionMine(req, res, next) {
         logger.debug(`the param is %j: `, reqData);
         // 先查出所有的期数
         const sql = `
-            SELECT gs.periods, gs.reward_num, bo.create_time, gs.game_state, bo.key_count
+            SELECT gs.periods, gs.reward_num, bo.create_time, gs.game_state, bo.key_count, a.win_type
                 FROM game_session gs 
                 JOIN bet_order bo ON gs.gs_id = bo.gs_id
+                LEFT JOIN award_session a ON a.gs_id = gs.gs_id
                 WHERE bo.account_name = $1
                 ORDER BY create_time DESC
         `
@@ -29,9 +30,9 @@ async function gameSessionMine(req, res, next) {
                 if (it.game_state === GAME_STATE.START || it.game_state == GAME_STATE.REWARDING) {
                     winType = "waiting"
                 } else {
-                    // if (it.win_type !== "sorry") {
-                    //     winType = "bingo"
-                    // }
+                    if (it.win_type !== "sorry") {
+                        winType = "bingo"
+                    }
                 }
                 return {
                     periods: it.periods,

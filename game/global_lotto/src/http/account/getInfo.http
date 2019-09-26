@@ -17,11 +17,11 @@ GET http://localhost:13021/global_lotto/game_session_mine?account_name=dengderon
 GET http://localhost:13021/global_lotto/game_session_mine_detail?account_name=dengderong&periods=2
 
 ### get account information
-POST http://localhost:13021/global_lotto/bet
+POST http://{\"bet_nam/global_lotto/bet
 Content-Type: application/json
 
 {
-    "periods": 3,
+    "periods": 105,
     "account_name": "yujinsheng11",
     "bet_num": "123456789",
     "bet_key": 1,

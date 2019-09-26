@@ -18,7 +18,7 @@ async function check_snatched(req, res, next) {
         logger.debug(`check_snatched . request data: ${JSON.stringify(req_data)}`);
 
         // 检查请求参数
-        const account_name = req.account_name;
+        const account_name = req.query.account_name;
         const room_id = Number(req_data.room_id);
         if (isNaN(room_id)) {
             logger.info(`该用户抢红包时, 参数不合法. account_name: ${account_name}, room_id: ${room_id}, ip: ${req.ip}`);
@@ -37,6 +37,7 @@ async function check_snatched(req, res, next) {
             redEnvelopeGameResultBiz.getGrabbedByGameId(last_game.game_id)
         ])
 
+        logger.debug("grabbedList: ", grabbedList);
         // 检查该用户是否已经抢过该红包
         if (account_game_result.length > 0) {
             logger.debug(`用户:${req.account_name} 已经抢过game_id:${last_game.game_id}.返回之前 抢的结果`);
