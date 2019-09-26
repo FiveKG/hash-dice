@@ -135,28 +135,27 @@
         <div class="tips">已存入账户余额，可再抢红包</div>
         <div class="name_list">
           <div class="name_item" v-for="(item,index) in packResult.grabbed_list" :key="index">
-            <div
-              :class="big === item.amount?'item_name red':'item_name'"
-            >{{index+1}} . {{item.account_name}}</div>
             <div v-if="!Grab">
-              <div
-                :class="ownEnvelope === item.amount?'item_amount red':'item_amount'"
-                v-if="item.account_name === name"
-              >
+              
+              <div class='item_name'>{{index+1}} . {{item.account_name}}</div>
+              <div v-if='name==item.account_name' class="item_amount">
                 {{item.amount}}UE
               </div>
-              <div
-                :class="ownEnvelope === item.amount?'item_amount red':'item_amount'"
-                v-else
-              > 
+              <div v-else class='item_amount'> 
                 <img src="../../assets/u10085.png" width="20px" height="20px" />&nbsp;
                 <img src="../../assets/u10085.png" width="20px" height="20px" />&nbsp;
                 <img src="../../assets/u10085.png" width="20px" height="20px" />
-                </div>
               </div>
-              <div :class="ownEnvelope === item.amount?'item_amount red':'item_amount'"
-                v-if="Grab">
+            </div>
+              <div  v-if="Grab">
+              <div
+              :class="big === item.amount?'item_name red':'item_name'"
+            >{{index+1}} . {{item.account_name}}</div>
+              <div
+              :class="big === item.amount?'item_amount red':'item_amount'"
+              >
                 {{item.amount}}UE
+              </div>
               </div>
           </div>
         </div>
@@ -368,7 +367,6 @@ export default {
         if (game_id === element.game_id) {
           this.packState = 1;
           this.showOpen = true;
-          console.log(this.packResult);
           let max = element.results[0].amount;
           for (let i = 0; i < element.results.length; i++) {
             element.results[i].amount = Number(element.results[i].amount);
@@ -387,6 +385,17 @@ export default {
 
           this.packResult = element;
           this.packResult.grabbed_list = element.results;
+          for(var i=0;i<this.packResult.grabbed_list.length;i++){
+                if(this.packResult.grabbed_list[i].amount>this.big){
+                  this.big=this.packResult.grabbed_list[i].amount
+                }
+                if(this.packResult.grabbed_list[i].account_name==this.name){
+                  this.ownEnvelope=this.packResult.grabbed_list[i].amount
+                }    
+              }
+          if(this.packResult.grabbed_list.length>4){
+            this.Grab=true
+          }
           this.maxAmount = Number(max);
         }
       });
@@ -731,7 +740,7 @@ export default {
         account_name: this.$store.state.eosAccount.name
       };
       checkPack(data)
-        .then(res => {
+        .then(res => { 
           console.log("检查用户是否已经抢过该红包:", res);
           if (res.code === 1) {
             this.showOpen = true;
@@ -755,9 +764,9 @@ export default {
                   this.ownEnvelope=this.packResult.grabbed_list[i].amount
                 }    
               }
-              if(this.packResult.grabbed_list.length>4){
-                  this.Grab=true;
-                }
+        
+             
+             
               
             
               this.packState = 1;
@@ -1305,12 +1314,14 @@ export default {
   margin: auto auto auto 10px;
   line-height: 20px;
   font-size: 16px;
+  display: inline-block;
 }
 .winner_dialog .name_list .name_item .item_amount {
   height: 20px;
   margin: auto 10px auto auto;
   line-height: 20px;
   font-size: 16px;
+  display: inline-block;
 }
 </style>
 
