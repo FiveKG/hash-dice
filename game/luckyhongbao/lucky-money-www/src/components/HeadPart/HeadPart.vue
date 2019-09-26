@@ -299,6 +299,7 @@ export default {
       return new Promise((resolve, reject) => {
         getConfig()
           .then(async res => {
+            console.log('执行力')
             if (res.code == 1) {
               var blovk_arr = res.data.chain_info.http_end_point.split(":");
               let network = {
