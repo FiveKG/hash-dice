@@ -12,7 +12,7 @@
     "license": "MIT",
     "dependencies": {
         "all": "0.0.0",
-        "cordova-android": "^6.2.3",
+        "cordova-android": "^6.4.0",
         "cordova-plugin-add-swift-support": "^2.0.2",
         "cordova-plugin-android-fingerprint-auth": "^1.5.0",
         "cordova-plugin-app-launcher": "^0.4.0",
@@ -23,7 +23,7 @@
         "cordova-plugin-whitelist": "^1.3.4",
         "cordova-plugin-x-toast": "^2.7.2",
         "i": "^0.3.6",
-        "nodejs-mobile-cordova": "^0.3.3"
+        "nodejs-mobile-cordova": "^0.3.4"
     },
     "cordova": {
         "plugins": {
@@ -33,7 +33,6 @@
             "cordova-plugin-app-version": {},
             "cordova-plugin-whitelist": {},
             "cordova-plugin-x-toast": {},
-            "nodejs-mobile-cordova": {},
             "cordova-plugin-customurlscheme": {
                 "URL_SCHEME": "appwallet",
                 "ANDROID_SCHEME": " ",
@@ -41,7 +40,8 @@
                 "ANDROID_PATHPREFIX": "/"
             },
             "cordova-plugin-qrscanner": {},
-            "cordova-plugin-compat": {}
+            "cordova-plugin-compat": {},
+            "nodejs-mobile-cordova": {}
         },
         "platforms": [
             "android"

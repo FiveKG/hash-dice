@@ -41,6 +41,6 @@
     <plugin name="cordova-plugin-qrscanner" spec="^2.6.2" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.4" />
     <plugin name="cordova-plugin-x-toast" spec="^2.7.2" />
-    <plugin name="nodejs-mobile-cordova" spec="^0.3.3" />
-    <engine name="android" spec="^6.2.3" />
+    <plugin name="nodejs-mobile-cordova" spec="^0.3.4" />
+    <engine name="android" spec="^6.4.0" />
 </widget>
