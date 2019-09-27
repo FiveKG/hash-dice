@@ -102,9 +102,7 @@ async function handlerBet(data) {
             const tmp = [];
             // 每个 key 生成一组号码
             for (let i = 0; i < data.bet_key; i++) {
-                const random = Math.random() * 1000000000;
-                // @ts-ignore
-                tmp.push(parseInt(random, 10).toString().split("").join(","));
+                tmp.push(Math.random().toString().slice(-9).split("").join(","));
             }
             betNum = tmp.join("|");
         } else {

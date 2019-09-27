@@ -92,7 +92,7 @@ const PRIVATE_KEY_TEST = "5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo"
         //     console.debug("resp: ", resp);
         // })
 
-        await clearTable(LUCKY_HONGBAO_CONTRACT, 1, "redpackets", true, PRIVATE_KEY_TEST.split(","))
+        await clearTable(LUCKY_HONGBAO_CONTRACT, 4, "redpackets", true, PRIVATE_KEY_TEST.split(","))
         await clearTable(LUCKY_HONGBAO_CONTRACT, 1, "offer", true, PRIVATE_KEY_TEST.split(","))
         
         

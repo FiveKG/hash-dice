@@ -103,6 +103,14 @@
             "cwd"         : "./src/job",
             "error_file"  : "../../../logs/wringTrade-err.log",
             "out_file"    : "../../../logs/wringTrade-out.log"
+        },
+        {
+            "name"        : "listenGameReceiver",
+            "script"      : "./listenGameReceiver.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/listenGameReceiver-err.log",
+            "out_file"    : "../../../logs/listenGameReceiver-out.log"
         }
     ]
 }

@@ -3,12 +3,11 @@
 const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "listening game receiver" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis, generate_primary_key } = require("../common");
-const { UE_TOKEN, UE_TOKEN_SYMBOL, TBG_WALLET_RECEIVER: a } = require("../common/constant/eosConstants.js");
+const { UE_TOKEN, UE_TOKEN_SYMBOL, TBG_WALLET_RECEIVER } = require("../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
 const handlerGameReceiver = require("./handlerGameReceiver.js");
-const SEQ_KEY = "tbg:tbg_game:account_action_seq"
-const TBG_WALLET_RECEIVER = 'luckyhongbao'
+const SEQ_KEY = "tbg:tbg_game:account_action_seq";
 logger.debug(`listenTrade running...`);
 // 每秒中执行一次,有可能上一条监听的还没有执行完毕,下一次监听又再执行了一次,从而造成多条数据重复
 const TRADE_LOCK = `tbg:lock:tbg_game`;
@@ -40,7 +39,7 @@ async function listenTrade() {
         await redis.set(TRADE_LOCK, 1);
         const actionSeq = await getLastPos();
         const actions = await getTrxAction(TBG_WALLET_RECEIVER, actionSeq);
-        logger.debug("actionSeq: ", actionSeq);
+        logger.debug("actionSeq: ", actionSeq, TBG_WALLET_RECEIVER);
         for (const action of actions) {
             const result = await parseEosAccountAction(action);
             const trxSeq = await redis.get(`tbg:tbg_game:trx:${ result.account_action_seq }`);
@@ -114,7 +113,7 @@ async function parseEosAccountAction(action) {
         result["trx_id"] = actionTrace.trx_id;
         logger.debug(`trx_id: ${ actionTrace.trx_id } -- account_action_seq: ${ action.account_action_seq }`);
         let { receipt, act } = actionTrace;
-        // logger.debug("act: ", act);
+        logger.debug("act: ", act);
         // 只监听 UE 转账
         let isTransfer = act.account === UE_TOKEN && act.name === "transfer"
         if (!isTransfer) {

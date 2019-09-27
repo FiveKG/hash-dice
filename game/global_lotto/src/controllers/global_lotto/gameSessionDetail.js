@@ -14,8 +14,9 @@ async function gameSessionDetail(req, res, next) {
         let reqData = await inspect_req_data(req);
         logger.debug(`the param is %j: `, reqData);
         const gameInfo = await getGameInfo();;
-        const selectGameSession = `SELECT periods, reward_num, game_state, extra, reward_time FROM game_session WHERE periods = $1`
-        const { rows: [ gameSessionInfo ] } = await pool.query(selectGameSession, [ reqData.periods ]);
+        const selectGameSession = `SELECT gs_id, periods, reward_num, game_state, extra, reward_time FROM game_session WHERE gs_id = $1`
+        const { rows: [ gameSessionInfo ] } = await pool.query(selectGameSession, [ reqData.gs_id ]);
+        logger.debug("gameSessionInfo: ", gameSessionInfo);
         if (!gameSessionInfo) {
             return res.send(get_status(1012, "game not exists"));
         }
@@ -24,7 +25,7 @@ async function gameSessionDetail(req, res, next) {
         if (gameSessionInfo.game_state === GAME_STATE.START || gameSessionInfo.game_state == GAME_STATE.REWARDING) {
             resData.data = {
                 "periods": gameSessionInfo.periods,
-                "count_down": df.differenceInSeconds(new Date(), gameSessionInfo.end_time),
+                "count_down": df.differenceInSeconds(gameSessionInfo.reward_time, new Date()),
                 "reward_time": gameSessionInfo.reward_time,
                 "prize_pool": new Decimal(gameInfo.prize_pool).toFixed(4)
             }
@@ -33,15 +34,12 @@ async function gameSessionDetail(req, res, next) {
         } else {
             // 查找本期奖池变动
             const selectPrizePoolLogInfo = `SELECT current_balance, extra FROM prize_pool_log WHERE gs_id = $1 AND pool_type = $2 AND op_type = $3`
-            const { rows: [ prizePoolLogInfo ] } = await pool.query(selectPrizePoolLogInfo, [ gameSessionInfo.gs_id, 'prize_pool', 'award' ]);
-            // 查找本期储备池变动
-            // const selectReservePoolInfo = `SELECT current_balance, change_amount FROM prize_pool_log WHERE gs_id = $1 AND pool_type = $2 AND op_type = $3`
-            // const { rows: [ reservePoolLogInfo ] } = await pool.query(selectReservePoolInfo, [ gameSessionInfo.gs_id, 'reserve_pool', 'award' ]);
-            
+            const { rows: [ prizePoolLogInfo ] } = await pool.query(selectPrizePoolLogInfo, [ reqData.gs_id, 'prize_pool', 'award' ]);
+            logger.debug("prizePoolLogInfo: ", prizePoolLogInfo);
             // 查找中奖名单
-            const selectAwardList = `SELECT * FROM award_session WHERE gs_id = $1`;
+            const selectAwardList = `SELECT * FROM award_session WHERE bo_id = any(SELECT bo_id FROM bet_order WHERE gs_id = $1)`;
             const { rows: awardList } = await pool.query(selectAwardList, [ gameSessionInfo.gs_id ]);
-
+            logger.debug("awardList: ", awardList);
             const rewardMap = new Map();
             // 遍历开奖信息
             for (const info of awardList) {
@@ -116,10 +114,10 @@ async function gameSessionDetail(req, res, next) {
                 "reward_time": gameSessionInfo.reward_time,
                 "prize_pool": new Decimal(!total ? 0 : total).toFixed(4),
                 "award_amount": new Decimal(!total_award ? 0 : total_award).abs().toFixed(4),
-                "prize_pool_balance": new Decimal(prizePoolLogInfo.current_balance).toFixed(4),
-                "reserve_pool_award": new Decimal(prizePoolLogInfo.extra.reserve_pool_change).abs().toFixed(4),
-                "bottom_pool_award": new Decimal(prizePoolLogInfo.extra.bottom_pool_change).toFixed(4),
-                "next_init_amount": new Decimal(prizePoolLogInfo.current_balance).add(prizePoolLogInfo.extra.bottom_pool_change).toFixed(4),
+                "prize_pool_balance": new Decimal(!prizePoolLogInfo ? 0 : prizePoolLogInfo.current_balance).toFixed(4),
+                "reserve_pool_award": new Decimal(!!prizePoolLogInfo ? 0 : prizePoolLogInfo.extra.reserve_pool_change).abs().toFixed(4),
+                "bottom_pool_award": new Decimal(!prizePoolLogInfo ? 0 : prizePoolLogInfo.extra.bottom_pool_change).toFixed(4),
+                "next_init_amount": new Decimal(!prizePoolLogInfo ? 0 : prizePoolLogInfo.current_balance).add(prizePoolLogInfo.extra.bottom_pool_change).toFixed(4),
                 "reward_code": gameSessionInfo.reward_num,
                 "relate_info": gameSessionInfo.extra.relate_id,
                 "is_lottery_award": prizePoolLogInfo.extra.is_lottery_award, // 是否开出超级大奖

@@ -25,21 +25,23 @@ async function awardGame(data) {
             return;
         }
         // 查找这一期所有用户的投注记录
-        const betInfoSql = `SELECT * FROM bet_order WHERE gs_id = $1`
+        const betInfoSql = `SELECT * FROM bet_order WHERE bo_id = any(SELECT bo_id FROM bet_order WHERE gs_id = $1)`
         const { rows : betOrderList } = await pool.query(betInfoSql, [ rewardInfo.gs_id ]);
         logger.debug("betOrderList: ", betOrderList);
         // 获取开奖码和开奖结果
         const { openCode, openResult } = await getOpenResult(data.block_num);
+        logger.debug("openCode: ", openCode);
+        logger.debug("openResult: ", openResult);
         // 获取游戏奖池信息
         const gameInfo = await getGameInfo();
+        logger.debug("gameInfo: ", gameInfo);
         // 计算和分配开奖结果
         const rewardMap = await accReward(openCode, betOrderList);
-        logger.debug("rewardMap: ", rewardMap);
+        // console.debug("rewardMap: ", rewardMap);
         let { 
             prizePoolSurplus, bottomPoolSurplus, reservePoolSurplus, 
             isLotteryAward, actList, sqlList, bonusMap
         } = await handleOpenResult(gameInfo, rewardMap);
-
         // 是否开出超级全球彩大奖
         if (isLotteryAward) {
             prizePoolSurplus = prizePoolSurplus.add(bottomPoolSurplus);
@@ -58,37 +60,32 @@ async function awardGame(data) {
         `
 
         // 添加奖池变动记录
-        if (!prizePoolSurplus.minus(gameInfo.prize_pool).eq(0)) {
-            sqlList.push({
-                sql: insertPrizePoolLog,
-                values: [ 
-                    rewardInfo.gs_id, 'prize_pool', prizePoolSurplus.minus(gameInfo.prize_pool).toNumber(), prizePoolSurplus.toNumber(), 'award', 
-                    { 
-                        is_lottery_award: isLotteryAward, 
-                        bottom_pool_change: !!isLotteryAward ? bottomPoolSurplus.toNumber() : 0, 
-                        reserve_pool_change: reservePoolSurplus.minus(gameInfo.reserve_pool).toNumber() 
-                    }, `${ new Date() } award`, "now()" 
-                ]
-            });
-        }
+        // 就算没有用户投注，每期都记录一下是否有变动
+        sqlList.push({
+            sql: insertPrizePoolLog,
+            values: [ 
+                rewardInfo.gs_id, 'prize_pool', prizePoolSurplus.minus(gameInfo.prize_pool).toNumber(), prizePoolSurplus.toNumber(), 'award', 
+                { 
+                    is_lottery_award: isLotteryAward, 
+                    bottom_pool_change: !!isLotteryAward ? bottomPoolSurplus.toNumber() : 0, 
+                    reserve_pool_change: reservePoolSurplus.minus(gameInfo.reserve_pool).toNumber() 
+                }, `${ new Date() } award`, "now()" 
+            ]
+        });
         
-        if (!bottomPoolSurplus.minus(gameInfo.bottom_pool).eq(0)) {
-            sqlList.push({
-                sql: insertPrizePoolLog,
-                values: [ rewardInfo.gs_id, 'bottom_pool', bottomPoolSurplus.minus(gameInfo.bottom_pool).toNumber(), 
-                    bottomPoolSurplus.toNumber(), 'award', {}, `${ new Date() } award`, "now()" 
-                ]
-            });
-        }
+        sqlList.push({
+            sql: insertPrizePoolLog,
+            values: [ rewardInfo.gs_id, 'bottom_pool', bottomPoolSurplus.minus(gameInfo.bottom_pool).toNumber(), 
+                bottomPoolSurplus.toNumber(), 'award', {}, `${ new Date() } award`, "now()" 
+            ]
+        });
 
-        if (!reservePoolSurplus.minus(gameInfo.reserve_pool).eq(0)) {
-            sqlList.push({
-                sql: insertPrizePoolLog,
-                values: [ rewardInfo.gs_id, 'reserve_pool', reservePoolSurplus.minus(gameInfo.reserve_pool).toNumber(), 
-                    reservePoolSurplus.toNumber(), 'award',{}, `${ new Date() } award`, "now()" 
-                ]
-            });
-        }
+        sqlList.push({
+            sql: insertPrizePoolLog,
+            values: [ rewardInfo.gs_id, 'reserve_pool', reservePoolSurplus.minus(gameInfo.reserve_pool).toNumber(), 
+                reservePoolSurplus.toNumber(), 'award',{}, `${ new Date() } award`, "now()" 
+            ]
+        });
 
         // 调用 globallotto 合约开奖，记录相关信息
         const openData = {

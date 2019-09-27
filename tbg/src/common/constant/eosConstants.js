@@ -17,7 +17,7 @@ const UE_TOKEN_SYMBOL = "UE"
 const TBG_TOKEN = "tbgtokencoin"
 const TBG_TOKEN_SYMBOL = "TBG"
 
-const TBG_WALLET_RECEIVER = "tbgjoin";
+const TBG_WALLET_RECEIVER = "tbgreceiver";
 
 // 节点信息
 const END_POINT = "http://45.251.109.187:8888"

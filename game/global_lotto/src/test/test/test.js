@@ -16,6 +16,55 @@ async function one() {
 }
 
 ;(async () => {
+    const rewardMap = new Map();
+    const betInfoSql = `SELECT * FROM bet_order WHERE gs_id = $1`
+    const { rows : betOrderList } = await pool.query(betInfoSql, [ 'bfd4691c170d570c' ]);
+    console.debug("betOrderList: ", betOrderList);
+    const openCode = [ 3,4,3,8,8,1,4,2,2 ]
+    for (const info of betOrderList) {
+        // 如果投注了多个 key 的号码，每组 9 位号码按竖线分割
+        // eg: 1,2,3,4,5,6,7,8,9|9,8,7,6,5,4,3,2,1 如果选了相同号，也是如此
+        const betNumGroup = info.bet_num.split("|");
+        console.debug("betNumGroup: ", betNumGroup);
+        for (const betInfo of betNumGroup) {
+            const betNum = betInfo.split(",");
+            console.debug("betNum: ", betNum);
+            // 中奖号码的位置
+            const winCode = [];
+            let winCount = 0;
+            // reward_num: 0 , 8 , 9 , 0 , 1 , 2 , 1 , 8 , 7
+            // bet_code:   0 , 2 , 9 , 0 , 9 , 2 , 2 , 8 , 7
+            for (let i = 0; i < 9; i++) {
+                if (openCode[i] === Number(betNum[i])) {
+                    // 中
+                    winCount++
+                    winCode[i] = 1
+                } else {
+                    winCode[i] = 0
+                }
+            }
+
+            let obj = { ...info }
+            console.debug("obj: ", obj);
+            obj.bet_num = betInfo
+            // 统计所有 key 中奖的用户
+            const accRewardInfo = rewardMap.get(winCount);
+            if (!!accRewardInfo) {
+                accRewardInfo.push({
+                    "win_key": winCount,
+                    ...obj
+                })
+            } else {
+                const accRewardInfo = [{
+                    "win_key": winCount,
+                    ...obj
+                }]
+                rewardMap.set(winCount, accRewardInfo);
+            }
+        }
+    }
+
+    console.debug("rewardMap: ", rewardMap);
     // const myMap = new Map();
     // const arr = [ 1, 2, 3, 4, 5 ]
     // for (const val of arr) {
@@ -111,8 +160,8 @@ async function one() {
     const reg = /[\d]+/
     const res = reg.test(str);
 
-    const betCode = `123456789|223456789|223456789|233456789|234456789`
-    const openCode = `323456789`;
+    // const betCode = `123456789|223456789|223456789|233456789|234456789`
+    // const openCode = `323456789`;
     // let safeAccountList = await getSafeAccountList();
     // for (const info of safeAccountList) {
     //     console.debug("info: ", info);

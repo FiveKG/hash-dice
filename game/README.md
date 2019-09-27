@@ -8,7 +8,7 @@
 
 ### hash_dice
 * 哈希骰子智能合约帐号: `eoshashdice` 私钥: `5J6sFQ2xv32UzS9dWJHZ8HHcjxcCYBiWR7mt3bhpvzdYj5xUjiJ`
-* 哈希骰子庄家帐号: `dicebanker` 私钥: `5KQDHX3bQHkhAeo9CW3KxJ1YiUfYPMVuEcsYeC7hgyyjFB5k8oz`
+* 哈希骰子庄家帐号: `` 私钥: `5KQDHX3bQHkhAeo9CW3KxJ1YiUfYPMVuEcsYeC7hgyyjFB5k8oz`
 * 哈希骰子代投帐号: `eosbankereos` 私钥: `5J3QDbiCJDFpqxWwZ2jBdjwktn1LGV1T4JjaYiPwG4P3hCHjfyx`
 
 ### luckyhongbao

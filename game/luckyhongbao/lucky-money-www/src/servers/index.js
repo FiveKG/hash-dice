@@ -23,8 +23,8 @@ const storage = {
 
 let str = location.host.split(".");
 // var baseURL = location.protocol + '//api.' + str[str.length - 2] + "." + str[str.length - 1];//公网根据路由地址获取API地址
-var baseURL = location.protocol + '//192.168.1.141:8089';//App端接口服务器地址
-// var baseURL = 'http://luckyhongbao.tbg.isecsp.com';//App端接口服务器地址
+// var baseURL = location.protocol + '//192.168.1.141:8089';//App端接口服务器地址
+var baseURL = 'http://luckyhongbao.tbg.isecsp.com';//App端接口服务器地址
 
 // 封装请求方法
 const xhr = axios.create({

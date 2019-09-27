@@ -62,42 +62,42 @@ async function accReward(openCode, betOrderList) {
         // 如果投注了多个 key 的号码，每组 9 位号码按竖线分割
         // eg: 1,2,3,4,5,6,7,8,9|9,8,7,6,5,4,3,2,1 如果选了相同号，也是如此
         const betNumGroup = info.bet_num.split("|");
+        // logger.debug("betNumGroup: ", betNumGroup);
         for (const betInfo of betNumGroup) {
             const betNum = betInfo.split(",");
-            // 中奖号码的位置
-            const winCode = [];
+            // logger.debug("betNum: ", betNum);
             let winCount = 0;
             // reward_num: 0 , 8 , 9 , 0 , 1 , 2 , 1 , 8 , 7
             // bet_code:   0 , 2 , 9 , 0 , 9 , 2 , 2 , 8 , 7
             for (let i = 0; i < OPEN_CODE_COUNT; i++) {
-                if (openCode[i] === betNum[i]) {
+                if (openCode[i] === Number(betNum[i])) {
                     // 中
-                    winCount++
-                    winCode[i] = 1
-                } else {
-                    winCode[i] = 0
+                    winCount++;
+                    // logger.debug("winCount: ", winCount);
                 }
             }
 
+            let obj = { ...info }
+            obj.bet_num = betInfo
             // 统计所有 key 中奖的用户
             const accRewardInfo = rewardMap.get(winCount);
+            // logger.debug("accRewardInfo: ", accRewardInfo);
             if (!!accRewardInfo) {
-                accRewardInfo.push({
-                    "bet_num": betInfo,
-                    "win_key": winCount,
-                    ...info
-                })
-            } else {
-                const accRewardInfo = [{
-                    "bet_num": betInfo,
-                    "win_key": winCount,
-                    ...info
-                }]
+                accRewardInfo.push({ "win_key": winCount, ...obj});
+                // logger.debug("--------accRewardInfo: ", accRewardInfo);
                 rewardMap.set(winCount, accRewardInfo);
+                // logger.debug("000000000000rewardMap: ", rewardMap);
+            } else {
+                const accRewardInfo = [{ "win_key": winCount,...obj }]
+                // logger.debug("before winCount: ", winCount);
+                rewardMap.set(winCount, accRewardInfo);
+                // logger.debug("+++++++++++++++++++++++rewardMap: ", rewardMap.get(winCount));
+                // console.debug("========================= rewardMap: ", rewardMap)
             }
         }
     }
 
+    // console.debug("rewardMap: ", rewardMap);
     return rewardMap;
 }
 

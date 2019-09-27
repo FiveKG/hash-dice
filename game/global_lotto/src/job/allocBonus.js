@@ -18,7 +18,7 @@ async function handleOpenResult(gameInfo, rewardMap) {
         // 记录区块链相关调用信息
         const actList = [];
         const insertRewardSql = `
-            INSERT INTO award_session (aw_id, gs_id, extra, account_name, create_time, bet_num, win_key, win_type, one_key_bonus, bonus_amount)
+            INSERT INTO award_session (aw_id, bo_id, extra, account_name, create_time, bet_num, win_key, win_type, one_key_bonus, bonus_amount)
                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         `
         // 派奖后奖池剩余
@@ -75,34 +75,25 @@ async function handleOpenResult(gameInfo, rewardMap) {
                 // 五等奖
                 // 当五、六、七等奖奖金总额奖池不足以支付时，超出部分由全球彩储备池拨出；
                 const winType = "fifth_price"
-                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.FIFTH_PRICE, bonusMap, reservePoolSurplus);
+                const { sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.FIFTH_PRICE, bonusMap, reservePoolSurplus);
                 if (res.length !== 0) {
                     sqlList.push(...res);
-                    // const { pr, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
-                    // prizePoolSurplus = pr;
-                    // reservePoolSurplus = re;
                     actList.push(...tmpActList);
                 }
             } else if (winCount === ALLOC_CONSTANTS.SIXTH_PRICE_COUNT) {
                 // 六等奖
                 const winType = "sixth_price"
-                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.SIXTH_PRICE, bonusMap, reservePoolSurplus);
+                const { sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.SIXTH_PRICE, bonusMap, reservePoolSurplus);
                 if (res.length !== 0) {
                     sqlList.push(...res);
-                    // const { pr, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
-                    // prizePoolSurplus = pr;
-                    // reservePoolSurplus = re;
                     actList.push(...tmpActList);
                 }
             } else if (winCount === ALLOC_CONSTANTS.SEVENTH_PRICE_COUNT) {
                 // 七等奖
                 const winType = "seventh_price"
-                const { issued, sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.LOTTERY_AWARD, bonusMap, reservePoolSurplus);
+                const { sqlList: res, tmpActList } = await allocBonus(prizePoolSurplus, winCount, bonusAccList, winType, ALLOC_CONSTANTS.SEVENTH_PRICE, bonusMap, reservePoolSurplus);
                 if (res.length !== 0) {
                     sqlList.push(...res);
-                    // const { pr, re } = await minusAllocAmount(prizePoolSurplus, issued, reservePoolSurplus);
-                    // prizePoolSurplus = pr;
-                    // reservePoolSurplus = re;
                     actList.push(...tmpActList);
                 }
             } else {
@@ -113,7 +104,7 @@ async function handleOpenResult(gameInfo, rewardMap) {
                     for (const info of bonusAccList) {
                         const extra = { ...info.extra }
                         const opts = [
-                            generate_primary_key(), info.gs_id, extra, info.account_name, "now()", info.bet_num,
+                            generate_primary_key(), info.bo_id, extra, info.account_name, "now()", info.bet_num,
                             winCount, winType, oneKeyBonus, oneKeyBonus
                          ]
                         sqlList.push({ sql: insertRewardSql, values: opts });
@@ -132,6 +123,7 @@ async function handleOpenResult(gameInfo, rewardMap) {
             bonusMap
         }
     } catch (err) {
+        logger.error("handleOpenResult err: ", err)
         throw err;
     }
 }
@@ -151,7 +143,7 @@ async function allocBonus(prizePool, winCount, bonusAccList, winType, awardRate,
     // 存放 区块链转账
     const tmpActList = [];
     const insertRewardSql = `
-        INSERT INTO award_session (aw_id, gs_id, extra, account_name, create_time, bet_num, win_key, win_type, one_key_bonus, bonus_amount)
+        INSERT INTO award_session (aw_id, bo_id, extra, account_name, create_time, bet_num, win_key, win_type, one_key_bonus, bonus_amount)
             VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     `
     // 发放的金额
@@ -172,7 +164,7 @@ async function allocBonus(prizePool, winCount, bonusAccList, winType, awardRate,
                 let memo = `user ${ info.account_name } bingo ${ winCount } number, get ${ bonus } ${ UE_TOKEN_SYMBOL } bonus`;
                 if (payType !== UE_TOKEN_SYMBOL) {
                     // 如果用户使用游戏码或者可提现余额投注,投注金额需返回用户的账户中,奖金为 总的金额 - 退还额度
-                    returnsCurrency = new Decimal(info.extra.bet_amount);
+                    returnsCurrency = new Decimal(info.amount);
                     bonus = new Decimal(oneKeyBonus).minus(returnsCurrency);
                     const acc = bonusMap.get(info.account_name);
                     if (!acc) {
@@ -185,7 +177,7 @@ async function allocBonus(prizePool, winCount, bonusAccList, winType, awardRate,
                 let from = BANKER;
                 if (prizePool.lessThan(0)) {
                     // 检查储备池是否足够支付
-                    if (!reservePoolSurplus.lessThan(oneKeyBonus)) {
+                    if (!reservePoolSurplus.lessThan(bonus)) {
                         // 算出差额
                         const diff = issued.minus(prizePool);
                         // 发放完底池
@@ -222,11 +214,11 @@ async function allocBonus(prizePool, winCount, bonusAccList, winType, awardRate,
                     memo: memo
                 }
                 const opts = [
-                    generate_primary_key(), info.gs_id, extra, info.account_name, "now()", info.bet_num,
-                    winCount, winType, oneKeyBonus, oneKeyBonus
+                    generate_primary_key(), info.bo_id, extra, info.account_name, "now()", info.bet_num,
+                    winCount, winType, bonus, bonus
                  ]
                 sqlList.push({ sql: insertRewardSql, values: opts });
-                issued = issued.add(oneKeyBonus);
+                issued = issued.add(bonus);
             }
         } 
     } else {
@@ -243,7 +235,7 @@ async function allocBonus(prizePool, winCount, bonusAccList, winType, awardRate,
                 let memo = `user ${ info.account_name } bingo ${ winCount } number, get ${ oneKeyBonus.toFixed(4) } ${ UE_TOKEN_SYMBOL } bonus`
                 if (payType !== UE_TOKEN_SYMBOL) {
                     // 如果用户使用游戏码或者可提现余额投注,投注金额需返回用户的账户中,奖金为 总的金额 - 退还额度
-                    returnsCurrency = new Decimal(info.extra.bet_amount);
+                    returnsCurrency = new Decimal(info.amount);
                     bonus = new Decimal(oneKeyBonus).minus(returnsCurrency);
                     const acc = bonusMap.get(info.account_name);
                     if (!acc) {
@@ -273,11 +265,11 @@ async function allocBonus(prizePool, winCount, bonusAccList, winType, awardRate,
                     memo: memo
                 };
                 const opts = [
-                    generate_primary_key(), info.gs_id, extra, info.account_name, "now()", info.bet_num,
-                    winCount, winType, oneKeyBonus.toFixed(4), oneKeyBonus.toFixed(4)
+                    generate_primary_key(), info.bo_id, extra, info.account_name, "now()", info.bet_num,
+                    winCount, winType, bonus.toFixed(4), bonus.toFixed(4)
                 ]
                 sqlList.push({ sql: insertRewardSql, values: opts });
-                issued = issued.add(oneKeyBonus);
+                issued = issued.add(bonus);
                 // 开出超级大奖后，推荐人可得 10%，从奖池中扣除
                 if (winType === "lottery_award") {
                     const bonus = oneKeyBonus.mul(ALLOC_CONSTANTS.SPECIAL_AWARD).div(ALLOC_CONSTANTS.BASE_RATE);
@@ -291,7 +283,7 @@ async function allocBonus(prizePool, winCount, bonusAccList, winType, awardRate,
                     if (!!referrer_account) {
                         // 推荐人获得特别奖
                         const opts = [
-                            generate_primary_key(), info.gs_id, extra, referrer_account, "now()", info.bet_num,
+                            generate_primary_key(), info.bo_id, extra, referrer_account, "now()", info.bet_num,
                             winCount, "special_award", bonus.toFixed(4), bonus.toFixed(4)
                         ]
                         sqlList.push({ sql: insertRewardSql, values: opts });

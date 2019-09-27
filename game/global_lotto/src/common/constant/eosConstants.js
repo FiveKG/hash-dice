@@ -24,12 +24,11 @@ const BANKER = "lottobanker"
 const DISTRIBUTION_CENTER_ACCOUNT = "eoscentereos"
 
 // 代投注账号
-const AGENT_ACCOUNT = "globallotto"
+const AGENT_ACCOUNT = "eoslottoeos"
 
 // 全球彩合约帐号
 const GLOBAL_LOTTO_CONTRACT = "globallotto";
 
-const GLOBAL_LOTTO_ACCOUNT = "eoslottoeos";
 const GLOBAL_LOTTO_BOTTOM_ACCOUNT = "lottobottom";
 const GLOBAL_LOTTO_RESERVE_ACCOUNT = "lottoreserve";
 

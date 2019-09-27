@@ -13,15 +13,19 @@ async function gameSessionMine(req, res, next) {
         logger.debug(`the param is %j: `, reqData);
         // 先查出所有的期数
         const sql = `
-            SELECT gs.periods, gs.reward_num, bo.create_time, gs.game_state, bo.key_count, a.win_type
+            SELECT bo.bo_id, gs.periods, gs.reward_num, bo.create_time, gs.game_state, bo.key_count
                 FROM game_session gs 
                 JOIN bet_order bo ON gs.gs_id = bo.gs_id
-                LEFT JOIN award_session a ON a.gs_id = gs.gs_id
                 WHERE bo.account_name = $1
                 ORDER BY create_time DESC
         `
         const { rows: myOrderList } = await pool.query(sql, [ reqData.account_name ]);
-        logger.debug("myOrderList: ", myOrderList)
+        logger.debug("myOrderList: ", myOrderList);
+
+        const selectAwardSql = `SELECT sum(one_key_bonus) AS bonus, bo_id FROM award_session WHERE bo_id = any($1) GROUP BY bo_id;`
+        const boIds = myOrderList.map(it => it.bo_id);
+        const { rows: rewardRec } = await pool.query(selectAwardSql, [ Array.from(new Set(boIds)) ]);
+        logger.debug("rewardRec: ", rewardRec);
         let resData = get_status(1);
         resData.data = {
             detail: myOrderList.map(it => {
@@ -30,8 +34,12 @@ async function gameSessionMine(req, res, next) {
                 if (it.game_state === GAME_STATE.START || it.game_state == GAME_STATE.REWARDING) {
                     winType = "waiting"
                 } else {
-                    if (it.win_type !== "sorry") {
-                        winType = "bingo"
+                    const result = rewardRec.find(item => item.bo_id === it.bo_id);
+                    logger.debug("result: ", result);
+                    if (!!result) {
+                        if (!new Decimal(result.bonus).eq(0)) {
+                            winType = "bingo"
+                        }
                     }
                 }
                 return {

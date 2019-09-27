@@ -29,71 +29,7 @@ async function handlerGameReceiver(data) {
          */
         const sqlList = [];
         const actList = [];
-        const amount = new Decimal(data.amount);
-        const baseRate = GAME_CONSTANTS.BASE_RATE;
-        let toTshPool = null;
-        let toProtectionPool = null;
-        let toReferrer = null;
-        let toTshIncome = null;
-        if (data.game_name === "globallotto") {
-            // 1% 拨入 TBG 股东分红池
-            toTshPool = amount.mul(GAME_CONSTANTS.GLOBAL_LOTTO_ALLOC_TO_TSH_POOL).div(baseRate);
-            // 1% 拨入 TBG 三倍收益保障池
-            toProtectionPool = amount.mul(GAME_CONSTANTS.GLOBAL_LOTTO_ALLOC_TO_PROTECTION_POOL).div(baseRate);
-            // 5% 拨入 TBG 共享推荐佣金分配；
-            toReferrer = amount.mul(GAME_CONSTANTS.GLOBAL_LOTTO_ALLOC_TO_REFERRER).div(baseRate);
-            // 1.5% TSH投资股东收益
-            toTshIncome = amount.mul(GAME_CONSTANTS.GLOBAL_LOTTO_ALLOC_TO_TSH_INCOME).div(baseRate);
-        } else if (data.game_name === "luckyhongbao") {
-            // 拨入 TBG 股东分红池
-            toTshPool = amount.mul(GAME_CONSTANTS.HONG_BAO_ALLOC_TO_TSH_POOL).div(baseRate);
-            logger.debug(`toTshPool:`, toTshPool);
-            // 拨入 TBG 三倍收益保障池
-            toProtectionPool = amount.mul(GAME_CONSTANTS.HONG_BAO_ALLOC_TO_PROTECTION_POOL).div(baseRate);
-            logger.debug(`toProtectionPool:`, toProtectionPool);
-            // 拨入 TBG 共享推荐佣金分配；
-            toReferrer = amount.mul(GAME_CONSTANTS.HONG_BAO_ALLOC_TO_REFERRER).div(baseRate);
-            logger.debug(`toReferrer:`, toReferrer);
-            // TSH投资股东收益
-            toTshIncome = amount.mul(GAME_CONSTANTS.HONG_BAO_ALLOC_TO_TSH_INCOME).div(baseRate);
-            logger.debug(`toTshIncome:`, toTshIncome);
-        } else if (data.game_name === "treasure") {
-            // 1% 拨入 TBG 股东分红池
-            toTshPool = amount.mul(GAME_CONSTANTS.TREASURE_ALLOC_TO_TSH_POOL).div(baseRate);
-            // 1% 拨入 TBG 三倍收益保障池
-            toProtectionPool = amount.mul(GAME_CONSTANTS.TREASURE_ALLOC_TO_PROTECTION_POOL).div(baseRate);
-            // 3% 拨入 TBG 共享推荐佣金分配；
-            toReferrer = amount.mul(GAME_CONSTANTS.TREASURE_ALLOC_TO_REFERRER).div(baseRate);
-            // 1.5% TSH投资股东收益
-            toTshIncome = amount.mul(GAME_CONSTANTS.TREASURE_ALLOC_TO_TSH_INCOME).div(baseRate);
-        } else if (data.game_name === "hashdice") {
-            // 0.1% 拨入 TBG 股东分红池
-            toTshPool = amount.mul(GAME_CONSTANTS.HASH_DICE_ALLOC_TO_TSH_POOL).div(baseRate);
-            // 0.1% 拨入 TBG 三倍收益保障池
-            toProtectionPool = amount.mul(GAME_CONSTANTS.HASH_DICE_ALLOC_TO_PROTECTION_POOL).div(baseRate);
-            // 0.3% 拨入 TBG 共享推荐佣金分配；
-            toReferrer = amount.mul(GAME_CONSTANTS.HASH_DICE_ALLOC_TO_REFERRER).div(baseRate);
-            // 0.3% TSH投资股东收益
-            toTshIncome = amount.mul(GAME_CONSTANTS.HASH_DICE_ALLOC_TO_TSH_INCOME).div(baseRate);
-        } else if (data.game_name === "minlottery") {
-            // 0.1% 拨入 TBG 股东分红池
-            toTshPool = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_TSH_POOL).div(baseRate);
-            // 0.1% 拨入 TBG 三倍收益保障池
-            toProtectionPool = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_PROTECTION_POOL).div(baseRate);
-            // 0.3% 拨入 TBG 共享推荐佣金分配；
-            toReferrer = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_REFERRER).div(baseRate);
-            // 0.3% TSH投资股东收益
-            toTshIncome = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_TSH_INCOME).div(baseRate);
-        } else {
-            // 0.1% 拨入 TBG 股东分红池
-            toTshPool = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_TSH_POOL).div(baseRate);
-            // 0.1% 拨入 TBG 三倍收益保障池
-            toProtectionPool = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_PROTECTION_POOL).div(baseRate);
-            // 0.3% 拨入 TBG 共享推荐佣金分配；
-            toReferrer = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_REFERRER).div(baseRate);
-            // 0.3% TSH投资股东收益
-            toTshIncome = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_TSH_INCOME).div(baseRate);
-        }
+        const { toProtectionPool, toReferrer, toTshIncome, toTshPool } = culBonus(data);
 
         // 获取系统账户
         const systemAccount = await getSystemAccountInfo();
@@ -130,12 +66,12 @@ async function handlerGameReceiver(data) {
             const extra = { "symbol": UE_TOKEN_SYMBOL, aid: info.sysInfo.pool_type }
             sqlList.push({
                 sql: insertSysOpLogSql,
-                values: [ poolAmount.add(info.income), poolAmount, extra, remark, format(new Date(), "YYYY-MM-DD HH:mm:sssssZ") ]
+                values: [ poolAmount.add(info.income).toNumber(), poolAmount.toNumber(), extra, 'game', remark, format(new Date(), "YYYY-MM-DD HH:mm:sssssZ") ]
             });
     
             sqlList.push({
                 sql: upSysPoolSql,
-                values: [ poolAmount.add(info.income), info.sysInfo.pool_type, UE_TOKEN_SYMBOL ]
+                values: [ poolAmount.add(info.income).toNumber(), info.sysInfo.pool_type, UE_TOKEN_SYMBOL ]
             })
         }
 
@@ -198,7 +134,7 @@ async function handlerGameReceiver(data) {
         actList.push(...actions);
 
         // 用户参加游戏空投 1 ： 0.05
-        const tbgBalance = await getTbgBalanceInfo(userReferrer);
+        const tbgBalance = await getTbgBalanceInfo(data.account_name);
         const airdropAmount = new Decimal(data.game_amount).mul(0.05);
         actList.push({
             account: TBG_TOKEN_COIN,
@@ -334,4 +270,83 @@ function setRate(position) {
     } else {
         return 10 / 100;
     } 
+}
+
+/**
+ * 计算奖金
+ * @param {{ game_name: string, amount: number }} data 
+ */
+function culBonus(data) {
+    const amount = new Decimal(data.amount);
+    const baseRate = GAME_CONSTANTS.BASE_RATE;
+    let toTshPool = null;
+    let toProtectionPool = null;
+    let toReferrer = null;
+    let toTshIncome = null;
+    if (data.game_name === "globallotto") {
+        // 1% 拨入 TBG 股东分红池
+        toTshPool = amount.mul(GAME_CONSTANTS.GLOBAL_LOTTO_ALLOC_TO_TSH_POOL).div(baseRate);
+        // 1% 拨入 TBG 三倍收益保障池
+        toProtectionPool = amount.mul(GAME_CONSTANTS.GLOBAL_LOTTO_ALLOC_TO_PROTECTION_POOL).div(baseRate);
+        // 5% 拨入 TBG 共享推荐佣金分配；
+        toReferrer = amount.mul(GAME_CONSTANTS.GLOBAL_LOTTO_ALLOC_TO_REFERRER).div(baseRate);
+        // 1.5% TSH投资股东收益
+        toTshIncome = amount.mul(GAME_CONSTANTS.GLOBAL_LOTTO_ALLOC_TO_TSH_INCOME).div(baseRate);
+    } else if (data.game_name === "luckyhongbao") {
+        // 拨入 TBG 股东分红池
+        toTshPool = amount.mul(GAME_CONSTANTS.HONG_BAO_ALLOC_TO_TSH_POOL).div(baseRate);
+        logger.debug(`toTshPool:`, toTshPool);
+        // 拨入 TBG 三倍收益保障池
+        toProtectionPool = amount.mul(GAME_CONSTANTS.HONG_BAO_ALLOC_TO_PROTECTION_POOL).div(baseRate);
+        logger.debug(`toProtectionPool:`, toProtectionPool);
+        // 拨入 TBG 共享推荐佣金分配；
+        toReferrer = amount.mul(GAME_CONSTANTS.HONG_BAO_ALLOC_TO_REFERRER).div(baseRate);
+        logger.debug(`toReferrer:`, toReferrer);
+        // TSH投资股东收益
+        toTshIncome = amount.mul(GAME_CONSTANTS.HONG_BAO_ALLOC_TO_TSH_INCOME).div(baseRate);
+        logger.debug(`toTshIncome:`, toTshIncome);
+    } else if (data.game_name === "treasure") {
+        // 1% 拨入 TBG 股东分红池
+        toTshPool = amount.mul(GAME_CONSTANTS.TREASURE_ALLOC_TO_TSH_POOL).div(baseRate);
+        // 1% 拨入 TBG 三倍收益保障池
+        toProtectionPool = amount.mul(GAME_CONSTANTS.TREASURE_ALLOC_TO_PROTECTION_POOL).div(baseRate);
+        // 3% 拨入 TBG 共享推荐佣金分配；
+        toReferrer = amount.mul(GAME_CONSTANTS.TREASURE_ALLOC_TO_REFERRER).div(baseRate);
+        // 1.5% TSH投资股东收益
+        toTshIncome = amount.mul(GAME_CONSTANTS.TREASURE_ALLOC_TO_TSH_INCOME).div(baseRate);
+    } else if (data.game_name === "hashdice") {
+        // 0.1% 拨入 TBG 股东分红池
+        toTshPool = amount.mul(GAME_CONSTANTS.HASH_DICE_ALLOC_TO_TSH_POOL).div(baseRate);
+        // 0.1% 拨入 TBG 三倍收益保障池
+        toProtectionPool = amount.mul(GAME_CONSTANTS.HASH_DICE_ALLOC_TO_PROTECTION_POOL).div(baseRate);
+        // 0.3% 拨入 TBG 共享推荐佣金分配；
+        toReferrer = amount.mul(GAME_CONSTANTS.HASH_DICE_ALLOC_TO_REFERRER).div(baseRate);
+        // 0.3% TSH投资股东收益
+        toTshIncome = amount.mul(GAME_CONSTANTS.HASH_DICE_ALLOC_TO_TSH_INCOME).div(baseRate);
+    } else if (data.game_name === "minlottery") {
+        // 0.1% 拨入 TBG 股东分红池
+        toTshPool = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_TSH_POOL).div(baseRate);
+        // 0.1% 拨入 TBG 三倍收益保障池
+        toProtectionPool = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_PROTECTION_POOL).div(baseRate);
+        // 0.3% 拨入 TBG 共享推荐佣金分配；
+        toReferrer = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_REFERRER).div(baseRate);
+        // 0.3% TSH投资股东收益
+        toTshIncome = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_TSH_INCOME).div(baseRate);
+    } else {
+        // 0.1% 拨入 TBG 股东分红池
+        toTshPool = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_TSH_POOL).div(baseRate);
+        // 0.1% 拨入 TBG 三倍收益保障池
+        toProtectionPool = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_PROTECTION_POOL).div(baseRate);
+        // 0.3% 拨入 TBG 共享推荐佣金分配；
+        toReferrer = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_REFERRER).div(baseRate);
+        // 0.3% TSH投资股东收益
+        toTshIncome = amount.mul(GAME_CONSTANTS.MIN_LOTTERY_ALLOC_TO_TSH_INCOME).div(baseRate);
+    }
+
+    return {
+        toTshPool,
+        toProtectionPool,
+        toReferrer,
+        toTshIncome
+    }
 }
