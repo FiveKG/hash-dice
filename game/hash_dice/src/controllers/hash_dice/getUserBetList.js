@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/hash_dice/getUserBetList.js": "获取所有用户投注的信息" });
+const logger = require("../../common/logger.js").child({ "@controllers/hash_dice/getUserBetList.js": "get all user bet list" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { pool } = require("../../db");
 /**

@@ -25,6 +25,6 @@ content-type: application/json
 
 {
     "account_name": "yujinsheng11",
-    "bet_num"     : "twins",
+    "bet_num"     : "big",
     "bet_amount"  : "1"
 }

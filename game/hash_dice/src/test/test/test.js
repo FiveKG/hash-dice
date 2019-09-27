@@ -127,8 +127,8 @@ async function getCurrencyBalance(code, account, symbol) {
 }
 
 
-let memo = "hash_dice:yujinsheng11:twins:2.0770"  
-transfer(UE_TOKEN, UE_TOKEN, BANKER, '10.0000 UE', memo, PRIVATE_KEY_TEST.split(","))
+let memo = "hash_dice:yujinsheng11:small:1.96"  
+transfer(UE_TOKEN, "luckyhongbao", BANKER, '2.0000 UE', memo, PRIVATE_KEY_TEST.split(","))
 .then(res => console.error(res))
 .catch(err => console.error(err));
 
