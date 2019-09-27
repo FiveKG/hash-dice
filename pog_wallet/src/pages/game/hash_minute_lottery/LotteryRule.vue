@@ -67,7 +67,7 @@ export default {
 
 <style scoped>
   .container{
-    height: auto;width: 100%;background-color:rgb(40,40,40);min-height: 100%;
+    height: auto;width: 100%;background-color:rgb(56,56,58);min-height: 100%;
   }
   .rule-title{
     height: 1.5rem;line-height: 1.5rem;color: rgba(255, 153, 0, 1);font-size: 0.5rem;width: 90%;margin: 0 5%;
