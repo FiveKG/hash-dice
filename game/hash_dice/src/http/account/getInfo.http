@@ -2,10 +2,10 @@
 GET http://localhost:13022/account/info?account_name=yujinsheng11
 
 ### get config
-GET http://localhost:13022/config/get_config
+GET http://hash_dice.tbg.isecsp.com/config/get_config
 
 ### get banker
-GET http://localhost:13022/hash_dice/banker
+GET http://hash_dice.tbg.isecsp.com/hash_dice/banker
 
 ### getGame Rate
 GET http://localhost:13022/hash_dice/game_rate?account_name=110
