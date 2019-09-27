@@ -100,7 +100,7 @@
                   <div class="name" v-if="item.bonus_type == 'fifth_price'">五等奖</div>
                   <div class="name" v-if="item.bonus_type == 'sixth_price'">六等奖</div>
                   <div class="name" v-if="item.bonus_type == 'seventh_price'">七等奖</div>
-                  <div class="win-list">中奖名单</div>
+                  <div class="win-list" @click="openWinnerList(index)">中奖名单</div>
                 </div>
                 <div class="info" v-if="item.bonus_type == 'lottery_award'">奖金= ( 全球彩奖池 x 60% ) / 中奖数量</div>
                 <div class="info" v-if="item.bonus_type == 'second_price'">奖金= ( 全球彩奖池 x 20% ) / 中奖数量</div>
@@ -119,6 +119,28 @@
               </div>
             </div>
           </div>
+          <!-- 中奖者名单 -->
+          <transition>
+            <div class="winner-list" v-if="winnerDialog">
+              <div class="container">
+                <div class="body">
+                  <div class="winner-body">
+                    <div class="header">
+                      <div class="item">中奖账户</div>
+                      <div class="item">中奖数</div>
+                      <div class="item">派奖金额</div>
+                    </div>
+                    <div class="header" v-for="(item,index) in winnerList" :key="index">
+                      <div class="item">{{item.account_name}}</div>
+                      <div class="item">{{item.win_key}}</div>
+                      <div class="item">{{item.award_amount}}</div>
+                    </div>
+                  </div>
+                  <div class="close-btn"><div class="content" @click="winnerDialog = false">关闭</div></div>
+                </div>
+              </div>
+            </div>
+          </transition>
         </div>
       </slot>
     </vpage>
@@ -141,6 +163,8 @@ export default {
       OpenDetail: {},//开奖详情
       tiemer: "",//开奖倒计时
       SelectedWinDetail: false,//是否展示中奖明细
+      winnerDialog: false,//中奖者弹窗
+      winnerList: [],//中奖者名单
     }
   },
   methods: {
@@ -191,6 +215,12 @@ export default {
           }
         }
       })
+    },
+    // 打开中奖者名单弹窗
+    openWinnerList(index){
+      this.winnerDialog = true;
+      this.winnerList = this.OpenDetail.detail[index].award_lists;
+      console.log("打开中奖者名单弹窗:",index,this.winnerList);
     }
   },
   created(){
@@ -331,7 +361,41 @@ export default {
 .win-type-list .container .win-count .win-num{
   float: right;margin-right: 0.5rem;font-size: 0.35rem;
 }
-
+/* 中奖者名单 */
+.winner-list{
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  background-color:  rgba(0, 0, 0, 0.509803921568627);
+  z-index:99;
+  display:flex;
+  align-items:center;
+  justify-content: center;
+}
+.winner-list .container{
+  width: 100%;height: 100%;
+}
+.winner-list .container .body{
+  height: 85%;width: 100%;background-color: white;bottom: 0px;position: absolute;border-top-left-radius: 1rem;border-top-right-radius: 1rem;
+}
+.winner-list .container .body .winner-body{
+  height: 80%;width: 100%;
+}
+.winner-list .container .body .winner-body .header{
+  height: 1rem;line-height: 1rem;display: flex;
+}
+.winner-list .container .body .winner-body .header .item{
+  width: 33.33%;text-align: center;
+}
+.winner-list .container .body .close-btn{
+  height: 20%;width: 100%;display: flex;
+}
+.winner-list .container .body .close-btn .content{
+  width: 70%;background-color: rgb(218, 178, 121);text-align: center;
+  height: 1rem;line-height: 1rem;border-radius: 0.2rem;margin: auto;
+}
 
 </style>
 
