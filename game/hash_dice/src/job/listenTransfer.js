@@ -34,7 +34,6 @@ async function begin() {
 
 async function handlerTransferActions() {
     try {
-
         await redis.set(INVEST_LOCK, 1);
         const actionSeq = await getLastPos(); //获取上次扫描位置
         const actions = await getTrxAction(BANKER, actionSeq);
@@ -60,6 +59,7 @@ async function handlerTransferActions() {
             }
             //下注
             //console.log('=========>',betData)
+
             await handlerBet(betData)
             await redis.set(`tbg:hash_dice:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);

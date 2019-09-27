@@ -1,7 +1,7 @@
 // @ts-check
 const logger = require("../common/logger.js").child({ "@src/job/handlerBet.js": "hander users' bet" });
 const { Decimal } = require("decimal.js");
-const { pool, psGame ,psModifyBalance ,psHashDiceOpen} = require("../db");
+const { pool, psTrx ,psModifyBalance ,psHashDiceOpen} = require("../db");
 const { HASH_DICE_CONTRACT, AGENT_ACCOUNT,BANKER,TBG_WALLET_RECEIVER,UE_TOKEN } = require("../common/constant/eosConstants");
 const { END_POINT, PRIVATE_KEY_TEST } = require("../common/constant/eosConstants.js");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");;
@@ -13,12 +13,13 @@ const { TextDecoder, TextEncoder } = require('util');               // node only
 const transfer = require("./handlerTransfer")
 /**
  * 处理用户投注
- * @param {{ account_name:string, 
- *          bet_num: string,
- *          bet_amount: string,
- *          odds_rate:string,
- *          pay_type:string,
- *          agent_account:string
+ * @param {{ 
+ *          account_name:String, 
+ *          bet_num: String,
+ *          bet_amount: String,
+ *          odds_rate:String,
+ *          pay_type:String,
+ *          agent_account:String
  * }} data 
  */
 async function handlerBet(data) {
@@ -29,7 +30,7 @@ async function handlerBet(data) {
          * 3. 投注后修改余额
          * 4. 游戏空投
          */
-        
+
         const sqlList = [];
         // 记录区块链相关调用信息
         const actList = [];
@@ -39,8 +40,8 @@ async function handlerBet(data) {
         const toTshIncome = (betAmount.mul(ALLOC_CONSTANTS.ALLOC_TO_TBG).div(ALLOC_CONSTANTS.BASE_RATE)).toFixed(4);
         // 在数据库中插入投注记录
         const insertBetOrder = `
-            INSERT INTO bet_order(id, bet_block_num, reward_block_num,account_name, bet_num, betting_amount, reward,game_rate,agent_account,create_time)
-                VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)
+            INSERT INTO bet_order(id, bet_block_num, reward_block_num,account_name, bet_num, betting_amount, reward,game_rate,agent_account,pay_type,create_time)
+                VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9,$10,$11)
         `
 
         // 调用 hash_dice 合约投注
@@ -65,9 +66,9 @@ async function handlerBet(data) {
         if (data.agent_account === AGENT_ACCOUNT) {
             await psModifyBalance.pub({
                 account_name : data.account_name,
-                cost_amount: data.bet_amount,
+                cost_amount  : "-"+data.bet_amount,
                 pay_type     : data.pay_type,
-                agent_account:AGENT_ACCOUNT
+                agent_account: AGENT_ACCOUNT
             })
         }
         else{
@@ -99,7 +100,7 @@ async function handlerBet(data) {
             const block_num = result.processed.block_num;
             sqlList.push({
                 sql: insertBetOrder,
-                values: [ generate_primary_key(),block_num,block_num+7, data.account_name, data.bet_num, data.bet_amount,'',data.odds_rate,data.agent_account,'now()' ]
+                values: [ generate_primary_key(),block_num,block_num+7, data.account_name, data.bet_num, data.bet_amount,'',data.odds_rate,data.agent_account,data.pay_type,'now()' ]
             });
             await Promise.all(
                 sqlList.map(it => {
@@ -109,11 +110,10 @@ async function handlerBet(data) {
             );
             await client.query("COMMIT");
             flag = true;
-            
-           
-            //通知开奖
-            await psHashDiceOpen.pub(block_num+7)
 
+            //通知开奖
+            
+            await psHashDiceOpen.pub(block_num+7)
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
@@ -121,6 +121,8 @@ async function handlerBet(data) {
             await client.release();
         }
 
+       
+       
         //按比例分配进TBG里
         if (flag && actList.length !== 0) {
             let memo =`hashdice:${data.account_name}:${betAmount}`;
@@ -133,11 +135,16 @@ async function handlerBet(data) {
                 //自己投注，庄家发款
                 from = BANKER;
             }
-            let result = await transfer(UE_TOKEN,from,TBG_WALLET_RECEIVER,toTshIncome+" UE",memo,privateKeys)
-            logger.debug(`the transfer from ${from} to ${TBG_WALLET_RECEIVER} result is:${result.processed.receipt.status}`)
+            let transfer_data ={
+                "tokenContract"  : UE_TOKEN,
+                "from"           : from,
+                "to"             : TBG_WALLET_RECEIVER,
+                "quantity"       : toTshIncome+" UE",
+                "memo"           : memo,
+                "privateKeyList" : privateKeys
+            }
+            psTrx.pub(transfer_data)
         }
-
-
     } catch (err) {
         logger.error("handlerBet error: ", err);
         throw err;

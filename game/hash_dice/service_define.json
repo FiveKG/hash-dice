@@ -68,13 +68,14 @@
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
                     "detail": {
-                        "type": "objectArray", "desc": "全部开奖信息",
+                        "type": "object", "desc": "全部开奖信息",
                         "properties": {
-                            "odds_rate": { "type": "text",  "is_require": true,  "desc": "赔率" },
-                            "winning_probability": { "type": "text",  "is_require": true,  "desc": "中奖概率" },
-                            "num_interval": { "type": "text",  "is_require": true,  "desc": "号码区间" },
-                            "bet_type": { "type": "text",  "is_require": true,  "desc": "下注的类型" }
-
+                            "bet_num":{
+                                "odds_rate":{ "type": "text",  "is_require": true,  "desc": "赔率"},
+                                "winning_probability": { "type": "text",  "is_require": true,  "desc": "中奖概率" },
+                                "num_interval": { "type": "text",  "is_require": true,  "desc": "号码区间" },
+                                "bet_type": { "type": "text",  "is_require": true,  "desc": "下注的类型" }
+                            }
                         }
                     }
                 }

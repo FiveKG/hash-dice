@@ -1,7 +1,7 @@
 // @ts-check
-const logger = require("../../common/logger").child({ "@controllers/hash_dice/getGameRate.js": "获取赔率"});
+const logger = require("../../common/logger").child({ "@controllers/hash_dice/getGameRate.js": "get game rate"});
 const { get_status, inspect_req_data } = require("../../common/index.js");
-const {game_rate} = require("./config")
+const {GAME_RATE} = require("./config")
 /**
  * 
  * @param {any} req 
@@ -15,7 +15,7 @@ async function getGameRate(req,res,next){
 
         let resData = get_status(1);
 
-        resData["data"] = game_rate;
+        resData["data"] = GAME_RATE;
         //@ts-ignore
         res.send(resData);
     } catch (err) {

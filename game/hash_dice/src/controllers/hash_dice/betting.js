@@ -1,11 +1,11 @@
 // @ts-check
 const logger = require("../../common/logger").child({ [__filename]: "betting" });
 const { get_status, inspect_req_data, xhr,generate_primary_key } = require("../../common/index.js");
-const { pool ,psBet} = require("../../db");
+const {  psBet} = require("../../db");
 const { Decimal } = require("decimal.js");
 const url = require("url");
 const {AGENT_ACCOUNT} = require('../../common/constant/eosConstants')
-const {game_rate} = require('./config')
+const {GAME_RATE} = require('./config')
 const getCurrencyBalance = require("../../job/getCurrencyBalance")
 
 /**
@@ -17,27 +17,24 @@ const getCurrencyBalance = require("../../job/getCurrencyBalance")
 async function betting(req,res,next){
     try {
         let reqData = await inspect_req_data(req);
-
+        let resData
         logger.debug(`the param is: %j`,reqData);
 
 
         let {account_name,bet_num,bet_amount} = reqData;
-        let id                                = generate_primary_key();
-       // let bet_block_num                     = shortid.generate();  //从区块链中获取
         let odds_rate                         = null;
-        let obj                               = null;
-
-        if(obj=game_rate.find(function(element){
-            return  element.bet_type == bet_num
-            })
-        ){
-        }else{
-            obj = game_rate.find(function(element){
-                return  element.bet_type == 'smaller'
-                })
-        }
         //@ts-ignore
-        odds_rate = obj.odds_rate
+        if(GAME_RATE[bet_num]){
+            //@ts-ignore
+           odds_rate = GAME_RATE[bet_num].odds_rate
+        }else
+        {
+            resData = get_status(2000, "错误值");
+            res.send(resData);
+            return
+        }
+
+        
 
 
         //查出玩家余额
@@ -59,11 +56,11 @@ async function betting(req,res,next){
                 "bet_num"      : bet_num,
                 "odds_rate"    : odds_rate,
                 "bet_amount"   : bet_amount,
-                "agent_account": AGENT_ACCOUNT
+                "agent_account": AGENT_ACCOUNT,
         };
 
-        let resData
         
+        console.debug(`用户${account_name},余额：${withdrawEnable},游戏码:${gameCurrency},区块链余额:${eosCurrency}`)
         //如果游戏码额度小于下注额度
         if(gameCurrency.lessThan(bet_amount)){
             //如果余额额度小于下注额度
@@ -83,7 +80,7 @@ async function betting(req,res,next){
                 psData['pay_type'] = 'withdraw_enable';
                 //提交投注信息到消息队列
                 await psBet.pub(psData);
-                resData = get_status(1011, "余额下注");
+                resData = get_status(1, "余额下注");
             }
         }
         else{
@@ -92,7 +89,7 @@ async function betting(req,res,next){
             psData["pay_type"]= "game_currency"
             //提交投注信息到消息队列
             await psBet.pub(psData);
-            resData = get_status(1011, "游戏码下注");
+            resData = get_status(1, "游戏码下注");
             
         }  
         res.send(resData);

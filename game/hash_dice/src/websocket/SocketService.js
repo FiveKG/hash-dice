@@ -2,8 +2,6 @@
 const logger = require("../common/logger.js").child({ "@": "socket server" });
 const io = require('socket.io')();
 const { rpc } = require("../job/getTrxAction");
-const ApiService = require('./ApiService');
-const { hashDiceOpen } = require("../db");
 const df = require("date-fns");
 
 /**
@@ -28,7 +26,7 @@ class SocketService {
     const options = { pingTimeout: 100000000 };
     io.attach(server,options);
     this.open();
-    await getBlockInfo();
+
   }
 
   async open() {
@@ -81,57 +79,7 @@ function socketHandler(socket) {
 
 const socketService = new SocketService();
 
-async function getBlockInfo() {
-  try {
-    // 获取区块链信息
-    const { head_block_num } = await rpc.get_info();
-    getBlocks(head_block_num)
-    
-  } catch(err) {
-    logger.debug('getBlockInfo',err)
 
-    throw err;
-  }
-}
-
-
-const openFlag = false;
-const openCount = 0;
-
-/**
- * 获取区块链信息
- * @param { number } block_num 
- */
-async function getBlocks(block_num) {
-  rpc.get_block(block_num).then(res => {
-    try {
-      //logger.debug("res: ", res.block_num, res.id, res.timestamp);
-      block_num++;
-      if (!!block_server) {
-        block_server.to('block').emit({ type: 'block', result: res });
-      }
-
-      // const timestamp = df.format(res.timestamp, "mm:ss:SSS");
-      const timestamp = df.format(res.timestamp, "ss:SSS");
-      // 整点开奖
-      if (timestamp === "00:000") {
-        logger.debug("open: ", timestamp);
-        psGlobalLottoOpen.pub({ block_num: block_num });
-      }
-
-      if (openFlag) {
-
-      }
-
-      getBlocks(block_num);
-    } catch (error) {
-      // logger.log('getBlocks', error);
-    }
-  }).catch(err => {
-    // logger.error("get_block: ", err);
-    getBlocks(block_num);
-  })
-}
 
 module.exports =  {
   socketService: socketService

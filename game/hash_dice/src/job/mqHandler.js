@@ -1,7 +1,7 @@
 // @ts-check
 const logger = require("../common/logger.js").child({ "@": "mq publish and subscribe" });
 const { psTrx ,psBet,psHashDiceOpen} = require("../db");
-const trxAction = require("./trxAction.js");
+const handlerTransfer = require("./handlerTransfer");
 const handlerBet = require("./handlerBet.js");
 const openGameSession  = require("./openGameSession")
 
@@ -11,7 +11,7 @@ psTrx.sub(async msg => {
     try {
         let result = JSON.parse(msg);
         logger.debug("psTrx result: %O", result);
-        await trxAction(result);
+        await handlerTransfer(result);
     } catch (err) {
         throw err;
     }

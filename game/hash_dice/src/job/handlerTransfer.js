@@ -1,10 +1,11 @@
 // @ts-check
-const { Api, JsonRpc } = require('eosjs');
+const { Api, JsonRpc,RpcError } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
 const fetch = require('node-fetch');                                // node only
 const { TextDecoder, TextEncoder } = require('util');               // node only
 const { END_POINT } = require("../common/constant/eosConstants.js");
-
+const sleep = require("./sleep")
+const logger = require("../common/logger.js").child({ "@src/job/handlerTransfer.js": "transfer to eos" });
 /**
  * 
  * @param { String[] } privateKeyList 私钥数组
@@ -24,15 +25,17 @@ async function newApi(privateKeyList) {
 
 /**
  * 转帐
- * @param { String } tokenContract 代币合约用户
- * @param { String } from 转帐用户
- * @param { String } to 收款人
- * @param { String } quantity  额度
- * @param { String } memo 备注
- * @param { String[] } privateKeyList 私钥数组
+ * @param {{  
+ *     tokenContract : String,
+ *     from          : String,
+ *     to            : String,
+ *     quantity      : String,
+ *     memo          : String,
+ *     privateKeyList: Array      }} transfer_data
  */
-async function transfer(tokenContract, from, to, quantity, memo, privateKeyList) {
+async function transfer(transfer_data) {
     try {
+        const {tokenContract,from,to,quantity,memo,privateKeyList} = transfer_data;
         let api = await newApi(privateKeyList);
         let actions = {
             actions: [{
@@ -50,12 +53,29 @@ async function transfer(tokenContract, from, to, quantity, memo, privateKeyList)
               }
             }]
           }
-        const result = await api.transact(actions, {
+        await sleep(5 * 1000);
+        try{  
+          logger.debug("transfer action begin: ", actions);
+          const result = await api.transact(actions, {
             blocksBehind: 3,
             expireSeconds: 30,
           });
-
           return result;
+        }catch(err) {
+          // 判断是不是双花错误，是的花再执行一遍
+          if (err instanceof RpcError) {
+              if (err.json.error.code === 3040008) {
+                  logger.debug("after err action begin: ", actions);
+                  await sleep(5 * 1000);
+                  const result = await api.transact({ actions: [ actions ] }, {
+                      blocksBehind: 3,
+                      expireSeconds: 30,
+                  });
+                  logger.debug("after err action result: ", result);
+              }
+          }
+        }
+          
     } catch (err) {
         throw err;
     }

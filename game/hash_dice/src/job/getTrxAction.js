@@ -17,6 +17,7 @@ const request = require("request");
  */
 async function asyncRequest(options) {
     return new Promise((resolve, reject) => {
+        //@ts-ignore
         request(options, (err, res, body) => {
         if (err) {
             return reject(err);
@@ -63,7 +64,6 @@ async function post(api_url, options = {}) {
  */
 async function getTrxAction(accountName, fromPosition) {
     try {
-
         const opts = {
             "pos": fromPosition,
             "offset": 9,
@@ -124,7 +124,6 @@ async function getCurrencyBalance(code, account, symbol) {
         const rpc = new JsonRpc(END_POINT, { fetch });
         const resp = await rpc.get_currency_balance(code, account, symbol);
         // const { [TBG_TOKEN_SYMBOL]: { max_supply: maxSupply } } = resp;
-        console.debug("resp: ", resp);
         return resp;
     } catch (err) {
         throw err;

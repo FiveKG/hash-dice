@@ -23,6 +23,7 @@ async function createTable() {
             reward TEXT NOT NULL DEFAULT '',
             game_rate TEXT NOT NULL DEFAULT '',  
             agent_account TEXT NOT NULL DEFAULT '',
+            pay_type TEXT NOT NULL DEFAULT '',
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         comment on table bet_order is '用户投注记录';
@@ -35,6 +36,7 @@ async function createTable() {
         comment on column bet_order.reward is '奖金';
         comment on column bet_order.game_rate is '中奖赔率';
         comment on column bet_order.agent_account is '代投账号';
+        comment on column bet_order.pay_type is '付款类型';
         comment on column bet_order.create_time is '投注时间';
 
         CREATE TABLE IF NOT EXISTS reward(

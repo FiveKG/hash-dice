@@ -18,7 +18,7 @@ const TBG_TOKEN = "tbgtokencoin"
 const TBG_TOKEN_SYMBOL = "TBG"
 
 // 庄家
-const BANKER = "luckyhongbao"
+const BANKER = "dicebanker"
 
 // 代投注账号(超级用户)
 const AGENT_ACCOUNT = "eoshashdice"
