@@ -89,31 +89,33 @@
           </div>
           <!-- 中奖明细 -->
           <div class="win-type-list" v-if="SelectedWinDetail">
-            <div class="container" v-for="(item,index) in OpenDetail.detail" :key="index">
-              <div class="title">
-                <div class="name" v-if="item.bonus_type == 'lottery_award'">超级全球彩大奖</div>
-                <div class="name" v-if="item.bonus_type == 'second_price'">二等奖</div>
-                <div class="name" v-if="item.bonus_type == 'third_price'">三等奖</div>
-                <div class="name" v-if="item.bonus_type == 'fourth_price'">四等奖</div>
-                <div class="name" v-if="item.bonus_type == 'special_award'">特别奖</div>
-                <div class="name" v-if="item.bonus_type == 'fifth_price'">五等奖</div>
-                <div class="name" v-if="item.bonus_type == 'sixth_price'">六等奖</div>
-                <div class="name" v-if="item.bonus_type == 'seventh_price'">七等奖</div>
-                <div class="win-list">中奖名单</div>
-              </div>
-              <div class="info" v-if="item.bonus_type == 'lottery_award'">奖金= ( 全球彩奖池 x 60% ) / 中奖数量</div>
-              <div class="info" v-if="item.bonus_type == 'second_price'">奖金= ( 全球彩奖池 x 20% ) / 中奖数量</div>
-              <div class="info" v-if="item.bonus_type == 'third_price'">奖金= ( 全球彩奖池 x 10% ) / 中奖数量</div>
-              <div class="info" v-if="item.bonus_type == 'fourth_price'">奖金= ( 全球彩奖池 x 5% ) / 中奖数量</div>
-              <div class="info" v-if="item.bonus_type == 'special_award'">奖金= 被推荐者超级全球彩大奖奖金的10%</div>
-              <div class="info" v-if="item.bonus_type == 'fifth_price'">10 UE</div>
-              <div class="info" v-if="item.bonus_type == 'sixth_price'">5 UE</div>
-              <div class="info" v-if="item.bonus_type == 'seventh_price'">1 UE</div>
-              <div class="info">中奖数: {{item.key_count}} Key</div>
-              <div class="info">全球彩奖池: 21938903890.00</div>
-              <div class="win-count">
-                <div class="win-title">奖金</div>
-                <div class="win-num">{{item.award_amount}} UE</div>
+            <div v-for="(item,index) in OpenDetail.detail" :key="index" >
+              <div class="container" v-if="item.bonus_type != 'sorry'">
+                <div class="title" v-if="item.bonus_type != 'sorry'">
+                  <div class="name" v-if="item.bonus_type == 'lottery_award'">超级全球彩大奖</div>
+                  <div class="name" v-if="item.bonus_type == 'second_price'">二等奖</div>
+                  <div class="name" v-if="item.bonus_type == 'third_price'">三等奖</div>
+                  <div class="name" v-if="item.bonus_type == 'fourth_price'">四等奖</div>
+                  <div class="name" v-if="item.bonus_type == 'special_award'">特别奖</div>
+                  <div class="name" v-if="item.bonus_type == 'fifth_price'">五等奖</div>
+                  <div class="name" v-if="item.bonus_type == 'sixth_price'">六等奖</div>
+                  <div class="name" v-if="item.bonus_type == 'seventh_price'">七等奖</div>
+                  <div class="win-list">中奖名单</div>
+                </div>
+                <div class="info" v-if="item.bonus_type == 'lottery_award'">奖金= ( 全球彩奖池 x 60% ) / 中奖数量</div>
+                <div class="info" v-if="item.bonus_type == 'second_price'">奖金= ( 全球彩奖池 x 20% ) / 中奖数量</div>
+                <div class="info" v-if="item.bonus_type == 'third_price'">奖金= ( 全球彩奖池 x 10% ) / 中奖数量</div>
+                <div class="info" v-if="item.bonus_type == 'fourth_price'">奖金= ( 全球彩奖池 x 5% ) / 中奖数量</div>
+                <div class="info" v-if="item.bonus_type == 'special_award'">奖金= 被推荐者超级全球彩大奖奖金的10%</div>
+                <div class="info" v-if="item.bonus_type == 'fifth_price'">10 UE</div>
+                <div class="info" v-if="item.bonus_type == 'sixth_price'">5 UE</div>
+                <div class="info" v-if="item.bonus_type == 'seventh_price'">1 UE</div>
+                <div class="info" v-if="item.bonus_type != 'sorry'">中奖数: {{item.key_count}} Key</div>
+                <div class="info" v-if="item.bonus_type != 'sorry'">全球彩奖池: 21938903890.00</div>
+                <div class="win-count" v-if="item.bonus_type != 'sorry'">
+                  <div class="win-title">奖金</div>
+                  <div class="win-num">{{item.award_amount}} UE</div>
+                </div>
               </div>
             </div>
           </div>
