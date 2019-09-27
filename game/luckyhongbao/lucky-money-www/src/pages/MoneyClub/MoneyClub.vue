@@ -470,7 +470,7 @@ export default {
           });
           // 监听抢红包结果
           this.$store.state.socket.on("grab_red_envelope", function(data) {
-            that.debugTest();
+            // that.debugTest();
             console.log("抢红包结果:", data);
             console.log(
               "当前用户的POG账号:",
@@ -481,32 +481,44 @@ export default {
               duration: 1000,
               background: "#1989fa"
             });
-            // console.log("当前抢到红包的POG账号:", data.account_name);
-            if (data.account_name == that.$store.state.eosAccount.name) {
-              console.log("属于当前用户的socket消息:", data);
-              // that.getAccountBalance();
-              that.openLoad = false;
-              if (data.is_success == true) {
-                that.packResult = data;
-                that.packState = 1;
-              } else {
-                that.packResult = data;
-                that.errorMsg = data.remark;
-                that.packState = 2;
-              }
-              for (let i = 0; i < data.grabbed_list.length; i++) {
-                if (
-                  data.grabbed_list[i].account_name ==
-                  that.$store.state.eosAccount.name
-                ) {
-                  data.grabbed_list[i].amount = data.amount;
-                } else {
-                  data.grabbed_list[i].amount = "*";
+
+
+
+            that.packResult = data;
+              for(var i=0;i<that.packResult.grabbed_list.length;i++){
+                if(that.packResult.grabbed_list[i].amount>that.big){
+                  that.big=that.packResult.grabbed_list[i].amount
                 }
+                if(that.packResult.grabbed_list[i].account_name==that.name){
+                  that.ownEnvelope=that.packResult.grabbed_list[i].amount
+                }    
               }
-            } else {
-              // that.packState = 2;
-            }
+            // console.log("当前抢到红包的POG账号:", data.account_name);
+            // if (data.account_name == that.$store.state.eosAccount.name) {
+            //   console.log("属于当前用户的socket消息:", data);
+            //   // that.getAccountBalance();
+            //   that.openLoad = false;
+            //   if (data.is_success == true) {
+            //     that.packResult = data;
+            //     that.packState = 1;
+            //   } else {
+            //     that.packResult = data;
+            //     that.errorMsg = data.remark;
+            //     that.packState = 2;
+            //   }
+            //   for (let i = 0; i < data.grabbed_list.length; i++) {
+            //     if (
+            //       data.grabbed_list[i].account_name ==
+            //       that.$store.state.eosAccount.name
+            //     ) {
+            //       data.grabbed_list[i].amount = data.amount;
+            //     } else {
+            //       data.grabbed_list[i].amount = "*";
+            //     }
+            //   }
+            // } else {
+            //   // that.packState = 2;
+            // }
           });
         }
       }
@@ -702,7 +714,6 @@ export default {
             console.log(2017, this.packResult);
             setTimeout(() => {
               this.openLoad = false;
-
               this.packState = 1;
             }, 2000);
           } else if (res.code == 2015) {
@@ -764,22 +775,8 @@ export default {
                   this.ownEnvelope=this.packResult.grabbed_list[i].amount
                 }    
               }
-        
-             
-             
-              
-            
               this.packState = 1;
-              // for (let i = 0; i < res.data.grabbed_list.length; i++) {
-              //   if (
-              //     res.data.grabbed_list[i].account_name ==
-              //     this.$store.state.eosAccount.name
-              //   ) {
-              //     this.maxAmount = res.data.grabbed_list[i].amount;
-              //   } else {
-              //     res.data.grabbed_list[i].amount = "*";
-              //   }
-              // }
+
             } else {
               this.packState = 2;
             }
