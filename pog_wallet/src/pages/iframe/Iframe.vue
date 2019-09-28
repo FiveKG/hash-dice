@@ -88,7 +88,7 @@ export default {
   },
   data() {
     return {
-      enterpageshow: true,
+      enterpageshow: false,
       url: "",
       name: "",
       password: "",
@@ -107,7 +107,7 @@ export default {
       console.log(newVal);
       if (!newVal) return;
       this.signMessage = newVal[0];
-      this.signMessage.data.memo = newVal[0].data.memo.substr(0, 22);
+      this.signMessage.data.memo = newVal[0].data.memo ? newVal[0].data.memo.substr(0, 22):'';
       this.showSignature = true;
     },
     showDialog(newVal, oldVal) {
@@ -132,6 +132,9 @@ export default {
   created() {
     this.url = this.$route.query.url;
     this.name = this.$route.query.name;
+    if (this.name == '好运红包'){
+      this.enterpageshow = true;
+    }
     const that = this;
     this.$nextTick(() => {
       that.$refs.ifra.onload = function() {

@@ -21,7 +21,7 @@
     <preference name="orientation" value="portrait" />
     <platform name="android">
         <allow-intent href="market:*" />
-        <icon src="res/system_pog.png" />
+        <icon src="res/system_wallet.png" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
@@ -31,7 +31,7 @@
     <plugin name="cordova-plugin-android-fingerprint-auth" spec="^1.5.0" />
     <plugin name="cordova-plugin-app-launcher" spec="^0.4.0" />
     <plugin name="cordova-plugin-app-version" spec="^0.1.9" />
-    <plugin name="cordova-plugin-compat" spec="git+https://github.com/apache/cordova-plugin-compat.git" />
+    <plugin name="cordova-plugin-compat" spec="~1.2.1-dev" />
     <plugin name="cordova-plugin-customurlscheme" spec="^4.4.0">
         <variable name="URL_SCHEME" value="appwallet" />
         <variable name="ANDROID_SCHEME" value=" " />
@@ -41,6 +41,7 @@
     <plugin name="cordova-plugin-qrscanner" spec="^2.6.2" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.4" />
     <plugin name="cordova-plugin-x-toast" spec="^2.7.2" />
-    <plugin name="nodejs-mobile-cordova" spec="^0.3.3" />
-    <engine name="android" spec="^6.2.3" />
+    <plugin name="nodejs-mobile-cordova" spec="~0.3.4" />
+    <plugin name="cordova-plugin-save-image-gallery" spec="0.0.26" />
+    <engine name="android" spec="^6.4.0" />
 </widget>
