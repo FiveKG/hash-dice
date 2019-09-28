@@ -16,11 +16,11 @@ GET http://192.168.1.141:8089/club/summary?club_id=952795
 GET http://192.168.1.141:8089/room/get_red_envelope?room_id=1
 
 ### yujinsheng11, gametestuser, ih.1n13llsmd, tbgtestuser1, irbucnefu5pr, jqb.lvsj5l4h
-POST http://192.168.1.141:8089/room/snatch_red_envelope
+POST http://luckyhongbao.tbg.isecsp.com/room/snatch_red_envelope
 Content-Type: application/json
 
 {
-    "account_name": "yujinsheng11", 
-    "room_id": 2
+    "account_name": "ih.1n13llsmd", 
+    "room_id": 1
 }
 

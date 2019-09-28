@@ -84,7 +84,7 @@ export default {
       this.$store.commit('wallet/setCurrency', currency)
     }
     getConfig().then(res => {
-      console.log('getConfig',res)
+      // console.log('getConfig',res)
       if (res.code === 1) this.$store.commit('wallet/setConfig', res.data)
     })
     this.$ons.ready(() => {
@@ -109,7 +109,9 @@ export default {
         }
       })
       const that = this
-      FingerprintAuth.isAvailable(isAvailableSuccessCallback, isAvailableErrorCallback);
+      if (typeof FingerprintAuth !== "undefined") {
+        FingerprintAuth.isAvailable(isAvailableSuccessCallback, isAvailableErrorCallback);
+      }
       function isAvailableSuccessCallback(res) {
         if (res.isAvailable) that.$store.commit('wallet/setFingerprintAuth', true)
       }

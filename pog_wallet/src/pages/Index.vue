@@ -8,6 +8,7 @@
       <!-- <market v-else-if="selectTab === 'market'"></market> -->
       <invitation v-else-if="selectTab === 'invitation'"></invitation>
       <xx v-else-if="selectTab === 'xx' "></xx>
+      <Binding v-else-if="selectTab === 'Binding' "></Binding>
       <discover v-else-if="selectTab === 'discover'"></discover>
       <exchange v-else-if="selectTab === 'exchange'"></exchange>
       <me v-else-if="selectTab === 'me'"></me>
@@ -26,7 +27,6 @@
           <img class="ico_tbg" src="@/assets/img/tbg_selected.png" v-if="selectTab === 'xx'">
           <img class="ico_tbg" src="@/assets/img/tbg.png" v-else>
         </div>
-
 
         <div class="footer-item" :class="selectTab === 'discover'? 'router-link-active':''" @click="clickTab('discover')">
           <i class="icon footerDiscoverIcon"></i>
@@ -75,6 +75,13 @@
         </div>
       </div>
     </v-ons-dialog>
+    <ons-modal ref='modal' direction="up">
+      <div style="text-align: center">
+        <p>
+          <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Loading...
+        </p>
+      </div>
+    </ons-modal>
   </v-ons-page>
 </template>
 
@@ -93,6 +100,10 @@ import ClientSocket from '@/socket/ClientSocket'
 import { getAdImg } from '@/servers';
 import xx from './invitation2/NotParticipating'
 
+import Binding from './invitation/Index'
+import api from '@/servers/invitation'
+
+
 export default {
   components: {
     Loading,
@@ -104,21 +115,37 @@ export default {
     Discover,
     Chat,
     Me,
-    xx
+    xx,
+    Binding
   },
   data () {
     return {
-      selectTab: 'wallet',
-      type: 'wallet',
+      // selectTab: 'wallet',
+      // type: 'wallet',
       showDialog: false,
       showExDialog: false,
-      noPadding: false
+      noPadding: false,
+      modal: '',
+      test: 0
+    }
+  },
+  computed: {
+    selectTab () {
+      console.log('正在前往页面',this.$store.state.wallet.selectedTab)
+      return this.$store.state.wallet.selectedTab
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    if (!localStorage.everEnter && localStorage.everEnter) {
+      localStorage.setItem('everEnter', true)
+      next('/welcome')
+    } else {
+      next()
     }
   },
   created () {
     this.initData()
     getAdImg().then(res => {
-      console.log('getAdImg', res)
       if (res.code === 1) {
         let arr = this.$store.state.wallet.discoverSwiper
         arr.splice(0)
@@ -129,38 +156,47 @@ export default {
         }
       }
     })
-    nodejs.channel.setListener(msg => {
-      if (msg === 'serverOpen') {
-        // ClientSocket.link().then(conn => {
-        //   console.log(conn)
-        //   if (conn) {
-        //     ClientSocket.setAccount(this.$store.state.wallet.assets.account)
-        //   }
-        // }).catch(err => {
-        //   console.log(err)
-        // })
-        const s = new WebSocket('ws://127.0.0.1:50005/socket.io/?EIO=3&transport=websocket')
-        s.onmessage = msg => {
-          if(msg.data.indexOf('42/app') === -1) return false;
-          const [data] = JSON.parse(msg.data.replace('42/app,', ''));
-          console.log('onmessage', data)
-          if (data.type && data.type === 'requestSignature') {
-            this.$store.commit('wallet/setSignatureData',data.data)
-            this.$store.commit('wallet/setSignatureRequest',data.request)
-          }
+    if (typeof nodejs !== "undefined") {
+      nodejs.channel.setListener(msg => {
+        console.log(msg)
+        if (msg === 'serverOpen') {
+          // ClientSocket.link().then(conn => {
+          //   console.log(conn)
+          //   if (conn) {
+          //     ClientSocket.setAccount(this.$store.state.wallet.assets.account)
+          //   }
+          // }).catch(err => {
+          //   console.log(err)
+          // })
+          setTimeout(() => {
+            const s = new WebSocket('ws://127.0.0.1:50005/socket.io/?EIO=3&transport=websocket')
+            s.onmessage = msg => {
+              if(msg.data.indexOf('42/app') === -1) return false;
+              const [data] = JSON.parse(msg.data.replace('42/app,', ''));
+              console.log('onmessage', data)
+              if (data.type && data.type === 'requestSignature') {
+                this.$store.commit('wallet/setSignatureData',data.data)
+                this.$store.commit('wallet/setSignatureRequest',data.request)
+              }
+            }
+            s.onerror = err => {
+              console.log('onerror',err)
+            }
+            s.onopen = () => {
+              console.log('onopen')
+              s.send('40/app')
+            }
+            s.onclose = () => {
+              console.log('onclose')
+            }
+          },1000);
         }
-        s.onerror = err => {
-          console.log('onerror',err)
+        else if (msg === 'IFServerOpen') {
+          console.log('IFServerOpen')
+          this.test++
         }
-        s.onopen = () => {
-          console.log('onopen')
-          s.send('40/app')
-        }
-        s.onclose = () => {
-          console.log('onclose')
-        }
-      }
-    })
+      })
+    }  
   },
   mounted() {
     const url = 'http://www.eos.isecsp.com/app/versionInfo.json'
@@ -210,54 +246,98 @@ export default {
     pogconfirm() {
       window.open('http://web.svconcloud.com/download/', '_system', 'location=yes');
     },
-    initData() {
-      const selectedTab = this.$store.state.wallet.selectedTab
-      if (selectedTab === 'assets') {
+    async initData({...data}) {
+      console.log('targetTab',data)
+      const selectedTab = data.targetTab? data.targetTab : this.$store.state.wallet.selectedTab
+      const currentAcc = this.$store.state.wallet.assets
+      if (selectedTab == 'xx') {
+        // 当前不存在账户放弃跳转
+      let modal = this.$refs.modal
+        if (!currentAcc || !currentAcc.account) {
+          this.$ons.notification.toast('当前无账号，无法跳转',{timeout:1000})
+          return
+        }
+        modal.show()
+        // 存在用户的话判断是否绑定
+        const response = await api.isBind({account_name: currentAcc.account})
+        if (response.code == 1){
+          if(response.data.is_bind==true){
+            this.$store.commit('wallet/setTbgBindStatus', true)
+            // this.selectTab='xx'
+            console.log('前往xx页面')
+            this.$store.commit('wallet/setSelectedTab', 'xx')
+            setTimeout(function() {
+              modal.hide();
+            }, 800);
+            return
+          }else{
+            this.$store.commit('wallet/setTbgBindStatus', false)
+            // this.selectTab='Binding'
+            this.$ons.notification.toast('请您先绑定',{timeout:1000})
+            this.$store.commit('wallet/setSelectedTab', 'Binding')
+            return
+          }
+        }else{
+          this.$ons.notification.toast('网络请求错误',{timeout:1000})
+          return
+        }
+        setTimeout(function() {
+          modal.hide();
+        }, 800);
+      } else if (selectedTab === 'assets') {
         if (this.$store.state.wallet.localFile.wallets.length) {
-          this.type = 'assets'
-          this.selectTab = 'assets'
+          // this.type = 'assets'
+          // this.selectTab = 'assets'
+          this.$store.commit('wallet/setSelectedTab', 'assets')
+          return
         } else {
-          this.type = 'wallet'
-          this.selectTab = 'wallet'
+          // this.type = 'wallet'
+          // this.selectTab = 'wallet'
+          this.$store.commit('wallet/setSelectedTab', 'wallet')
+          return
         }
-      } else {
-        if (selectedTab === 'invitation') {
+      } else if (selectedTab === 'invitation') {
           this.noPadding = true
-        }
-        this.type = selectedTab
-        this.selectTab = selectedTab
       }
-      console.log('index-init',this.type,this.selectTab)
+      this.$store.commit('wallet/setSelectedTab', selectedTab)
     },
-    clickTab(type) {
-      if (type === 'invitation') {
+    clickTab(target) {
+      if (target === 'invitation') {
         this.noPadding = true
-      } else if (type === 'exchange') {
+      } else if (target === 'exchange') {
         window.plugins.launcher.canLaunch({packageName:'com.isecsp.pogex'}, successCallback, errorCallback);
       } else {
         this.noPadding = false
       }
-      this.$store.commit('wallet/setSelectedTab', type)
-      this.initData()
+      this.initData({targetTab:target})
       const that = this
       function successCallback(data) {
         console.log('success', data)
         window.plugins.launcher.launch({packageName:'com.isecsp.pogex'}, function success(params) {
           
         }, function error(params) {
-          console.log('error', params)
+          this.$ons.notification.toast(params,{timeout:1000})
         });
       }
       function errorCallback(err) {
         console.log('error', err)
         that.showExDialog = true
       }
-    }
+    },
   },
   watch: {
+    test (newVal) {
+      console.log('已收到来自node消息', newVal)
+    },
     '$store.state.wallet.localFile.wallets'(newVal) {
       if (!newVal.length) {
-        this.type = 'wallet'
+        // this.type = 'wallet'
+        this.$store.commit('wallet/setSelectedTab', 'wallet')
+      }
+    },
+    '$store.state.wallet.tbgIsBind': function(newVal, oldVal) {
+      if (newVal === true) {
+        this.$store.commit('wallet/setSelectedTab', 'xx')
       }
     }
   },
@@ -266,10 +346,10 @@ export default {
 
 <style scoped>
 .my_bg {
-  background-color: #f6f6f6;
+  background-color: #fff;
 }
 .my_page {
-  padding-bottom: 120px;
+  /* padding-bottom: 120px; */
 }
 .tabbar {
   height: 120px;
@@ -278,6 +358,8 @@ export default {
   background-color: #fff;
   border-top: 1px solid #f8f8f8;
   z-index: 1000;
+  position:fixed;
+  
 }
 .tabbar__label {
   margin-top: 10px;

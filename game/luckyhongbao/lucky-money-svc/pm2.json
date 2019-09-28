@@ -9,12 +9,12 @@
             "out_file"    : "../logs/luckyHongBaoListenTransfer-out.log"
         },
         {
-            "name"        : "doSyncRedEnvelopGameResult",
-            "script"      : "./doSyncRedEnvelopGameResult.js",
+            "name"        : "luckyHongBaoDoSymbolTransfer",
+            "script"      : "./doSymbolTransfer.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../logs/doSyncRedEnvelopGameResult-err.log",
-            "out_file"    : "../logs/doSyncRedEnvelopGameResult-out.log"
+            "error_file"  : "../logs/luckyHongBaoDoSymbolTransfer-err.log",
+            "out_file"    : "../logs/luckyHongBaoDoSymbolTransfer-out.log"
         },
         {
             "name"        : "luckyHongBaoMqListenJob",

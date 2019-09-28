@@ -13,6 +13,7 @@ logger.debug(`handlerTransferActions running...`);
 const INVEST_LOCK = `tbg:lock:global_lotto`;
 let count = 1;
 scheduleJob("*/1 * * * * *", begin);
+
 // 如果中途断开，再次启动时计数到 10 以后清除缓存
 async function begin() {
     try {
@@ -46,11 +47,10 @@ async function handlerTransferActions() {
             // 如果处理过或者返回条件不符，直接更新状态，继续处理下一个
             if (trxSeq || !result.game_name || !result.account_name || !result.bet_key || !result.bet_num || !result.bet_amount || !result.periods || !result.bet_type) {
                 await setLastPos(result.account_action_seq);
-                await redis.set(GLOBAL_LOTTO_KEY, result.account_action_seq);
                 continue;
             }
 
-            // 将听到转帐后处理投注
+            // 监听到转帐后处理投注
             const betData = {
                 "periods": result.periods, 
                 "account_name":  result.account_name, 
@@ -119,7 +119,7 @@ async function parseEosAccountAction(action) {
         result["trx_id"] = actionTrace.trx_id;
         logger.debug(`trx_id: ${ actionTrace.trx_id } -- account_action_seq: ${ action.account_action_seq }`);
         let { receipt, act } = actionTrace;
-        // logger.debug("act: ", act);
+        logger.debug("act: ", act);
         let isTransfer = act.account === UE_TOKEN && act.name === "transfer"
         if (!isTransfer) {
             // todo
@@ -141,13 +141,8 @@ async function parseEosAccountAction(action) {
         if (!game_name && !account_name && !bet_key && !bet_num && !bet_amount && !periods && !bet_type) {
             logger.debug("invalid memo, memo must be include game_name, account_name, bet_key, bet_num, bet_amount, periods, bet_type format like 'game_name:account_name:bet_key:bet_num:bet_amount:periods:bet_type'")
             return result;
-<<<<<<< HEAD
-        }
-        if (game_name !== "globallotto") {
-=======
         }   
         if (game_name !== "global_lotto") {
->>>>>>> f-function-lotto
             // todo
             // memo 格式不符
             logger.debug(`invalid memo, ${ game_name } !== "globallotto"`);
@@ -156,7 +151,8 @@ async function parseEosAccountAction(action) {
 
         let [ amount, symbol ] = quantity.split(" ");
 
-        if (!new Decimal(amount).eq(bet_amount)) {
+        // 用户的投注额只有 80% 转入到 BANKER 账户
+        if (!new Decimal(amount).mul(0.8).eq(bet_amount)) {
              // memo 格式不符
              logger.debug(`金额不匹配, transfer is ${ amount }, memo bet_amount is ${ bet_amount }`);
              return result;

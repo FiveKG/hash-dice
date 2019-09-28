@@ -73,17 +73,17 @@ const PRIVATE_KEY_TEST = "5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo"
         // const contract = await api.getContract(LUCKY_HONGBAO_CONTRACT);
         // console.debug("contract: %O", contract);
 
-        const act = { 
-            account: LUCKY_HONGBAO_CONTRACT,
-            name: 'issue',
-            authorization: [ { actor: LUCKY_HONGBAO_CONTRACT, permission: 'active' } ],
-            data: {   
-                packet_id: 1,
-                amount: '0.0950 UE',
-                owner: 'luckyhongbao',
-                player_account: 5 
-            } 
-        }
+        // const act = { 
+        //     account: LUCKY_HONGBAO_CONTRACT,
+        //     name: 'issue',
+        //     authorization: [ { actor: LUCKY_HONGBAO_CONTRACT, permission: 'active' } ],
+        //     data: {   
+        //         packet_id: 1,
+        //         amount: '0.0950 UE',
+        //         owner: 'luckyhongbao',
+        //         player_account: 5 
+        //     } 
+        // }
 
         // await api.transact({ actions: [ act ] }, {
         //     blocksBehind: 3,
@@ -92,8 +92,8 @@ const PRIVATE_KEY_TEST = "5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo"
         //     console.debug("resp: ", resp);
         // })
 
-        // await clearTable(LUCKY_HONGBAO_CONTRACT, 1, "redpackets", true, PRIVATE_KEY_TEST.split(","))
-        // await clearTable(LUCKY_HONGBAO_CONTRACT, 1, "offer", true, PRIVATE_KEY_TEST.split(","))
+        await clearTable(LUCKY_HONGBAO_CONTRACT, 4, "redpackets", true, PRIVATE_KEY_TEST.split(","))
+        await clearTable(LUCKY_HONGBAO_CONTRACT, 1, "offer", true, PRIVATE_KEY_TEST.split(","))
         
         
         // console.debug("resp: ", resp)

@@ -1,36 +1,7 @@
 <template>
   <div>
     <!--头部-->
-    <HeadPart :amount='room_info.amount' @childshow="toogleShow" @roomShow="toogleRoomShow"></HeadPart>
-    <!-- <div class="club_type" v-if="!$store.state.sideBar">{{roomAmount}}UE {{roomType}}人抢专场</div> -->
-    <!-- 房间信息 -->
-    <!-- <div class="info" v-if="!$store.state.sideBar">
-      <div class="account_info" @click="()=>{show=true}">
-        <div class="text">
-          {{room_info.amount}} UE 5 人抢专场
-          <span>
-            <svg
-              class="icon"
-              width="18px"
-              height="18px"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill="#fff"
-                d="M845.73750784 310.06631558c11.09419837 11.20906823 20.13556271 20.35048032 31.14453548 31.47432293-121.43960347 124.00379403-242.4271389 247.54069789-364.70047497 372.39675162C390.0527457 589.68162356 268.72060139 466.23735673 147.11795668 342.52259023c10.96450709-9.79728131 20.93224036-18.70524869 26.40152463-23.59647866C215.4321334 358.44873076 260.2906406 398.96812377 303.11484019 441.54035152c65.17934399 64.79767943 129.21369503 130.75517321 193.07018343 196.86088611 11.65372557 12.06503364 18.47550896 13.01363611 30.76657736 0.32608175 101.29663005-104.55003835 203.3232385-208.39233111 305.05711445-312.51994567C836.68502706 321.42360292 840.7128809 316.00990072 845.73750784 310.06631558z"
-              />
-            </svg>
-          </span>
-        </div>
-      </div>
-    </div> -->
-    <!-- <div class="text">余额 | {{Number($store.state.eosBalance).toFixed(4)}}UE</div>
-    <div class="text">房间人数:{{onlineNum}}人 | 房间号{{roomId}}</div>-->
-    <!-- <div class="recharge" @click="$store.commit('setRechargeDialog',true)">充值抢红包</div> -->
-    <!-- <div style="display: flex;margin-right: 10px;"><img src="../../assets/refresh.png" alt="" style="height:20px;margin:auto;" @click="refresh()"></div> -->
-
+    <HeadPart :amount="room_info.amount" @childshow="toogleShow" @roomShow="toogleRoomShow"></HeadPart>
     <!-- 红包列表 -->
     <div class="pack_list" ref="packList" :style="{height:clientHeight+'px'}">
       <!-- 已开奖红包 -->
@@ -63,9 +34,6 @@
               <!-- {{item.game_id}} -->
             </div>
           </div>
-          <!-- <div class="finish"><div class="text">36秒抢完 23:02:36 Block # 29,321,055</div></div> -->
-          <!-- <div class="block_id">Block ID:{{item.gameChainBlockId}}</div> -->
-          <!-- <div class="block_id">加入算法计算出随机数，透明公正不可预测</div> -->
           <div
             class="winner"
             v-for="(son_item, son_index) in item.results"
@@ -163,25 +131,32 @@
           </div>
         </div>
         <div class="wish">大吉大利&emsp;恭喜发财</div>
-        <div class="type">{{Number(packResult.amount).toFixed(4)}} UE</div>
+        <div class="type">{{ownEnvelope}} UE</div>
         <div class="tips">已存入账户余额，可再抢红包</div>
         <div class="name_list">
           <div class="name_item" v-for="(item,index) in packResult.grabbed_list" :key="index">
-            <div
-              :class="maxAmount&&maxAmount === item.amount?'item_name red':'item_name'"
-            >{{index+1}} . {{item.account_name}}</div>
-            <div
-              :class="maxAmount&&maxAmount === item.amount?'item_amount red':'item_amount'"
-              v-if="item.amount =='*'"
-            >
-              <img src="../../assets/u10085.png" width="20px" height="20px" />&nbsp;
-              <img src="../../assets/u10085.png" width="20px" height="20px" />&nbsp;
-              <img src="../../assets/u10085.png" width="20px" height="20px" />
+            <div v-if="!Grab">
+              
+              <div class='item_name'>{{index+1}} . {{item.account_name}}</div>
+              <div v-if='name==item.account_name' class="item_amount">
+                {{item.amount}}UE
+              </div>
+              <div v-else class='item_amount'> 
+                <img src="../../assets/u10085.png" width="20px" height="20px" />&nbsp;
+                <img src="../../assets/u10085.png" width="20px" height="20px" />&nbsp;
+                <img src="../../assets/u10085.png" width="20px" height="20px" />
+              </div>
             </div>
-            <div
-              :class="maxAmount&&maxAmount === item.amount?'item_amount red':'item_amount'"
-              v-else
-            >{{item.account_name === name ? `${item.amount}UE`:item.html}}</div>
+              <div  v-if="Grab">
+              <div
+              :class="big === item.amount?'item_name red':'item_name'"
+            >{{index+1}} . {{item.account_name}}</div>
+              <div
+              :class="big === item.amount?'item_amount red':'item_amount'"
+              >
+                {{item.amount}}UE
+              </div>
+              </div>
           </div>
         </div>
       </div>
@@ -349,14 +324,15 @@ export default {
       roomAmount: "", //红包金额
       roomType: storage.get("roomType"), //房间类型 , 几人抢
       roomId: storage.get("roomId"), //房间id
+      RoomId:1,
       onlineNum: 0, //在线人数
       showOpen: false, //开奖蒙层
       openLoad: false, //是否点击'開', true要转
       packState: 0, //红包状态 , 0未开 , 1抢到 , 2抢不到
       packList: [], //红包列表
       clientHeight: "height:500px",
-      packNotOpen: null, //未开奖红包
-      packResult: null, //抢红包结果
+      packNotOpen: [], //未开奖红包
+      packResult: [], //抢红包结果
       timer: null, //
       UesrList: [], //其他抢到的人
       errorMsg: "红包抢完了，下次手快些",
@@ -369,7 +345,10 @@ export default {
       packTotal: 0, //该房间红包总数
       datalist: {}, //5人抢所有红包信息
       room_list: [], //房间列表
-      room_info: {}
+      room_info: {},
+      ownEnvelope:0,//自己抢到的红包
+      big:0,    //最大的人的UE数
+      Grab:false,//红包是否抢完
     };
   },
   mounted() {
@@ -380,25 +359,77 @@ export default {
   },
   async created() {
     this.getClubInfo();
-    // this.getRoomRedPack();
-    // 创建websocket连接
-    console.log(111111, baseURL);
+  },
+  methods: {
+    // 打开已抢红包
+    handleHasGrabbedThePage(game_id) {
+      console.log("触发了");
+      this.packList.forEach(element => {
+        if (game_id === element.game_id) {
+          this.packState = 1;
+          this.showOpen = true;
+          let max = element.results[0].amount;
+          for (let i = 0; i < element.results.length; i++) {
+            element.results[i].amount = Number(element.results[i].amount);
+            element.results[i].html =
+              element.results[i].amount.toFixed(8) + "UE";
+            if (element.results[i].amount > max) {
+              max = element.results[i].amount;
+            }
+            if (element.results[i].account_name === name) {
+              element.amount = element.results[i].amount;
+            } else {
+              this.packState = 1;
+              this.showOpen = true;
+            }
+          }
+
+          this.packResult = element;
+          this.packResult.grabbed_list = element.results;
+          for(var i=0;i<this.packResult.grabbed_list.length;i++){
+                if(this.packResult.grabbed_list[i].amount>this.big){
+                  this.big=this.packResult.grabbed_list[i].amount
+                }
+                if(this.packResult.grabbed_list[i].account_name==this.name){
+                  this.ownEnvelope=this.packResult.grabbed_list[i].amount
+                }    
+              }
+          if(this.packResult.grabbed_list.length>4){
+            this.Grab=true
+          }
+          this.maxAmount = Number(max);
+        }
+      });
+    },
+    // 切换场次
+    tooglePage(val) {
+      console.log('val',val);
+      localStorage.setItem("roomId", val.room_id);
+      this.room_info = val;
+      this.roomAmount = Number(val.amount);
+      this.getRoomRedPack();
+      this.show = false;
+      // 创建websocket连接
     var that = this;
     var socket = io.connect(baseURL);
     this.$store.commit("setSocket", socket);
     setTimeout(() => {
       this.name = this.$store.state.eosAccount.name;
+      console.log("lllllAA", this.$store.state.eosAccount.name);
     }, 650);
     this.timer = setInterval(() => {
+      console.log('执行')
+      console.log('that',that.$store.state.configIsOk )
       if (that.$store.state.configIsOk != 0) {
         console.log(
           "that.$store.state.configIsOk:",
           that.$store.state.configIsOk
         );
         clearInterval(that.timer);
+        
         if (that.$store.state.configIsOk === 1) {
           let data = {
-            club_id: storage.get("clubId"),
+            club_id: "952795",
             room_id: storage.get("roomId"),
             account_name: this.$store.state.eosAccount.name
           };
@@ -446,80 +477,27 @@ export default {
               "当前用户的POG账号:",
               that.$store.state.eosAccount.name
             );
+            that.packState = 1;
+            that.showOpen = true;
             Notify({
               message: data.account_name + " 已抢到红包",
               duration: 1000,
               background: "#1989fa"
             });
-            // console.log("当前抢到红包的POG账号:", data.account_name);
-            if (data.account_name == that.$store.state.eosAccount.name) {
-              console.log("属于当前用户的socket消息:", data);
-              that.getAccountBalance();
-              that.openLoad = false;
-              if (data.is_success == true) {
-                that.packResult = data;
-                that.packState = 1;
-              } else {
-                that.packResult = data;
-                that.errorMsg = data.remark;
-                that.packState = 2;
+            this.RoomId=val.room_id;
+            that.packResult = data;
+            for(var i=0;i<that.packResult.grabbed_list.length;i++){
+              if(that.packResult.grabbed_list[i].amount>that.big){
+                that.big=that.packResult.grabbed_list[i].amount
               }
-              for (let i = 0; i < data.grabbed_list.length; i++) {
-                if (
-                  data.grabbed_list[i].account_name ==
-                  that.$store.state.eosAccount.name
-                ) {
-                  data.grabbed_list[i].amount = data.amount;
-                } else {
-                  data.grabbed_list[i].amount = "*";
-                }
-              }
-            } else {
-              // that.packState = 2;
+              if(that.packResult.grabbed_list[i].account_name==that.name){
+                that.ownEnvelope=that.packResult.grabbed_list[i].amount
+              }    
             }
           });
         }
       }
     }, 500);
-  },
-  methods: {
-    // 打开已抢红包
-    handleHasGrabbedThePage(game_id) {
-      this.packList.forEach(element => {
-        if (game_id === element.game_id) {
-          this.packState = 1;
-          this.showOpen = true;
-          console.log(this.packResult);
-          let max = element.results[0].amount;
-          for (let i = 0; i < element.results.length; i++) {
-            element.results[i].amount = Number(element.results[i].amount);
-            element.results[i].html =
-              element.results[i].amount.toFixed(8) + "UE";
-            if (element.results[i].amount > max) {
-              max = element.results[i].amount;
-            }
-            if (element.results[i].account_name === name) {
-              element.amount = element.results[i].amount;
-            } else {
-              this.packState = 2;
-              this.showOpen = true;
-            }
-          }
-
-          this.packResult = element;
-          this.packResult.grabbed_list = element.results;
-          this.maxAmount = Number(max);
-        }
-      });
-    },
-    // 切换场次
-    tooglePage(val) {
-      console.log(val);
-      localStorage.setItem("roomId", val.room_id);
-      this.room_info = val;
-      this.roomAmount = Number(val.amount);
-      this.getRoomRedPack();
-      this.show = false;
     },
     // 获取房间信息
     getClubInfo() {
@@ -533,12 +511,15 @@ export default {
             "roomId",
             result.data.type_list[0].room_list[0].room_id
           );
+          this.RoomId=result.data.type_list[0].room_list[0].room_id;
           this.room_info = result.data.type_list[0].room_list[0];
           this.datalist = result.data.type_list[0];
           this.roomAmount = Number(
             result.data.type_list[0].room_list[0].amount
           );
           this.getRoomRedPack();
+          console.log('this.datalist.room_list[0]',this.datalist.room_list[0])
+          this.tooglePage(this.datalist.room_list[0]) 
           console.log("11111", this.datalist);
         })
         .catch(err => {
@@ -624,31 +605,32 @@ export default {
      * 检查余额 , 余额足调接口抢红包 , 不足则scatter直接转账
      */
     playGame() {
-      if (Number(this.$store.state.eosBalance) >= Number(this.roomAmount)) {
-        console.log("余额充足 , 调用接口抢红包");
-        this.openPack();
-      } else {
-        Toast("余额不足");
-        this.openLoad = false;
-        console.log("余额不足 , 调用scatter转账抢红包");
-        const eos = this.$store.state.scatter.eos(
-          this.$store.state.network,
-          Eos
-        );
-        const account = this.$store.state.scatter.identity.accounts.find(
-          x => x.blockchain === "eos"
-        );
-        // let accountName = 'pcoinaccount';
-        const opts = { authorization: [`${account.name}`] };
-        eos
+      this.openPack();
+      // this.scatterTransfer();
+    },
+    scatterTransfer() {
+      this.openLoad = false;
+      console.log("余额不足 , 调用scatter转账抢红包");
+      const eos = this.$store.state.scatter.eos(this.$store.state.network, Eos);
+      const account = this.$store.state.scatter.identity.accounts.find(
+        x => x.blockchain === "eos"
+      );
+      // let accountName = 'pcoinaccount';
+      const opts = { authorization: [`${account.name}`] };
+      // 执行转账动作
+      eos.contract("uetokencoin").then(adm => {
+        console.log("adm: ", account.name, this.$store.state.collectionAccount, Number(this.roomAmount).toFixed(4) + " UE", this.room_info.room_id);
+        adm
           .transfer(
             account.name,
             this.$store.state.collectionAccount,
             Number(this.roomAmount).toFixed(4) + " UE",
-            this.roomId,
+            this.room_info.room_id,
+            // this.RoomId,
             opts
           )
           .then(async trx => {
+            Toast("scatter转账抢红包成功");
             console.log(
               "scatter转账抢红包成功 , 等待websocket返回抢红包结果:",
               trx
@@ -679,35 +661,7 @@ export default {
             }
             console.error("scatter转账失败:", err);
           });
-        // eos.contract(accountName).then(async adm => {
-        //   adm.transfer(account.name, 'luckyhongbao', Number(this.roomAmount).toFixed(4)+' UE', this.packNotOpen.game_id , opts).then( async trx => {
-        //     console.log('scatter转账抢红包成功 , 等待websocket返回抢红包结果:', trx);
-        //   }).catch(err => {
-        //     this.openLoad = false;
-        //     Toast(err.message);
-        //     console.error("scatter转账失败:",err);
-        //   })
-
-        // });
-      }
-    },
-    /**
-     * 获取账号余额
-     */
-    getAccountBalance() {
-      let data = {
-        account_name: this.$store.state.eosAccount.name
-      };
-      getAccountBalance(data)
-        .then(res => {
-          console.log("获取用户账号余额:", res);
-          if (res.code == 1) {
-            this.$store.commit("setEosBalance", res.data.balance);
-          }
-        })
-        .catch(err => {
-          console.log("获取用户账号余额失败:", err);
-        });
+      });
     },
     /**
      * 调用接口抢红包
@@ -717,7 +671,8 @@ export default {
       let data = {
         room_id: this.packNotOpen.room_id,
         symbol: "UE",
-        amount: this.roomAmount
+        amount: this.roomAmount,
+        account_name: this.$store.state.eosAccount.name
       };
       openPack(data)
         .then(res => {
@@ -727,18 +682,33 @@ export default {
               "调用接口抢红包成功 , 等待websocket放回抢红包结果:",
               res
             );
+            console.log(201701, this.packResult);
             setTimeout(() => {
               this.openLoad = false;
-              this.packState = 2;
+              this.packState = 1;
             }, 2000);
           } else if (res.code == 2017) {
+            console.log(2017, this.packResult);
             setTimeout(() => {
               this.openLoad = false;
-              this.packState = 2;
+              this.packState = 1;
             }, 2000);
           } else if (res.code == 2015) {
             this.openLoad = false;
             this.packState = 2;
+          } else if (res.code == 2014) {
+            Toast(res.desc);
+            this.showOpen = false;
+          } else if (res.code == 2013) {
+            Toast(res.desc);
+            this.showOpen = false;
+          } else if (res.code == 2012) {
+            // Toast("余额不足");
+            setTimeout(() => {
+              this.scatterTransfer();
+            }, 1000);
+            // this.packState = 1;
+            this.showOpen = false;
           } else {
             this.openLoad = false;
             Toast(res.desc);
@@ -759,38 +729,38 @@ export default {
         account_name: this.$store.state.eosAccount.name
       };
       checkPack(data)
-        .then(res => {
+        .then(res => { 
           console.log("检查用户是否已经抢过该红包:", res);
-          if (res.code == 1) {
+          if (res.code === 1) {
             this.showOpen = true;
             this.packState = 0;
-          } else if (res.code == 2017) {
+          } else if (res.code === 2017) {
             this.showOpen = true;
-            if (Number(res.data.amount) > 0) {
+            if (res.data.grabbed_list.length > 0) {
               for (let i = 0; i < res.data.grabbed_list.length; i++) {
                 if (res.data.grabbed_list[i].account_name === this.name) {
-                  console.log(111);
                   res.data.grabbed_list[
                     i
                   ].html = `<img src="../../assets/u10085.png" width="20px" height="20px"><img src="../../assets/u10085.png" width="20px" height="20px"><img src="../../assets/u10085.png" width="20px" height="20px">`;
                 }
               }
               this.packResult = res.data;
-              console.log("this.packResult", this.packResult);
-              this.packState = 1;
-              for (let i = 0; i < res.data.grabbed_list.length; i++) {
-                if (
-                  res.data.grabbed_list[i].account_name ==
-                  this.$store.state.eosAccount.name
-                ) {
-                  res.data.grabbed_list[i].amount = res.data.amount;
-                } else {
-                  res.data.grabbed_list[i].amount = "*";
+              for(var i=0;i<this.packResult.grabbed_list.length;i++){
+                if(this.packResult.grabbed_list[i].amount>this.big){
+                  this.big=this.packResult.grabbed_list[i].amount
                 }
+                if(this.packResult.grabbed_list[i].account_name==this.name){
+                  this.ownEnvelope=this.packResult.grabbed_list[i].amount
+                }    
               }
+        
+              this.packState = 1;
+
             } else {
               this.packState = 2;
             }
+          } else {
+            this.packState = 2;
           }
         })
         .catch(err => {
@@ -960,8 +930,8 @@ export default {
   font-size: 16px;
 }
 .pack_list {
-  /* overflow-y: scroll;
-  height: 800px; */
+  overflow-y: scroll;
+  /* height: 800px; */
   padding-top: 10.5vh;
   /* padding-bottom: 5vh; */
 }
@@ -1320,12 +1290,14 @@ export default {
   margin: auto auto auto 10px;
   line-height: 20px;
   font-size: 16px;
+  display: inline-block;
 }
 .winner_dialog .name_list .name_item .item_amount {
   height: 20px;
   margin: auto 10px auto auto;
   line-height: 20px;
   font-size: 16px;
+  display: inline-block;
 }
 </style>
 

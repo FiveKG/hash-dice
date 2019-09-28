@@ -14,7 +14,7 @@ const url = require("url");
 const xhr = require("../common/xhr")
 const psModifyBalance = require("../common/psModifyBalance");
 
-endGame(1)
+// endGame(1)
 
 /**
  * 结束游戏

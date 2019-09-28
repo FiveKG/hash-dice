@@ -7,21 +7,24 @@ GET http://localhost:13021/config/get_config
 ### get account information
 GET http://localhost:13021/global_lotto/latest_game_session
 
-### get account information
+### 获取所有期数及开奖信息 global_lotto.tbg.isecsp.com
 GET http://localhost:13021/global_lotto/game_session
 
-### get account information
-GET http://localhost:13021/global_lotto/game_session_mine?account_name=dengderong
+### 获取某一期开奖详情 
+GET http://localhost:13021/global_lotto/game_session_detail?gs_id=bfd469188605dd15
 
 ### get account information
-GET http://localhost:13021/global_lotto/game_session_mine_detail?account_name=dengderong&periods=2
+GET http://localhost:13021/global_lotto/game_session_mine?account_name=yujinsheng11
+
+### get account information
+GET http://localhost:13021/global_lotto/game_session_mine_detail?account_name=yujinsheng11&periods=8
 
 ### get account information
 POST http://localhost:13021/global_lotto/bet
 Content-Type: application/json
 
 {
-    "periods": 3,
+    "periods": 8,
     "account_name": "yujinsheng11",
     "bet_num": "123456789",
     "bet_key": 1,
@@ -33,10 +36,10 @@ POST http://localhost:13021/global_lotto/random_bet
 Content-Type: application/json
 
 {
-    "periods": 4,
+    "periods": 8,
     "account_name": "yujinsheng11",
-    "bet_key": 4,
-    "bet_amount": 0.4
+    "bet_key": 20,
+    "bet_amount": 2
 }
 
 ####

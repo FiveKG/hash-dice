@@ -31,11 +31,11 @@ function asyncRequest(options) {
 async function post(api_url, options = {}) {
     try {
         const req_options = {
-        uri: api_url,
-        method: "post",
-        json: true,
-        headers: options.headers || {},
-        body: options.data || {}
+            uri: api_url,
+            method: "post",
+            json: true,
+            headers: options.headers || {},
+            body: options.data || {}
         };
 
         return await asyncRequest(req_options);

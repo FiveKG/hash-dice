@@ -3,14 +3,12 @@
 const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "listening trade transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis, generate_primary_key } = require("../common");
-const userInvestment = require("../businessLogic/account/userInvestment.js");
-const { WALLET_RECEIVER, EOS_TOKEN, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN, UE_TOKEN_SYMBOL, TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
-const { Decimal } = require("decimal.js");
+const { TBG_TOKEN, UE_TOKEN, UE_TOKEN_SYMBOL, TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { scheduleJob } = require("node-schedule");
 const { TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
 const buyAssets = require("./buyAssets");
 const raiseAirdrop = require("./raiseAirdrop");
-const { RAISE, BUY, FIRST_BUY, SELL } = require("../common/constant/optConstants");
+const { RAISE, BUY, SELL } = require("../common/constant/optConstants");
 const sellAssets = require("./sellAssets.js");
 const SEQ_KEY = "tbg:trade:account_action_seq"
 

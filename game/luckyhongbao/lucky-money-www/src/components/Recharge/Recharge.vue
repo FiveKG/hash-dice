@@ -45,8 +45,7 @@ export default {
           opts
         )
         .then(async trx => {
-          console.log("scatter充值成功:", trx);
-          this.$store.commit("setRechargeDialog", false);
+          console.log("scatter充值成功:", trx);;
           Toast("充值成功 , 充值资金可能会延迟到账.");
           // 轮询获取用户账号余额
           this.timer = setInterval(() => {

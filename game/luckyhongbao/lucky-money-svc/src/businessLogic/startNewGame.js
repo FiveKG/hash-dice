@@ -9,7 +9,6 @@ const gameManager = require("../common/gameManager.js");
 const dbOp = require("@fjhb/db-op");
 const padStart = require("../common/padStart.js");
 const randomWeights = require("../common/randomWeights");
-const psGame = require("../common/psGame");
 const redis = require("@fjhb/lm-redis");
 const { symbolTransfer } = require("../common/redis_queue");
 /**
@@ -55,40 +54,6 @@ async function startNewGame(eventArgv) {
         let allocationNumber = await calculate_allocation_nbr(roomId, eventArgv.amount, club);
         logger.debug(`allocationNumber：${JSON.stringify(allocationNumber)}`);
 
-        // 分配给分发中心
-        let redEnvelopeAllocation = await sysConfig.red_packet_allocation.get();
-        let symbolTransferList = [];
-        const transferInfo = {
-            "account_name": redEnvelopeAllocation.distribution_center_account,
-            "amount": Number(allocationNumber.toDistributionCenter),
-            "symbol": "UE",
-            "memo": `用户发红包, 分发中心获得收益 ${ allocationNumber.toDistributionCenter } UE`,
-            "opts": "agent"
-        };
-        symbolTransferList.push(transferInfo);
-        // 分配给第三方
-        symbolTransferList.push({
-            "account_name": redEnvelopeAllocation.third_party_account,
-            "amount": Number(allocationNumber.toDistributionCenter),
-            "symbol": "UE",
-            "memo": `用户发红包, 第三方获得收益 ${ allocationNumber.toDistributionCenter } UE`,
-            "opts": "agent"
-        });
-
-        // 分配给 TBG 钱包可得的收益
-        symbolTransferList.push({
-            "account_name": redEnvelopeAllocation.tbg_wallet_receiver,
-            "amount": Number(allocationNumber.toTbgWallet),
-            "symbol": "UE",
-            "memo": `用户发红包, 第三方获得收益 ${ allocationNumber.toTbgWallet } UE`,
-            "opts": "agent"
-        });
-
-        logger.debug(`symbolTransferList: ${JSON.stringify(symbolTransferList)}`);
-        await symbolTransfer.push(symbolTransferList);
-        symbolTransferList = null;
-
-        let allDbOpAry = []; //所有的数据库操作信息的数组
         //1. 判断是否需要扣除当前游戏的余额。 房间的创始红包， 就需要扣除余额
         if (eventArgv.isRoomFirstGame === false) {
             //之所以 === false ，是由于在 endGame 里，才会提供此字段且为false。api 接口部分可能未提供。提供的话，那么应该为 true
@@ -145,6 +110,44 @@ async function startNewGame(eventArgv) {
         let db_op_flag = await dbOp.batch_trans_db_op(db_op_object_list);
         db_op_failure = false;
         logger.debug(`批量数据库事务操作 成功. nextGameId:${nextGameId}.`);
+
+        // 分配给分发中心
+        let redEnvelopeAllocation = await sysConfig.red_packet_allocation.get();
+        let symbolTransferList = [];
+        const transferInfo = {
+            "account_name": redEnvelopeAllocation.distribution_center_account,
+            "amount": Number(allocationNumber.toDistributionCenter),
+            "symbol": "UE",
+            "memo": `用户发红包, 分发中心获得收益 ${ allocationNumber.toDistributionCenter } UE`,
+            "opts": "agent"
+        };
+        symbolTransferList.push(transferInfo);
+        // 分配给第三方
+        symbolTransferList.push({
+            "account_name": redEnvelopeAllocation.third_party_account,
+            "amount": Number(allocationNumber.toThirdParty),
+            "symbol": "UE",
+            "memo": `用户发红包, 第三方获得收益 ${ allocationNumber.toThirdParty } UE`,
+            "opts": "agent"
+        });
+
+        const memo = {
+            "game_name": "luckyhongbao",
+            "account_name": eventArgv.account_name,
+            "amount": eventArgv.amount.toString()
+        }
+        // 分配给 TBG 钱包可得的收益
+        symbolTransferList.push({
+            "account_name": redEnvelopeAllocation.tbg_wallet_receiver,
+            "amount": Number(allocationNumber.toTbgWallet),
+            "symbol": "UE",
+            "memo": JSON.stringify(memo),
+            "opts": "agent"
+        });
+
+        logger.debug(`symbolTransferList: ${JSON.stringify(symbolTransferList)}`);
+        await symbolTransfer.push(symbolTransferList);
+        symbolTransferList = null;
 
         if (db_op_flag) {
             //事务执行成功了 ， 才发布游戏开始的事件。
@@ -307,15 +310,6 @@ async function calculate_allocation_nbr(roomId, red_envelope_amount, club_info) 
     // 0.20%	第三方游戏开发团队	游戏方账号
     // 1.20%	游戏分发	分发收益账号
     // 3.60%	TBG钱包	钱包账号
-    // "distribution_center_account": DISTRIBUTION_CENTER_ACCOUNT,
-    // "distribution_center_account_rate": DISTRIBUTION_CENTER_ACCOUNT_RATE,
-    // "alloc_to_tsh_pool": ALLOC_TO_TSH_POOL,
-    // "alloc_to_protection_pool": ALLOC_TO_PROTECTION_POOL,
-    // "third_party_rate": THIRD_PARTY_RATE,
-    // "third_party_account": THIRD_PARTY_ACCOUNT,
-    // "alloc_to_referrer": ALLOC_TO_REFERRER,
-    // "alloc_to_tsh_income": ALLOC_TO_TSH_INCOME
-
     //先拿出 红包的分配比例, 计算分红的 数量.
     let redEnvelopeAllocation = await sysConfig.red_packet_allocation.get();
     logger.debug(`redEnvelopeAllocation config :${JSON.stringify(redEnvelopeAllocation)}`);
@@ -327,19 +321,7 @@ async function calculate_allocation_nbr(roomId, red_envelope_amount, club_info) 
     logger.debug(`toDistributionCenter:`, toDistributionCenter);
     const toTbgWallet = Decimal.div(redEnvelopeAllocation.tbg_wallet_receiver_rate, 100).mul(red_envelope_amount).toFixed(6);
     logger.debug(`toTbgWallet:`, toTbgWallet);
-    // // 拨入 TBG 股东分红池
-    // const toTshPool = Decimal.div(redEnvelopeAllocation.alloc_to_tsh_pool, 100).mul(red_envelope_amount).toFixed(6);
-    // logger.debug(`toTshPool:`, toTshPool);
-    // // 拨入 TBG 三倍收益保障池
-    // const toProtectionPool = Decimal.div(redEnvelopeAllocation.alloc_to_protection_pool, 100).mul(red_envelope_amount).toFixed(6);
-    // logger.debug(`toProtectionPool:`, toProtectionPool);
-    // // 拨入 TBG 共享推荐佣金分配；
-    // const toReferrer = Decimal.div(redEnvelopeAllocation.alloc_to_referrer, 100).mul(red_envelope_amount).toFixed(6);
-    // logger.debug(`toReferrer:`, toReferrer);
-    // // TSH投资股东收益
-    // const toTshIncome = Decimal.div(redEnvelopeAllocation.alloc_to_tsh_income, 100).mul(red_envelope_amount).toFixed(6);
-    // logger.debug(`toTshIncome:`, toTshIncome);
-    // // 实际发的红包的数量  ,
+    // 实际发的红包的数量  ,
     const redEnvelopeAmount = Decimal.div(redEnvelopeAllocation.redEnvelopRate, 100).mul(red_envelope_amount).toFixed(6);
     logger.debug(`实际发的红包的数量:`, redEnvelopeAmount);
     

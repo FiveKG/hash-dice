@@ -11,7 +11,7 @@
       <swiper class="swiper_box" dots-position="center" dots-class="dots" loop auto :list="swiperList" @on-click-list-item="clickSwiper" height="180px"></swiper>
       <v-ons-row class="list_title">热门推荐</v-ons-row>
       <v-ons-row class="hot_dapp">
-        <v-ons-col class="dapp_item" v-for="item in hotDapp" @click="clickHot(item)">
+        <v-ons-col class="dapp_item" v-for="(item, index) in hotDapp" :key="index" @click="clickHot(item)">
           <img class="dapp_logo" :src="item.logo_url" v-if="item.logo_url">
           <span class="dapp_name" v-if="item.name">{{item.name}}</span>
         </v-ons-col>
@@ -32,7 +32,14 @@
               </div>
             </v-ons-col>
             <v-ons-col>
-              <div class="type_item" v-for="dapp in item.list" v-if="dapp.odd_even === 'even'" @click="clickDapp(dapp)">
+              <!-- <div class="type_item" v-for="dapp in item.list" v-if="dapp.odd_even === 'even'" @click="clickDapp(dapp)">
+                <img :src="dapp.img">
+                <div class="type_detail">
+                  <div class="type_name">{{dapp.name}}</div>
+                  <div class="summary">{{dapp.summary}}</div>
+                </div>
+              </div> -->
+              <div class="type_item" v-for="dapp in item.list" v-if="dapp.odd_even === 'even'" @click="clickluck()">
                 <img :src="dapp.img">
                 <div class="type_detail">
                   <div class="type_name">{{dapp.name}}</div>
@@ -40,11 +47,65 @@
                 </div>
               </div>
             </v-ons-col>
+             <v-ons-col>
+              <div class="type_item"  @click="gogame()">
+                <div><img src="@/assets/invitation2/u1.png"></div>
+                <div class="type_detail">
+                  <div class="type_name">全球彩</div>
+                  <div class="summary">全球彩游戏</div>
+                </div>
+              </div>
+              </v-ons-col>
+               <v-ons-col>
+              <div class="type_item"  @click="goLottery()">
+                <img src="@/assets/invitation2/u1.png">
+                <div class="type_detail">
+                  <div class="type_name">哈希分分彩</div>
+                  <div class="summary">哈希分分彩游戏</div>
+                </div>
+              </div>
+              </v-ons-col>
+               <v-ons-col>
+              <div class="type_item"  @click="goHashDice()">
+                <img src="@/assets/invitation2/u4.svg">
+                <div class="type_detail">
+                  <div class="type_name">哈希骰子</div>
+                  <div class="summary">哈希骰子游戏</div>
+                </div>
+              </div>
+             </v-ons-col>
+             <v-ons-col>
+              <div class="type_item"  @click="goTreasure()">
+                <img src="@/assets/invitation2/u3.png">
+                <div class="type_detail">
+                  <div class="type_name">夺宝</div>
+                  <div class="summary">夺宝游戏</div>
+                </div>
+              </div>
+             </v-ons-col>
+
           </v-ons-row>
           <v-ons-row class="dapp_more" v-if="item.list.length > 5" @click="clickMore(index)">查看更多 <img src="@/assets/img/discover_arrow.png"> </v-ons-row>
         </swiper-item>
       </swiper>
     </div>
+    <v-ons-dialog
+      modifier="width_pwd"
+      style="background-color: rgba(0, 0, 0, .5);z-index: 10000;"
+      :visible.sync="showDialog">
+      <div class="dialog_layout">
+        <div class="alert-dialog-title statement_title">责任声明</div>
+        <div>您即将使用第三方DApp，确认即同意第三方DApp的用户协议与隐私政策，由第三方DApp向您承当责任。</div>
+        <div class="btn_layout">
+          <div class="cancel">
+            <span @click="cancel">{{$t('common.cancel')}}</span>
+          </div>
+          <div class="confirm">
+            <span @click="confirm">{{$t('common.confirm')}}</span>
+          </div>
+        </div>
+      </div>
+    </v-ons-dialog>
     <v-ons-dialog
       modifier="width_pwd"
       style="background-color: rgba(0, 0, 0, .5);z-index: 10000;"
@@ -89,7 +150,12 @@ export default {
       dappList: [],
       hotDapp: [],
       wallet: {},
-      showExDialog:false
+      showExDialog: false,
+      showDialog: false,
+      curDApp: {
+        site_url: "",
+        name: ""
+      }
     }
   },
   created() {
@@ -136,6 +202,42 @@ export default {
     // this.box.addEventListener('scroll', this.handleScroll,false)
   },
   methods: {
+    cancel() {
+      this.showDialog = false;
+    },
+    confirm() {
+      this.showDialog = false;
+      this.runIframe();
+    },
+    runIframe() {
+      if (this.wallet) {
+        ClientSocket.link().then(conn => {
+          if (conn) {
+            ClientSocket.setAccount(this.wallet.account).then(res => {
+              this.$router.push({
+                name: 'Iframe',
+                query: {
+                  url: this.curDApp.site_url,
+                  name: this.curDApp.name
+                }
+              })
+            }).catch(err => {
+              console.log('setAccount',err)
+            })
+          }
+        }).catch(err => {
+          console.log('link client socket err',err)
+        })
+      } else {
+        this.$router.push({
+          name: 'Iframe',
+          query: {
+            url: this.curDApp.site_url,
+            name: this.curDApp.name
+          }
+        })
+      }
+    },
     clickSwiper(item) {
       if (item.type === 'website') {
         if (this.wallet) {
@@ -196,37 +298,10 @@ export default {
       this.index = index
     },
     clickDapp(item) {
-      // 前往交易所
-      if (item.type == 'exchange_market'){
-        this.gotoExchange();
-        return;
-      }
+      this.curDApp.site_url = item.site_url;
+      this.curDApp.name = item.name;
 
-      if (this.wallet) {
-        ClientSocket.link().then(conn => {
-          if (conn) {
-            ClientSocket.setAccount(this.wallet.account).then(res => {
-              this.$router.push({
-                name: 'Iframe',
-                query: {
-                  url: item.site_url,
-                  name: item.name
-                }
-              })
-            }).catch(err => {
-              console.log('setAccount',err)
-            })
-          }
-        })
-      } else {
-        this.$router.push({
-          name: 'Iframe',
-          query: {
-            url: item.site_url,
-            name: item.name
-          }
-        })
-      }
+      this.showDialog = true;
     },
     handleScroll(evt, el) {
       console.log(window.scrollY, this.$refs.label.scrollTop)
@@ -234,39 +309,43 @@ export default {
       // }
     },
     clickHot(item) {
+      this.curDApp.site_url = item.site_url;
+      this.curDApp.name = item.name;
+      
+      this.showDialog = true;
       // 前往交易所
-      if (item.type == 'exchange_market'){
-        this.gotoExchange();
-        return;
-      }
+      // if (item.type == 'exchange_market'){
+      //   this.gotoExchange();
+      //   return;
+      // }
 
-      if (this.wallet) {
-        ClientSocket.link().then(conn => {
-          if (conn) {
-            ClientSocket.setAccount(this.wallet.account).then(res => {
-              this.$router.push({
-                name: 'Iframe',
-                query: {
-                  url: item.site_url,
-                  name: item.name
-                }
-              })
-            }).catch(err => {
-              console.log('setAccount',err)
-            })
-          }
-        }).catch(err => {
-          console.log('clickHot',err)
-        })
-      } else {
-        this.$router.push({
-          name: 'Iframe',
-          query: {
-            url: item.site_url,
-            name: item.name
-          }
-        })
-      }
+      // if (this.wallet) {
+      //   ClientSocket.link().then(conn => {
+      //     if (conn) {
+      //       ClientSocket.setAccount(this.wallet.account).then(res => {
+      //         this.$router.push({
+      //           name: 'Iframe',
+      //           query: {
+      //             url: item.site_url,
+      //             name: item.name
+      //           }
+      //         })
+      //       }).catch(err => {
+      //         console.log('setAccount',err)
+      //       })
+      //     }
+      //   }).catch(err => {
+      //     console.log('clickHot',err)
+      //   })
+      // } else {
+      //   this.$router.push({
+      //     name: 'Iframe',
+      //     query: {
+      //       url: item.site_url,
+      //       name: item.name
+      //     }
+      //   })
+      // }
     },
     fetchDapp(index) {
       getDappList({type: this.dappList[index].type, limit: 6}).then(res => {
@@ -303,6 +382,24 @@ export default {
         }
       })
     },
+    gogame(){
+      this.$router.push('GlovalLotto')
+    },
+    goLottery(){
+      this.$router.push('LotteryGo')
+    },
+    goHashDice(){
+      this.$router.push('HashDicePage')
+    },
+    goTreasure(){
+      this.$router.push('TreasurePage')
+    },
+    clickluck(){
+      var names=this.$store.state.wallet.assets.account;
+      
+      window.location.href = `http://localhost:8388/#/?name=${names}`;
+    },
+    
   },
   watch: {
     index(val) {
@@ -441,5 +538,11 @@ export default {
   width: 12px;
   height: 24px;
   margin-left: 10px;
+}
+.dialog_layout {
+  padding: 20px 48px;
+}
+.statement_title {
+  font-size: 0.4rem;
 }
 </style>

@@ -1,19 +1,53 @@
 <template>
   <div >
+
     <v-ons-row class="row_header" ref="header">
+      <div class="head-user flx_default">
+        <img class="head-user_avatar" src="../../assets/invitation2/avatar.jpg" alt="">
+        <span @click="clickAccount">{{wallet.account}}</span>
+        <img class="head-user_arrow" src="@/assets/assets/triangle.png">
+      </div>
+      <img class="head-serve" src="../../assets/assets/history.png" alt="">
+      <div class="row_header_bg"></div>
+    </v-ons-row>
+    <!-- <v-ons-row class="row_header" ref="header">
       <input type="text" :placeholder="$t('assets.search_assets')" maxlength="10" v-model="search">
       <img src="@/assets/img/select_wallet.png" class="select_wallet" @click="clickAddWallet('select')">
       <img src="@/assets/img/scanner.png" class="scanner" @click="clickScanner">
-    </v-ons-row>
-    <div>
+    </v-ons-row> -->
+    <div style="z-index:111">
+      <div class="assets_card_wrapper">
+        <div class="assets_card fd_cln">
+          <div class="card_row_1 jc_sb-al_c">
+            <div class="al_c">
+              <span>总资产</span>
+              <div class="my_assets">
+                <img src="@/assets/img/eye_open.png" v-if="showAssets" @click="showAssets = false"> 
+                <img src="@/assets/img/eye_close.png" v-else @click="showAssets = true"> 
+              </div>  
+            </div>
+            <img src="../../assets/assets/ellipsis.png" alt="">
+          </div>
+          <div class="card_row_2 al_c">
+            <div>{{showAssets ? totalAssets:'***'}}</div>
+            <div>
+              &nbsp;&nbsp;{{$store.state.wallet.currency === 'USD' ? '$':'￥'}}
+            </div>
+          </div>
+          <div class="card_row_3 jc_sb-al_c">
+            <div class="jc_sb-al_c" @click="clickReceive"><img src="@/assets/assets/receipt.png"><span>收款</span></div>
+            <div class="jc_sb-al_c" @click="clickTransfer"><img src="@/assets/assets/transfer.png"><span>转账</span></div>
+            <div class="jc_sb-al_c" @click="clickScanner"><img src="@/assets/assets/scan.png"><span>扫码</span></div>
+          </div>
+        </div>
+      </div>
       <!-- 我的资产 -->
-      <div class="assets_bg"></div>
-      <div class="assets_card">
+      <!-- <div class="assets_card">
         <div style="display: flex;">
           <div class="account_name" style="flex:1;" @click="clickAccount">{{wallet.account}} <img src="@/assets/img/arrow_right.png"> </div>
           <div class="action_transfer align_center" @click="clickTransfer">{{$t('assets.transfer')}} <img src="@/assets/img/transfer.png"> </div>
         </div>
-        <div class="my_assets">( {{$store.state.wallet.currency === 'USD' ? '$':'￥'}} ) {{$t('assets.my_assets')}} 
+        <div class="my_assets">
           <img src="@/assets/img/eye_open.png" v-if="showAssets" @click="showAssets = false"> 
           <img src="@/assets/img/eye_close.png" v-else @click="showAssets = true"> 
         </div>
@@ -21,7 +55,7 @@
           <div class="balance" style="flex:1;">{{showAssets ? totalAssets:'***'}}</div>
           <div class="action_transfer align_center" @click="clickReceive">{{$t('assets.receive')}} <img src="@/assets/img/receive.png"> </div>
         </div>
-      </div>
+      </div> -->
       <!-- 资源/权限/更多工具 -->
       <div v-if="wallet.chain === 'eos'">
         <div class="action_title">{{$t('assets.services')}} </div>
@@ -45,12 +79,11 @@
       <div ref="tokens">
         <div class="action_title align_center">
           <span>{{$t('assets.all_assets')}}</span>
-          <div style="flex:1;display:flex;justify-content:flex-end;"> <img src="@/assets/img/add.png" @click="clickAddToken"> </div>
         </div>
         <div class="tokens_card">
           <div v-if="wallet.chain === 'eth'">
             <div class="token_item" @click="clickToken({symbol: 'ETH', address: ''})">
-              <img src="@/assets/img/system_eth.png">
+              <img src="@/assets/assets/eth.png">
               <div class="token_symbol">ETH</div>
               <div>
                 <div class="token_balance">{{showAssets ? wallet.balance:'***'}}</div>
@@ -106,6 +139,7 @@
             </div>
           </div>
         </div>
+        <div class="addToken" @click="clickAddToken">添加资产</div>
       </div>
       <div ref="blank"></div>
     </div>
@@ -155,10 +189,14 @@
                     <img src="@/assets/img/sheet_checked.png">
                   </div>
                 </div>
+                <div @click.stop="deleteWallet(item)" class="account_delete_btn">
+                </div>
               </v-ons-row>
+              <div @click="clickAddWallet('select')" class="account_add_btn">
+              </div>
             </div>
             <div class="sheet_add">
-              <!-- <img src="@/assets/img/sheet_add.png" @click="clickAddWallet('eos')"> -->
+              <!-- <div src="@/assets/img/sheet_add.png" @click="clickAddWallet('eos')"> -->
             </div>
           </v-ons-col>
         </v-ons-row>
@@ -173,6 +211,20 @@
           </div>
           <div class="dialog_action">
             <span class="btn_cancel" @click="dialogVisible = false">{{$t('common.cancel')}}</span>
+            <span class="btn_delete" @click="clickDelete">{{$t('common.delete')}}</span>
+          </div>
+        </div>
+      </v-ons-dialog>
+      <v-ons-dialog
+        modifier="width"
+        cancelable
+        :visible.sync="deleteDialogVisible">
+        <div>
+          <div class="delete_question">
+            您是否确认删除选中账号
+          </div>
+          <div class="dialog_action">
+            <span class="btn_cancel" @click="deleteDialogVisible = false">{{$t('common.cancel')}}</span>
             <span class="btn_delete" @click="clickDelete">{{$t('common.delete')}}</span>
           </div>
         </div>
@@ -194,6 +246,7 @@ export default {
     return {
       actionSheetVisible: false,
       dialogVisible: false,
+      deleteDialogVisible: false,
       showAssets: true,
       deleteKey: '',
       search: '',
@@ -216,7 +269,6 @@ export default {
   created () {
     this.currencySymbol = this.$store.state.wallet.currency === 'USD' ? '$':'￥'
     const assets = this.$store.state.wallet.assets
-    console.log('assets-created', assets, document.documentElement.clientHeight)
     if (assets) {
       this.wallet = assets
       setTimeout(() => {
@@ -233,9 +285,9 @@ export default {
     },
     search(newVal) {
       if (newVal) {
-        console.log(document.documentElement.clientHeight,document.querySelector('.my_page').offsetHeight,this.$refs.tokens.offsetHeight, document.querySelector('.tabbar').offsetHeight,this.$refs.header.$el.offsetHeight)
+        // console.log(document.documentElement.clientHeight,document.querySelector('.my_page').offsetHeight,this.$refs.tokens.offsetHeight, document.querySelector('.tabbar').offsetHeight,this.$refs.header.$el.offsetHeight)
         this.$refs.blank.style.height = document.querySelector('.my_page').offsetHeight - this.$refs.tokens.offsetHeight - document.querySelector('.tabbar').offsetHeight - this.$refs.header.$el.offsetHeight - 10 + 'px'
-        console.log(this.$refs.blank.offsetHeight)
+        // console.log(this.$refs.blank.offsetHeight)
         document.querySelector('.my_page').scrollTop = this.$refs.blank.offsetHeight
       } else {
         document.querySelector('.my_page').scrollTop = 0
@@ -252,6 +304,7 @@ export default {
       wallet.ethWallets = []
       wallet.pogWallets = []
       for (let item of wallets) {
+        console.log('item===============',item)
         if (item.chain === 'eth') {
           const obj = Object.assign({}, item)
           obj.shortAddress = item.address.substr(0,6) + '...' + item.address.substr(item.address.length - 6)
@@ -353,6 +406,7 @@ export default {
               // 是永久指纹
               this.$store.commit('wallet/changeFingerprintToken', item.fingerprintToken)
             }
+            // UE ===> code: uetokencoin | POG => code: eosio.token | TBG => code: tbgtokencoin
             for (let token of wallet.tokens) {
               pog.getTableRows({
                 json:true,
@@ -379,6 +433,8 @@ export default {
           }
         }
       }
+      // console.log('this.$store.state.wallet.assets',this.$store.state.wallet.assets)
+      // console.log('this.$store.state.wallet.localFile',this.$store.state.wallet.localFile)
     },
     async totalConvert() {
       const rate = await getCoinRate({coin_id: 'EOS', convert: this.$store.state.wallet.currency})
@@ -434,7 +490,24 @@ export default {
       const index = wallets.findIndex(ele => ele.publicKey === this.deleteKey)
       wallets.splice(index, 1)
       localStorage.setItem('isecsp_wallet',JSON.stringify(localFile))
+      if (this.$store.state.wallet.localFile.wallets.length > 0) {
+        const currentWallet = this.$store.state.wallet.localFile.wallets[0]
+        this.$store.commit('wallet/setAssets', wallet)
+      } else {
+        this.$store.commit('wallet/setAssets', null)
+      }
       this.dialogVisible = false
+      this.deleteDialogVisible = false
+      this.actionSheetVisible = false
+      this.initData()
+    },
+    // 用户主动删除钱包
+    deleteWallet (wallet) {
+      const localFile = this.$store.state.wallet.localFile
+      const wallets = localFile.wallets
+      this.deleteKey = wallet.publicKey
+      this.deleteDialogVisible = true
+      localStorage.setItem('isecsp_wallet',JSON.stringify(localFile))
       this.actionSheetVisible = false
       this.initData()
     },
@@ -624,14 +697,7 @@ export default {
   align-items: center;
 }
 
-.row_header {
-  height: 150px;
-  background-image: url('~@/assets/img/bg_header.png');
-  background-size: cover;
-  background-repeat: repeat;
-  position: fixed;
-  z-index: 100;
-}
+
 .row_header input {
   width: 476px;
   height: 60px;
@@ -664,16 +730,7 @@ export default {
   height: 338px;
   background: linear-gradient(to right,  #f53a3f, #e4272b);
 }
-.assets_card {
-  background-color: #fff;
-  margin: 0 30px;
-  margin-top: -188px;
-  border-radius: 15px;
-  padding: 56px;
-  color: #181818;
-  font-size:32px;
-  box-shadow: 0 0 1px #dbdbdb;
-}
+
 .account_name img{
   margin-left: 40px;
   width: 20px;
@@ -684,23 +741,12 @@ export default {
   width: 50px;
   height: 50px;
 }
-.my_assets {
-  font-size: 34px;
-  margin: 20px 0;
-}
-.my_assets img {
-  width: 38px;
-  height: 24px;
-}
 .assets_card .balance {
   color: #e4252a;
   font-size: 56px;
   font-weight: bold;
 }
-.action_title {
-  margin: 24px 46px 0 46px;
-  font-size: 26px;
-}
+
 .action_title img {
   width: 42px;
   height: 42px;
@@ -729,34 +775,6 @@ export default {
   width: 16px;
   height: 24px;
   margin-left: 10px;
-}
-.tokens_card {
-  padding: 0 20px;
-  margin: 24px 30px;
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: 1px 1px 10px #e9e9e9;
-}
-.token_item {
-  display: flex;
-  align-items: center;
-  padding: 20px 0;
-}
-.token_item img {
-  height: 70px;
-}
-.token_symbol {
-  flex: 1;
-  padding-left: 20px;
-}
-.token_balance {
-  font-size: 26px;
-  text-align: right;
-}
-.token_usd {
-  font-size: 22px;
-  color: #b0b0b0;
-  text-align: right;
 }
 .border {
   border-top: 1px solid #f6f6f6;
@@ -803,14 +821,59 @@ export default {
   text-align: center;
 }
 .account_card {
-  margin: 0 38px;
-  margin-top: 34px;
+  margin: 34px 28px 0 38px;
   padding: 32px 48px;
   border-radius: 15px;
   box-shadow: 0 0 15px rgb(228, 228, 228);
   width: 100%;
   display: flex;
   align-items: center;
+  flex-shrink: 1;
+}
+ons-row {
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.account_add_btn {
+  height: .8rem;
+  background: #1D4997;
+  width: .8rem;
+  border-radius: 50%;
+  position: relative;
+  margin: .4rem auto;
+}
+.account_add_btn::after,.account_add_btn::before {
+  position: absolute;
+  content: '';
+  background: #fff;
+  width: 50%;
+  height: .1rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.account_add_btn::after{
+  width: .1rem;
+  height: 50%;
+}
+.account_delete_btn {
+  height: .5rem;
+  background: #e4252a;
+  margin-right: .3rem;
+  flex: 1 0 .5rem;
+  border-radius: 50%;
+  position: relative;
+}
+.account_delete_btn::after {
+  position: absolute;
+  content: '';
+  background: #fff;
+  width: 50%;
+  height: .1rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
 }
 .account_info {
   flex: 1;
@@ -842,5 +905,171 @@ export default {
 .btn_delete {
   color: #027be3;
   margin-left: 50px;
+}
+</style>
+
+<style scoped>
+.head-info{
+    padding-top: constant(safe-area-inset-top);
+    padding-right: constant(safe-area-inset-right);
+    padding-left: constant(safe-area-inset-left);
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-left: env(safe-area-inset-left);
+}
+.row_header {
+  height: 150px;
+  background-size: cover;
+  background-repeat: repeat;
+  position: relative;
+}
+.row_header_bg {
+  position: absolute;
+  left: 0;
+  top:0;
+  border-radius: 0 0 1.2rem 1.2rem;
+  background-color: rgb(81, 88, 236);
+  height: 5.5rem;
+  width: 100%;
+  z-index: -1;
+}
+.head-user {
+    padding: .5rem;
+}
+.head-user>.head-user_avatar{
+    width: .9rem;
+    border-radius: 50%;
+    margin-right: .3rem;
+}
+.head-user>span{
+    color: #eeeeee;
+    font-size: .4rem;
+    font-weight: bold;
+    margin-right: .2rem;
+}
+.head-user>.head-user_arrow {
+    width: .4rem;
+}
+.head-serve {
+    margin-right: .5rem;
+    width: .7rem;
+}
+.assets_card_wrapper{
+  padding: 0 .5rem;
+}
+.assets_card {
+  overflow: hidden;
+  border-radius: .6rem;
+  height: 5rem;
+  padding: 0 .4rem;
+  color: #fff;
+  box-shadow: 0 0 .4rem rgb(81, 88, 236);
+  background: url('../../assets/assets/card_bg.png') no-repeat;
+  background-size: 100% 100%;
+}
+.card_row_1{
+  padding-top: .4rem;
+}
+.card_row_1>span {
+  color: rgb(228, 228, 228, .8);
+  font-size: .4rem;
+}
+.card_row_1>img{
+  width: .7rem;
+}
+.my_assets>img {
+  margin-left: .2rem;
+  width: .5rem;
+}
+.card_row_2{
+  font-size: .8rem;
+  font-weight: bold;
+  padding: .2rem 0;
+  margin-bottom: .55rem;
+}
+.card_row_3>div {
+  width: 28%;
+  padding: .2rem .3rem;
+  box-sizing: border-box;
+  border-radius: .4rem;
+  background: rgb(228, 228, 228, .1);
+  font-size: .4rem;
+}
+.card_row_3>div>img {
+  max-width: 40%;
+}
+
+.action_title {
+  margin-top: .6rem;
+  padding: 0 .5rem;
+  font-size: .5rem;
+  font-weight: 600;
+  color: rgb(64, 64, 64);
+}
+.tokens_card {
+  padding: 0 20px;
+  margin: 24px 30px;
+  background-color: #fff;
+  font-size: .5rem;
+  font-weight: bold;
+  color: rgb(64, 64, 64);
+}
+.token_item {
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+}
+.token_item img {
+  height: 70px;
+}
+.token_symbol {
+  flex: 1;
+  padding-left: 20px;
+}
+.token_balance {
+  font-size: .5rem;
+  text-align: right;
+}
+.token_usd {
+  font-size: .4rem;
+  color: #b0b0b0;
+  text-align: right;
+}
+.addToken{
+  margin: 2rem .5rem 0 .5rem;
+  background: rgb(81, 88, 236);
+  padding: .4rem 0;
+  text-align: center;
+  color: #fff;
+  font-size: .45rem;
+  border-radius: .4rem;
+}
+  /* common style */
+.jc_sb-al_c {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.jc_sa-al_c {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.jc_c-al_c {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.al_c{
+    display: flex;
+    align-items: center;
+}
+.fd_cln {
+    display: flex;
+    flex-direction: column;
+}
+.flx_default {
+    display: flex;
+    align-items: center;
 }
 </style>

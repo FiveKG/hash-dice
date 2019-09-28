@@ -299,6 +299,7 @@ export default {
       return new Promise((resolve, reject) => {
         getConfig()
           .then(async res => {
+            console.log('执行力')
             if (res.code == 1) {
               var blovk_arr = res.data.chain_info.http_end_point.split(":");
               let network = {
@@ -309,6 +310,7 @@ export default {
                 protocol: blovk_arr[0]
               };
               console.log("获取配置信息中的network:", network);
+              console.log("res: ", res);
               this.$store.commit("setNetwork", network);
               this.$store.commit(
                 "setCollectionAccount",
@@ -395,44 +397,44 @@ export default {
       this.$store.commit("setSideBar", false);
     },
     // 获取用户账号余额
-    getAccountBalance() {
-      let data = {
-        account_name: this.$store.state.eosAccount.name
-      };
-      getAccountBalance(data)
-        .then(res => {
-          console.log("提现后 , 获取用户账号余额:", res);
-          if (
-            res.code == 1 &&
-            Number(res.data.balance) !== Number(this.$store.state.eosBalance)
-          ) {
-            Toast("提现金额已到账");
-            this.$store.commit("setEosBalance", res.data.balance);
-            clearInterval(this.timer);
-          }
-        })
-        .catch(err => {
-          console.log("获取用户账号余额失败:", err);
-        });
-      // 获取链上余额
-      const eos = this.$store.state.scatter.eos(this.$store.state.network, Eos);
-      eos
-        .getCurrencyBalance(
-          this.$store.state.symbolAccountName,
-          this.$store.state.eosAccount.name,
-          "CLUB"
-        )
-        .then(tx => {
-          // this.eosResources =tx[0];
-          console.log("Scatter 查询 POG 余额:", tx);
-          if (tx.length > 0) {
-            this.$store.commit("setScatterEosBalance", tx[0]);
-          }
-        })
-        .catch(error => {
-          console.log("Scatter 查询 POG 余额失败", error);
-        });
-    },
+    // getAccountBalance() {
+    //   let data = {
+    //     account_name: this.$store.state.eosAccount.name
+    //   };
+    //   getAccountBalance(data)
+    //     .then(res => {
+    //       console.log("提现后 , 获取用户账号余额:", res);
+    //       if (
+    //         res.code == 1 &&
+    //         Number(res.data.balance) !== Number(this.$store.state.eosBalance)
+    //       ) {
+    //         Toast("提现金额已到账");
+    //         this.$store.commit("setEosBalance", res.data.balance);
+    //         clearInterval(this.timer);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log("获取用户账号余额失败:", err);
+    //     });
+    //   // 获取链上余额
+    //   const eos = this.$store.state.scatter.eos(this.$store.state.network, Eos);
+    //   eos
+    //     .getCurrencyBalance(
+    //       this.$store.state.symbolAccountName,
+    //       this.$store.state.eosAccount.name,
+    //       "CLUB"
+    //     )
+    //     .then(tx => {
+    //       // this.eosResources =tx[0];
+    //       console.log("Scatter 查询 POG 余额:", tx);
+    //       if (tx.length > 0) {
+    //         this.$store.commit("setScatterEosBalance", tx[0]);
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.log("Scatter 查询 POG 余额失败", error);
+    //     });
+    // },
     // Scatter全局登录
     async scatterOneStop() {
       // Scatter一站式调用
@@ -482,9 +484,9 @@ export default {
             this.showWithdraw = false;
             Toast("提现成功 , 可能延迟到账.");
             // 轮询获取用户账号余额
-            this.timer = setInterval(() => {
-              this.getAccountBalance();
-            }, 5000);
+            // this.timer = setInterval(() => {
+            //   this.getAccountBalance();
+            // }, 5000);
           } else {
             Toast(res.desc);
           }

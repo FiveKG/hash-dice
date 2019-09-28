@@ -42,7 +42,7 @@ function init(server) {
         // });
 
         socket.on("disconnect", async msg => {
-            logger.debug(`user disconnect information: ${JSON.stringify(msg)} socket.id: ${socket.id} , socket.rooms:${socket.rooms}`);
+            logger.debug(`user disconnect information: ${JSON.stringify(msg)} socket.id: ${socket.id} , socket.rooms:${JSON.stringify(socket.rooms)}`);
             exit_online_count(msg, socket.id, WsServer);
         });
 
@@ -114,7 +114,7 @@ notify_user_grab_red_envelope.sub(async data => {
             data['grabbed_list'] = GrabbedList;
 
             WsServer.to(find_game.room_id).emit("grab_red_envelope", data);
-            logger.debug(`WsServer.to(${find_game.room_id}).emit("grab_red_envelope", data);`);
+            logger.debug(`WsServer.to(${find_game.room_id}).emit("grab_red_envelope", data);`, data);
             // }
         }
     } catch (error) {

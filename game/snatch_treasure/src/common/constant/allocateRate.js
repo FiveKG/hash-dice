@@ -7,6 +7,9 @@ const ALLOC_TO_SNATCH_PRIZE_POOL = 90
 // 分发中心收益
 const DISTRIBUTION_CENTER = 3.5;
 
+// 拨入 TBG 钱包
+const TBG_WALLET_RECEIVER = 6.5;
+
 // 1% 拨入 TBG 股东分红池；
 const ALLOC_TO_TSH_POOL = 1;
 // 1% 拨入 TBG 三倍收益保障池；
@@ -28,7 +31,8 @@ const CONSTANT = {
     "ALLOC_TO_TSH_POOL": ALLOC_TO_TSH_POOL,
     "ALLOC_TO_TSH_INCOME": ALLOC_TO_TSH_INCOME,
     "ALLOC_TO_PROTECTION_POOL": ALLOC_TO_PROTECTION_POOL,
-    "ALLOC_TO_REFERRER": ALLOC_TO_REFERRER
+    "ALLOC_TO_REFERRER": ALLOC_TO_REFERRER,
+    "TBG_WALLET_RECEIVER": TBG_WALLET_RECEIVER
 }
 
 module.exports = CONSTANT
@@ -43,4 +47,5 @@ module.exports = CONSTANT
  * @property { number } ALLOC_TO_TSH_INCOME 1% 拨入 TBG 三倍收益保障池；
  * @property { number } ALLOC_TO_PROTECTION_POOL 3% 拨入 TBG 共享推荐佣金分配；
  * @property { number } ALLOC_TO_REFERRER 1% TSH投资股东收益
+ * @property { number } TBG_WALLET_RECEIVER 6.5% 拨入 TBG 钱包
  */

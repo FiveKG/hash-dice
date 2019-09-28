@@ -8,13 +8,13 @@
       <div class="layout">
         <div>当前直接推荐 PK 池余额</div>
         <div class="total_amount">{{totalAmount}}</div>
-        <div>EOS</div>
+        <div>UE</div>
         <div><img class="divider" src="@/assets/img/u8.png" alt=""></div>
         <div class="desc1">
           <div>每周直接推荐 PK 一次</div>
           <div>每周一 00:00 对所有账号本周直接推荐数量进行排名</div>
           <div>直接推荐前五名可获 PK 奖金</div>
-          <div>当前直接推荐 PK 池余额的 50% 为每周发放总额</div>
+          <div>当前直接推荐 PK 池余额的 {{dividend_rate}}% 为每周发放总额</div>
         </div>
         <div><img class="divider" src="@/assets/img/u8.png" alt=""></div>
         <div>本周实时PK榜</div>
@@ -25,9 +25,9 @@
             <th>主账户名称</th>
             <th>直推子 <br> 账号数</th>
             <th>奖金分 <br> 配比例</th>
-            <th>实时奖金  EOS</th>
+            <th>实时奖金  UE</th>
           </tr>
-          <tr v-for="(item,index) in accountList">
+          <tr v-for="(item,index) in accountList" :key="index">
             <td>
               <div class="table_icon" v-if="index+1 === 1"> <img src="@/assets/img/u95.png"> </div>
               <div class="table_icon" v-else-if="index+1 === 2"> <img src="@/assets/img/u97.png"> </div>
@@ -40,6 +40,15 @@
             <td>{{item.bonus}}</td>
           </tr>
         </table>
+        <div class="lh">直推子账号数量一致的，排名按先达到在前</div>
+        <div><img class="divider" src="@/assets/img/u8.png" alt=""></div>
+        <div>累计已发放 PK 奖金</div>
+        <div class="lhs">{{issue}}</div>
+        <div>UE</div>
+        <div><img class="divider" src="@/assets/img/u8.png" alt=""></div>
+        <div>直接推荐 PK 池累计收入</div>
+        <div class="lhs">{{total}}</div>
+        <div>UE</div>
       </div>
     </slot>
   </vpage>
@@ -47,7 +56,7 @@
 
 <script>
 import MyPage from '@/components/MyPage'
-import { poolPk } from '@/servers/invitation';
+import api from '@/servers/invitation';
 
 export default {
   components: {
@@ -56,15 +65,21 @@ export default {
   data() {
     return {
       totalAmount: '',
-      accountList: []
+      accountList: [],
+      dividend_rate:'',
+      total:'',
+      issue:','
     }
   },
   created() {
-    poolPk({account_name: this.$route.query.account}).then(res => {
+    api.poolPk({account_name: this.$store.state.wallet.localFile.wallets[0].accountNames[0]}).then(res => {
       console.log(res)
       if (res.code === 1) {
         this.totalAmount = res.data.current_amount
         this.accountList = res.data.detail
+        this.dividend_rate = res.data.dividend_rate
+        this.total = res.data.total
+        this.issue = res.data.issue
       }
     })
   },
@@ -136,5 +151,12 @@ table tr td {
 }
 .table_icon img {
   height: 40px;
+}
+.lh{
+  margin-top: 40px;
+}
+.lhs{
+  margin-top: 40px;
+  font-size: 50px
 }
 </style>

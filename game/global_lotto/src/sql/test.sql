@@ -34,10 +34,10 @@ SELECT 'SELECT ' || array_to_string(
 SELECT 'SELECT ' || array_to_string(
         ARRAY(SELECT 'o' || '.' || c.column_name 
                 FROM information_schema.columns As c 
-                WHERE table_name = 'prize_pool_log' 
+                WHERE table_name = 'award_session' 
                 AND  c.column_name 
-                NOT IN('summary')
-        ), ',') || ' FROM prize_pool_log As o' As sqlstmt;
+                NOT IN('extra')
+        ), ',') || ' FROM award_session As o' As sqlstmt;
 
 --- 
 SELECT 'SELECT ' || array_to_string(
@@ -66,4 +66,33 @@ SELECT '$' || generate_series(1, 5);
 SELECT relname, reltuples
 FROM pg_class r JOIN pg_namespace n
 ON (relnamespace = n.oid)
-WHERE relkind = 'r' AND n.nspname = 'public';  
+WHERE relkind = 'r' AND n.nspname = 'public'; 
+
+
+SELECT gs.gs_id, gs.periods, gs.reward_num, bo.create_time, gs.game_state, bo.key_count, CAST()
+                FROM game_session gs 
+                JOIN bet_order bo ON gs.gs_id = bo.gs_id
+                WHERE bo.account_name = 'yujinsheng11'
+                ORDER BY create_time DESC;
+
+SELECT gs.gs_id, bo.bo_id, gs.periods, gs.reward_num, bo.create_time, gs.game_state, bo.key_count, aw.win_type
+                FROM game_session gs 
+                JOIN bet_order bo ON gs.gs_id = bo.gs_id
+                JOIN award_session aw ON aw.bo_id = bo.bo_id
+                WHERE bo.account_name = 'yujinsheng11'
+                GROUP BY bo.bo_id, gs.gs_id, gs.periods, gs.reward_num, bo.create_time, gs.game_state, bo.key_count, aw.win_type
+                ORDER BY create_time DESC;
+
+SELECT gs.gs_id, bo.bo_id, gs.periods, gs.reward_num, bo.create_time, gs.game_state, bo.key_count, aw.win_type
+                FROM game_session gs 
+                JOIN bet_order bo ON gs.gs_id = bo.gs_id
+                JOIN award_session aw ON aw.bo_id = bo.bo_id
+                WHERE bo.account_name = 'yujinsheng11'
+                ORDER BY create_time DESC;
+
+SELECT o.bo_id, o.win_type,o.one_key_bonus 
+        FROM award_session As o 
+        WHERE o.account_name = 'yujinsheng11'
+        GROUP BY o.bo_id, o.win_key,o.win_type,o.one_key_bonus,o.bonus_amount;
+
+SELECT sum(one_key_bonus), o.bo_id FROM award_session GROUP BY o.bo_id; WHERE bo_id = any()

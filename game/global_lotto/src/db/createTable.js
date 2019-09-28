@@ -64,7 +64,7 @@ async function createTable() {
         comment on column bet_order.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS award_session(
             aw_id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
-            gs_id TEXT NOT NULL DEFAULT '',
+            bo_id TEXT NOT NULL DEFAULT '',
             extra JSON NOT NULL DEFAULT '{}'::JSONB,
             account_name TEXT NOT NULL DEFAULT '',
             bet_num TEXT NOT NULL DEFAULT '',
@@ -76,7 +76,7 @@ async function createTable() {
         );
         comment on table award_session is '派奖表';
         comment on column award_session.aw_id is '用户资产表 id';
-        comment on column award_session.gs_id is '游戏期数信息 id';
+        comment on column award_session.bo_id is '投注 id';
         comment on column award_session.extra is '附加信息';
         comment on column award_session.account_name is '投注用户';
         comment on column award_session.create_time is '创建时间';

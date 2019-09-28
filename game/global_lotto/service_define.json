@@ -149,7 +149,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "gs_id": { "type": "number",  "is_require": true,  "desc": "game session id" }
+                "gs_id": { "type": "text",  "is_require": true,  "desc": "game session id" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,

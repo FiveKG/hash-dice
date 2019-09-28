@@ -5,22 +5,7 @@ const fetch = require('node-fetch');                                // node only
 const { TextDecoder, TextEncoder } = require('util');               // node only
 const { scheduleJob } = require("node-schedule");
 const df = require("date-fns");
-let network = {
-    main_net: "https://nodes.get-scatter.com"
-}
-// TBG1 收款账户
-const WALLET_RECEIVER = "tbgjoin";
-// TBG1 出款账户
-const DISPENSE_ACCOUNT = "tbgjoin";
-// EOS token 合约账户
-const EOS_TOKEN = "eosio.token";
-const EOS_TOKEN_SYMBOL = "EOS"
-// UE token 合约账户
-const UE_TOKEN = "uetokencoin";
-const UE_TOKEN_SYMBOL = "UE"
-// TBG token 合约账户
-const TBG_TOKEN = "tbgtokencoin"
-const TBG_TOKEN_SYMBOL = "TBG"
+const { pool } = require("../../db");
 // 节点信息
 const END_POINT = "http://45.251.109.187:8888"
 // 私钥
@@ -38,12 +23,12 @@ const PRIVATE_KEY_TEST = "5KNrMrmiQ1fu3cwMdRCdh1bAfBcbyte2nJwB6evcB1By3fmwF6s,5K
         const GLOBAL_LOTTO_CONTRACT = "globallotto"
         
         // 获取区块链信息
-        // const { head_block_num, head_block_time } = await rpc.get_info();
-        // // 根据当前区块获取到时间戳和交易 id
-        // const { id, timestamp } = await rpc.get_block(head_block_num);
+        const { head_block_num, head_block_time } = await rpc.get_info();
+        // 根据当前区块获取到时间戳和交易 id
+        // const { id, timestamp } = await rpc.get_block(14647993);
         // console.debug("%s %d %s", timestamp, head_block_num, id, head_block_time);
 
-        // getCurrencyBalance(UE_TOKEN, 'dengderong', 'UE')
+        // getCurrencyBalance(UE_TOKEN, 'gametestuser', 'UE')
         // .then(res => console.debug("res: ", res))
         // .catch(err => console.error("caught exception: ", err));
         
@@ -73,21 +58,36 @@ const PRIVATE_KEY_TEST = "5KNrMrmiQ1fu3cwMdRCdh1bAfBcbyte2nJwB6evcB1By3fmwF6s,5K
             } 
         }
 
-        // await api.transact({ actions: [ act ] }, {
+        const actions = [
+            {
+                account: GLOBAL_LOTTO_CONTRACT,
+                name: "setstate",
+                authorization: [{
+                    actor: GLOBAL_LOTTO_CONTRACT,
+                    permission: 'active',
+                }],
+                data: {
+                    game_id: 5,
+                    state: 1
+                }
+            }
+        ]
+
+        // await api.transact({ actions: actions }, {
         //     blocksBehind: 3,
         //     expireSeconds: 30,
         // }).then(resp => {
         //     console.debug("resp: ", resp);
         // })
 
-        // await clearTable(GLOBAL_LOTTO_CONTRACT, 1, "lottogame", true, PRIVATE_KEY_TEST.split(","))
-        // await clearTable(GLOBAL_LOTTO_CONTRACT, 1, "rewardlotto", true, PRIVATE_KEY_TEST.split(","))
-        // await clearTable(GLOBAL_LOTTO_CONTRACT, 1, "betlotto", true, PRIVATE_KEY_TEST.split(","))
+        await clearTable(GLOBAL_LOTTO_CONTRACT, 1, "lottogame", true, PRIVATE_KEY_TEST.split(","))
+        await clearTable(GLOBAL_LOTTO_CONTRACT, 1, "rewardlotto", true, PRIVATE_KEY_TEST.split(","))
+        await clearTable(GLOBAL_LOTTO_CONTRACT, 1, "betlotto", true, PRIVATE_KEY_TEST.split(","))
         
         
         // console.debug("resp: ", resp)
 
-        // transfer(UE_TOKEN, UE_TOKEN, 'eoslottoeos', '10.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
+        // transfer(UE_TOKEN, UE_TOKEN, 'tbgreceiver', '10.0000 UE', 'memo', PRIVATE_KEY_TEST.split(","))
         // .then(res => console.error(res))
         // .catch(err => console.error(err));
     } catch (err) {

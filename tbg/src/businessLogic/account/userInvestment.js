@@ -1,6 +1,7 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@src/businessLogic/account/userInvestment.js": "user investment" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "user investment" });
 const { getUserSubAccount } = require("../../models/subAccount");
+const { getAccountInfo } = require("../../models/account");
 const allocateInvestAsset = require("./allocateInvestAsset.js");
 const calIncome = require("./calIncome.js");
 const { redis } = require("../../common/index.js");
@@ -13,6 +14,12 @@ const { redis } = require("../../common/index.js");
  */
 async function userInvestment(amount, accountName, userInvestmentRemark) {
     try {
+        const accountInfo = await getAccountInfo(accountName);
+        // 如果用户不存在,直接过滤掉
+        if (!accountInfo) {
+            logger.warn("用户不存在");
+            return;
+        }
         // 生成子账号
         let subAccount = await getUserSubAccount(accountName);
         logger.debug("subAccount: ", subAccount);
