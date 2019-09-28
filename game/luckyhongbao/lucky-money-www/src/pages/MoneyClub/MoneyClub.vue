@@ -324,6 +324,7 @@ export default {
       roomAmount: "", //红包金额
       roomType: storage.get("roomType"), //房间类型 , 几人抢
       roomId: storage.get("roomId"), //房间id
+      RoomId:1,
       onlineNum: 0, //在线人数
       showOpen: false, //开奖蒙层
       openLoad: false, //是否点击'開', true要转
@@ -476,21 +477,23 @@ export default {
               "当前用户的POG账号:",
               that.$store.state.eosAccount.name
             );
+            that.packState = 1;
+            that.showOpen = true;
             Notify({
               message: data.account_name + " 已抢到红包",
               duration: 1000,
               background: "#1989fa"
             });
-
+            this.RoomId=val.room_id;
             that.packResult = data;
-              for(var i=0;i<that.packResult.grabbed_list.length;i++){
-                if(that.packResult.grabbed_list[i].amount>that.big){
-                  that.big=that.packResult.grabbed_list[i].amount
-                }
-                if(that.packResult.grabbed_list[i].account_name==that.name){
-                  that.ownEnvelope=that.packResult.grabbed_list[i].amount
-                }    
+            for(var i=0;i<that.packResult.grabbed_list.length;i++){
+              if(that.packResult.grabbed_list[i].amount>that.big){
+                that.big=that.packResult.grabbed_list[i].amount
               }
+              if(that.packResult.grabbed_list[i].account_name==that.name){
+                that.ownEnvelope=that.packResult.grabbed_list[i].amount
+              }    
+            }
           });
         }
       }
@@ -508,6 +511,7 @@ export default {
             "roomId",
             result.data.type_list[0].room_list[0].room_id
           );
+          this.RoomId=result.data.type_list[0].room_list[0].room_id;
           this.room_info = result.data.type_list[0].room_list[0];
           this.datalist = result.data.type_list[0];
           this.roomAmount = Number(
@@ -615,13 +619,14 @@ export default {
       const opts = { authorization: [`${account.name}`] };
       // 执行转账动作
       eos.contract("uetokencoin").then(adm => {
-        console.log("adm: ", adm);
+        console.log("adm: ", account.name, this.$store.state.collectionAccount, Number(this.roomAmount).toFixed(4) + " UE", this.room_info.room_id);
         adm
           .transfer(
             account.name,
             this.$store.state.collectionAccount,
             Number(this.roomAmount).toFixed(4) + " UE",
-            this.roomId,
+            this.room_info.room_id,
+            // this.RoomId,
             opts
           )
           .then(async trx => {
@@ -698,10 +703,11 @@ export default {
             Toast(res.desc);
             this.showOpen = false;
           } else if (res.code == 2012) {
-            Toast("余额不足");
+            // Toast("余额不足");
             setTimeout(() => {
               this.scatterTransfer();
             }, 1000);
+            // this.packState = 1;
             this.showOpen = false;
           } else {
             this.openLoad = false;
