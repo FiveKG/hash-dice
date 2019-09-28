@@ -125,7 +125,8 @@ export default {
       showDialog: false,
       showExDialog: false,
       noPadding: false,
-      modal: ''
+      modal: '',
+      test: 0
     }
   },
   computed: {
@@ -157,6 +158,7 @@ export default {
     })
     if (typeof nodejs !== "undefined") {
       nodejs.channel.setListener(msg => {
+        console.log(msg)
         if (msg === 'serverOpen') {
           // ClientSocket.link().then(conn => {
           //   console.log(conn)
@@ -188,6 +190,10 @@ export default {
               console.log('onclose')
             }
           },1000);
+        }
+        else if (msg === 'IFServerOpen') {
+          console.log('IFServerOpen')
+          this.test++
         }
       })
     }  
@@ -320,6 +326,9 @@ export default {
     },
   },
   watch: {
+    test (newVal) {
+      console.log('已收到来自node消息', newVal)
+    },
     '$store.state.wallet.localFile.wallets'(newVal) {
       if (!newVal.length) {
         // this.type = 'wallet'

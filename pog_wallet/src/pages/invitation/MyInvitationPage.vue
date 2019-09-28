@@ -13,7 +13,7 @@
                 <P v-if="account_type" class="invite-suggest is-global">您的全球合伙人推荐码</P>
                 <P v-if="!account_type" class="invite-suggest">您的推荐码</P>
                 <div class="invite-num">
-                  <span>123123</span>
+                  <span>{{invest_code}}</span>
                 </div>
                 <p class="invite-text">“区块链去中心化游戏应用平台”</p>
               </div>
@@ -105,7 +105,7 @@ export default {
       qrcode: 'jsdfhbjsnkl',
       account_name:'',
       account_type:true,
-      invest_code:[],
+      invest_code:'',
     }
   },
   created(){
@@ -117,7 +117,7 @@ export default {
           })
       api.getInvitation({account_name:this.account_name}).then(res => {    // 获取邀请码
             if (res.code === 1) {
-                this.invest_code=this.digitize(res.data.invest_code);
+                this.invest_code=this.digitize(res.data.invest_code).join('');
             }
           })
   },
@@ -273,6 +273,7 @@ export default {
 }
 .invite-num {
   font-size: 1.2rem;
+  letter-spacing: .2rem;
   color: rgb(81,88,236);
   background: url('../../assets/invite/invite-num_bg.png') no-repeat center;
   background-size: contain;
