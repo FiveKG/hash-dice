@@ -128,7 +128,8 @@ export default {
     digitize(n) {
         return (n + "").split("");
     },
-    onSaveImageSuccess() {
+    onSaveImageSuccess(filePath) {
+      console.log(filePath);
       this.$ons.notification.toast('成功',{timeout:1000})
     },
     onSaveImageError(error) {
@@ -140,10 +141,12 @@ export default {
         scale: 1.5
       }).then(canvas => {
         var image = new Image();
-        let source = canvas.toDataURL("image/png")
-        image.src = source
+        let base64String = canvas.toDataURL("image/png")
+        image.src = base64String
         // this.$refs.imgbox.appendChild(image)
-        cordova.plugins.imagesaver.saveImageToGallery(source, this.successCallback, this.errorCallback)
+        // cordova.plugins.imagesaver.saveImageToGallery(base64String, this.onSaveImageSuccess, this.onSaveImageError)
+        var params = {data: base64String, prefix: 'myPrefix_', format: 'JPG', quality: 80, mediaScanner: true};
+        window.imageSaver.saveBase64Image(params, this.onSaveImageSuccess, this.onSaveImageError);
       })
     }        
   }
