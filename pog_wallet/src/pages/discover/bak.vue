@@ -354,10 +354,10 @@ export default {
       this.$router.push('LotteryGo')
     },
     goHashDice(){
-      this.$router.push('HashDiceGo')
+      this.$router.push('HashDicePage')
     },
     goTreasure(){
-      this.$router.push('TreasureGo')
+      this.$router.push('TreasurePage')
     },
     
   },

@@ -1,14 +1,15 @@
 <template>
     <vpage >
      <slot>
+       <transition name="gopage"><go v-if="goshow"></go></transition>
        <div style="background-color: rgb(40,40,40);width:100%;">
         <div class="head" style="background: rgb(27,27,27);">
           <div class="float_left box"><img  class="ion_tbg" src="@/assets/invitation2/u4.svg"></div>
           <p class="float_left orange" style="font-size: .5rem;margin: 0.45rem 0 .45rem 0;">哈希骰子</p>
-          <div class="float_right" style="width: 3rem;height: 1rem;border: 1px solid rgb(100,100,100);margin: .25rem .6rem .25rem 0;border-radius: 6px;">
-            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="actionSheetVisible = true" style="width: 50%;height: 27%;margin: 25% 0px 0px 25%;" src="@/assets/invitation2/u8.png"></div>
+          <div class="float_right" style="    width: 2.5rem;height: .8rem;border: 1px solid rgb(100, 100, 100);margin: 0.36rem 0.6rem 0.25rem 0px;border-radius: 30px;">
+            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="actionSheetVisible = true" style="width: 50%;height: 65%;margin: 11% 0px 0px 25%;" src="@/assets/img/assembly_ic_option@2x.png"></div>
             <div class="display_ib" style="width: 1%;height: 70%;background: rgb(100,100,100);vertical-align: top;margin-top: 5%;"></div>
-            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="back" src="../../../assets/img/u102.png" style="width: 55%;height: 80%;margin: 6% 0 0 21%;"></div>
+            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="back" src="@/assets/img/assembly_close_ic@2x.png" style="width: 55%;height: 80%;margin: 6% 0 0 21%;"></div>
           </div>
         </div>
         <!-- 区块滚动 -->
@@ -38,27 +39,27 @@
         <div style="border: 1px solid rgb(107, 107, 107);width: 90%;height: 1.2rem;margin: 0 auto;border-radius: 5px;">
           <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >可赢奖金</p><p class="orange font_five">{{winningBonus}}</p></div>
           <div class="display_ib vertical_top Centered p_A" style="width: 1px;height: 100%;background: rgb(107, 107, 107);"></div>
-          <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >赔率</p><p class="orange font_five">{{publicData[twenty].odds_rate}}</p></div>
+          <!-- <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >赔率</p><p class="orange font_five">{{publicData[twenty].odds_rate}}</p></div> -->
           <div class="display_ib vertical_top Centered p_A" style="width: 1px;height: 100%;background: rgb(107, 107, 107);"></div>
-          <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >中奖概率</p><p class="orange font_five">{{publicData[twenty].winning_probability}}</p></div>
+          <!-- <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >中奖概率</p><p class="orange font_five">{{publicData[twenty].winning_probability}}</p></div> -->
         </div>
         <!--  -->
         <div style="width: 100%;height: 9px;"></div>
         <div style="width: 90%;height: 1.2rem;margin: 0 auto;">
-          <div @click="selectTwenty(0)" :class="{background_orange:twenty==0}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
-            <p class="font_five" :class="{font_white:twenty==0}" style="margin-top: .24rem;">小于</p>
+          <div @click="selectTwenty('smaller')" :class="{background_orange:twenty=='smaller'}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
+            <p class="font_five" :class="{font_white:twenty=='smaller'}" style="margin-top: .24rem;">小于</p>
           </div>
           <div class="display_ib" style="width: 3%;height: 100%;"></div>
-          <div @click="selectTwenty(1)" :class="{background_orange:twenty==1}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
-            <p class="font_five" :class="{font_white:twenty==1}" style="margin-top: .24rem;">大</p>
+          <div @click="selectTwenty('big')" :class="{background_orange:twenty=='big'}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
+            <p class="font_five" :class="{font_white:twenty=='big'}" style="margin-top: .24rem;">大</p>
           </div>
           <div class="display_ib" style="width: 3%;height: 100%;"></div>
-          <div @click="selectTwenty(3)" :class="{background_orange:twenty==3}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
-            <p class="font_five" :class="{font_white:twenty==3}" style="margin-top: .24rem;">对子</p>
+          <div @click="selectTwenty('twins')" :class="{background_orange:twenty=='twins'}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
+            <p class="font_five" :class="{font_white:twenty=='twins'}" style="margin-top: .24rem;">对子</p>
           </div>
           <div class="display_ib" style="width: 3%;height: 100%;"></div>
-          <div @click="selectTwenty(2)" :class="{background_orange:twenty==2}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
-            <p class="font_five" :class="{font_white:twenty==2}" style="margin-top: .24rem;">小</p>
+          <div @click="selectTwenty('small')" :class="{background_orange:twenty=='small'}" class="display_ib vertical_top Centered p_A" style="width: 22%;height: 100%;border-radius: 5px;border: 1px solid rgb(107, 107, 107);">
+            <p class="font_five" :class="{font_white:twenty=='small'}" style="margin-top: .24rem;">小</p>
           </div>
         </div>
         <!--  -->
@@ -101,7 +102,10 @@
         </div>
         <!--  -->
         <div style="width: 100%;height: 20px;"></div>
-        <div v-if="!Betting" class="background_orange" style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;"><p @click="selectBetting();betting();" class="Centered font_white font_five" style="line-height: 1.4rem;">{{publicDataButton[twenty][0]}}<span v-if="twenty==0">{{fadeInDuration}}</span>{{publicDataButton[twenty][1]}}</p></div>
+        <div v-if="!Betting" class="background_orange" style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;">
+          <!-- <p v-if="twenty>0" @click="selectBetting();betting();" class="Centered font_white font_five" style="line-height: 1.4rem;">{{publicDataButton['smaller'][1]}}<span>{{fadeInDuration}}</span>{{publicDataButton['smaller'][2]}}</p> -->
+          <!-- <p v-if="!(twenty>0)" @click="selectBetting();betting();" class="Centered font_white font_five" style="line-height: 1.4rem;">{{publicDataButton[twenty][1]}}{{publicDataButton[twenty][2]}}</p> -->
+        </div>
         <div v-if="Betting" style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;"><p class="Centered font_white font_five" style="line-height: 1.4rem;">开奖中...</p></div>
         <div style="width: 100%;height: 20px;"></div>
         <div style="width: 100%;">
@@ -228,6 +232,7 @@ import MyPage from '@/components/MyPage'
 import { format, parse } from 'date-fns'
 import {Decimal} from 'decimal.js'
 import api from '@/pages/game/hashdice/game'
+import go from './HashDiceGo'
 
 //滚动区域
 import ClientSocket from '@/socket/HashSocket'
@@ -242,9 +247,12 @@ import serverApi from '@/servers/invitation'
 export default {
   components: {
     vpage: MyPage,
+    go:go
+
    },
   data() {
     return {
+      goshow:true,   //进来开始页面的显示
       account_name:'',//账户ID
       treasureKey:1,  //滚动KEY
       allMy:true,   //区分我的 全部
@@ -253,7 +261,7 @@ export default {
       betSuccess:false,        //成功显示
       betFailure:false,        //失败显示
       fadeInDuration:0,      //滑块骰子的值
-      twenty:0,      //模式选择  
+      twenty:1,      //模式选择  
       Betting:false, //投注按钮显示开奖中
       CountDown:false, //开奖
       CountDownNum:7, //开奖倒计时
@@ -262,9 +270,12 @@ export default {
       betAmount:'0',//投注的总额度
       winningBonus:0,//可赢奖金
       publicData:[],  //公用界面数据       小于0   大于1   对子3   小2
-      publicDataButton:[ //按钮
-        ['小于 ',' 赢 - 去投注'],['50 - 99 ','且不是对子赢 - 去投注'],['00 - 49 ','且不是对子赢 - 去投注'],['对子赢 - ','去投注'],
-      ],  
+      publicDataButton:{ //按钮
+        smaller:{1:'小于 ',2:' 赢 - 去投注'},
+        big:{1:'50 - 99 ',2:'且不是对子赢 - 去投注'},
+        small:{1:'00 - 49 ',2:'且不是对子赢 - 去投注'},
+        twins:{1:'对子赢 - ',2:'去投注'}
+      },  
       items:[    // 滚动
               // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:1,ids:10},
               // {timestamp:"15:23:02.0",block_num:33283278,id:'...'+"F7B195473D4F09BC8F1",treasureKey:2,ids:10},
@@ -293,7 +304,7 @@ export default {
   },
   methods: {
        back() {
-          this.$router.go(-2)
+          this.$router.go(-1)
        },
        selectTwenty(index) { //选择 小于 大 对子 小
          this.twenty=index;
@@ -558,18 +569,25 @@ export default {
         },
          betAmount: {   //可赢奖金
           handler(newVal, oldVal) {
-            this.winningBonus=new Decimal(this.betAmount).mul(new Decimal(this.publicData[this.twenty].odds_rate));
+            // this.winningBonus=new Decimal(this.betAmount).mul(new Decimal(this.publicData[this.twenty].odds_rate));
           }
         },
          twenty: {   //可赢奖金
           handler(newVal, oldVal) {
-            this.winningBonus=new Decimal(this.betAmount).mul(new Decimal(this.publicData[this.twenty].odds_rate));
+            // this.winningBonus=new Decimal(this.betAmount).mul(new Decimal(this.publicData[this.twenty].odds_rate));
           }
         },
   },
   created(){
+    setTimeout(() => {
+      this.goshow=false;
+    }, 1500);
     this.account_name=this.$store.state.wallet.assets.account;
     this.reqParams.account = this.account_name;   //转站
+
+    console.log(this.twenty )
+    console.log(this.publicData)
+    
     //滚动区域
     this.initSocket();
     //获取配置信息
@@ -588,6 +606,7 @@ export default {
     api.getCurrentUser({account_name:this.account_name}).then(res => {
         if (res.code === 1) {
             this.publicData=res.data;
+            console.log(this.publicData)
           }
       })
     //获取所有的投注
@@ -867,6 +886,14 @@ span{
 }
 .scroll-move{
   transition:transform .5s;
+}
+
+/* 开始页面的显示 */
+.gopage-enter-active, .gopage-leave-active {
+  transition: all .8s;
+}
+.gopage-enter, .gopage-leave-to{
+  transform: translateX(-100%);
 }
 
 

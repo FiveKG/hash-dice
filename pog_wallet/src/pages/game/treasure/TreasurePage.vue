@@ -1,14 +1,15 @@
 <template>
     <vpage >
      <slot>
+       <transition name="gopage"><go v-if="goshow"></go></transition>
        <div style="background-color: rgb(40,40,40);height:100%;width:100%;">
         <div class="head" style="background: rgb(27,27,27);">
           <div class="float_left box"><img  class="ion_tbg" src="@/assets/invitation2/u3.png"></div>
           <p class="float_left orange" style="font-size: .5rem;margin: 0.45rem 0 .45rem 0;">夺宝</p>
-          <div class="float_right" style="width: 3rem;height: 1rem;border: 1px solid rgb(100,100,100);margin: .25rem .6rem .25rem 0;border-radius: 6px;">
-            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="actionSheetVisible = true" style="width: 50%;height: 27%;margin: 25% 0px 0px 25%;" src="@/assets/invitation2/u8.png"></div>
+          <div class="float_right" style="    width: 2.5rem;height: .8rem;border: 1px solid rgb(100, 100, 100);margin: 0.36rem 0.6rem 0.25rem 0px;border-radius: 30px;">
+            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="actionSheetVisible = true" style="width: 50%;height: 65%;margin: 11% 0px 0px 25%;" src="@/assets/img/assembly_ic_option@2x.png"></div>
             <div class="display_ib" style="width: 1%;height: 70%;background: rgb(100,100,100);vertical-align: top;margin-top: 5%;"></div>
-            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="back" src="../../../assets/img/u102.png" style="width: 55%;height: 80%;margin: 6% 0 0 21%;"></div>
+            <div class="display_ib" style="width: 49.5%;height: 100%;vertical-align: top;"><img @click="back" src="@/assets/img/assembly_close_ic@2x.png" style="width: 55%;height: 80%;margin: 6% 0 0 21%;"></div>
           </div>
         </div>
         <!-- 区块滚动 -->
@@ -155,6 +156,8 @@ import MyPage from '@/components/MyPage'
 import { format, parse } from 'date-fns'
 import {Decimal} from 'decimal.js'
 import api from '@/pages/game/treasure/game'
+import go from './TreasureGo'
+
 
 
 //滚动区域
@@ -169,9 +172,11 @@ import serverApi from '@/servers/invitation'
 export default {
   components: {
     vpage: MyPage,
+     go:go
    },
   data() {
     return {
+      goshow:true,   //进来开始页面的显示
       account_name:'',//账户ID
       treasureKey:1,  //滚动KEY
       twenty:1,      //模式选择  20*0.1为1  20*0.5为2  100*0.1为3
@@ -202,7 +207,7 @@ export default {
   },
   methods: {
        back() {
-          this.$router.go(-2)
+          this.$router.go(-1)
        },
        selectTwenty(index) {//切换模式
           this.twenty=index;
@@ -451,6 +456,9 @@ export default {
         },
     },
   created(){
+    setTimeout(() => {
+      this.goshow=false;
+    }, 1500);
     this.account_name=this.$store.state.wallet.assets.account;
     this.reqParams.account = this.account_name;   //转站
     //滚动区域
@@ -652,7 +660,13 @@ span{
   font-family: '微軟正黑體 Regular', '微軟正黑體';
 }   
    
-
+/* 开始页面的显示 */
+.gopage-enter-active, .gopage-leave-active {
+  transition: all .8s;
+}
+.gopage-enter, .gopage-leave-to{
+  transform: translateX(-100%);
+}
 
 /* 滚动样式    */
 .recording{
@@ -668,7 +682,7 @@ span{
   position: relative;
 }
 .scroll-enter-active, .scroll-leave-active {
-  transition: all .8s;
+  transition: all .5s;
 }
 .scroll-enter, .scroll-leave-to{
   transform: translateY(-30px);
