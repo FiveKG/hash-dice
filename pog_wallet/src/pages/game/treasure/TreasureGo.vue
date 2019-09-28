@@ -45,9 +45,9 @@ export default {
   },
   created(){
     // console.log('this',this);
-    setTimeout(() => {
-      this.jump();
-    }, 2000);
+    // setTimeout(() => {
+    //   this.jump();
+    // }, 2000);
    
   }
 }

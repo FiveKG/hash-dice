@@ -125,7 +125,8 @@ export default {
       showDialog: false,
       showExDialog: false,
       noPadding: false,
-      modal: ''
+      modal: '',
+      test: 0
     }
   },
   computed: {
@@ -157,6 +158,7 @@ export default {
     })
     if (typeof nodejs !== "undefined") {
       nodejs.channel.setListener(msg => {
+        console.log(msg)
         if (msg === 'serverOpen') {
           // ClientSocket.link().then(conn => {
           //   console.log(conn)
@@ -166,26 +168,32 @@ export default {
           // }).catch(err => {
           //   console.log(err)
           // })
-          const s = new WebSocket('ws://127.0.0.1:50005/socket.io/?EIO=3&transport=websocket')
-          s.onmessage = msg => {
-            if(msg.data.indexOf('42/app') === -1) return false;
-            const [data] = JSON.parse(msg.data.replace('42/app,', ''));
-            console.log('onmessage', data)
-            if (data.type && data.type === 'requestSignature') {
-              this.$store.commit('wallet/setSignatureData',data.data)
-              this.$store.commit('wallet/setSignatureRequest',data.request)
+          setTimeout(() => {
+            const s = new WebSocket('ws://127.0.0.1:50005/socket.io/?EIO=3&transport=websocket')
+            s.onmessage = msg => {
+              if(msg.data.indexOf('42/app') === -1) return false;
+              const [data] = JSON.parse(msg.data.replace('42/app,', ''));
+              console.log('onmessage', data)
+              if (data.type && data.type === 'requestSignature') {
+                this.$store.commit('wallet/setSignatureData',data.data)
+                this.$store.commit('wallet/setSignatureRequest',data.request)
+              }
             }
-          }
-          s.onerror = err => {
-            console.log('onerror',err)
-          }
-          s.onopen = () => {
-            console.log('onopen')
-            s.send('40/app')
-          }
-          s.onclose = () => {
-            console.log('onclose')
-          }
+            s.onerror = err => {
+              console.log('onerror',err)
+            }
+            s.onopen = () => {
+              console.log('onopen')
+              s.send('40/app')
+            }
+            s.onclose = () => {
+              console.log('onclose')
+            }
+          },1000);
+        }
+        else if (msg === 'IFServerOpen') {
+          console.log('IFServerOpen')
+          this.test++
         }
       })
     }  
@@ -318,6 +326,9 @@ export default {
     },
   },
   watch: {
+    test (newVal) {
+      console.log('已收到来自node消息', newVal)
+    },
     '$store.state.wallet.localFile.wallets'(newVal) {
       if (!newVal.length) {
         // this.type = 'wallet'

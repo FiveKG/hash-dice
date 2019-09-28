@@ -5,6 +5,12 @@
       "alias": "wallet",
       "storePassword": "yuezhi",
       "password": "yuezhi"
+    },
+    "debug": {
+      "keystore": "wallet.keystore",
+      "alias": "wallet",
+      "storePassword": "yuezhi",
+      "password": "yuezhi"
     }
   }
 }

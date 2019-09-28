@@ -144,13 +144,15 @@ export default {
               isDefault: true
             })
             localFile.invitationAccount = account.account_names[0]
-            setInvitation({
-              account_name: account.account_names[0]
-            }).then(res => {
-              console.log(res)
-            }).catch(err => {
-              console.log(err)
-            })
+            if(setInvitation){
+              setInvitation({
+                account_name: account.account_names[0]
+              }).then(res => {
+                console.log(res)
+              }).catch(err => {
+                console.log(err)
+              })
+            }
             localStorage.setItem('isecsp_wallet',JSON.stringify(localFile))
             this.$store.commit('wallet/setAssets', null)
             if (this.$store.state.wallet.selectedTab === 'invitation') {

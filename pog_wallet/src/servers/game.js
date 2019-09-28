@@ -3,8 +3,8 @@ import axios from 'axios';
 // var baseURL = 'http://172.81.224.11/api';
 // var baseURL = 'http://192.168.1.135:9527';
 
-var baseURL = 'http://global_lotto.tbg.isecsp.com';
-// var baseURL = 'http://192.168.1.141:13021';
+// var baseURL = 'http://global_lotto.tbg.isecsp.com';
+var baseURL = 'http://192.168.1.141:13021';
 
 const xhr = axios.create({
     baseURL,

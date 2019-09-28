@@ -92,6 +92,23 @@
     <v-ons-dialog
       modifier="width_pwd"
       style="background-color: rgba(0, 0, 0, .5);z-index: 10000;"
+      :visible.sync="showDialog">
+      <div class="dialog_layout">
+        <div class="alert-dialog-title statement_title">责任声明</div>
+        <div>您即将使用第三方DApp，确认即同意第三方DApp的用户协议与隐私政策，由第三方DApp向您承当责任。</div>
+        <div class="btn_layout">
+          <div class="cancel">
+            <span @click="cancel">{{$t('common.cancel')}}</span>
+          </div>
+          <div class="confirm">
+            <span @click="confirm">{{$t('common.confirm')}}</span>
+          </div>
+        </div>
+      </div>
+    </v-ons-dialog>
+    <v-ons-dialog
+      modifier="width_pwd"
+      style="background-color: rgba(0, 0, 0, .5);z-index: 10000;"
       :visible.sync="showExDialog">
       <div class="dialog_layout">
         <div class="alert-dialog-title verify_title">您还未下载POG交易所，请先下载</div>
@@ -133,7 +150,12 @@ export default {
       dappList: [],
       hotDapp: [],
       wallet: {},
-      showExDialog:false
+      showExDialog: false,
+      showDialog: false,
+      curDApp: {
+        site_url: "",
+        name: ""
+      }
     }
   },
   created() {
@@ -180,6 +202,42 @@ export default {
     // this.box.addEventListener('scroll', this.handleScroll,false)
   },
   methods: {
+    cancel() {
+      this.showDialog = false;
+    },
+    confirm() {
+      this.showDialog = false;
+      this.runIframe();
+    },
+    runIframe() {
+      if (this.wallet) {
+        ClientSocket.link().then(conn => {
+          if (conn) {
+            ClientSocket.setAccount(this.wallet.account).then(res => {
+              this.$router.push({
+                name: 'Iframe',
+                query: {
+                  url: this.curDApp.site_url,
+                  name: this.curDApp.name
+                }
+              })
+            }).catch(err => {
+              console.log('setAccount',err)
+            })
+          }
+        }).catch(err => {
+          console.log('link client socket err',err)
+        })
+      } else {
+        this.$router.push({
+          name: 'Iframe',
+          query: {
+            url: this.curDApp.site_url,
+            name: this.curDApp.name
+          }
+        })
+      }
+    },
     clickSwiper(item) {
       if (item.type === 'website') {
         if (this.wallet) {
@@ -240,44 +298,10 @@ export default {
       this.index = index
     },
     clickDapp(item) {
-      // 前往交易所
-      if (item.type == 'exchange_market'){
-        this.gotoExchange();
-        return;
-      }
-      // this.$router.push({
-      //   name: 'Iframe',
-      //   query: {
-      //     url: item.site_url,
-      //     name: item.name
-      //   }
-      // })
-      if (this.wallet) {
-        ClientSocket.link().then(conn => {
-          if (conn) {
-            ClientSocket.setAccount(this.wallet.account).then(res => {
-              this.$ons.notification.alert('成功运行!!!!!!')
-              this.$router.push({
-                name: 'Iframe',
-                query: {
-                  url: item.site_url,
-                  name: item.name
-                }
-              })
-            }).catch(err => {
-              console.log('setAccount',err)
-            })
-          }
-        })
-      } else {
-        this.$router.push({
-          name: 'Iframe',
-          query: {
-            url: item.site_url,
-            name: item.name
-          }
-        })
-      }
+      this.curDApp.site_url = item.site_url;
+      this.curDApp.name = item.name;
+
+      this.showDialog = true;
     },
     handleScroll(evt, el) {
       console.log(window.scrollY, this.$refs.label.scrollTop)
@@ -285,39 +309,43 @@ export default {
       // }
     },
     clickHot(item) {
+      this.curDApp.site_url = item.site_url;
+      this.curDApp.name = item.name;
+      
+      this.showDialog = true;
       // 前往交易所
-      if (item.type == 'exchange_market'){
-        this.gotoExchange();
-        return;
-      }
+      // if (item.type == 'exchange_market'){
+      //   this.gotoExchange();
+      //   return;
+      // }
 
-      if (this.wallet) {
-        ClientSocket.link().then(conn => {
-          if (conn) {
-            ClientSocket.setAccount(this.wallet.account).then(res => {
-              this.$router.push({
-                name: 'Iframe',
-                query: {
-                  url: item.site_url,
-                  name: item.name
-                }
-              })
-            }).catch(err => {
-              console.log('setAccount',err)
-            })
-          }
-        }).catch(err => {
-          console.log('clickHot',err)
-        })
-      } else {
-        this.$router.push({
-          name: 'Iframe',
-          query: {
-            url: item.site_url,
-            name: item.name
-          }
-        })
-      }
+      // if (this.wallet) {
+      //   ClientSocket.link().then(conn => {
+      //     if (conn) {
+      //       ClientSocket.setAccount(this.wallet.account).then(res => {
+      //         this.$router.push({
+      //           name: 'Iframe',
+      //           query: {
+      //             url: item.site_url,
+      //             name: item.name
+      //           }
+      //         })
+      //       }).catch(err => {
+      //         console.log('setAccount',err)
+      //       })
+      //     }
+      //   }).catch(err => {
+      //     console.log('clickHot',err)
+      //   })
+      // } else {
+      //   this.$router.push({
+      //     name: 'Iframe',
+      //     query: {
+      //       url: item.site_url,
+      //       name: item.name
+      //     }
+      //   })
+      // }
     },
     fetchDapp(index) {
       getDappList({type: this.dappList[index].type, limit: 6}).then(res => {
@@ -361,10 +389,10 @@ export default {
       this.$router.push('LotteryGo')
     },
     goHashDice(){
-      this.$router.push('HashDiceGo')
+      this.$router.push('HashDicePage')
     },
     goTreasure(){
-      this.$router.push('TreasureGo')
+      this.$router.push('TreasurePage')
     },
     clickluck(){
       var names=this.$store.state.wallet.assets.account;
@@ -510,5 +538,11 @@ export default {
   width: 12px;
   height: 24px;
   margin-left: 10px;
+}
+.dialog_layout {
+  padding: 20px 48px;
+}
+.statement_title {
+  font-size: 0.4rem;
 }
 </style>
