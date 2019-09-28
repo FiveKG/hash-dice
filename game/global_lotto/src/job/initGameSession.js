@@ -13,7 +13,7 @@ logger.debug(`beginListenAction running...`);
 // 每天 0：00 执行一次
 scheduleJob("0 0 0 */1 * *", initGameSession);
 
-// initGameSession();
+initGameSession();
 
 /**
  * 初始化游戏期数
@@ -109,7 +109,7 @@ async function initGameSession() {
         }
 
         if (actList.length !== 0) {
-            await psTrx.pub(actList);
+            // await psTrx.pub(actList);
         }
     } catch (err) {
         logger.error("initGameSession error, the error stock is %O", err);

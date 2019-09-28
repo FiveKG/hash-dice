@@ -64,5 +64,5 @@ then
     npm i -g pm2
 fi
 
-# pm2 start ./pm2.json
-node tbg_service.js
+pm2 start ./pm2.json
+# node tbg_service.js

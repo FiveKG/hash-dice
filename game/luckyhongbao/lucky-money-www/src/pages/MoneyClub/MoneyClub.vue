@@ -482,8 +482,6 @@ export default {
               background: "#1989fa"
             });
 
-
-
             that.packResult = data;
               for(var i=0;i<that.packResult.grabbed_list.length;i++){
                 if(that.packResult.grabbed_list[i].amount>that.big){
@@ -493,32 +491,6 @@ export default {
                   that.ownEnvelope=that.packResult.grabbed_list[i].amount
                 }    
               }
-            // console.log("当前抢到红包的POG账号:", data.account_name);
-            // if (data.account_name == that.$store.state.eosAccount.name) {
-            //   console.log("属于当前用户的socket消息:", data);
-            //   // that.getAccountBalance();
-            //   that.openLoad = false;
-            //   if (data.is_success == true) {
-            //     that.packResult = data;
-            //     that.packState = 1;
-            //   } else {
-            //     that.packResult = data;
-            //     that.errorMsg = data.remark;
-            //     that.packState = 2;
-            //   }
-            //   for (let i = 0; i < data.grabbed_list.length; i++) {
-            //     if (
-            //       data.grabbed_list[i].account_name ==
-            //       that.$store.state.eosAccount.name
-            //     ) {
-            //       data.grabbed_list[i].amount = data.amount;
-            //     } else {
-            //       data.grabbed_list[i].amount = "*";
-            //     }
-            //   }
-            // } else {
-            //   // that.packState = 2;
-            // }
           });
         }
       }
@@ -775,6 +747,7 @@ export default {
                   this.ownEnvelope=this.packResult.grabbed_list[i].amount
                 }    
               }
+        
               this.packState = 1;
 
             } else {

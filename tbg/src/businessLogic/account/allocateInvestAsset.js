@@ -1,6 +1,6 @@
 // @ts-check
 const { pool, psTbg1, psBind, psTshIncome } = require("../../db/index.js");
-const logger = require("../../common/logger.js").child({ "@src/businessLogic/account/allocateInvestAsset.js": "allocate invest asset" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "allocate invest asset" });
 const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const ACCOUNT_RATE = require("../../common/constant/accountRate.js");

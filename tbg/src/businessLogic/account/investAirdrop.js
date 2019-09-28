@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../../db/index.js");
-const logger = require("../../common/logger.js").child({ "@src/models/account/investAirdrop.js": "invest airdrop" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "invest airdrop" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const TBG_ALLOCATE = require("../../common/constant/tbgAllocateRate");
