@@ -20,6 +20,7 @@
         "cordova-plugin-compat": "git+https://github.com/apache/cordova-plugin-compat.git",
         "cordova-plugin-customurlscheme": "^4.4.0",
         "cordova-plugin-qrscanner": "^2.6.2",
+        "cordova-plugin-save-image-gallery": "0.0.26",
         "cordova-plugin-whitelist": "^1.3.4",
         "cordova-plugin-x-toast": "^2.7.2",
         "i": "^0.3.6",
@@ -41,7 +42,8 @@
             },
             "cordova-plugin-qrscanner": {},
             "cordova-plugin-compat": {},
-            "nodejs-mobile-cordova": {}
+            "nodejs-mobile-cordova": {},
+            "cordova-plugin-save-image-gallery": {}
         },
         "platforms": [
             "android"

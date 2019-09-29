@@ -1,75 +1,81 @@
 <template>
-  <v-ons-page>
-    <div class="background"></div>
-    <div class="content">
-      <div class="header">
+  <div class="trade-page">
+    <div class="wrap" >
+     <div class="header">
         <div class="header_line"></div>
-        <div class="header_content">
-          <span>UE兑换</span>
-          <img src="@/assets/img/u2568.svg" alt />
-        </div>
+          <div class="header_content">
+            <span style="">UE兑换</span> 
+            <img src="@/assets/img/u2568.svg" alt="">
+          </div>
       </div>
       <div class="exchange">
-        <!-- 兑出金额 -->
-        <div class="exchange_row amount_paid">
-          <p><input placeholder="兑出金额"  class="input_exchange_amount" type="text"></p>
-          <p>
-            <img class="paxPic" src="@/assets/img/u2543.svg" alt />
-            <span>PAX</span>
-            <img class="uePic" src="@/assets/img/u1210.png" alt />
-          </p>
-        </div>
-        <div class="exchange_address">
-          <span ref="exchangeAddres" @click="actionSheetVisible = true">选择兑出地址</span>
-          <span>5 PAX 矿工费</span>
-        </div>
-
-        <!-- 实收金额 -->
-        <div class="exchange_row amount_received">
-          <p>实收金额</p>
-          <p>
-            <img class="paxPic" src="@/assets/img/u25481.svg" alt />
-            <span style="padding:0 0.13rem">UE</span>
-            <img class="uePic" src="@/assets/img/u1210.png" alt />
-          </p>
-        </div>
-        <div class="exchange_address">
-          <span @click="actionSheetVisible1 = true">选择接收地址</span>
-        </div>
-
-        <!-- 兑换按钮 -->
-        <div class="post_button">兑换</div>
-        <p class="post_txt">1 UE = 1 PAX</p>
-      </div>
-
-      <div class="list_title">
-        <p @click="titleToggle(0)" :class="{'active':switchNum === 0}">公众审计</p>
-        <p @click="titleToggle(1)" :class="{'active':switchNum === 1}">最近兑换</p>
-      </div>
-
-      <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="switchNum">
-        <v-ons-carousel-item>
-          <!-- 公众审计 -->
-          <div class="audit">
-            <div class="audit_row">
-              <img src="@/assets/img/u2485.svg" alt />
-              <div class="audit_txt">
-                <p>1 UE = 1 PAX = 1 USD</p>
-                <p>恒定价值，实时审计，随时兑换</p>
+              <!-- 兑出金额 -->
+              <div class="exchange_row amount_paid">
+                  <p>兑出金额</p>
+                  <p>
+                    <img class="paxPic" src="@/assets/img/u2543.svg" alt="">
+                    <span>PAX</span> 
+                    <img class="uePic" src="@/assets/img/u1210.png" alt="">
+                  </p>
               </div>
-            </div>
-
-            <div class="audit_row">
-              <img src="@/assets/img/u2507.svg" alt />
-              <div class="audit_txt">
-                <p>每兑换 1 PAX 则在银行存入 1 美元</p>
-                <p>受纽约金融服务署 ( NYDFS ) 监管</p>
+              <div class="exchange_address">
+                  <span>选择兑出地址</span>
+                  <span>5 PAX 矿工费</span>
               </div>
-            </div>
+
+              <!-- 实收金额 -->
+              <div class="exchange_row amount_received">
+                  <p>实收金额</p>
+                  <p>
+                    <img class="paxPic" src="@/assets/img/u25481.svg" alt="">
+                    <span style="padding:0 0.13rem">UE</span> 
+                    <img class="uePic" src="@/assets/img/u1210.png" alt="">
+                  </p>
+              </div>
+              <div class="exchange_address">
+                  <span>选择接收地址</span>
+              </div>
+              
+              <!-- 兑换按钮 -->
+              <div class="post_button">
+                  兑换
+              </div>
+              <p class="post_txt">1 UE = 1 PAX</p>
           </div>
 
-          <!-- 实时公众审计 -->
-        </v-ons-carousel-item>
+            
+            
+            <div class="list_title">
+              <p @click="titleTogle(0)" :class="{'active':switchNum === 0}">公众审计</p>
+              <p @click="titleTogle(1)" :class="{'active':switchNum === 1}">最近兑换</p>
+            </div>
+
+            <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
+              :index.sync="switchNum"
+            >
+            <v-ons-carousel-item>
+              <!-- 公众审计 -->
+              <div class="audit">
+                  <div class="audit_row">
+                    <img src="@/assets/img/u2485.svg" alt="">
+                    <div class="audit_txt">
+                      <p>1 UE = 1 PAX = 1 USD</p>
+                      <p>恒定价值，实时审计，随时兑换</p>
+                    </div>
+                  </div>
+
+                  <div class="audit_row">
+                    <img src="@/assets/img/u2507.svg" alt="">
+                    <div class="audit_txt">
+                      <p>每兑换 1 PAX 则在银行存入 1 美元</p>
+                      <p>受纽约金融服务署 ( NYDFS ) 监管</p>
+                    </div>
+                  </div>
+
+              </div>
+              
+
+            </v-ons-carousel-item>
 
         <v-ons-carousel-item>
           <div class="recentexchange_row" v-for="(item,index) in recentexchangeList " :key="index">
@@ -87,48 +93,14 @@
         </v-ons-carousel-item>
       </v-ons-carousel>
 
-      <!-- 更多下拉框1 (兑出地址))-->
-      <v-ons-action-sheet :visible.sync="actionSheetVisible" cancelable>
-        <div class="selectwrap">
-          <div class="wdclose" @click="actionSheetVisible = false"></div>
-          <div class="select_title">
-            <span>选择PAX兑出地址</span>
-          </div>
-          <div class="select_list">
-            <p class="list_col" v-for="(items,index) in exchangeAddressList" :key="index" @click="toggleItem($event)">
-              <span>
-                <img class="imgNone" src="@/assets/img/u1499.png" alt="ok" />
-              </span>
-              <span>{{items.name}}</span>
-              <span>{{items.number}}</span>
-            </p>
-          </div>
-        </div>
-      </v-ons-action-sheet>
+            <v-ons-carousel-item>
+              <div>222222222</div>
+            </v-ons-carousel-item>
 
+            </v-ons-carousel>
 
-
-
-       <!-- 更多下拉框2 (接收钱包地址)-->
-      <v-ons-action-sheet :visible.sync="actionSheetVisible1" cancelable>
-        <div class="selectwrap">
-          <div class="wdclose" @click="actionSheetVisible1 = false"></div>
-          <div class="select_title">
-            <span>选择 UE 接收钱包</span>
-          </div>
-          <div class="select_list">
-            <p class="list_col">
-              <span>
-                <img src="@/assets/img/u1499.png" alt="ok" />
-              </span>
-              <span>fenglaoyang</span>
-              <span>1,620.0253 0200</span>
-            </p>
-          </div>
-        </div>
-      </v-ons-action-sheet>
     </div>
-  </v-ons-page>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -213,15 +185,19 @@ export default {
 </script>
 
 <style scoped lang="less">
-.background {
-  background: #f2f2f2;
+.trade-page{
+  height: 100vh;
+  overflow-y: scroll;
 }
-
-.header_line {
-  position: absolute;
-  top: 0;
-  height: 0.2rem;
-  width: 100%;
+.wrap{
+  background:rgba(242, 242, 242, 1);
+  position:relative;
+}
+.header_line{
+  position:absolute;
+  top:0;
+  height:.2rem;
+  width:100%;
   background-color: rgba(228, 228, 228, 1);
 }
 .header_content {

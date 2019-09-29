@@ -118,7 +118,7 @@ export default {
 .card_pog {
   /* width: 220px; */
   height: 220px;
-  background-color: #8bc5ff;
+  background-color: rgb(6,64,123);
   border-radius: 35px;
   display: flex;
   align-items: center;
