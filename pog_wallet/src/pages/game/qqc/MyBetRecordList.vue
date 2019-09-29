@@ -5,7 +5,7 @@
           <Header :HeaderTitlle="HeaderTitlle"></Header>
           <div class="record-title">我的投注</div>
           <div class="myList">
-            <p v-for="(item,index) in MyRecordList" :key="index" @click="gotoBetDetail(item.periods)">
+            <p v-for="(item,index) in MyRecordList" :key="index" @click="gotoBetDetail(item.bo_id)">
               <span># {{item.periods}} 期<span style="color:#FF9900" v-if="item.win_type== 'waiting'"> - 待开奖</span> <span style="color:#FF9900" v-if="item.win_type== 'bingo'"> - 中奖</span> </span>   
               <span>{{item.bet_time}}</span>
               <span>{{item.bet_key}} Key<img src="@/assets/img/invitation_profitarrow.png" alt=""></span> 
@@ -45,9 +45,9 @@ export default {
       })
     },
     // 前往投注详情页
-    gotoBetDetail(periods){
-      console.log("前往投注详情页:",periods);
-      this.$router.push({name:'QqcBetDetail' , params:{periods:periods}});
+    gotoBetDetail(bo_id){
+      console.log("前往投注详情页:",bo_id);
+      this.$router.push({name:'QqcBetDetail' , params:{bo_id:bo_id}});
     }
   },
   created(){

@@ -144,6 +144,7 @@ export default {
     }
   },
   created () {
+    // this.$store.commit('wallet/setSelectedTab', 'Binding')
     this.initData()
     getAdImg().then(res => {
       if (res.code === 1) {

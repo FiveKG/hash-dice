@@ -67,7 +67,7 @@
 export default {
   data () {
     return {
-      walletChain: 'EOS'
+      walletChain: 'POG'
     }
   },
   created() {

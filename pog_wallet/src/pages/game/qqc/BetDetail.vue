@@ -90,10 +90,10 @@ export default {
   },
   methods: {
     // 获取投注详情
-    getBetDetail(periods){
+    getBetDetail(bo_id){
       api.getUserBetWeek({
         account_name:this.$store.state.wallet.localFile.wallets[0].accountNames[0],
-        periods:periods}).then(res => {
+        bo_id:bo_id}).then(res => {
         console.log("获取投注详情:",res);
         if(res.code != 1){
           this.$toast('获取投注详情失败，请检查再重试！')
@@ -114,7 +114,7 @@ export default {
     }
   },
   created(){
-    this.getBetDetail(this.$route.params.periods);
+    this.getBetDetail(this.$route.params.bo_id);
   }
 }
 </script>
