@@ -34,6 +34,5 @@ module.exports = [
     { "code": 1022, "desc": "more then one trade max amount" },
     { "code": 1023, "desc": "more than one day to sell count" },
 
-
-    
+    { "code": 1024, "desc": "request key is empty" },    
 ];

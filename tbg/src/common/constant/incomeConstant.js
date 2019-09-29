@@ -22,40 +22,38 @@ const SORT_INCOME = 25;
 const SORT_OUT_LINE = 20;
 
 // 三倍收益保障池可获奖的出线额度
-const SAFE_OUT_LINE = 300;
+const SAFE_OUT_LINE = 3000;
 
 /**
  * 向上层级 分配比例 可分配
- * 1 50.00% 5.0000 UE
- * 2 25.00% 2.5000 UE
- * 3 10.00% 1.0000 UE
- * 4 5.00% 0.5000 UE
- * 5 3.00% 0.3000 UE
- * 6 2.50% 0.2500 UE
- * 7 2.00% 0.2000 UE
- * 8 1.50% 0.1500 UE
- * 9 1.00% 0.1000 UE
+ * 1 50% 100.0000 UE
+ * 2 25% 50.0000 UE
+ * 3 1% 2.0000 UE
+ * 4 1.5% 3.0000 UE
+ * 5 2% 4.0000 UE
+ * 6 2.5% 5.0000 UE
+ * 7 3% 6.0000 UE
+ * 8 5% 10.0000 UE
+ * 9 10% 20.0000 UE
  * 合计 100.00% 10.0000
  */
 
 const REFER_FIRST_LEVEL = 50;
 const REFER_SECOND_LEVEL = 25;
-const REFER_THIRD_LEVEL = 10;
-const REFER_FOURTH_LEVEL = 5;
-const REFER_FIFTH_LEVEL = 3;
+const REFER_THIRD_LEVEL = 1;
+const REFER_FOURTH_LEVEL = 1.5;
+const REFER_FIFTH_LEVEL = 2;
 const REFER_SIXTH_LEVEL = 2.5;
-const REFER_SEVENTH_LEVEL = 2;
-const REFER_EIGHTH_LEVEL = 1.5;
-const REFER_NINTH_LEVEL = 1;
-
-
+const REFER_SEVENTH_LEVEL = 3;
+const REFER_EIGHTH_LEVEL = 5;
+const REFER_NINTH_LEVEL = 10;
 
 
 // 百分率, 奖池每次可分配的额度比例
 // 直接推荐 PK 奖池每周分配占比
 const REFER_PK_ALLOCATE_RATE = 30;
 // 三倍收益保障池每天分配占比
-const SAFE_ALLOCATE_RATE = 10;
+const SAFE_ALLOCATE_RATE = 30;
 // bingo 奖金池每天分配占比
 const BINGO_ALLOCATE_RATE = 70;
 // 股东分红奖金池每天分配占比
@@ -111,7 +109,7 @@ module.exports = CONSTANT
  * @property { number } REFER_PK_ALLOCATE_RATE  直接推荐 PK 奖池每周分配占比
  * @property { number } SAFE_ALLOCATE_RATE  三倍收益保障池每天分配占比
  * @property { number } BINGO_ALLOCATE_RATE  bingo 奖金池每天分配占比
- * @property { String } SHAREHOLDERS_ALLOCATE_RATE  股东分红奖金池比例
+ * @property { number } SHAREHOLDERS_ALLOCATE_RATE  股东分红奖金池比例
  * @property { number } SORT_INCOME 一行公排获取奖励的用户可得比例
  * @property { number } SORT_OUT_LINE 一行公排可获奖的出线额度
  * @property { number } SAFE_OUT_LINE 三倍收益保障池可获奖的出线额度

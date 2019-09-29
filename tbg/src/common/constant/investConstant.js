@@ -1,22 +1,22 @@
 // @ts-check
 
 // 投资额度
-const INVEST_AMOUNT = 100;
+const INVEST_AMOUNT = 1000;
 
 // 百分率
 const BASE_RATE = 100;
 // 直接推荐奖励的百分比
-const REFER_INCOME_RATE = 10;
-// 分配给五倍收益保障池的额度的百分比
-const SAFE_INCOME_RATE = 25;
+const REFER_INCOME_RATE = 20;
+// 分配给三倍收益保障池的额度的百分比
+const SAFE_INCOME_RATE = 20;
 // 三三静态的百分比
-const MODE_INCOME_RATE = 15;
+const MODE_INCOME_RATE = 20;
 // 一行公排的百分比
-const SORT_INCOME_RATE = 15;
+const SORT_INCOME_RATE = 10;
 // 分配给 bingo 奖金池的百分比
-const BINGO_INCOME_RATE = 10;
+const BINGO_INCOME_RATE = 5;
 // 分配给股东分红奖金池的百分比
-const SHAREHOLDERS_INCOME_RATE = 15;
+const SHAREHOLDERS_INCOME_RATE = 10;
 // 分配给 pk 奖金池的百分比
 const PK_INCOME_RATE = 5;
 // 分配给全球合伙人额度的百分比
@@ -30,6 +30,9 @@ const DEV_OP_INCOME_RATE = 1.4;
 
 // 分配给 TSH 股东收入账号的百分比， 社区 + 开发维护全都转入 TSH 股东收入账号
 const TSH_INCOME_RATE = 3.5;
+
+// 分配给团队激励池的百分比
+const TEAM_INCENTIVE_RATE = 5;
 
 // 用户复投全球合伙人可得复投额度的 1%
 const REPEAT_GLOBAL_INCOME_RATE = 1
@@ -56,6 +59,7 @@ const CONSTANT = {
     "TSH_INCOME_RATE": TSH_INCOME_RATE,
     "REPEAT_GLOBAL_INCOME_RATE": REPEAT_GLOBAL_INCOME_RATE,
     "REPEAT_GLOBAL_REFERRER_INCOME_RATE": REPEAT_GLOBAL_REFERRER_INCOME_RATE,
+    "TEAM_INCENTIVE_RATE": TEAM_INCENTIVE_RATE
 }
 
 module.exports = CONSTANT
@@ -79,5 +83,5 @@ module.exports = CONSTANT
  * @property { number } TSH_INCOME_RATE 分配给 TSH 股东收入账号的百分比
  * @property { number } REPEAT_GLOBAL_INCOME_RATE 用户复投全球合伙人可得复投额度的 1%
  * @property { number } REPEAT_GLOBAL_REFERRER_INCOME_RATE 用户复投全球合伙人的推荐人可得复投额度的 0.5%
- * 
+ * @property { number } TEAM_INCENTIVE_RATE 分配给团队激励池的百分比
  */

@@ -23,7 +23,6 @@ async function investReward(client, amount, accountName, referrerAccountList, sy
     // 直接推荐奖励
     let referIncome = investAmount.mul(INVEST_CONSTANT.REFER_INCOME_RATE / INVEST_CONSTANT.BASE_RATE);
     try {
-
         // 分配直接推荐奖金
         let count = 1;
         let distributed = new Decimal(0);

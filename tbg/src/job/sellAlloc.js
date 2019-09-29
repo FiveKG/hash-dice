@@ -3,17 +3,10 @@ const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "卖
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const TRADE_CONSTANTS = require("../common/constant/tradeConstant");
-const { getUserReferrer } = require("../models/referrer");
 const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
-const { getAssetsInfoById } = require("../models/asset");
 const { getTbgBalanceInfo } = require("../models/tbgBalance");
-const { getAllParentLevel, getGlobalAccount } = require("../models/account")
-const ACCOUNT_CONSTANT = require("../common/constant/accountConstant.js");
-const { getTradeInfo } = require("../models/trade");
-const { getAccountInfo } = require("../models/account");
 const { TBG_TOKEN_SYMBOL, WALLET_RECEIVER, UE_TOKEN, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { generate_primary_key } = require("../common/index.js");
-const { getAllTrade } = require("../models/trade");
 const { format } = require("date-fns");
 
 /**

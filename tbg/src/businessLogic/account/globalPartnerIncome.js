@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "用户复投" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "分配用户投资时全球合伙人和全球合伙人的推荐人收益" });
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const BALANCE_CONSTANT = require("../../common/constant/balanceConstants");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
@@ -13,27 +13,17 @@ const { getOneAccount } = require("../../models/systemPool");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 
 /**
- * 用户复投
- * @param { any } client
+ * 分配用户投资时全球合伙人和全球合伙人的推荐人收益
  * @param { DB.Account } accountInfo 用户的帐号
- * @param { String } globalAccount 子账号
+ * @param { String } globalAccount 全球合伙人帐号
  * @param { String } userInvestmentRemark remark
+ * @param { String } accountOpType remark
  */
-async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRemark) {
+async function globalPartnerIncome(accountInfo, globalAccount, userInvestmentRemark, accountOpType) {
     try {
         let tshIncomeData = {};
         const accountName = accountInfo.account_name;
         const repeatAmount = BALANCE_CONSTANT.BASE_RATE;
-        const accountBalance = await getUserBalance(accountName);
-        // 如果复投额度不足, 不做处理
-        const repeatCurrency = new Decimal(accountBalance.amount);
-        if (repeatCurrency.lessThan(repeatAmount)) {
-            return tshIncomeData;
-        }
-        const accountOpType = OPT_CONSTANTS.REPEAT;
-        userInvestmentRemark = `user ${ accountName } repeat ${ repeatAmount } UE`
-        await updateRepeatBalance(client, accountName, repeatAmount);
-        await insertBalanceLog(client, accountName, repeatAmount, repeatCurrency.minus(repeatAmount).toNumber(), accountOpType, { "symbol": UE_TOKEN_SYMBOL }, userInvestmentRemark, 'now()');
         // 如果第一个全球合伙人自己复投，多出的部分转到股东池账户
         // 全球合伙人可得复投额度的 1%
         const globalChangeAmount = repeatAmount * INVEST_CONSTANT.REPEAT_GLOBAL_INCOME_RATE / INVEST_CONSTANT.BASE_RATE;
@@ -55,7 +45,7 @@ async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRe
         logger.debug("userReferrer: ", userReferrer);
         const changeAmount = repeatAmount * INVEST_CONSTANT.REPEAT_GLOBAL_REFERRER_INCOME_RATE / INVEST_CONSTANT.BASE_RATE;
         if (!userReferrer) {
-            // 系统第一个账户没有推荐人，多出的部分转到股东池账户
+            // 系统第一个账户没有推荐人，多出的部分转到团队激励池
             let rows = await getOneAccount(TSH_INCOME);
             if (!rows) {
                 logger.debug(`system account ${ TSH_INCOME } not found`);
@@ -85,4 +75,4 @@ async function handleRepeat(client, accountInfo, globalAccount, userInvestmentRe
     }
 }
 
-module.exports = handleRepeat
+module.exports = globalPartnerIncome

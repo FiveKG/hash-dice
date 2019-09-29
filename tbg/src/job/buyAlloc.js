@@ -2,18 +2,15 @@
 const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "卖出分配" });
 const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
-const TRADE_CONSTANTS = require("../common/constant/tradeConstant");
 const { getUserReferrer } = require("../models/referrer");
 const { TSH_INCOME, TBG_MINE_POOL, TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
 const { getAssetsInfoById } = require("../models/asset");
 const { getTbgBalanceInfo } = require("../models/tbgBalance");
 const { getAllParentLevel, getGlobalAccount } = require("../models/account")
 const ACCOUNT_CONSTANT = require("../common/constant/accountConstant.js");
-const { getTradeInfo } = require("../models/trade");
 const { getAccountInfo } = require("../models/account");
 const { TBG_TOKEN_SYMBOL, WALLET_RECEIVER, UE_TOKEN, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { generate_primary_key } = require("../common/index.js");
-const { getAllTrade } = require("../models/trade");
 const { format } = require("date-fns");
 
 /**
@@ -47,7 +44,7 @@ async function buyAlloc(data) {
                 VALUES($1, $2, $3, $4, $5, $6, $7, $8);
         `
         let { amount, price, id: trId, account_name: accountName, trx_amount } = data;
-        let trxAmount = new Decimal(data.trxAmount);
+        let trxAmount = new Decimal(trx_amount);
         const now = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
         // 修改订单的状态
         const memo = `user buy ${ amount } assets, transaction ${ trxAmount.toNumber() }, get income ${ trxAmount.mul(price) }`;
@@ -63,20 +60,19 @@ async function buyAlloc(data) {
 
         // 获取资产包信息
         const assetsInfo = await getAssetsInfoById([ data.extra.ap_id ]);
-        // const trxAmount = new Decimal(assetsInfo[0].amount);
         // 进入释放池的额度
         const quantity = trxAmount.mul(assetsInfo[0].release_multiple);
         // 进入矿池的额度
         const miningAmount = trxAmount.mul(assetsInfo[0].mining_multiple);
         // 获得的可售额度
         const sellAmount = trxAmount.mul(assetsInfo[0].saleable_multiple);
-        // 查找用户交易记录，如果没有，说明是第一次买入，此时需要给全球合伙人和全球合伙人的推荐人空投
+        // 查找用户交易记录，如果没有，说明是第一次买入，此时需要给全球合伙人、全球合伙人的推荐人、上级分配推荐奖励
         let opType = OPT_CONSTANTS.BUY;
         if (data.trade_type === OPT_CONSTANTS.FIRST_BUY) {
             opType = OPT_CONSTANTS.FIRST_BUY;
             const accountInfo = await getAccountInfo(accountName);
-            let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2;
-            if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1) {
+            let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1;
+            if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2) {
                 accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2
             }
             
@@ -166,7 +162,7 @@ async function buyAlloc(data) {
                     }
                 )
 
-                const opts = [ accountName, trxAmount.mul(0.005), trxAmount.mul(0.005).add(tbgBalance.release_amount), OPT_CONSTANTS.FIRST_BUY_REFERRER, { "symbol": TBG_TOKEN_SYMBOL, "tr_id": trId, ...assetsInfo[0], "op_type": OPT_CONSTANTS.RELEASE }, reBalanceRemark, now ]
+                const opts = [ userReferrer, trxAmount.mul(0.005), trxAmount.mul(0.005).add(tbgBalance.release_amount), OPT_CONSTANTS.FIRST_BUY_REFERRER, { "symbol": TBG_TOKEN_SYMBOL, "tr_id": trId, ...assetsInfo[0], "op_type": OPT_CONSTANTS.RELEASE }, reBalanceRemark, now ]
 
                 trxList.push({
                     sql: insertBalanceLogSql,
@@ -175,7 +171,7 @@ async function buyAlloc(data) {
 
                 trxList.push({
                     sql: updateBalanceSql,
-                    values: [ trxAmount.mul(0.005), 0, 0, accountName ]
+                    values: [ trxAmount.mul(0.005), 0, 0, userReferrer ]
                 });
             }
         } else {
@@ -185,7 +181,7 @@ async function buyAlloc(data) {
             const remark = `user ${ accountName } at ${ now } ${ opType }, transaction ${ trxAmount.toNumber() }, add release_amount ${ quantity } `;
             trxList.push({
                 sql: insertBalanceLogSql,
-                values: [ accountName, quantity.toNumber(), quantity.add(tbgBalance.release_amount).toNumber(), opType, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, remark, 'now()' ]
+                values: [ accountName, quantity.toNumber(), quantity.add(tbgBalance.release_amount).toNumber(), opType, { "symbol": TBG_TOKEN_SYMBOL, "tr_id": trId, ...assetsInfo[0], "op_type": OPT_CONSTANTS.RELEASE }, remark, 'now()' ]
             });
 
             // 记录更新用户可售额度日志
@@ -202,9 +198,27 @@ async function buyAlloc(data) {
             });
         }
 
+        // 如果买入订单全部成交，生成一个挖矿资产包
+        // if (data.tradeOpType === "finished") {
+        //     const extra = { 
+        //         "symbol": TBG_TOKEN_SYMBOL,
+        //         "op_type": OPT_CONSTANTS.RELEASE,
+        //         "tr_id": trId,
+        //          ...assetsInfo[0]
+        //     }
+        //     const opts = [ 
+        //         accountName, trxAmount.mul(0.005), trxAmount.mul(0.005).add(tbgBalance.release_amount).toNumber(), 
+        //         OPT_CONSTANTS.MINING, { "symbol": TBG_TOKEN_SYMBOL, "tr_id": trId, ...assetsInfo[0], "op_type": OPT_CONSTANTS.RELEASE }, 
+        //         `user buy ${ amount } assets, transaction finished, get a `, now 
+        //     ]
+        //     trxList.push({
+        //         sql: insertBalanceLogSql,
+        //         values: opts
+        //     });
+        // }
+
         let actions = {
             actions: [
-                ...tmpActions,
                 {
                     account: TBG_TOKEN_COIN,
                     name: "transfer",

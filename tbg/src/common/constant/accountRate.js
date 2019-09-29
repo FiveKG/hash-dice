@@ -16,6 +16,7 @@ const accountRate = {
     [accountConstant.COMMUNITY_POOL]: rateConstant.COMMUNITY_INCOME_RATE,
     [accountConstant.DEV_OP_POOL]: rateConstant.DEV_OP_INCOME_RATE,
     [accountConstant.TSH_INCOME]: rateConstant.TSH_INCOME_RATE,
+    [accountConstant.TEAM_INCENTIVE_POOL]: rateConstant.TEAM_INCENTIVE_RATE,
 }
 
 module.exports = {

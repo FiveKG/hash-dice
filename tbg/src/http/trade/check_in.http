@@ -11,3 +11,9 @@ GET http://localhost:9527/check_in?account_name=yujinsheng11
 
 ### 获取签到奖励明细
 GET http://localhost:9527/check_in/detail?account_name=yujinsheng11
+
+### 获取每日签到信息
+GET http://pog.tbg.isecsp.com/check_in?account_name=gametestuser
+
+### 获取签到奖励明细
+GET http://pog.tbg.isecsp.com/check_in/detail?account_name=yujinsheng11

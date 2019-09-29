@@ -35,14 +35,18 @@ async function releasePool(req, res, next) {
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: RELEASE });
         const tbgBalance = await getTbgBalanceInfo(accountName);
         // 累加释放的资产
-        let released = 0;
+        let released = new Decimal(0);
         if (balanceLogInfo.length !== 0) {
-            released = balanceLogInfo.map(it => it.change_amount).reduce((pre, cur) => Number(pre) + Number(cur))
+            for (const info of balanceLogInfo) {
+                if (info.change_amount < 0) {
+                    released = released.add(info.change_amount).abs();
+                }
+            }
         }
         let resData = get_status(1);
         resData["data"] = {
             "releasing": new Decimal(tbgBalance.release_amount).toFixed(8),
-            "released": new Decimal(released).toFixed(8),
+            "released": released.toFixed(8),
             "release_rate": MEMBER_LEVEL_TRX[levelInfo.ID].RELEASE_RATE,
             "balance_info": !balanceInfo ? 0 : balanceInfo,
             "level": levelInfo.NAME

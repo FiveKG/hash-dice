@@ -23,7 +23,7 @@ async function detail(req, res, next) {
         // 找出已经完成交易的订单
         const tradeInfo = await getTradeInfoById(miningId);
         if (tradeInfo.length === 0) {
-            return res.send(get_status(1018, "this account does not exists"));
+            return res.send(get_status(1018, "矿包不存在"));
         }
 
         // 从交易完成时开始计算挖矿时间

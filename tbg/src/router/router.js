@@ -16,6 +16,9 @@ router.get("/common/health", require("../common/health.js"));
 // 获取配置信息
 router.get("/config/get_config", config.getConfig);
 
+// 获取配置信息
+router.get("/account/get_token", config.getToken);
+
 /***************************  account  ***********************************/
 // 根据填写的邀请码显示出帐号名称
 router.get("/account/show_account_name_by_code", account.show_account_name_by_code);

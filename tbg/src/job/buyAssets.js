@@ -31,9 +31,11 @@ async function buyAssets(data) {
         // 获取资产包信息
         const assetsInfo = await getAssetsInfoById([apId]);
         const amount = new Decimal(assetsInfo[0].amount);
-        // 查找用户交易记录，如果没有，说明是第一次买入，此时需要给全球合伙人和全球合伙人的推荐人空投
-        const firstTrade = tradeInfo.filter(it => it.trade_type === OPT_CONSTANTS.FIRST_BUY);
-        if (firstTrade.length === 1) {
+        // 查找用户交易记录，如果没有，说明是第一次买入
+        // 私募是全球合伙人第一次购买
+        const firstTrade = tradeInfo.filter(it => it.trade_type === OPT_CONSTANTS.FIRST_BUY || it.trade_type === OPT_CONSTANTS.RAISE);
+        logger.debug("firstTrade: ", firstTrade);
+        if (firstTrade.length === 0) {
             opType = OPT_CONSTANTS.FIRST_BUY;
         }
         const client = await pool.connect();

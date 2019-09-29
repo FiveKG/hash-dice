@@ -43,7 +43,7 @@ async function raiseAirdrop(data) {
         const acCurrentBalance = new Decimal(tbgBalance.release_amount)
         // 查找推荐人
         let userReferrer = await getUserReferrer(accountName);
-        let reCurrentBalance, reBalanceRemark;
+        let reCurrentBalance;
         const referrerIncome = quantity.mul(TBG_ALLOCATE.RAISE_REFERRER_AIRDROP).div(TBG_ALLOCATE.BASE_RATE);
         let tmpActions = []
         // 系统第一个账户没有推荐人，多出的部分转到股东池账户
@@ -67,7 +67,6 @@ async function raiseAirdrop(data) {
                 }
             )
         } else {
-            reBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.RAISE }, referrer ${ userReferrer } get airdrop ${ referrerIncome }`;
             // 如果有推荐人，推荐人获得的奖励也要转入释放池
             const reTbgBalance = await getTbgBalanceInfo(userReferrer);
             reCurrentBalance = new Decimal(reTbgBalance.release_amount).add(referrerIncome);
@@ -158,6 +157,9 @@ async function raiseAirdrop(data) {
                  ...assetsInfo[0]
             }
             await insertBalanceLog(client, accountName, quantity.add(destroyAmount).toNumber(), acCurrent, OPT_CONSTANTS.RAISE, extra, memo, 'now()');
+
+            // 私募成交后生成一个挖矿资产记录
+            // await insertBalanceLog(client, accountName, miningAmount.toNumber(), acCurrent, OPT_CONSTANTS.MINING, extra, `${ memo }, get a mining of assets package`, 'now()');
 
             // 按私募数量的 5 倍释放，直接转入私募的账户, 同时销毁一部份
             await updateTbgBalance(client, accountName, destroyAmount.toNumber(), 0, 0);

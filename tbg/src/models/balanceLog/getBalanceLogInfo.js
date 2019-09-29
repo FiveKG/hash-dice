@@ -9,6 +9,7 @@ const logger = require("../../common/logger");
  * @property { string } [trId]
  * @property { string } [opType]
  * @property { string } [symbol]
+ * @property { string } [extraType]
  */
 
 /**
@@ -18,7 +19,7 @@ const logger = require("../../common/logger");
  */
 async function getBalanceLogInfo(params) {
     try {
-        const { accountName, trId, opType, symbol } = params;
+        const { accountName, trId, opType, symbol, extraType } = params;
         const opts = [];
         const values = [];
 
@@ -30,6 +31,11 @@ async function getBalanceLogInfo(params) {
         if (!!trId) {
             opts.push(trId.split(","));
             values.push(`extra ->> 'tr_id' = any($${ opts.length })`)
+        } 
+
+        if (!!extraType) {
+            opts.push(extraType.split(","));
+            values.push(`extra ->> 'op_type' = any($${ extraType })`)
         } 
 
         if (!!symbol) {
