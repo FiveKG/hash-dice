@@ -11,7 +11,7 @@ module.exports = {
         "hgbAccountName": "eosio.token"
       }
     },
-    "jwt_secret": "AMiXTKVIsgfh70WyOkPAQCG9Es/UItRUMW+rY7leafg=",
+    "jwt_secret": "Cpj9cTX8aZEIIThCyT1jWG4D4xqGNGH9caZAG5SQ",
     "sync_pk_account_url": "http://172.8.220.212:8889",
     /**
      * 用户余额变动

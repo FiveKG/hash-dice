@@ -24,7 +24,9 @@
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
                     "wallet_receiver": { "type": "text",  "is_require": true,  "desc": "tbg1 收款账户" },
-                    "trade_receiver": { "type": "text",  "is_require": true,  "desc": "tbg2 收款账户" }
+                    "trade_receiver": { "type": "text",  "is_require": true,  "desc": "tbg2 收款账户" },
+                    "httpEndPoint": { "type" :"string" , "remark":"" },
+                    "chainId": { "type" :"string" , "remark":"" }
                 }
             }
         },
@@ -218,6 +220,7 @@
                         "type": "objectArray", "desc": "全部开奖信息",
                         "properties": {
                             "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                            "bo_id": { "type": "text",  "is_require": true,  "desc": "用户投注 id" },
                             "win_type": { "type": "number",  "is_require": true,  "desc": "中奖类型，是否中奖" },
                             "bet_key": { "type": "number",  "is_require": true,  "desc": "投注 key 的数量" },
                             "bet_time": { "type": "text",  "is_require": true,  "desc": "投注时间" }
@@ -237,7 +240,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                "periods": { "type": "number",  "is_require": true,  "desc": "期数" },
+                "bo_id": { "type": "text",  "is_require": true,  "desc": "用户投注 id" },
                 "account_name": { "type": "text",  "is_require": true,  "desc": "账号" }
             },
             "res": {

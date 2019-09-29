@@ -44,6 +44,7 @@ async function gameSessionMine(req, res, next) {
                 }
                 return {
                     periods: it.periods,
+                    bo_id: it.bo_id,
                     win_type: winType,
                     bet_key: it.key_count,
                     bet_time: it.create_time

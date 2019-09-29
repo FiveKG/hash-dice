@@ -24,7 +24,9 @@
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
                     "wallet_receiver": { "type": "text",  "is_require": true,  "desc": "tbg1 收款账户" },
-                    "trade_receiver": { "type": "text",  "is_require": true,  "desc": "tbg2 收款账户" }
+                    "trade_receiver": { "type": "text",  "is_require": true,  "desc": "tbg2 收款账户" },
+                    "httpEndPoint" : { "type" :"string" , "remark":"" },
+                    "chainId"      : { "type" :"string" , "remark":"" }
                 }
             }
         },

@@ -94,14 +94,16 @@ async function gameSessionDetail(req, res, next) {
                     });
                     award_amount = award_amount.add(info.one_key_bonus);
                 }
-                detail.push({
-                    "bonus_type": win_type,
-                    "rate": award_rate,
-                    "key_count": win_key,
-                    "award_amount": award_amount,
-                    "one_key_bonus": one_key_bonus,
-                    "award_lists": award_lists
-                });
+                if (win_type !== "sorry") {
+                    detail.push({
+                        "bonus_type": win_type,
+                        "rate": award_rate,
+                        "key_count": win_key,
+                        "award_amount": award_amount,
+                        "one_key_bonus": one_key_bonus,
+                        "award_lists": award_lists
+                    });
+                }
             }
 
             // 查找累积奖池和累积发放额

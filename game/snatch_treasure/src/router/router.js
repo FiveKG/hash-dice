@@ -22,6 +22,10 @@ router.get("/snatch_treasure/game_session_detail", snatchTreasure.gameSessionDet
 router.get("/snatch_treasure/game_session_mine", snatchTreasure.gameSessionMine);
 // 获取当前用户某一期投注的详情
 router.get("/snatch_treasure/game_session_mine_detail", snatchTreasure.gameSessionMineDetail);
+
+// 检查token
+router.use(require("../controllers/config/check_token.js"));
+
 // 投注
 router.post("/snatch_treasure/bet", snatchTreasure.bet);
 /*****************************   **************************************/

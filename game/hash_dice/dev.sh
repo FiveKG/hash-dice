@@ -15,7 +15,7 @@ unset HASH_DICE_RABBIT_PASS
 
 export TBG_SERVER=http://192.168.1.141:9527/
 export HASH_DICE_SERVER_HOST=0.0.0.0
-export HASH_DICE_SERVER_PORT=13021
+export HASH_DICE_SERVER_PORT=13022
 
 postgreshost=$(docker inspect postgres | grep IPAddress | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sed -n '1p')
 redishost=$(docker inspect redis | grep IPAddress | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sed -n '1p')

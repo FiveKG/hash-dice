@@ -11,8 +11,6 @@ async function createTable() {
         comment on table game is '游戏';
         comment on column game.g_id is '游戏表主键';
         comment on column game.game_name is '游戏名称';
-
-
         CREATE TABLE IF NOT EXISTS bet_order(
             id TEXT PRIMARY KEY UNIQUE NOT NULL DEFAULT '',
             bet_block_num TEXT NOT NULL DEFAULT '',
@@ -51,7 +49,6 @@ async function createTable() {
         comment on column reward.reward_num is '开奖数字';
         comment on column reward.create_time is '开奖时间';
     `
-
 
     try {
         logger.info("init all database table");

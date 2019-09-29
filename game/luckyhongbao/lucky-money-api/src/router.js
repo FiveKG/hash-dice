@@ -32,12 +32,11 @@ router.get("/club/leaderboard", require("./controllers/club/leaderboard.js"));
 // 奖金排行榜
 router.get("/account/reward_leaderboard", require("./controllers/account/reward_leaderboard.js"));
 
-/*********************** 不需要登录 end **********************/
 // 获取房间中的红包
 router.get("/room/get_red_envelope", require("./controllers/room/get_red_envelope.js"));
-
+/*********************** 不需要登录 end **********************/
 // 检查token
-// router.use(require("./controllers/common/check_token.js"));
+router.use(require("./controllers/common/check_token.js"));
 
 /*********************** 需要登录 start **********************/
 

@@ -109,7 +109,7 @@ async function initGameSession() {
         }
 
         if (actList.length !== 0) {
-            // await psTrx.pub(actList);
+            await psTrx.pub(actList);
         }
     } catch (err) {
         logger.error("initGameSession error, the error stock is %O", err);

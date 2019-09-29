@@ -22,6 +22,9 @@ router.get("/global_lotto/game_session_detail", globalLotto.gameSessionDetail);
 router.get("/global_lotto/game_session_mine", globalLotto.gameSessionMine);
 // 获取当前用户某一期投注的详情
 router.get("/global_lotto/game_session_mine_detail", globalLotto.gameSessionMineDetail);
+
+// 检查token
+router.use(require("../controllers/account/check_token.js"));
 // 投注
 router.post("/global_lotto/bet", globalLotto.bet);
 // 随机投注

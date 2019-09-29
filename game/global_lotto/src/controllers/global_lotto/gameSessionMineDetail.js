@@ -11,19 +11,19 @@ async function gameSessionMineDetail(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
         logger.debug(`the param is %j: `, reqData);
-        
-        const selectGameSession = `SELECT gs_id, periods, reward_num, game_state, reward_time FROM game_session WHERE periods = $1`
-        const { rows: [ gameSessionInfo ] } = await pool.query(selectGameSession, [ reqData.periods ]);
-        logger.debug("gameSessionInfo: ", gameSessionInfo);
-        if (!gameSessionInfo) {
-            return res.send(get_status(1012, "game not exists"));
-        }
         // 查出投注记录
-        const selectBetOrder = `SELECT bet_num, key_count, amount, create_time, extra FROM bet_order WHERE account_name = $1 AND gs_id = $2`
-        const { rows: [ betOrder ] } = await pool.query(selectBetOrder, [ reqData.account_name, gameSessionInfo.gs_id ]);
+        const selectBetOrder = `SELECT gs_id, bet_num, key_count, amount, create_time, extra FROM bet_order WHERE account_name = $1 AND bo_id = $2`
+        const { rows: [ betOrder ] } = await pool.query(selectBetOrder, [ reqData.account_name, reqData.bo_id ]);
         logger.debug("betOrder: ", betOrder);
         if (!betOrder) {
             return res.send(get_status(1014, "can not found bet order"));
+        }
+
+        const selectGameSession = `SELECT gs_id, periods, reward_num, game_state, reward_time FROM game_session WHERE gs_id = $1`
+        const { rows: [ gameSessionInfo ] } = await pool.query(selectGameSession, [ betOrder.gs_id ]);
+        logger.debug("gameSessionInfo: ", gameSessionInfo);
+        if (!gameSessionInfo) {
+            return res.send(get_status(1012, "game not exists"));
         }
 
         // 如果游戏是开始状态或者是待开奖
@@ -45,15 +45,9 @@ async function gameSessionMineDetail(req, res, next) {
             
             res.send(resData);
         } else {
-            // 查出投注记录
-            const selectBetOrder = `SELECT key_count, amount, create_time, extra FROM bet_order WHERE account_name = $1 AND gs_id = $2`
-            const { rows: [ betOrder ] } = await pool.query(selectBetOrder, [ reqData.account_name, gameSessionInfo.gs_id ]);
-            if (!betOrder) {
-                return res.send(get_status(1014, "can not found bet order"));
-            }
             // 查出开奖记录
             const selectBonusInfo = `SELECT win_type, win_key, bet_num, one_key_bonus FROM award_session WHERE account_name = $1 AND bo_id = $2`
-            const { rows: myOrderList } = await pool.query(selectBonusInfo, [ reqData.account_name, betOrder.bo_id ]);
+            const { rows: myOrderList } = await pool.query(selectBonusInfo, [ reqData.account_name, reqData.bo_id ]);
             logger.debug("myOrderList: ", myOrderList);
             const detail = myOrderList.map(it => {
                 return {
@@ -63,6 +57,7 @@ async function gameSessionMineDetail(req, res, next) {
                     "win_amount": it.one_key_bonus
                 }
             });
+            logger.debug("detail: ", detail);
             let resData = get_status(1);
             resData.data = {
                 periods: gameSessionInfo.periods,

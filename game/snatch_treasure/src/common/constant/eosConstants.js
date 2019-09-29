@@ -1,12 +1,6 @@
 // @ts-check
 
 // 投资额度
-// 参与 TBG1 所需 UE 额度
-const BASE_AMOUNT = "100";
-// TBG1 收款账户
-const RECEIVER_ACCOUNT = "tbgjoin";
-// TBG1 出款账户
-const DISPENSE_ACCOUNT = "tbgjoin";
 // EOS token 合约账户
 const EOS_TOKEN = "eosio.token";
 const EOS_TOKEN_SYMBOL = "EOS"
@@ -36,14 +30,15 @@ const END_POINT = "http://45.251.109.187:8888"
 // 私钥
 const PRIVATE_KEY_TEST = "5J3QDbiCJDFpqxWwZ2jBdjwktn1LGV1T4JjaYiPwG4P3hCHjfyx,5K1HYKMacELeKM3Rcz2HNDLZpVXmBthHM6nxJroQfJgwy9yHzgz,5JbV632hRiMrqy39pK1ZFEFqgMFMH8gfkcX9ETPEmsXRGZCd7ma,5KSzppBW7LcwVQ4hA1AQP4vZYWq1uEv4EQnZ5yz1eu41eLgrLK2,5JRiAXpyd5TW5REvLYd35FkrJSMjFfiUtrwrCNpChHFMVNnRDwB,5JAW6eWS4ADjwCr76xCvmPefknzhFg33f4haL5dbuiB5WoW79tQ,5JiaokGm1A7kyLq92YrQjp42Fr7Vqs52NBquCYiuU8DxKURkhfu,5KbQQbR83HFMPPaKCY4GPVBtNZZW4t6nNxtPEWkVPUHMWxpQLzS,5K7h5xxZNCfq6ujRmLWgCHHQKf4gAuKYAU8yDFRDwvkAN3scPki,5K5sRqqp3XebvjMmK1TYBFiSAd6XbwLeJa9L3CxWBMiWcSGCsDG,5KNoQXeFJp47dbtyifcCjJuhXjYmNvWPVcWYsHJJWZ8h7zAd78h,5KQairxa939NMKHfuyQWw9tSaiSk4B787HEPvTvd1BzReANJECo,5KSzppBW7LcwVQ4hA1AQP4vZYWq1uEv4EQnZ5yz1eu41eLgrLK2,5JRiAXpyd5TW5REvLYd35FkrJSMjFfiUtrwrCNpChHFMVNnRDwB,5JAW6eWS4ADjwCr76xCvmPefknzhFg33f4haL5dbuiB5WoW79tQ,5JiaokGm1A7kyLq92YrQjp42Fr7Vqs52NBquCYiuU8DxKURkhfu,5KbQQbR83HFMPPaKCY4GPVBtNZZW4t6nNxtPEWkVPUHMWxpQLzS,5K7h5xxZNCfq6ujRmLWgCHHQKf4gAuKYAU8yDFRDwvkAN3scPki,5K5sRqqp3XebvjMmK1TYBFiSAd6XbwLeJa9L3CxWBMiWcSGCsDG"
 
+// 区块链 id
+const CHAIN_ID = "483c1c3c33ceaf2bd2264c2266807938addfe471ace2f7accda713d8c39b699d";
+
+const JWT_SECRET = "Cpj9cTX8aZEIIThCyT1jWG4D4xqGNGH9caZAG5SQ";
 
 /**
  * @type { Constant }
  */
 const CONSTANT = {
-    "BASE_AMOUNT": BASE_AMOUNT,
-    "RECEIVER_ACCOUNT": RECEIVER_ACCOUNT,
-    "DISPENSE_ACCOUNT": DISPENSE_ACCOUNT,
     "EOS_TOKEN": EOS_TOKEN,
     "TBG_TOKEN": TBG_TOKEN,
     "UE_TOKEN": UE_TOKEN,
@@ -56,7 +51,9 @@ const CONSTANT = {
     "BANKER": BANKER,
     "AGENT_ACCOUNT": AGENT_ACCOUNT,
     "DISTRIBUTION_CENTER_ACCOUNT": DISTRIBUTION_CENTER_ACCOUNT,
-    "TBG_WALLET_RECEIVER": TBG_WALLET_RECEIVER
+    "TBG_WALLET_RECEIVER": TBG_WALLET_RECEIVER,
+    "JWT_SECRET": JWT_SECRET,
+    "CHAIN_ID": CHAIN_ID
 }
 
 module.exports = CONSTANT
@@ -64,9 +61,6 @@ module.exports = CONSTANT
 /**
  * @description 
  * @typedef { Object } Constant
- * @property { String } BASE_AMOUNT 投资额度
- * @property { String } RECEIVER_ACCOUNT 收款帐号
- * @property { String } DISPENSE_ACCOUNT 出款帐号
  * @property { String } EOS_TOKEN EOS 代币合约帐号 eosio.token
  * @property { String } TBG_TOKEN TBG 代币合约帐号
  * @property { String } END_POINT scatter 节点
@@ -80,4 +74,7 @@ module.exports = CONSTANT
  * @property { string } AGENT_ACCOUNT 代投注账号
  * @property { string } DISTRIBUTION_CENTER_ACCOUNT 分发中心收益账号
  * @property { string } TBG_WALLET_RECEIVER 钱包收款帐号
+ * @property { string } TBG_WALLET_RECEIVER 钱包收款帐号
+ * @property { string } JWT_SECRET
+ * @property { string } CHAIN_ID
  */

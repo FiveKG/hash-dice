@@ -215,7 +215,7 @@ async function allocBonus(prizePool, winCount, bonusAccList, winType, awardRate,
                 }
                 const opts = [
                     generate_primary_key(), info.bo_id, extra, info.account_name, "now()", info.bet_num,
-                    winCount, winType, bonus, bonus
+                    winCount, winType, bonus.toNumber(), bonus.toNumber()
                  ]
                 sqlList.push({ sql: insertRewardSql, values: opts });
                 issued = issued.add(bonus);
@@ -266,7 +266,7 @@ async function allocBonus(prizePool, winCount, bonusAccList, winType, awardRate,
                 };
                 const opts = [
                     generate_primary_key(), info.bo_id, extra, info.account_name, "now()", info.bet_num,
-                    winCount, winType, bonus.toFixed(4), bonus.toFixed(4)
+                    winCount, winType, bonus.toNumber(), bonus.toNumber()
                 ]
                 sqlList.push({ sql: insertRewardSql, values: opts });
                 issued = issued.add(bonus);
@@ -284,7 +284,7 @@ async function allocBonus(prizePool, winCount, bonusAccList, winType, awardRate,
                         // 推荐人获得特别奖
                         const opts = [
                             generate_primary_key(), info.bo_id, extra, referrer_account, "now()", info.bet_num,
-                            winCount, "special_award", bonus.toFixed(4), bonus.toFixed(4)
+                            winCount, "special_award", bonus.toNumber(), bonus.toNumber()
                         ]
                         sqlList.push({ sql: insertRewardSql, values: opts });
                         issued = issued.add(bonus);

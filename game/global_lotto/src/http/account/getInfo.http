@@ -11,21 +11,22 @@ GET http://localhost:13021/global_lotto/latest_game_session
 GET http://localhost:13021/global_lotto/game_session
 
 ### 获取某一期开奖详情 
-GET http://localhost:13021/global_lotto/game_session_detail?gs_id=bfd469188605dd15
+GET http://localhost:13021/global_lotto/game_session_detail?gs_id=d579f0928980405b
 
 ### get account information
-GET http://localhost:13021/global_lotto/game_session_mine?account_name=yujinsheng11
+GET http://localhost:13021/global_lotto/game_session_mine?account_name=gametestuser
 
 ### get account information
-GET http://localhost:13021/global_lotto/game_session_mine_detail?account_name=yujinsheng11&periods=8
+GET http://localhost:13021/global_lotto/game_session_mine_detail?account_name=gametestuser&bo_id=d597fe1a4f8edf21
 
 ### get account information
 POST http://localhost:13021/global_lotto/bet
 Content-Type: application/json
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiIzNTg0MUY4NjUzODYxMzk0M0NGMDE1Q0MxRjYxQzA1N0YzNDcwRTY3QjQ1NjBEOEIwMTRCRTRBMEREM0UxMjZFNjBFNDNDMkVCOTk4MjQwMDcwNUY2NkQ1MkZCNkI0NjUyQUE1REMwODUzM0FBRUE0NkMyODBGMjEzQ0FFNjQwRCIsImlhdCI6MTU2OTc1Njk5MiwiZXhwIjoxNTY5Nzc4NTkyfQ.4up7UtDyi-hFYZOG_8xPA9erYfjJkiSdIfU9iFL8Trw
 
 {
-    "periods": 8,
-    "account_name": "yujinsheng11",
+    "periods": 6,
+    "account_name": "tbgtestuser1",
     "bet_num": "123456789",
     "bet_key": 1,
     "bet_amount": 0.1
@@ -36,10 +37,10 @@ POST http://localhost:13021/global_lotto/random_bet
 Content-Type: application/json
 
 {
-    "periods": 8,
+    "periods": 1,
     "account_name": "yujinsheng11",
-    "bet_key": 20,
-    "bet_amount": 2
+    "bet_key": 15,
+    "bet_amount": 1.5
 }
 
 ####

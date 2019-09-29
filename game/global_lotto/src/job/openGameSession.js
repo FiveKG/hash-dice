@@ -11,6 +11,8 @@ const startGameSession = require("./startGameSession");
 const { accReward, getOpenResult } = require("./getOpenResult");
 const handleOpenResult = require("./allocBonus");
 
+// awardGame({ block_num: 14986394 });
+
 /**
  * 游戏开奖
  * @param {{ block_num: number }} data
@@ -114,6 +116,7 @@ async function awardGame(data) {
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");
+            logger.error("award COMMIT error: ", err);
             throw err;
         } finally {
             await client.release();
