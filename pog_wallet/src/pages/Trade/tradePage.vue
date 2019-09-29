@@ -1,6 +1,7 @@
 <template>
   <v-ons-page>
-    <div class="wrap">
+    <div class="background"></div>
+    <div class="content">
       <div class="header">
         <div class="header_line"></div>
         <div class="header_content">
@@ -11,7 +12,7 @@
       <div class="exchange">
         <!-- 兑出金额 -->
         <div class="exchange_row amount_paid">
-          <p>兑出金额</p>
+          <p><input placeholder="兑出金额"  class="input_exchange_amount" type="text"></p>
           <p>
             <img class="paxPic" src="@/assets/img/u2543.svg" alt />
             <span>PAX</span>
@@ -19,7 +20,7 @@
           </p>
         </div>
         <div class="exchange_address">
-          <span @click="actionSheetVisible = true">选择兑出地址</span>
+          <span ref="exchangeAddres" @click="actionSheetVisible = true">选择兑出地址</span>
           <span>5 PAX 矿工费</span>
         </div>
 
@@ -42,8 +43,8 @@
       </div>
 
       <div class="list_title">
-        <p @click="titleTogle(0)" :class="{'active':switchNum === 0}">公众审计</p>
-        <p @click="titleTogle(1)" :class="{'active':switchNum === 1}">最近兑换</p>
+        <p @click="titleToggle(0)" :class="{'active':switchNum === 0}">公众审计</p>
+        <p @click="titleToggle(1)" :class="{'active':switchNum === 1}">最近兑换</p>
       </div>
 
       <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="switchNum">
@@ -94,9 +95,9 @@
             <span>选择PAX兑出地址</span>
           </div>
           <div class="select_list">
-            <p class="list_col" v-for="(items,index) in exchangeAddressList" :key="index" @click="checkItem($event)">
+            <p class="list_col" v-for="(items,index) in exchangeAddressList" :key="index" @click="toggleItem($event)">
               <span>
-                <img src="@/assets/img/u1499.png" alt="ok" />
+                <img class="imgNone" src="@/assets/img/u1499.png" alt="ok" />
               </span>
               <span>{{items.name}}</span>
               <span>{{items.number}}</span>
@@ -108,7 +109,7 @@
 
 
 
-       <!-- 更多下拉框2 (接收地址)-->
+       <!-- 更多下拉框2 (接收钱包地址)-->
       <v-ons-action-sheet :visible.sync="actionSheetVisible1" cancelable>
         <div class="selectwrap">
           <div class="wdclose" @click="actionSheetVisible1 = false"></div>
@@ -179,21 +180,43 @@ export default {
   },
   components: {},
   methods: {
-    titleTogle(num) {
+    titleToggle(num) {
       this.switchNum = num;
     },
-    checkItem(e){
-      console.log(e.target)
+    toggleItem(e){
+        let colNode;
+        for(let i=0 ; i<e.path.length;i++){
+          if(e.path[i].className == 'list_col'){
+              colNode = e.path[i]
+          }
+        }
+        if(colNode.firstChild.childNodes[0].className == 'imgNone'){
+            // 删除已有的选中项
+            for(let i=0; i<e.path.length; i++){
+              if(e.path[i].className == 'select_list'){
+                  let listNodes = e.path[i].childNodes
+                  for(let i=0; i<listNodes.length; i++){
+                      if(listNodes[i].childNodes[1].className == 'fontBold'){
+                            listNodes[i].firstChild.childNodes[0].className = 'imgNone'
+                            listNodes[i].childNodes[1].className = ''
+                      }
+                  }
+              }
+            }
+            colNode.firstChild.childNodes[0].className = 'imgBlock'
+            colNode.children[1].className = 'fontBold'
+            this.$refs.exchangeAddres.innerHTML = colNode.children[1].innerHTML
+        }
     }
   }
 };
 </script>
 
 <style scoped lang="less">
-.wrap {
-  background: rgba(242, 242, 242, 1);
-  position: relative;
+.background {
+  background: #f2f2f2;
 }
+
 .header_line {
   position: absolute;
   top: 0;
@@ -232,12 +255,33 @@ export default {
   border-radius: 0.1rem;
 }
 .exchange_row p:nth-child(1) {
-  padding-left: 0.1rem;
   font-size: 0.5rem;
   color: #aeaeae;
   font-family: "微軟正黑體 Regular", "微軟正黑體";
   flex: 1;
+  display: flex;
+  align-items: center;
+  padding-left:4%;
+  height:100%;
 }
+.input_exchange_amount{
+  height:100%;
+  width:95%;
+  border:0px;
+  font-size:.45rem;
+  letter-spacing:.03rem;
+  
+}
+.input_exchange_amount::-webkit-input-placeholder {
+  color: #aeaeae;
+}
+.input_exchange_amount:-moz-placeholder {
+  color: #aeaeae;
+}
+.input_exchange_amount:-ms-input-placeholder {
+  color: #aeaeae;
+}
+
 .exchange_row p:nth-child(2) {
   display: flex;
   align-items: center;
@@ -368,6 +412,8 @@ export default {
   height: 0.5rem;
 }
 
+
+
 // 下拉菜单
 .selectwrap {
   background-color: #fff;
@@ -430,6 +476,7 @@ export default {
   transition: all 0.3s;
 }
 .list_col span:nth-child(1) {
+  padding-top:5px;
   width: 0.5rem;
   height: 0.5rem;
   vertical-align: middle;
@@ -450,5 +497,11 @@ export default {
 .fontBold{
   font-weight:bold;
   color:#000;
+}
+.imgNone{
+  display:none;
+}
+.imgBlock{
+  display:block;
 }
 </style>
