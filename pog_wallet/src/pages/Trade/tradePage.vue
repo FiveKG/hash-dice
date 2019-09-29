@@ -152,11 +152,33 @@ export default {
   },
   components: {},
   methods: {
-    titleTogle(num) {
+    titleToggle(num) {
       this.switchNum = num;
     },
-    checkItem(e){
-      console.log(e.target)
+    toggleItem(e){
+        let colNode;
+        for(let i=0 ; i<e.path.length;i++){
+          if(e.path[i].className == 'list_col'){
+              colNode = e.path[i]
+          }
+        }
+        if(colNode.firstChild.childNodes[0].className == 'imgNone'){
+            // 删除已有的选中项
+            for(let i=0; i<e.path.length; i++){
+              if(e.path[i].className == 'select_list'){
+                  let listNodes = e.path[i].childNodes
+                  for(let i=0; i<listNodes.length; i++){
+                      if(listNodes[i].childNodes[1].className == 'fontBold'){
+                            listNodes[i].firstChild.childNodes[0].className = 'imgNone'
+                            listNodes[i].childNodes[1].className = ''
+                      }
+                  }
+              }
+            }
+            colNode.firstChild.childNodes[0].className = 'imgBlock'
+            colNode.children[1].className = 'fontBold'
+            this.$refs.exchangeAddres.innerHTML = colNode.children[1].innerHTML
+        }
     }
   }
 };
@@ -209,12 +231,33 @@ export default {
   border-radius: 0.1rem;
 }
 .exchange_row p:nth-child(1) {
-  padding-left: 0.1rem;
   font-size: 0.5rem;
   color: #aeaeae;
   font-family: "微軟正黑體 Regular", "微軟正黑體";
   flex: 1;
+  display: flex;
+  align-items: center;
+  padding-left:4%;
+  height:100%;
 }
+.input_exchange_amount{
+  height:100%;
+  width:95%;
+  border:0px;
+  font-size:.45rem;
+  letter-spacing:.03rem;
+  
+}
+.input_exchange_amount::-webkit-input-placeholder {
+  color: #aeaeae;
+}
+.input_exchange_amount:-moz-placeholder {
+  color: #aeaeae;
+}
+.input_exchange_amount:-ms-input-placeholder {
+  color: #aeaeae;
+}
+
 .exchange_row p:nth-child(2) {
   display: flex;
   align-items: center;
@@ -345,6 +388,8 @@ export default {
   height: 0.5rem;
 }
 
+
+
 // 下拉菜单
 .selectwrap {
   background-color: #fff;
@@ -407,6 +452,7 @@ export default {
   transition: all 0.3s;
 }
 .list_col span:nth-child(1) {
+  padding-top:5px;
   width: 0.5rem;
   height: 0.5rem;
   vertical-align: middle;
@@ -427,5 +473,11 @@ export default {
 .fontBold{
   font-weight:bold;
   color:#000;
+}
+.imgNone{
+  display:none;
+}
+.imgBlock{
+  display:block;
 }
 </style>
