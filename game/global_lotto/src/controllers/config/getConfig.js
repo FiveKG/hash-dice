@@ -1,7 +1,7 @@
 // @ts-check
 const logger = require("../../common/logger.js").child({ "@controllers/config/getConfig.js": "get config" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
-const { BANKER, END_POINT, CHAIN_ID } = require("../../common/constant/eosConstants.js");
+const { BANKER, END_POINT, CHAIN_ID, UE_TOKEN } = require("../../common/constant/eosConstants.js");
 
 // 获取配置信息
 async function getConfig(req, res, next) {
@@ -12,6 +12,7 @@ async function getConfig(req, res, next) {
         resData["data"] = {
             wallet_receiver: BANKER,
             trade_receiver: BANKER,
+            "token_account": UE_TOKEN,
             "httpEndPoint": END_POINT,
             "chainId": CHAIN_ID
         }

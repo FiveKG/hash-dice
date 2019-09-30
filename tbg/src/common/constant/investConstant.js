@@ -1,7 +1,7 @@
 // @ts-check
 
 // 投资额度
-const INVEST_AMOUNT = 1000;
+const INVEST_AMOUNT = 2000;
 
 // 百分率
 const BASE_RATE = 100;
@@ -32,7 +32,7 @@ const DEV_OP_INCOME_RATE = 1.4;
 const TSH_INCOME_RATE = 3.5;
 
 // 分配给团队激励池的百分比
-const TEAM_INCENTIVE_RATE = 5;
+const NODE_INCENTIVE_RATE = 5;
 
 // 用户复投全球合伙人可得复投额度的 1%
 const REPEAT_GLOBAL_INCOME_RATE = 1
@@ -59,7 +59,7 @@ const CONSTANT = {
     "TSH_INCOME_RATE": TSH_INCOME_RATE,
     "REPEAT_GLOBAL_INCOME_RATE": REPEAT_GLOBAL_INCOME_RATE,
     "REPEAT_GLOBAL_REFERRER_INCOME_RATE": REPEAT_GLOBAL_REFERRER_INCOME_RATE,
-    "TEAM_INCENTIVE_RATE": TEAM_INCENTIVE_RATE
+    "NODE_INCENTIVE_RATE": NODE_INCENTIVE_RATE
 }
 
 module.exports = CONSTANT
@@ -83,5 +83,5 @@ module.exports = CONSTANT
  * @property { number } TSH_INCOME_RATE 分配给 TSH 股东收入账号的百分比
  * @property { number } REPEAT_GLOBAL_INCOME_RATE 用户复投全球合伙人可得复投额度的 1%
  * @property { number } REPEAT_GLOBAL_REFERRER_INCOME_RATE 用户复投全球合伙人的推荐人可得复投额度的 0.5%
- * @property { number } TEAM_INCENTIVE_RATE 分配给团队激励池的百分比
+ * @property { number } NODE_INCENTIVE_RATE 分配给团队激励池的百分比
  */

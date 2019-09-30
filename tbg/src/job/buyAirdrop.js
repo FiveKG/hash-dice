@@ -59,8 +59,8 @@ async function buyAirdrop(data) {
         if (trade_type === OPT_CONSTANTS.FIRST_BUY) {
             opType = OPT_CONSTANTS.FIRST_BUY;
             const accountInfo = await getAccountInfo(accountName);
-            let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2;
-            if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1) {
+            let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1;
+            if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2) {
                 accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2
             }
             

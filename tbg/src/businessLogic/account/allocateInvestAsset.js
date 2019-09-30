@@ -42,7 +42,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         let psTbg1Data = {};
         let psTshIncomeData = {};
         const accountInfo = await getAccountInfo(accountName);
-        // 只要用户投资 TBG-II（转账 1000.0000 UE）, 全球合伙人和全球合伙人的推荐人就可获得奖励
+        // 只要用户投资 TBG-II（转账 2000.0000 UE）, 全球合伙人和全球合伙人的推荐人就可获得奖励
         // 奖励按有效会员数来分配
         // 全球合伙人: | 0-19 0.1% | 20-39 0.2% | 40-59 0.4% | 60-79 0.6% | 80-99 0.8% | > 99 1%
         // 全球合伙人的推荐人: < 100 0.1% | >= 100 0.5%
@@ -90,8 +90,8 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
             await updateSystemAmount(client, item.pool_type, income, item.pool_amount, UE_TOKEN_SYMBOL);
         }
 
-        // 判断是否参加过 tbg2
-        let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1;
+        // 判断是否参加过 tbg1
+        let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2;
         if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1) {
             accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2
         }

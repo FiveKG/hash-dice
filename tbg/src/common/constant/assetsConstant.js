@@ -56,6 +56,9 @@ const RED_DIAMOND = 0.175;
 // 皇冠
 const CROWN = 0.2;
 
+// 全球合伙人+皇冠
+const GLOBAL_PARTNER_CROWN = 0.3;
+
 // 未参与 TBG-I 每次最低可卖数量
 const INACTIVATED_TBG_1_ONE_MIN_TRX = 3;
 // 海蓝 每次最低可卖数量
@@ -68,6 +71,8 @@ const GOLD_ONE_MIN_TRX = 6;
 const RED_DIAMOND_ONE_MIN_TRX = 8;
 // 皇冠 每次最低可卖数量
 const CROWN_ONE_MIN_TRX = 10;
+// 全球合伙人+皇冠 每次最低可卖数量
+const GLOBAL_PARTNER_CROWN_ONE_MIN_TRX = 10;
 
 // 未参与 TBG-I 每次最高可卖数量
 const INACTIVATED_TBG_1_ONE_MAX_TRX = 10;
@@ -81,6 +86,8 @@ const GOLD_ONE_MAX_TRX = 150;
 const RED_DIAMOND_ONE_MAX_TRX = 175;
 // 皇冠 每次最高可卖数量
 const CROWN_ONE_MAX_TRX = 200;
+// 全球合伙人+皇冠 每次最高可卖数量
+const GLOBAL_PARTNER_CROWN_ONE_MAX_TRX = 400;
 
 // 未参与 TBG-I 单日最高可卖数量
 const INACTIVATED_TBG_1_DAY_MAX_TRX = 10;
@@ -94,6 +101,8 @@ const GOLD_DAY_MAX_TRX = 300;
 const RED_DIAMOND_DAY_MAX_TRX = 350;
 // 皇冠 单日最高可卖数量
 const CROWN_DAY_MAX_TRX = 400;
+// 全球合伙人+皇冠 每次最高可卖数量
+const GLOBAL_PARTNER_CROWN_DAY_MAX_TRX = 800;
 
 // 未参与 TBG-I 单日最多可卖次数
 const INACTIVATED_TBG_1_DAY_TRX_COUNT = 1;
@@ -107,6 +116,8 @@ const GOLD_DAY_TRX_COUNT = 2;
 const RED_DIAMOND_DAY_TRX_COUNT = 2;
 // 皇冠 单日最多可卖次数
 const CROWN_DAY_TRX_COUNT = 2;
+// 全球合伙人+皇冠 每次最高可卖数量
+const GLOBAL_PARTNER_CROWN_DAY_TRX_COUNT = 10;
 
 const MEMBER_LEVEL = {
     "INACTIVATED_TBG_1": {
@@ -133,6 +144,10 @@ const MEMBER_LEVEL = {
         "NAME": "皇冠会员",
         "ID": "CROWN"
     },
+    "GLOBAL_PARTNER_CROWN": {
+        "NAME": "全球合伙人+皇冠",
+        "ID": "GLOBAL_PARTNER_CROWN"
+    }
 }
 
 
@@ -178,6 +193,13 @@ const MEMBER_LEVEL_TRX = {
         "DAY_MAX_TRX": CROWN_DAY_MAX_TRX,
         "DAY_TRX_COUNT": CROWN_DAY_TRX_COUNT,
         "RELEASE_RATE": CROWN
+    },
+    [ MEMBER_LEVEL.GLOBAL_PARTNER_CROWN.ID ]: {
+        "ONE_MIN_TRX": GLOBAL_PARTNER_CROWN_ONE_MIN_TRX,
+        "ONE_MAX_TRX": GLOBAL_PARTNER_CROWN_ONE_MAX_TRX,
+        "DAY_MAX_TRX": GLOBAL_PARTNER_CROWN_DAY_MAX_TRX,
+        "DAY_TRX_COUNT": GLOBAL_PARTNER_CROWN_DAY_TRX_COUNT,
+        "RELEASE_RATE": GLOBAL_PARTNER_CROWN
     }
 }
 

@@ -109,10 +109,20 @@ async function handlerBet(data) {
             betNum = data.bet_num;
         }
 
+        let agentAccount = AGENT_ACCOUNT;
         if (data.pay_type === UE_TOKEN_SYMBOL) {
+            agentAccount = BANKER
             extra.agent_account = data.account_name;
         } else {
             extra.agent_account = AGENT_ACCOUNT;
+            // 分配投注额度
+            const toPrizePoolData = {
+                from: AGENT_ACCOUNT,
+                to: BANKER,
+                quantity: `${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+                memo: `user ${ data.account_name } bet ${ betAmount.toFixed(4) } ${ UE_TOKEN_SYMBOL }, prize add ${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+            }
+            actList.push(setAction(UE_TOKEN, "transfer", AGENT_ACCOUNT, toPrizePoolData));
         }
 
 
@@ -125,34 +135,25 @@ async function handlerBet(data) {
             bet_time: df.format(new Date(), "YYYY-MM-DDTHH:mm:ss")
         }
         actList.push(setAction(GLOBAL_LOTTO_CONTRACT, "bet", GLOBAL_LOTTO_CONTRACT, betData));
-        
-        // 分配投注额度
-        const toPrizePoolData = {
-            from: AGENT_ACCOUNT,
-            to: BANKER,
-            quantity: `${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
-            memo: `user ${ data.account_name } bet ${ betAmount.toFixed(4) } ${ UE_TOKEN_SYMBOL }, prize add ${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
-        }
-        actList.push(setAction(UE_TOKEN, "transfer", AGENT_ACCOUNT, toPrizePoolData));
 
         // 分配给底池
         const toBottomPoolData = {
-            from: AGENT_ACCOUNT,
+            from: agentAccount,
             to: GLOBAL_LOTTO_BOTTOM_ACCOUNT,
             quantity: `${ toBottomPool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
             memo: `user ${ data.account_name } bet ${ toBottomPool.toFixed(4) } ${ UE_TOKEN_SYMBOL }, bottom prize add ${ toBottomPool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
         }
-        actList.push(setAction(UE_TOKEN, "transfer", AGENT_ACCOUNT, toBottomPoolData));
+        actList.push(setAction(UE_TOKEN, "transfer", agentAccount, toBottomPoolData));
 
 
         // 分配给储备池
         const toReservePoolData = {
-            from: AGENT_ACCOUNT,
+            from: agentAccount,
             to: GLOBAL_LOTTO_RESERVE_ACCOUNT,
             quantity: `${ toReservePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
             memo: `user ${ data.account_name } bet ${ toReservePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }, reserve prize add ${ toReservePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
         }
-        actList.push(setAction(UE_TOKEN, "transfer", AGENT_ACCOUNT, toReservePoolData));
+        actList.push(setAction(UE_TOKEN, "transfer", agentAccount, toReservePoolData));
 
         // 分配投注额度
         const toDistributionCenterData = {

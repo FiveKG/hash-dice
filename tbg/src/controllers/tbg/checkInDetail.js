@@ -21,15 +21,22 @@ async function checkInDetail(req, res, next) {
         const accountName = reqData.account_name;
         // 获取签到信息
         const balanceLogInfo = await getBalanceLogInfo({ accountName: accountName, opType: OPT_CONSTANTS.CHECK_IN });
+        logger.debug("balanceLogInfo: ", balanceLogInfo);
         // 如果有的话，直接看第一条的内容，change_amount 就是最新签到所得，create_time 为最新签到日期
         let changeAmount = balanceLogInfo[0].change_amount;
+        if (df.isToday(balanceLogInfo[0].create_time) || df.isYesterday(balanceLogInfo[0].create_time)) {
+            // changeAmount
+        } else {
+            changeAmount = 0;
+        }
+
         let resData = get_status(1);
         resData["data"] = {
             "detail": [ CHECK_IN_AIRDROP_1, CHECK_IN_AIRDROP_2, 
                 CHECK_IN_AIRDROP_3, CHECK_IN_AIRDROP_4,
                 CHECK_IN_AIRDROP_5, CHECK_IN_AIRDROP_6, CHECK_IN_AIRDROP_7 ].map(it => {
                     return {
-                        "is_check": new Decimal(changeAmount).lessThan(it) ? true : false,
+                        "is_check": new Decimal(changeAmount).lessThan(it) ? false : true,
                         "income": it
                     }
                 })
