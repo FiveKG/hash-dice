@@ -36,8 +36,8 @@ const DESTROY = 'destroy';
 // 绑定
 const BIND = 'bind';
 
-// 参与 TBG-I
-const TBG_1 = 'tbg_1';
+// 参与 TBG-II
+const TBG_2 = 'tbg_2';
 
 // 挖矿
 const MINING = 'mining';
@@ -113,9 +113,9 @@ const OPT_TYPE = {
         "NAME": "绑定",
         "ID": BIND
     },
-    "TBG_1": {
-        "NAME": "参与 TBG-I",
-        "ID": TBG_1
+    "TBG_2": {
+        "NAME": "参与 TBG-II",
+        "ID": TBG_2
     },
     "MINING": {
         "NAME": "挖矿",
@@ -183,7 +183,7 @@ const CONSTANT = {
     "FIRST_BUY_REFERRER": FIRST_BUY_REFERRER,
     "DESTROY": DESTROY,
     "BIND": BIND,
-    "TBG_1": TBG_1,
+    "TBG_2": TBG_2,
     "MINING": MINING,
     "GAME": GAME,
     "GAME_INVITE": GAME_INVITE,
@@ -215,7 +215,7 @@ module.exports = CONSTANT
  * @property { string } FIRST_BUY_REFERRER 首次购买推荐收益
  * @property { string } DESTROY 卖出销毁
  * @property { string } BIND 绑定
- * @property { string } TBG_1 参与 TBG-I
+ * @property { string } TBG_2 参与 TBG-II
  * @property { string } MINING 挖矿
  * @property { string } GAME 游戏
  * @property { string } GAME_INVITE 游戏邀请

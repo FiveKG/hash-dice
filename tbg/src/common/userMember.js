@@ -20,7 +20,7 @@ function userMember(count) {
         level = MEMBER_LEVEL.AMETHYST
     } else if (count < 31) {
         level = MEMBER_LEVEL.GOLD
-    } else if (count < 52) {
+    } else if (count < 51) {
         level = MEMBER_LEVEL.RED_DIAMOND
     } else {
         level = MEMBER_LEVEL.CROWN

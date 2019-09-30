@@ -2,7 +2,11 @@
 const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "处理用户投注" });
 const { Decimal } = require("decimal.js");
 const { pool, psTrx, psModifyBalance, psGame, psSnatchOpen } = require("../db");
-const { SNATCH_TREASURE_CONTRACT, AGENT_ACCOUNT, UE_TOKEN_SYMBOL, DISTRIBUTION_CENTER_ACCOUNT, PRIVATE_KEY_TEST, UE_TOKEN, BANKER, TBG_WALLET_RECEIVER } = require("../common/constant/eosConstants");
+const { 
+    SNATCH_TREASURE_CONTRACT, AGENT_ACCOUNT, UE_TOKEN_SYMBOL, 
+    DISTRIBUTION_CENTER_ACCOUNT, PRIVATE_KEY_TEST, UE_TOKEN, BANKER, 
+    TBG_WALLET_RECEIVER 
+} = require("../common/constant/eosConstants");
 const ALLOC_CONSTANTS = require("../common/constant/allocateRate");
 const { GAME_STATE } = require("../common/constant/gameConstants.js");
 const { redis, generate_primary_key } = require("../common");
@@ -55,14 +59,6 @@ async function handlerBet(data) {
         // 6.5% 转入 TBG 钱包帐号
         const toTgbWallet = currBetAmount.mul(ALLOC_CONSTANTS.TBG_WALLET_RECEIVER).div(ALLOC_CONSTANTS.BASE_RATE);
 
-        // 代投用户
-        let extra = { agent_account: "", transaction_id: "", pay_type: data.pay_type }
-        if (data.pay_type === UE_TOKEN_SYMBOL) {
-            extra.agent_account = data.account_name;
-        } else {
-            extra.agent_account = AGENT_ACCOUNT;
-        }
-        
         // 记录投到了第几期
         const SNATCH_BET_PERIODS = `tbg:snatch_treasure:g_id:${ oneGameInfo.g_id }`;
         let periods = await redis.get(SNATCH_BET_PERIODS);
@@ -160,32 +156,41 @@ async function handlerBet(data) {
             }
         });
 
-        // 分配投注额度
-        actList.push({
-            account: UE_TOKEN,
-            name: "transfer",
-            authorization: [{
-                actor: AGENT_ACCOUNT,
-                permission: 'active',
-            }],
-            data: {
-                from: AGENT_ACCOUNT,
-                to: BANKER,
-                quantity: `${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
-                memo: `user ${ data.account_name } bet ${ new Decimal(oneGameInfo.quantity).toFixed(4)} ${ UE_TOKEN_SYMBOL }, prize add ${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
-            }
-        });
+        // 代投用户
+        let extra = { agent_account: "", transaction_id: "", pay_type: data.pay_type }
+        let agentAccount = AGENT_ACCOUNT;
+        if (data.pay_type === UE_TOKEN_SYMBOL) {
+            extra.agent_account = data.account_name;
+            agentAccount = BANKER;
+        } else {
+            extra.agent_account = AGENT_ACCOUNT;
+            // 分配投注额度
+            actList.push({
+                account: UE_TOKEN,
+                name: "transfer",
+                authorization: [{
+                    actor: agentAccount,
+                    permission: 'active',
+                }],
+                data: {
+                    from: agentAccount,
+                    to: BANKER,
+                    quantity: `${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
+                    memo: `user ${ data.account_name } bet ${ new Decimal(oneGameInfo.quantity).toFixed(4)} ${ UE_TOKEN_SYMBOL }, prize add ${ toPrizePool.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
+                }
+            });
+        }
 
         // 分配投注额度
         actList.push({
             account: UE_TOKEN,
             name: "transfer",
             authorization: [{
-                actor: AGENT_ACCOUNT,
+                actor: agentAccount,
                 permission: 'active',
             }],
             data: {
-                from: AGENT_ACCOUNT,
+                from: agentAccount,
                 to: DISTRIBUTION_CENTER_ACCOUNT,
                 quantity: `${ toDistributionCenter.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
                 memo: `user ${ data.account_name } bet ${ new Decimal(oneGameInfo.quantity).toFixed(4)} ${ UE_TOKEN_SYMBOL }, distribution center add ${ toDistributionCenter.toFixed(4) } ${ UE_TOKEN_SYMBOL }`
@@ -202,11 +207,11 @@ async function handlerBet(data) {
             account: UE_TOKEN,
             name: "transfer",
             authorization: [{
-                actor: AGENT_ACCOUNT,
+                actor: agentAccount,
                 permission: 'active',
             }],
             data: {
-                from: AGENT_ACCOUNT,
+                from: agentAccount,
                 to: TBG_WALLET_RECEIVER,
                 quantity: `${ toTgbWallet.toFixed(4) } ${ UE_TOKEN_SYMBOL }`,
                 memo: JSON.stringify(memo),

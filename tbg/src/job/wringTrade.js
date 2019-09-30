@@ -9,7 +9,6 @@ const { generate_primary_key } = require("../common/index.js");
 const df = require("date-fns");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
-const buyAirdrop = require("./buyAirdrop.js");
 const buyAlloc = require("./buyAlloc");
 
 logger.debug(`wringTrade running...`);
