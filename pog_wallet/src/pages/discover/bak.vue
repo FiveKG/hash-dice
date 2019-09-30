@@ -234,14 +234,29 @@ export default {
         ClientSocket.link().then(conn => {
           if (conn) {
             ClientSocket.setAccount(this.wallet.account).then(res => {
-              this.$router.push({
-                name: 'Iframe',
-                query: {
-                  url: this.curDApp.site_url,
-                  name: this.curDApp.name,
-                  type: this.curDApp.type
+              // 获取token----------------start
+              api.getGameToken({key: this.$store.state.wallet.localFile.wallets[0].privateKey}).then(res => {
+                if(res.code == 1){
+                  this.$router.push({
+                    name: 'Iframe',
+                    query: {
+                      url: this.curDApp.site_url+'/#/'+'?account='+this.$store.state.wallet.localFile.wallets[0].accountNames[0]+'&token='+res.data+'&privateKey='+this.$store.state.wallet.localFile.wallets[0].privateKey,
+                      name: this.curDApp.name,
+                      type: this.curDApp.type
+                    }
+                  })
                 }
+                console.log("进入游戏时获取token:",res);
               })
+              // 获取token----------------end
+              // this.$router.push({
+              //   name: 'Iframe',
+              //   query: {
+              //     url: this.curDApp.site_url,
+              //     name: this.curDApp.name,
+              //     type: this.curDApp.type
+              //   }
+              // })
             }).catch(err => {
               console.log('setAccount',err)
             })
@@ -337,6 +352,8 @@ export default {
       this.curDApp.site_url = item.site_url;
       this.curDApp.name = item.name;
       this.curDApp.type = item.type;
+
+      console.log("this.curDApp:",this.curDApp);
       
       this.showDialog = true;
       // 前往交易所
