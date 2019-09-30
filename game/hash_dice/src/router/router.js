@@ -18,6 +18,10 @@ router.get('/hash_dice/bet_list',hash_dice.getAllBetList);
 router.get('/hash_dice/bet_list_mine',hash_dice.getUserBetList);
 //获取用户某个投注详情
 router.get('/hash_dice/bet_list_mine_detail',hash_dice.getUserBetDetail)
+
+// 检查token
+router.use(require("../controllers/account/check_token"));
+
 //下注
 router.post('/hash_dice/bet',hash_dice.betting);
 module.exports = router
