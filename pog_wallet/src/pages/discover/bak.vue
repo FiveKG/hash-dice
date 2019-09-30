@@ -33,11 +33,12 @@
           </div>
         </div>
       </div>
-      <swiper class="type_list" v-model="index" :show-dots="false" height="260px">
+      <swiper class="type_list" v-model="index" :show-dots="false" height="9rem">
         <swiper-item class="type_box" v-for="(item, index) in dappList" :key="index">
           <v-ons-row style="margin: 0 0 1.8rem 0;" v-if="item.list.length">
-            <v-ons-row>
-              <div class="type_item" v-for="dapp in item.list" v-if="dapp.odd_even === 'odd'" @click="clickDapp(dapp)">
+            <v-ons-row style="display: block;"> 
+              <div class="type_item" v-for="dapp in item.list" @click="clickDapp(dapp)">
+              <!-- <div class="type_item" v-for="dapp in item.list" v-if="dapp.odd_even === 'odd'" @click="clickDapp(dapp)"> -->
                 <img :src="dapp.img">
                 <div class="type_detail">
                   <div class="type_name">{{dapp.name}}</div>
@@ -46,7 +47,7 @@
                 <img src="@/assets/img/invitation_profitarrow.png" alt="">
               </div>
             </v-ons-row>
-            <v-ons-row>
+            <!-- <v-ons-row>
               <div class="type_item" v-for="dapp in item.list" v-if="dapp.odd_even === 'even'" @click="clickDapp(dapp)">
                 <img :src="dapp.img">
                 <div class="type_detail">
@@ -55,8 +56,8 @@
                 </div>
                 <img src="@/assets/img/invitation_profitarrow.png" alt="">
               </div>
-            </v-ons-row>
-             <v-ons-row>
+            </v-ons-row> -->
+             <!-- <v-ons-row>
               <div class="type_item"  @click="gogame()">
                 <img src="@/assets/invitation2/u1.png">
                 <div class="type_detail">
@@ -95,7 +96,7 @@
                 </div>
                 <img src="@/assets/img/invitation_profitarrow.png" alt="">
               </div>
-             </v-ons-row>
+             </v-ons-row> -->
 
           </v-ons-row>
           <v-ons-row class="dapp_more" v-if="item.list.length > 5" @click="clickMore(index)">查看更多 <img src="@/assets/img/discover_arrow.png"> </v-ons-row>
@@ -167,7 +168,8 @@ export default {
       showDialog: false,
       curDApp: {
         site_url: "",
-        name: ""
+        name: "",
+        type: ""
       },
       bannerSwiperImgStyle:{
         'max-width': '100%',
@@ -235,7 +237,8 @@ export default {
                 name: 'Iframe',
                 query: {
                   url: this.curDApp.site_url,
-                  name: this.curDApp.name
+                  name: this.curDApp.name,
+                  type: this.curDApp.type
                 }
               })
             }).catch(err => {
@@ -250,7 +253,8 @@ export default {
           name: 'Iframe',
           query: {
             url: this.curDApp.site_url,
-            name: this.curDApp.name
+            name: this.curDApp.name,
+            type: this.curDApp.type
           }
         })
       }
@@ -265,7 +269,8 @@ export default {
                   name: 'Iframe',
                   query: {
                     url: item.target_url,
-                    name: item.name
+                    name: item.name,
+                    type: item.type
                   }
                 })
               }).catch(err => {
@@ -280,7 +285,8 @@ export default {
             name: 'Iframe',
             query: {
               url: item.target_url,
-              name: item.name
+              name: item.name,
+              type: item.type
             }
           })
         }
@@ -317,6 +323,7 @@ export default {
     clickDapp(item) {
       this.curDApp.site_url = item.site_url;
       this.curDApp.name = item.name;
+      this.curDApp.type = item.type;
 
       this.showDialog = true;
     },
@@ -328,6 +335,7 @@ export default {
     clickHot(item) {
       this.curDApp.site_url = item.site_url;
       this.curDApp.name = item.name;
+      this.curDApp.type = item.type;
       
       this.showDialog = true;
       // 前往交易所

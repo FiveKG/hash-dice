@@ -27,11 +27,11 @@
         <span>{{$t('me.settings')}}</span>
         <img class="next" src="@/assets/img/mine_next.png" alt="">
       </div>
-      <div class="item" @click="clickItem('invitation')">
+      <!-- <div class="item" @click="clickItem('invitation')">
         <img class="icon" src="@/assets/img/mine_setting.png">
         <span>推荐给好友</span>
         <img class="next" src="@/assets/img/mine_next.png" alt="">
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
