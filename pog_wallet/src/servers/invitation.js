@@ -386,6 +386,13 @@ const getSystemNtf= (reqData) => {
     return getData(url, data);
 }
 
+// 进入游戏时获取token
+const getGameToken = (reqData) => {
+    const url = '/account/get_token';
+    const data = reqData;
+    return getData(url, data);
+}
+
 
 export default{
     getConfig,
@@ -446,5 +453,8 @@ export default{
     getTradePrice,
     getDestory,
     getBalanceAlloc,
-    getSystemNtf
+    getSystemNtf,
+
+
+    getGameToken,//进入游戏时获取token
 }

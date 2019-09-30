@@ -146,6 +146,7 @@ import swiper from '@/components/tab/swiper.vue'
 import swiperItem from '@/components/tab/swiper-item'
 import ClientSocket from '@/socket/ClientSocket'
 import { getPopular, getDappList } from '@/servers';
+import api from '@/servers/invitation';
 
 export default {
   components: {
@@ -408,7 +409,19 @@ export default {
       })
     },
     gogame(){
-      this.$router.push('GlovalLotto')
+      api.getGameToken({key: this.$store.state.wallet.localFile.wallets[0].privateKey}).then(res => {
+        if(res.code == 1){
+          // this.$router.push('GlovalLotto');
+          this.$router.push({
+            name: 'Iframe',
+            query: {
+              url: 'http://localhost:8080/#/'+'?account='+this.$store.state.wallet.localFile.wallets[0].accountNames[0]+'&token='+res.data+'&privateKey='+this.$store.state.wallet.localFile.wallets[0].privateKey,
+              name: '全球彩'
+            }
+          })
+        }
+        console.log("进入游戏时获取token:",res);
+      })
     },
     goLottery(){
       this.$router.push('LotteryGo')
