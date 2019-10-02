@@ -11,7 +11,7 @@ const { updateSystemAmount, getSystemAccountInfo } = require("../../models/syste
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 const { insertAccountOp } = require("../../models/accountOp");
 const addSubAccount = require("./addSubAccount.js");
-const { getAllParentLevel, updateAccountState, getAccountInfo, getGlobalAccount } = require("../../models/account")
+const { updateAccountState, getAccountInfo, getGlobalAccount } = require("../../models/account")
 const globalPartnerIncome = require("./globalPartnerIncome");
 const investAirdrop = require("./investAirdrop.js");
 const investReward = require("./investReward.js");
@@ -24,24 +24,18 @@ const { updateRepeatBalance, insertBalanceLog, getUserBalance } = require("../..
  * @param { String } accountName 用户的帐号
  * @param { String } newSubAccount 子账号
  * @param { String } userInvestmentRemark remark
+ * @param { string[] } referrerAccountList
+ * @param { DB.Account } accountInfo
  */
-async function allocateInvestAsset(amount, accountName, newSubAccount, userInvestmentRemark) {
+async function allocateInvestAsset(amount, accountName, newSubAccount, userInvestmentRemark, referrerAccountList, accountInfo) {
     let investAmount = new Decimal(amount);
     let client = await pool.connect();
     await client.query("BEGIN");
     try {
-        // 先检查是否存在推荐关系
-        let referrerAccountList = await getAllParentLevel(accountName);
-        logger.debug("referrerAccountList: ", referrerAccountList);
-        if (referrerAccountList.length === 0) {
-            logger.warn("没有推荐关系，请先设置推荐关系，检查数据是否正确");
-            throw Error("没有推荐关系，请先设置推荐关系，检查数据是否正确");
-        }
-
         let psBindData = {};
         let psTbg1Data = {};
         let psTshIncomeData = {};
-        const accountInfo = await getAccountInfo(accountName);
+        // const accountInfo = await getAccountInfo(accountName);
         // 只要用户投资 TBG-II（转账 2000.0000 UE）, 全球合伙人和全球合伙人的推荐人就可获得奖励
         // 奖励按有效会员数来分配
         // 全球合伙人: | 0-19 0.1% | 20-39 0.2% | 40-59 0.4% | 60-79 0.6% | 80-99 0.8% | > 99 1%
@@ -50,7 +44,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         const globalAccount = globalAccountInfo.account_name;
         let accountOpType = OPT_CONSTANTS.INVITE;
         // 用户复投
-        if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1 || accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2) {
+        if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2 || accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2) {
             accountOpType = OPT_CONSTANTS.REPEAT;
             const accountBalance = await getUserBalance(accountName);
             const repeatAmount = BALANCE_CONSTANT.BASE_RATE;
@@ -72,7 +66,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         }
 
         // 分配用户投资时全球合伙人和全球合伙人的推荐人收益
-        // await globalPartnerIncome(accountInfo, globalAccount, userInvestmentRemark, accountOpType);
+        await globalPartnerIncome(clinet, accountInfo, globalAccount, userInvestmentRemark, accountOpType);
 
         // 获取系统账户
         let systemAccount = await getSystemAccountInfo();

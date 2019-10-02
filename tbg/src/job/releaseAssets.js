@@ -5,7 +5,7 @@ const { Decimal } = require("decimal.js");
 const { userMember } = require("../common/userMember.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const TBG_ALLOCATE = require("../common/constant/tbgAllocateRate");
-const { ACCOUNT_INACTIVATED, ACCOUNT_ACTIVATED_TBG_2, TSH_INCOME, ACCOUNT_TYPE } = require("../common/constant/accountConstant");
+const { ACCOUNT_INACTIVATED, ACCOUNT_ACTIVATED_TBG_1, TSH_INCOME, ACCOUNT_TYPE } = require("../common/constant/accountConstant");
 const { pool, psTrx } = require("../db");
 const { scheduleJob } = require("node-schedule");
 const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
@@ -23,7 +23,7 @@ async function releaseAssets() {
             SELECT (SELECT count(1) as count FROM referrer r
                         JOIN account a ON r.account_name = a.account_name
                         AND a.state != ${ ACCOUNT_INACTIVATED }
-                        AND a.state != ${ ACCOUNT_ACTIVATED_TBG_2 }
+                        AND a.state != ${ ACCOUNT_ACTIVATED_TBG_1 }
                     ) AS count, account_name, account_type
                 FROM account
         `
