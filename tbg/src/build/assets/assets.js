@@ -31,14 +31,14 @@ async function insertAssetsPackage() {
                 "release_multiple": ASSETS_CONSTANTS.RELEASE_POOL_MULTIPLE_200, 
                 "amount_type": "common" 
             },
-            { 
-                "amount": ASSETS_CONSTANTS.RAISE_ASSETS_10K, 
-                "saleable_multiple": 0, 
-                "mining_multiple": ASSETS_CONSTANTS.RAISE_ASSETS_MULTIPLE_10K, 
-                "preset_days": ASSETS_CONSTANTS.PRESET_DAYS,
-                "release_multiple": ASSETS_CONSTANTS.RELEASE_POOL_MULTIPLE_10K, 
-                "amount_type": "raise" 
-            }, 
+            // { 
+            //     "amount": ASSETS_CONSTANTS.RAISE_ASSETS_10K, 
+            //     "saleable_multiple": 0, 
+            //     "mining_multiple": ASSETS_CONSTANTS.RAISE_ASSETS_MULTIPLE_10K, 
+            //     "preset_days": ASSETS_CONSTANTS.PRESET_DAYS,
+            //     "release_multiple": ASSETS_CONSTANTS.RELEASE_POOL_MULTIPLE_10K, 
+            //     "amount_type": "raise" 
+            // }, 
             { 
                 "amount": ASSETS_CONSTANTS.RAISE_ASSETS_20K, 
                 "saleable_multiple": 0, 
@@ -47,14 +47,46 @@ async function insertAssetsPackage() {
                 "release_multiple": ASSETS_CONSTANTS.RELEASE_POOL_MULTIPLE_20K, 
                 "amount_type": "raise" 
             }, 
+            // { 
+            //     "amount": ASSETS_CONSTANTS.RAISE_ASSETS_30K, 
+            //     "saleable_multiple": 0, 
+            //     "mining_multiple": ASSETS_CONSTANTS.RAISE_ASSETS_MULTIPLE_30K, 
+            //     "preset_days": ASSETS_CONSTANTS.PRESET_DAYS,
+            //     "release_multiple": ASSETS_CONSTANTS.RELEASE_POOL_MULTIPLE_30K, 
+            //     "amount_type": "raise" 
+            // }, 
             { 
-                "amount": ASSETS_CONSTANTS.RAISE_ASSETS_30K, 
-                "saleable_multiple": 0, 
-                "mining_multiple": ASSETS_CONSTANTS.RAISE_ASSETS_MULTIPLE_30K, 
+                "amount": ASSETS_CONSTANTS.GLOBAL_PARTNER_ASSETS_PACKAGE_50, 
+                "saleable_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_SALEABLE_50, 
+                "mining_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_MULTIPLE_50, 
                 "preset_days": ASSETS_CONSTANTS.PRESET_DAYS,
-                "release_multiple": ASSETS_CONSTANTS.RELEASE_POOL_MULTIPLE_30K, 
-                "amount_type": "raise" 
-            }
+                "release_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_RELEASE_POOL_50, 
+                "amount_type": "global"
+            },
+            { 
+                "amount": ASSETS_CONSTANTS.GLOBAL_PARTNER_ASSETS_PACKAGE_100, 
+                "saleable_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_SALEABLE_100, 
+                "mining_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_MULTIPLE_100, 
+                "preset_days": ASSETS_CONSTANTS.PRESET_DAYS,
+                "release_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_RELEASE_POOL_100, 
+                "amount_type": "global"
+            },
+            { 
+                "amount": ASSETS_CONSTANTS.GLOBAL_PARTNER_ASSETS_PACKAGE_200, 
+                "saleable_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_SALEABLE_200, 
+                "mining_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_MULTIPLE_200, 
+                "preset_days": ASSETS_CONSTANTS.PRESET_DAYS,
+                "release_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_RELEASE_POOL_200, 
+                "amount_type": "global"
+            },
+            { 
+                "amount": ASSETS_CONSTANTS.GLOBAL_PARTNER_ASSETS_PACKAGE_500, 
+                "saleable_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_SALEABLE_500, 
+                "mining_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_MULTIPLE_500, 
+                "preset_days": ASSETS_CONSTANTS.PRESET_DAYS,
+                "release_multiple": ASSETS_CONSTANTS.GLOBAL_PARTNER_RELEASE_POOL_500, 
+                "amount_type": "global"
+            },
         ]
         const valuesStrArr = values.map(it => {
             return `(${ it.amount }, ${ it.saleable_multiple }, ${ it.mining_multiple }, ${ it.preset_days }, ${ it.release_multiple }, '${ it.amount_type }')`

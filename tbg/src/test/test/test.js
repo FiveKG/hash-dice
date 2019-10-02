@@ -30,6 +30,15 @@ function getInfo(a, b, c, d, e) {
     //     getInfo(...arr);
     // }
 
+    const selectGameAmount = `
+            SELECT sum(change_amount) 
+                FROM balance_log 
+                WHERE extract(month FROM create_time) = 9
+                AND account_name = $1
+                AND op_type = $2
+        `;
+    const { rows: [ { sum } ] } = await pool.query(selectGameAmount, [ 'yujinsheng11', 'buy' ]);
+    console.debug("sum: ", sum);
     const sql = `
         SELECT * FROM balance_log WHERE op_type = $1 AND create_time BETWEEN CAST($2 AS DATE) - 1 AND $2
     `
@@ -42,8 +51,8 @@ function getInfo(a, b, c, d, e) {
     const reg = /[\d]+/
     const res = reg.test(str);
 
-    const balanceLog = await getBalanceLogByTerm({ opType: "sort", "symbol": "UE"});
-    console.debug(balanceLog)
+    // const balanceLog = await getBalanceLogByTerm({ opType: "sort", "symbol": "UE"});
+    // console.debug(balanceLog)
 
     // let safeAccountList = await getSafeAccountList();
     // for (const info of safeAccountList) {

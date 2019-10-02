@@ -7,7 +7,9 @@ const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
-const { allocateSurplusAssets } = require("../systemPool")
+const { allocateSurplusAssets } = require("../systemPool");
+const { pool } = require("../../db");
+const { getAccountMemberLevel } = require("../../models/account");
 
 /**
  * 直接推荐奖励
@@ -24,6 +26,8 @@ async function investReward(client, amount, accountName, referrerAccountList, sy
     let referIncome = investAmount.mul(INVEST_CONSTANT.REFER_INCOME_RATE / INVEST_CONSTANT.BASE_RATE);
     try {
         // 分配直接推荐奖金
+        // 每推荐1名有效会员则享有一层直接推荐奖励，以此类推，九层封顶
+        // 全球合伙人推荐全球合伙人，推荐者均可获得被推荐的全球合伙人伞下直接推荐奖励，是接续非断开的
         let count = 1;
         let distributed = new Decimal(0);
         for (const referrer of referrerAccountList) {
@@ -32,20 +36,25 @@ async function investReward(client, amount, accountName, referrerAccountList, sy
             }
             const rate = setRate(count);
             const income = referIncome.mul(rate);
-            distributed.add(income);
-            // 增加推荐人的 amount
-            let referIncomeRemark = `${ userInvestmentRemark }, referrer ${ referrer } add ${ income } UE currency`
-            let now = new Date();
-            let data = {
-                "account_name": referrer,
-                "change_amount": income,
-                "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
-                "op_type": OPT_CONSTANTS.INVITE,
-                "extra": { "symbol": UE_TOKEN_SYMBOL },
-                "remark": referIncomeRemark
+            const { count: inviteCount } = await getAccountMemberLevel(referrer);
+            // 如果用户推荐的有效人数大于等于可分配的层级，用户即可获得层级奖励
+            if (inviteCount >= count) {
+                distributed.add(income);
+                // 增加推荐人的 amount
+                let referIncomeRemark = `${ userInvestmentRemark }, referrer ${ referrer } add ${ income } UE currency`
+                let now = new Date();
+                let data = {
+                    "account_name": referrer,
+                    "change_amount": income,
+                    "create_time": df.format(now, "YYYY-MM-DD HH:mm:ssZ"),
+                    "op_type": OPT_CONSTANTS.INVITE,
+                    "extra": { "symbol": UE_TOKEN_SYMBOL },
+                    "remark": referIncomeRemark
+                }
+                // 存入 redis，待用户点击的时候再收取
+                await storeIncome(referrer, OPT_CONSTANTS.INVITE, data);
             }
-            // 存入 redis，待用户点击的时候再收取
-            await storeIncome(referrer, OPT_CONSTANTS.INVITE, data);
+            
             // 只分配九层
             if (count >= 9) {
                 return;

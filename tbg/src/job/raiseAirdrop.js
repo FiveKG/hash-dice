@@ -23,9 +23,7 @@ const { format } = require("date-fns");
  */
 async function raiseAirdrop(data) {
     try {
-        const updateTradeSql = `
-            UPDATE trade SET state = $1, finished_time = $2, trx_amount = $3 WHERE id = $4
-        `
+        const updateTradeSql = `UPDATE trade SET state = $1, finished_time = $2, trx_amount = $3 WHERE id = $4`
         // 获取用户私募的资产信息
         const { accountName, price } = data;
         const tradeInfo = await getTradeInfoHistory({ "tradeType": OPT_CONSTANTS.RAISE, "accountName": accountName, orderBy: "ASC", state: "create" });
@@ -33,6 +31,15 @@ async function raiseAirdrop(data) {
         if (tradeInfo.length === 0) {
             return;
         }
+        // 查找全球合伙人私募人数
+        const selectRaiseSql = `SELECT count(1)::INTEGER FROM balance_log WHERE op_type = $1`;
+        const { rows: [ { count } ] } = await pool.query(selectRaiseSql, [ OPT_CONSTANTS.RAISE ]);
+        if (count > 500) {
+            logger.debug("raise airdrop quota has been used up");
+            return;
+        }
+
+        const raisePrice = new Decimal(price).mul(setRate(count));
         const trId = tradeInfo[0].id;
         const assetsInfo = await getAssetsInfoById([tradeInfo[0].extra.ap_id]);
         const amount = new Decimal(assetsInfo[0].amount);
@@ -44,7 +51,7 @@ async function raiseAirdrop(data) {
         // 查找推荐人
         let userReferrer = await getUserReferrer(accountName);
         let reCurrentBalance;
-        const referrerIncome = quantity.mul(TBG_ALLOCATE.RAISE_REFERRER_AIRDROP).div(TBG_ALLOCATE.BASE_RATE);
+        const referrerIncome = amount.mul(TBG_ALLOCATE.RAISE_REFERRER_AIRDROP).div(TBG_ALLOCATE.BASE_RATE);
         let tmpActions = []
         // 系统第一个账户没有推荐人，多出的部分转到股东池账户
         if (!userReferrer) {
@@ -150,16 +157,8 @@ async function raiseAirdrop(data) {
             await updateTbgBalance(client, accountName, quantity.add(destroyAmount).toNumber(), 0, 0);
             // 在日志里面记录资产包信息，即交易 id，挖矿时使用
             // 挖矿的部分可以从 extra 中计算出
-            const extra = { 
-                "symbol": TBG_TOKEN_SYMBOL,
-                "op_type": OPT_CONSTANTS.RELEASE,
-                "tr_id": trId,
-                 ...assetsInfo[0]
-            }
+            const extra = { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE, "tr_id": trId, ...assetsInfo[0] }
             await insertBalanceLog(client, accountName, quantity.add(destroyAmount).toNumber(), acCurrent, OPT_CONSTANTS.RAISE, extra, memo, 'now()');
-
-            // 私募成交后生成一个挖矿资产记录
-            // await insertBalanceLog(client, accountName, miningAmount.toNumber(), acCurrent, OPT_CONSTANTS.MINING, extra, `${ memo }, get a mining of assets package`, 'now()');
 
             // 按私募数量的 5 倍释放，直接转入私募的账户, 同时销毁一部份
             await updateTbgBalance(client, accountName, destroyAmount.toNumber(), 0, 0);
@@ -174,10 +173,8 @@ async function raiseAirdrop(data) {
             const finishTime = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
             const trLogId = generate_primary_key();
             const remark = `user ${ accountName } at ${ finishTime } done raise`;
-            // 更新交易状态
-            // await updateTrade(client, trId, "finished", finishTime);
             await client.query(updateTradeSql, [ "finished", finishTime, amount.toNumber(), trId ]);
-            await insertTradeLog(client, trLogId, trId, OPT_CONSTANTS.RAISE, amount.toNumber(), remark, price, amount.mul(price).toNumber(), finishTime);
+            await insertTradeLog(client, trLogId, trId, OPT_CONSTANTS.RAISE, amount.toNumber(), remark, raisePrice.toNumber(), amount.mul(raisePrice).toNumber(), finishTime);
             // 更新用户状态
             await updateAccountState(client, accountState,accountName);
             await client.query("COMMIT");
@@ -197,3 +194,21 @@ async function raiseAirdrop(data) {
 }
 
 module.exports = raiseAirdrop
+
+/**
+ * 设置分配比例
+ * @param { number } position 
+ */
+function setRate(position) {
+    if (position <= 100) {
+        return 50 / 100;
+    } else if (position <= 200) {
+        return 55 / 100;
+    } else if (position <= 300) {
+        return 60 / 100;
+    } else if (position <= 400) {
+        return 65 / 100;
+    } else {
+        return 70 / 100;
+    }
+}

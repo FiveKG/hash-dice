@@ -9,108 +9,116 @@
             "out_file"    : "../logs/tbgService-out.log"
         },
         {
-            "name"        : "listenTransfer",
+            "name"        : "tbgListenTransfer",
             "script"      : "./listenTransfer.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/listenTransfer-err.log",
-            "out_file"    : "../../../logs/listenTransfer-out.log"
+            "error_file"  : "../../../logs/tbgListenTransfer-err.log",
+            "out_file"    : "../../../logs/tbgListenTransfer-out.log"
         },
         {
-            "name"        : "mqHandler",
+            "name"        : "tbgMqHandler",
             "script"      : "./mqHandler.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/mqHandler-err.log",
-            "out_file"    : "../../../logs/mqHandler-out.log"
+            "error_file"  : "../../../logs/tbgMqHandler-err.log",
+            "out_file"    : "../../../logs/tbgMqHandler-out.log"
         },
         {
-            "name"        : "bonusBingo",
+            "name"        : "tbgBonusBingo",
             "script"      : "./bonusBingo.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/bonusBingo-err.log",
-            "out_file"    : "../../../logs/bonusBingo-out.log"
+            "error_file"  : "../../../logs/tbgBonusBingo-err.log",
+            "out_file"    : "../../../logs/tbgBonusBingo-out.log"
         },
         {
-            "name"        : "bonusPK",
+            "name"        : "tbgBonusPK",
             "script"      : "./bonusPK.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/bonusPK-err.log",
-            "out_file"    : "../../../logs/bonusPK-out.log"
+            "error_file"  : "../../../logs/tbgBonusPK-err.log",
+            "out_file"    : "../../../logs/tbgBonusPK-out.log"
         },
         {
-            "name"        : "bonusSafe",
+            "name"        : "tbgBonusSafe",
             "script"      : "./bonusSafe.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/bonusSafe-err.log",
-            "out_file"    : "../../../logs/bonusSafe-out.log"
+            "error_file"  : "../../../logs/tbgBonusSafe-err.log",
+            "out_file"    : "../../../logs/tbgBonusSafe-out.log"
         },
         {
-            "name"        : "bonusHolder",
+            "name"        : "tbgBonusHolder",
             "script"      : "./bonusHolder.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/bonusHolder-err.log",
-            "out_file"    : "../../../logs/bonusHolder-out.log"
+            "error_file"  : "../../../logs/tbgBonusHolder-err.log",
+            "out_file"    : "../../../logs/tbgBonusHolder-out.log"
         },
         {
-            "name"        : "listenTrade",
+            "name"        : "tbgListenTrade",
             "script"      : "./listenTrade.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/listenTrade-err.log",
-            "out_file"    : "../../../logs/listenTrade-out.log"
+            "error_file"  : "../../../logs/tbgListenTrade-err.log",
+            "out_file"    : "../../../logs/tbgListenTrade-out.log"
         },
         {
-            "name"        : "adjustPrice",
+            "name"        : "tbgAdjustPrice",
             "script"      : "./adjustPrice.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/adjustPrice-err.log",
-            "out_file"    : "../../../logs/adjustPrice-out.log"
+            "error_file"  : "../../../logs/tbgAdjustPrice-err.log",
+            "out_file"    : "../../../logs/tbgAdjustPrice-out.log"
         },
         {
-            "name"        : "releaseAssets",
+            "name"        : "tbgReleaseAssets",
             "script"      : "./releaseAssets.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/releaseAssets-err.log",
-            "out_file"    : "../../../logs/releaseAssets-out.log"
+            "error_file"  : "../../../logs/tbgReleaseAssets-err.log",
+            "out_file"    : "../../../logs/tbgReleaseAssets-out.log"
         },
         {
-            "name"        : "checkInAirdrop",
+            "name"        : "tbgCheckInAirdrop",
             "script"      : "./checkInAirdrop.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/checkInAirdrop-err.log",
-            "out_file"    : "../../../logs/checkInAirdrop-out.log"
+            "error_file"  : "../../../logs/tbgCheckInAirdrop-err.log",
+            "out_file"    : "../../../logs/tbgCheckInAirdrop-out.log"
         },
         {
-            "name"        : "mining",
+            "name"        : "tbgMining",
             "script"      : "./mining.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/mining-err.log",
-            "out_file"    : "../../../logs/mining-out.log"
+            "error_file"  : "../../../logs/tbgMining-err.log",
+            "out_file"    : "../../../logs/tbgMining-out.log"
         },
         {
-            "name"        : "wringTrade",
+            "name"        : "tbgWringTrade",
             "script"      : "./wringTrade.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/wringTrade-err.log",
-            "out_file"    : "../../../logs/wringTrade-out.log"
+            "error_file"  : "../../../logs/tbgWringTrade-err.log",
+            "out_file"    : "../../../logs/tbgWringTrade-out.log"
         },
         {
-            "name"        : "listenGameReceiver",
+            "name"        : "tbgListenGameReceiver",
             "script"      : "./listenGameReceiver.js",
             "watch"       : false,
             "cwd"         : "./src/job",
-            "error_file"  : "../../../logs/listenGameReceiver-err.log",
-            "out_file"    : "../../../logs/listenGameReceiver-out.log"
+            "error_file"  : "../../../logs/tbgListenGameReceiver-err.log",
+            "out_file"    : "../../../logs/tbgListenGameReceiver-out.log"
+        },
+        {
+            "name"        : "tbgNodeIncentive",
+            "script"      : "./nodeIncentive.js",
+            "watch"       : false,
+            "cwd"         : "./src/job",
+            "error_file"  : "../../../logs/tbgNodeIncentive-err.log",
+            "out_file"    : "../../../logs/tbgNodeIncentive-out.log"
         }
     ]
 }

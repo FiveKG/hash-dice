@@ -37,6 +37,7 @@ async function globalPartnerIncome(accountInfo, globalAccount, userInvestmentRem
             "extra": { "symbol": UE_TOKEN_SYMBOL },
             "remark": globalMemo
         }
+        
         // 存入 redis，待用户点击的时候再收取
         await storeIncome(globalAccount, accountOpType, globalData);
 

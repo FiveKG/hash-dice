@@ -35,6 +35,7 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
         await allocateInvestAsset(amount, accountName, newSubAccount, userInvestmentRemark);
         // 开始计算收益
         await calIncome(amount, newSubAccount);
+        
     } catch (err) {
         logger.error("user investment error, the error stock is %O", err);
         throw err;

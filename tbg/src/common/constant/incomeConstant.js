@@ -2,11 +2,16 @@
 
 // PK 奖金池可获取奖励的用户可得比例
 const BASE_RATE = 100;
-const PK_INCOME_FIRST = 40;
-const PK_INCOME_SECOND = 30;
+const PK_INCOME_FIRST = 30;
+const PK_INCOME_SECOND = 20;
 const PK_INCOME_THIRD = 15;
 const PK_INCOME_FOURTH = 10;
-const PK_INCOME_FIFTH = 5;
+const PK_INCOME_FIFTH = 8;
+const PK_INCOME_SIXTH = 6;
+const PK_INCOME_SEVENTH = 5;
+const PK_INCOME_EIGHTH = 3;
+const PK_INCOME_NINTH = 2;
+const PK_INCOME_TENTH = 1;
 
 // BINGO 奖金池可获取奖励的用户可得比例
 const BINGO_INCOME_FIRST = 50;
@@ -19,10 +24,10 @@ const COMMUNITY_INCOME = 60;
 // 一行公排获取奖励的用户可得比例
 const SORT_INCOME = 25;
 // 一行公排可获奖的出线额度
-const SORT_OUT_LINE = 20;
+const SORT_OUT_LINE = 250;
 
 // 三倍收益保障池可获奖的出线额度
-const SAFE_OUT_LINE = 3000;
+const SAFE_OUT_LINE = 6000;
 
 /**
  * 向上层级 分配比例 可分配
@@ -59,6 +64,14 @@ const BINGO_ALLOCATE_RATE = 70;
 // 股东分红奖金池每天分配占比
 const SHAREHOLDERS_ALLOCATE_RATE = 10;
 
+// 节点激励池的30%作为每周奖金发放总额
+const NODE_INCENTIVE_RATE = 30;
+const NODE_INCENTIVE_V1 = 10;
+const NODE_INCENTIVE_V2 = 15;
+const NODE_INCENTIVE_V3 = 20;
+const NODE_INCENTIVE_V4 = 25;
+const NODE_INCENTIVE_V5 = 30;
+
 /**
  * @type { Constant }
  */
@@ -69,6 +82,11 @@ const CONSTANT = {
     "PK_INCOME_THIRD": PK_INCOME_THIRD,
     "PK_INCOME_FOURTH": PK_INCOME_FOURTH,
     "PK_INCOME_FIFTH": PK_INCOME_FIFTH,
+    "PK_INCOME_SIXTH": PK_INCOME_SIXTH,
+    "PK_INCOME_SEVENTH": PK_INCOME_SEVENTH,
+    "PK_INCOME_EIGHTH": PK_INCOME_EIGHTH,
+    "PK_INCOME_NINTH": PK_INCOME_NINTH,
+    "PK_INCOME_TENTH": PK_INCOME_TENTH,
     "BINGO_INCOME_FIRST": BINGO_INCOME_FIRST,
     "BINGO_INCOME_OTHER": BINGO_INCOME_OTHER,
     "DEV_INCOME": DEV_INCOME,
@@ -88,7 +106,13 @@ const CONSTANT = {
     "REFER_SIXTH_LEVEL": REFER_SIXTH_LEVEL,
     "REFER_SEVENTH_LEVEL": REFER_SEVENTH_LEVEL,
     "REFER_EIGHTH_LEVEL": REFER_EIGHTH_LEVEL,
-    "REFER_NINTH_LEVEL": REFER_NINTH_LEVEL
+    "REFER_NINTH_LEVEL": REFER_NINTH_LEVEL,
+    "NODE_INCENTIVE_RATE": NODE_INCENTIVE_RATE,
+    "NODE_INCENTIVE_V1": NODE_INCENTIVE_V1,
+    "NODE_INCENTIVE_V2": NODE_INCENTIVE_V2,
+    "NODE_INCENTIVE_V3": NODE_INCENTIVE_V3,
+    "NODE_INCENTIVE_V4": NODE_INCENTIVE_V4,
+    "NODE_INCENTIVE_V5": NODE_INCENTIVE_V5,
 }
 
 module.exports = CONSTANT
@@ -102,6 +126,11 @@ module.exports = CONSTANT
  * @property { number } PK_INCOME_THIRD  PK 第三名
  * @property { number } PK_INCOME_FOURTH  PK 第四名
  * @property { number } PK_INCOME_FIFTH  PK 第五名
+ * @property { number } PK_INCOME_SIXTH PK 第六名
+ * @property { number } PK_INCOME_SEVENTH  PK 第七名
+ * @property { number } PK_INCOME_EIGHTH  PK 第八名
+ * @property { number } PK_INCOME_NINTH  PK 第九名
+ * @property { number } PK_INCOME_TENTH  PK 第十名
  * @property { number } BINGO_INCOME_FIRST  BINGO 第一名
  * @property { number } BINGO_INCOME_OTHER  BINGO 第二名
  * @property { number } DEV_INCOME      开发可分配的占比
@@ -122,4 +151,10 @@ module.exports = CONSTANT
  * @property { number } REFER_SEVENTH_LEVEL
  * @property { number } REFER_EIGHTH_LEVEL
  * @property { number } REFER_NINTH_LEVEL
+ * @property { number } NODE_INCENTIVE_RATE
+ * @property { number } NODE_INCENTIVE_V1
+ * @property { number } NODE_INCENTIVE_V2
+ * @property { number } NODE_INCENTIVE_V3
+ * @property { number } NODE_INCENTIVE_V4
+ * @property { number } NODE_INCENTIVE_V5
  */

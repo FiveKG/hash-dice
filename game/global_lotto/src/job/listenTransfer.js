@@ -2,7 +2,7 @@
 const logger = require("../common/logger.js").child({ [`@${__filename}`]: "listening global bet transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
-const { BANKER, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
+const { BANKER, TBG_TOKEN, UE_TOKEN, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
 const GLOBAL_LOTTO_KEY = "tbg:global_lotto:account_action_seq";
