@@ -1,7 +1,7 @@
 // @ts-check
 const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "mq publish and subscribe" });
 const { 
-    psUserWithdraw, psBuyAssets, psSellAssets, psBind, psGame, psTbg1, 
+    psUserWithdraw, psBuyAssets, psSellAssets, psBind, psGame, psTbg2, 
     psTshIncome, psTrx, psModifyBalance
 } = require("../db");
 const handlerWithdraw = require("./handlerWithdraw.js");
@@ -61,14 +61,14 @@ psBind.sub(async msg => {
 });
 
 
-// 参与 tbg1 消息
-psTbg1.sub(async msg => {
+// 参与 tbg2 消息
+psTbg2.sub(async msg => {
     try {
         let result = JSON.parse(msg);
-        logger.debug("psTbg1 result: %O", result);
+        logger.debug("psTbg2 result: %O", result);
         await tbg1Airdrop(result);
     } catch (err) {
-        logger.error("psTbg1 error: ", err);
+        logger.error("psTbg2 error: ", err);
         throw err;
     }
 });

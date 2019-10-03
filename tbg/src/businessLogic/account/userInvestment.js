@@ -24,6 +24,7 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
             throw Error("没有推荐关系，请先设置推荐关系，检查数据是否正确");
         }
         const accountInfo = await getAccountInfo(accountName);
+        logger.debug("accountInfo: ", accountInfo);
         // 如果用户不存在,直接过滤掉
         if (!accountInfo) {
             logger.warn("用户不存在");

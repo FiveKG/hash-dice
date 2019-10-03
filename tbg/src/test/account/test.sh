@@ -4,7 +4,7 @@ shopt -s expand_aliases
 POG_NET_POINT="http://45.251.109.187:8888"
 LOCAL_NET_POINT="http://localhost:8888"
 alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5J6pxhZNj2GZMLc77eMkYpEWxp6ReZwQmPrS7g7ty7nLiiup2Vn'
-alias cleos='docker exec -it nodeos /usr/bin/cleos --url=${LOCAL_NET_POINT} --wallet-url unix:///root/eosio-wallet/keosd.sock'
+alias cleos='docker exec -it nodeos /usr/bin/cleos --url=${POG_NET_POINT} --wallet-url unix:///root/eosio-wallet/keosd.sock'
 WALLET_RECEIVER=tbgjoin
 UE_TOKEN_ACCOUNT=uetokencoin
 
@@ -73,7 +73,7 @@ function transfer() {
         unset memo
         unset symbol
         unset amount
-        amount="100.0000"
+        amount="2000.0000"
         symbol="UE"
         quantity="${amount} ${symbol}"
         recevicer=$WALLET_RECEIVER
@@ -130,7 +130,7 @@ function addGlobal() {
 unlock
 # 绑定账号信息
 addGlobal
-# bindReferrer
+bindReferrer
 
 # 转账给收款人，参与 TBG-I
 # transfer

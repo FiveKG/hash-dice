@@ -8,13 +8,13 @@ const { redis } = require("../common");
 const { OPENING_PRICE, OPENING_PRICE_KEY } = require("../common/constant/tradeConstant.js");
 const { 
     SAFE_POOL, SHAREHOLDERS_POOL, SORT_POOL, TBG_FREE_POOL, TBG_JOIN, TBG_MINE_POOL, TBG_TOKEN_COIN, 
-    PK_POOL, BINGO_POOL, MODE_POOL, DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME, PSH_INCOME
+    PK_POOL, BINGO_POOL, MODE_POOL, DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME, PSH_INCOME, NODE_INCENTIVE_POOL
 } = require("../common/constant/accountConstant.js")
 const { Decimal } = require("decimal.js");
 
 ;(async () => {
     let systemAccount = [ 
-        SAFE_POOL, SHAREHOLDERS_POOL, SORT_POOL, PK_POOL, BINGO_POOL, MODE_POOL, DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME    
+        SAFE_POOL, SHAREHOLDERS_POOL, SORT_POOL, PK_POOL, BINGO_POOL, MODE_POOL, DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME, NODE_INCENTIVE_POOL
     ]
     await initCode();
     // await clearRedisKeyBeforeInit();

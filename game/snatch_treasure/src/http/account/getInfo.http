@@ -16,6 +16,9 @@ GET http://localhost:13025/snatch_treasure/game_session?game_id=1
 ### get account information
 GET http://localhost:13025/snatch_treasure/game_session_mine?account_name=yujinsheng11&game_id=1
 
+###
+GET http://treasure.tbg.isecsp.com/snatch_treasure/game_session_mine_detail?account_name=yujinsheng11&game_id=1&periods=1
+
 ### get account information
 GET http://localhost:13025/snatch_treasure/game_session_mine_detail?account_name=yujinsheng11&game_id=1&periods=1
 

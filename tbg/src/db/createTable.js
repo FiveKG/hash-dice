@@ -201,6 +201,35 @@ async function createTable() {
         comment on column assets_package.preset_days is '矿池产币天数';
         comment on column assets_package.release_multiple is '资产包进入线性释放池倍数';
         comment on column assets_package.amount_type is '资产包类型,私募(raise),普通(common)';
+        CREATE TABLE IF NOT EXISTS snapshot (
+            id serial PRIMARY KEY UNIQUE NOT NULL,
+            account_name TEXT UNIQUE NOT NULL DEFAULT '',
+            invite_count_week INTEGER NOT NULL DEFAULT 0,
+            tree_level JSON NOT NULL DEFAULT '{}'::JSONB,
+            invite_member_count INTEGER NOT NULL DEFAULT 0,
+            standard_v INTEGER NOT NULL DEFAULT 0,
+            standard_v1 INTEGER NOT NULL DEFAULT 0,
+            standard_v2 INTEGER NOT NULL DEFAULT 0,
+            standard_v3 INTEGER NOT NULL DEFAULT 0,
+            standard_v4 INTEGER NOT NULL DEFAULT 0,
+            standard_v5 INTEGER NOT NULL DEFAULT 0,
+            effective_member INTEGER NOT NULL DEFAULT 0,
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+        );
+        comment on table snapshot is '快照表';
+        comment on column snapshot.id is '快照表 id';
+        comment on column snapshot.account_name is '用户名';
+        comment on column snapshot.invite_count_week is '伞下每周新邀人数';
+        comment on column snapshot.tree_level is '';
+        comment on column snapshot.invite_member_count is '伞下总的人数';
+        comment on column snapshot.standard_v is 'v';
+        comment on column snapshot.standard_v1 is 'v1';
+        comment on column snapshot.standard_v2 is 'v2';
+        comment on column snapshot.standard_v3 is 'v3';
+        comment on column snapshot.standard_v4 is 'v4';
+        comment on column snapshot.standard_v5 is 'v5';
+        comment on column snapshot.effective_member is '推荐的有效的人数';
+        comment on column snapshot.create_time is '创建时间';
     `
 
     try {

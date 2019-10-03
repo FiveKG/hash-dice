@@ -205,7 +205,7 @@ async function handlerGameReceiver(data) {
             
             // 只分配九层
             if (count >= 9) {
-                return;
+                break;
             } else {
                 count++;
             }

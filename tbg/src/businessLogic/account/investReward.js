@@ -57,7 +57,7 @@ async function investReward(client, amount, accountName, referrerAccountList, sy
             
             // 只分配九层
             if (count >= 9) {
-                return;
+                break;
             } else {
                 count++;
             }

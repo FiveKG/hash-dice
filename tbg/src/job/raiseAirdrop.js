@@ -154,10 +154,15 @@ async function raiseAirdrop(data) {
         try {
             // 按私募数量的 5 倍释放，直接转入私募的账户的线性释放池
             await updateTbgBalance(client, accountName, quantity.add(destroyAmount).toNumber(), 0, 0);
-            // 在日志里面记录资产包信息，即交易 id，挖矿时使用
-            // 挖矿的部分可以从 extra 中计算出
+
+            // 在日志里面记录资产包信息
             const extra = { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE, "tr_id": trId, ...assetsInfo[0] }
             await insertBalanceLog(client, accountName, quantity.add(destroyAmount).toNumber(), acCurrent, OPT_CONSTANTS.RAISE, extra, memo, 'now()');
+
+            // 生成挖矿包，即交易 id，挖矿时使用
+            // 挖矿的部分可以从 extra 中计算出
+            const miningExtra = { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.MINING, "tr_id": trId, ...assetsInfo[0] }
+            await insertBalanceLog(client, accountName, miningAmount.toNumber(), acCurrent, OPT_CONSTANTS.MINING, miningExtra, memo, 'now()');
 
             // 按私募数量的 5 倍释放，直接转入私募的账户, 同时销毁一部份
             await updateTbgBalance(client, accountName, destroyAmount.toNumber(), 0, 0);

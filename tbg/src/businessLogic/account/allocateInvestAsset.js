@@ -1,5 +1,5 @@
 // @ts-check
-const { pool, psTbg1, psBind, psTshIncome } = require("../../db/index.js");
+const { pool, psTbg2, psBind, psTshIncome } = require("../../db/index.js");
 const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "allocate invest asset" });
 const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
@@ -33,7 +33,7 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
     await client.query("BEGIN");
     try {
         let psBindData = {};
-        let psTbg1Data = {};
+        let psTbg2Data = {};
         let psTshIncomeData = {};
         // const accountInfo = await getAccountInfo(accountName);
         // 只要用户投资 TBG-II（转账 2000.0000 UE）, 全球合伙人和全球合伙人的推荐人就可获得奖励
@@ -59,14 +59,14 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         } else {
             // 第一次投资，可以获得参与 tbg1 空投，新用户空投 100，推荐人空投 50, 只空投前 300,000 个UE账号
             // 如果新用户是在绑定后 48h 内投资的，还可获得绑定空投，新用户空投 20，推荐人空投 10, 只空投前 100,000 个UE账号
-            const { bindData, tbg1Data, tshIncomeData } = await investAirdrop(client, accountName, accountInfo.create_time);
+            const { bindData, tbg2Data, tshIncomeData } = await investAirdrop(client, accountName, accountInfo.create_time);
             psBindData = bindData;
-            psTbg1Data = tbg1Data;
+            psTbg2Data = tbg2Data;
             psTshIncomeData = tshIncomeData;
         }
 
         // 分配用户投资时全球合伙人和全球合伙人的推荐人收益
-        await globalPartnerIncome(clinet, accountInfo, globalAccount, userInvestmentRemark, accountOpType);
+        await globalPartnerIncome(accountInfo, globalAccount, userInvestmentRemark, accountOpType);
 
         // 获取系统账户
         let systemAccount = await getSystemAccountInfo();
@@ -101,9 +101,9 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         await client.query("COMMIT");
 
         // 发送绑定和参与 tbg2 的消息
-        if (Object.keys(psTbg1Data).length !== 0) {
-            await psTbg1.pub(psTbg1Data);
-            logger.debug(`publish tbg2 message, psTbg1Data: %j`, psTbg1Data);
+        if (Object.keys(psTbg2Data).length !== 0) {
+            await psTbg2.pub(psTbg2Data);
+            logger.debug(`publish tbg2 message, psTbg1Data: %j`, psTbg2Data);
         }
         
         // 超过 48h 未投资，不空投

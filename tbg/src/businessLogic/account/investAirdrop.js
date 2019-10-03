@@ -21,7 +21,7 @@ const { format } = require("date-fns");
 async function investAirdrop(client, accountName, create_time) {
     try {
         let bindData = {};
-        let tbg1Data = {};
+        let tbg2Data = {};
         let tshIncomeData = {};
         const { rows: [ { total } ] } = await pool.query("SELECT count(1)::INTEGER AS total  FROM account");
         let userReferrer = await getUserReferrer(accountName);
@@ -113,7 +113,7 @@ async function investAirdrop(client, accountName, create_time) {
             if (!userReferrer) {
                 acCurrentBalance = acCurrentBalance.add(tbg2Airdrop.acc);
                 const acBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, reward airdrop ${ tbg2Airdrop.acc }`;
-                tbg1Data = {
+                tbg2Data = {
                     "account": {
                         "account_name": accountName,
                         "release_amount": tbg2Airdrop.acc,
@@ -148,7 +148,7 @@ async function investAirdrop(client, accountName, create_time) {
                 const acBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, reward airdrop ${ tbg2Airdrop.acc }`;
                 reCurrentBalance = reCurrentBalance.add(tbg2Airdrop.ref);
                 const reBalanceRemark = `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, account referrer ${ userReferrer } get airdrop ${ tbg2Airdrop.ref }`;
-                tbg1Data = {
+                tbg2Data = {
                     "account": {
                         "account_name": accountName,
                         "release_amount": tbg2Airdrop.acc,
@@ -175,7 +175,7 @@ async function investAirdrop(client, accountName, create_time) {
             }
         }
         return {
-            tbg1Data,
+            tbg2Data,
             bindData,
             tshIncomeData
         }

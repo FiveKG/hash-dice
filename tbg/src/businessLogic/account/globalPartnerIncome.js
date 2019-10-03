@@ -17,20 +17,23 @@ const { updateSystemAmount } = require("../../models/systemPool");
 
 /**
  * 分配用户投资时全球合伙人和全球合伙人的推荐人收益
- * @param { any } client
  * @param { DB.Account } accountInfo 用户的帐号
  * @param { String } globalAccount 全球合伙人帐号
  * @param { String } userInvestmentRemark remark
  * @param { String } accountOpType remark
  */
-async function globalPartnerIncome(client, accountInfo, globalAccount, userInvestmentRemark, accountOpType) {
+async function globalPartnerIncome(accountInfo, globalAccount, userInvestmentRemark, accountOpType) {
     try {
         const accountName = accountInfo.account_name;
         const repeatAmount = new Decimal(BALANCE_CONSTANT.BASE_RATE);
+        // const existsTableSql = `select count(1)::INTEGER from pg_class where relname = $1;`
+        // const { rows: [ { count } ] } = await pool.query(existsTableSql, [ "snapshot" ]);
+        // logger.debug("count: ", count);
+        let globalCount = 1;
         // 查找快照中的记录
         const selectSnapshotSql = `SELECT * FROM snapshot WHERE account_name = $1`;
         const { rows: [ globalSnapshotInfo ] } = await pool.query(selectSnapshotSql, [ globalAccount ]);
-        let globalCount = 1;
+        logger.debug("globalSnapshotInfo: ", globalSnapshotInfo);
         if (!!globalSnapshotInfo) {
             globalAccount = globalSnapshotInfo.effective_member;
         }
@@ -70,13 +73,13 @@ async function globalPartnerIncome(client, accountInfo, globalAccount, userInves
         const userReferrer = await getUserReferrer(globalAccount);
         logger.debug("userReferrer: ", userReferrer);
         if (!!userReferrer) {
+            let globalReferrerCount = 1;
             const selectSnapshotSql = `SELECT * FROM snapshot WHERE account_name = $1`;
             const { rows: [ snapshotInfo ] } = await pool.query(selectSnapshotSql, [ globalAccount ]);
-            let globalReferrerCount = 1;
+            logger.debug("snapshotInfo: ", snapshotInfo);
             if (!!snapshotInfo) {
                 globalReferrerCount = snapshotInfo.effective_member;
             }
-
             let globalReferrerRate = 0.001;
             if (globalReferrerCount < 100) {
                 globalRate = 0.001;
@@ -110,8 +113,8 @@ async function globalPartnerIncome(client, accountInfo, globalAccount, userInves
         const opType = 'Allocating surplus assets';
         logger.debug(`last: ${ last }`);
         // 节点激励池账户
-        await insertSystemOpLog(client, last.toNumber(), rows.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: NODE_INCENTIVE_POOL }, opType, memo, now);
-        await updateSystemAmount(client, NODE_INCENTIVE_POOL, last.toNumber(), rows.pool_amount, UE_TOKEN_SYMBOL);
+        await insertSystemOpLog(pool, last.toNumber(), rows.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: NODE_INCENTIVE_POOL }, opType, memo, now);
+        await updateSystemAmount(pool, NODE_INCENTIVE_POOL, last.toNumber(), rows.pool_amount, UE_TOKEN_SYMBOL);
     } catch (err) {
         logger.error("handle user repeat invest assets error, the error stock is %O", err);
         throw err;

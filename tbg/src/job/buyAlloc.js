@@ -28,7 +28,6 @@ const { pool, psTrx } = require("../db/index.js");
 async function buyAlloc(data) {
     try {
         const trxList = [];
-        let tmpActions = []
         let insertBalanceLogSql = `
             INSERT INTO 
                 balance_log(account_name, change_amount, current_balance, op_type, extra, remark, create_time)
@@ -171,7 +170,7 @@ async function buyAlloc(data) {
             await storeIncome(referrer, OPT_CONSTANTS.INVITE, data);
             // 只分配九层
             if (count >= 9) {
-                return;
+                break;
             } else {
                 count++;
             }
@@ -188,7 +187,7 @@ async function buyAlloc(data) {
         if (data.tradeOpType === "finished") {
             const extra = { 
                 "symbol": TBG_TOKEN_SYMBOL,
-                "op_type": OPT_CONSTANTS.RELEASE,
+                "op_type": OPT_CONSTANTS.MINING,
                 "tr_id": trId,
                  ...assetsInfo[0]
             }

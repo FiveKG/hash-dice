@@ -66,8 +66,6 @@ async function collect(req, res, next) {
                             "insertBalanceLog": [ accountName, releaseAmount.toNumber(), currentBalance.toNumber(), OPT_CONSTANTS.MINING, extra, remark, now ]
                         }
                         trxList.push(data)
-                    } else {
-                        
                     }
                 }
             } else {

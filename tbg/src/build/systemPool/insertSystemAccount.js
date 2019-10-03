@@ -55,6 +55,7 @@ async function dropAllTable() {
             drop table if exists trade_log;
             drop table if exists tbg_balance;
             drop table if exists assets_package;
+            drop table if exists snapshot;
         `
         logger.info("drop all table");
         await pool.query(querySql);

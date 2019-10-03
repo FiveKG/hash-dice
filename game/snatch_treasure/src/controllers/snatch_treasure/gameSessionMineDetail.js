@@ -37,8 +37,10 @@ async function gameSessionMineDetail(req, res, next) {
         let bonusAmount = new Decimal(0)
         if (betOrderList.length !== 0) {
             betKey = betOrderList.map(it => {
-                bonusAmount = bonusAmount.add(it.bonus_amount)
-                betCode.push(it.bet_code);
+                bonusAmount = bonusAmount.add(it.bonus_amount);
+                if (it.bet_code !== "") {
+                    betCode.push(it.bet_code);
+                }
                 extra = it.extra;
                 return it.key_count
             }).reduce((pre, curr) => pre + curr);
@@ -55,7 +57,7 @@ async function gameSessionMineDetail(req, res, next) {
                 "agent_account": extra.agent_account,
                 "pay_type": extra.pay_type,
                 "quantity": quantity.toNumber(),
-                "bonus_amount": new Decimal(0).toFixed(4)
+                "bonus_amount": 0
             }
             res.send(resData);
         } else {
@@ -74,7 +76,7 @@ async function gameSessionMineDetail(req, res, next) {
                 "trx_id": extra.transaction_id,
                 "lucky_code": rewardInfo.reward_code,
                 "constants_num": 100001,
-                "bonus_amount": bonusAmount.toFixed(4)
+                "bonus_amount": bonusAmount
             }
             res.send(resData);
         }
