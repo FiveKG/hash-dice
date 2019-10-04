@@ -15,7 +15,7 @@ async function insertSystemAccount(systemAccount) {
         for (let i = 0; i < systemAccount.length; i++) {
             let account = systemAccount[i];
             let amount = new Decimal(0).toFixed(8);
-            valuesStr.push(`('${ generate_primary_key() }', '${ account }', ${ amount }, '${ UE_TOKEN_SYMBOL }')`, `('${ generate_primary_key() }', '${ account }', ${ amount }, '${ TBG_TOKEN_SYMBOL }')`);
+            valuesStr.push(`('${ generate_primary_key() }', '${ account }', ${ amount }, '${ UE_TOKEN_SYMBOL }')`);
         }
 
         // 如果重复则不再插入，直接返回

@@ -226,6 +226,7 @@ async function handlerGameReceiver(data) {
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");
+            logger.error("handlerGameReceiver error: ", err);
             throw err;
         } finally {
             await client.release();

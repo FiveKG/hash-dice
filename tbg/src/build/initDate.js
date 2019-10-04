@@ -14,11 +14,11 @@ const { Decimal } = require("decimal.js");
 
 ;(async () => {
     let systemAccount = [ 
-        SAFE_POOL, SHAREHOLDERS_POOL, SORT_POOL, PK_POOL, BINGO_POOL, MODE_POOL, DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME, NODE_INCENTIVE_POOL
+        SAFE_POOL, SHAREHOLDERS_POOL, PK_POOL, BINGO_POOL, TSH_INCOME, NODE_INCENTIVE_POOL
     ]
     await initCode();
     // await clearRedisKeyBeforeInit();
-    // await dropAllTable();
+    await dropAllTable();
     await createTable();
     await insertSystemAccount(systemAccount); 
     await insertAssetsPackage();

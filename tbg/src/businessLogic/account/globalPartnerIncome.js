@@ -25,10 +25,7 @@ const { updateSystemAmount } = require("../../models/systemPool");
 async function globalPartnerIncome(accountInfo, globalAccount, userInvestmentRemark, accountOpType) {
     try {
         const accountName = accountInfo.account_name;
-        const repeatAmount = new Decimal(BALANCE_CONSTANT.BASE_RATE);
-        // const existsTableSql = `select count(1)::INTEGER from pg_class where relname = $1;`
-        // const { rows: [ { count } ] } = await pool.query(existsTableSql, [ "snapshot" ]);
-        // logger.debug("count: ", count);
+        const repeatAmount = new Decimal(INVEST_CONSTANT.INVEST_AMOUNT);
         let globalCount = 1;
         // 查找快照中的记录
         const selectSnapshotSql = `SELECT * FROM snapshot WHERE account_name = $1`;
@@ -69,7 +66,7 @@ async function globalPartnerIncome(accountInfo, globalAccount, userInvestmentRem
         // 存入 redis，待用户点击的时候再收取
         await storeIncome(globalAccount, accountOpType, globalData);
 
-        // 全球合伙人的推荐人可得复投额度的 0.5%
+        // 全球合伙人的推荐人可得 0.5%
         const userReferrer = await getUserReferrer(globalAccount);
         logger.debug("userReferrer: ", userReferrer);
         if (!!userReferrer) {
@@ -82,12 +79,12 @@ async function globalPartnerIncome(accountInfo, globalAccount, userInvestmentRem
             }
             let globalReferrerRate = 0.001;
             if (globalReferrerCount < 100) {
-                globalRate = 0.001;
+                globalReferrerRate = 0.001;
             } else {
-                globalRate = 0.005;
+                globalReferrerRate = 0.005;
             }
             const changeAmount = repeatAmount.mul(globalReferrerRate);
-            last = last.add(repeatAmount.mul(0.01 - globalRate));
+            last = last.add(repeatAmount.mul(0.005 - globalReferrerRate));
             const memo = `${ userInvestmentRemark }, global account's referrer ${ userReferrer } add ${ changeAmount } UE currency`;
             const data = {
                 "account_name": userReferrer,
@@ -100,21 +97,15 @@ async function globalPartnerIncome(accountInfo, globalAccount, userInvestmentRem
             // 存入 redis，待用户点击的时候再收取
             await storeIncome(userReferrer, accountOpType, data);
         }
-        // 系统第一个账户没有推荐人，多出的部分转到 NODE_INCENTIVE_POOL
-        let rows = await getOneAccount(NODE_INCENTIVE_POOL);
-        if (!rows) {
-            logger.debug(`system account ${ NODE_INCENTIVE_POOL } not found`);
-            throw Error(`system account ${ NODE_INCENTIVE_POOL } not found`);
-        } else {
-            last = last.add(repeatAmount);
-        }
-        
-        const memo = `user ${ accountName } at ${ df.format(now, "YYYY-MM-DD HH:mm:ssZ") } ${ accountOpType }, allocating repeat surplus assets to ${ NODE_INCENTIVE_POOL }`
-        const opType = 'Allocating surplus assets';
+
+        const memo = `user ${ accountName } at ${ df.format(now, "YYYY-MM-DD HH:mm:ssZ") } ${ accountOpType }, allocating surplus assets to ${ NODE_INCENTIVE_POOL }`
         logger.debug(`last: ${ last }`);
-        // 节点激励池账户
-        await insertSystemOpLog(pool, last.toNumber(), rows.pool_amount, { "symbol": UE_TOKEN_SYMBOL, aid: NODE_INCENTIVE_POOL }, opType, memo, now);
-        await updateSystemAmount(pool, NODE_INCENTIVE_POOL, last.toNumber(), rows.pool_amount, UE_TOKEN_SYMBOL);
+
+        return {
+            last: last,
+            memo: memo,
+            account_name: NODE_INCENTIVE_POOL
+        }
     } catch (err) {
         logger.error("handle user repeat invest assets error, the error stock is %O", err);
         throw err;

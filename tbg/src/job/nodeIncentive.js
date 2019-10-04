@@ -41,26 +41,12 @@ async function nodeIncentive() {
     try {
         await client.query("LOCK TABLE snapshot IN ACCESS EXCLUSIVE MODE");
         // 找出达标大于 3 的用户
-        const selectSnapshotSql = `SELECT * FROM snapshot WHERE standard_v >= 3`;
-        const { rows: snapshotList } = await client.query(selectSnapshotSql);
+        const selectSnapshotSql = `SELECT * FROM snapshot WHERE account_grade != $1 OR account_grade != $2`;
+        const { rows: snapshotList } = await client.query(selectSnapshotSql, [ "v", "v0"]);
         const accMap = new Map();
         // 统计每个等级的人数
         for (const accInfo of snapshotList) {
-            let userMember = 'v1';
-            if (accInfo.standard_v1 >= 3) {
-                userMember = "v2";
-            }
-            if (accInfo.standard_v2 >= 3) {
-                userMember = "v3";
-            }
-            if (accInfo.standard_v3 >= 3) {
-                userMember = "v4";
-            }
-            if (accInfo.standard_v4 >= 3) {
-                userMember = "v5";
-            }
-
-            const memberInfo = accMap.get(userMember);
+            const memberInfo = accMap.get(accInfo.account_grade);
             if (!!memberInfo) {
                 memberInfo.accInfo.push({
                     account_name: accInfo.account_name,
@@ -68,7 +54,7 @@ async function nodeIncentive() {
                 });
                 memberInfo.total = memberInfo.total + accInfo.invite_account_week;
             } else {
-                accMap.set(userMember, {
+                accMap.set(accInfo.account_grade, {
                     accInfo: [
                         {
                         account_name: accInfo.account_name,

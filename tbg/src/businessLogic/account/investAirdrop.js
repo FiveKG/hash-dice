@@ -14,15 +14,14 @@ const { format } = require("date-fns");
 
 /**
  * 用户投资
- * @param { any } client
  * @param { String } accountName 用户的帐号
  * @param { any } create_time
  */
-async function investAirdrop(client, accountName, create_time) {
+async function investAirdrop(accountName, create_time) {
     try {
-        let bindData = {};
-        let tbg2Data = {};
-        let tshIncomeData = {};
+        let bindData = null;
+        let tbg2Data = null;
+        let tshIncomeData = null;
         const { rows: [ { total } ] } = await pool.query("SELECT count(1)::INTEGER AS total  FROM account");
         let userReferrer = await getUserReferrer(accountName);
         // 获取推荐人当前的余额
@@ -135,7 +134,7 @@ async function investAirdrop(client, accountName, create_time) {
                 }
                 tshIncomeData = {
                     "changeAmount": tbg2Airdrop.ref,
-                    "memo": `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, allocating tbg1 surplus assets to ${ TSH_INCOME }`
+                    "memo": `user ${ accountName } at ${ now } ${ OPT_CONSTANTS.INVESTMENT }, allocating surplus assets to ${ TSH_INCOME }`
                 }
             } else {
                 // 如果获取过推荐人资产，则不再获取

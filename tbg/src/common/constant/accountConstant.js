@@ -17,7 +17,7 @@ const COMMUNITY_POOL = "communityPool";
 // 开发维护的帐号
 const DEV_OP_POOL = "devOpPool";
 // 团队激励池的帐号
-const NODE_INCENTIVE_POOL = "teamIncentivePool";
+const NODE_INCENTIVE_POOL = "nodeIncentivePool";
 
 // TBG的发币账号
 const TBG_TOKEN_COIN = "tbgtokencoin"

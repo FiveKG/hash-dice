@@ -20,76 +20,86 @@ async function genSnapshot(accountName) {
                     SELECT r.referrer_name, r.account_name, l.account || l.account_name, l.depth + 1 AS depth 
                     FROM referrer r INNER JOIN all_level l ON r.referrer_name = l.account_name
                 )
-                SELECT referrer_name, account_name, account AS user_level, depth FROM all_level
+                SELECT referrer_name, account_name, array_append(account, account_name) AS user_level, depth FROM all_level
             )
             SELECT user_level FROM etc WHERE user_level[array_length(user_level, 1)] = $1
         `
         let { rows: [ { user_level: referrerAccountList } ] } = await pool.query(selectAllParentLevelSql, [ accountName ]);
         logger.debug("referrerAccountList: ", referrerAccountList);
         const selectSnapshotSql = `SELECT * FROM snapshot WHERE account_name = $1`;
+        const selectSubLevelSql = `SELECT * FROM snapshot WHERE account_name = any(SELECT account_name FROM referrer WHERE referrer_name = $1)`
         // 向上回朔，增加上级的相应人数
         const optsMap = new Map();
-        for (let i = 0; i < referrerAccountList.length; i++) {
+        const len = referrerAccountList.length;
+        for (let i =  len - 1; i > 0; i--) {
             const referrer = referrerAccountList[i];
             if (referrer === '' || referrer === accountName) {
                 continue;
             }
 
             // 查找快照中的记录
-            const { rows: [ snapshotInfo ] } = await pool.query(selectSnapshotSql, [ accountName ]);
+            const { rows: [ snapshotInfo ] } = await pool.query(selectSnapshotSql, [ referrer ]);
             logger.debug("snapshotInfo: ", snapshotInfo);
-            let v = 0, v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0;
+            let v0 = 0;
+            let grade = "v"
             if (!!snapshotInfo) {
+                // 用户推荐人数大于 100 时，伞下有可能有达标用户
+                if (snapshotInfo.effective_member > 100) {
+                    // 下级直推用户的快照
+                    const { rows: subSnapshotInfo } = await pool.query(selectSubLevelSql, [ referrer ]);
+                    const standard_v0 = subSnapshotInfo.find(it => it.standard_v0 > 0).length;
+                    const standard_v1 = subSnapshotInfo.find(it => it.standard_v1 > 0).length;
+                    const standard_v2 = subSnapshotInfo.find(it => it.standard_v2 > 0).length;
+                    const standard_v3 = subSnapshotInfo.find(it => it.standard_v3 > 0).length;
+                    const standard_v4 = subSnapshotInfo.find(it => it.standard_v4 > 0).length;
+                    if (standard_v0 >= 3) {
+                        grade = "v1";
+                    }
+                    if (standard_v1 >= 3) {
+                        grade = "v2";
+                    }
+
+                    if (standard_v2 >= 3) {
+                        grade = "v3";
+                    }
+
+                    if (standard_v3 >= 3) {
+                        grade = "v4";
+                    }
+
+                    if (standard_v4 >= 3) {
+                        grade = "v5";
+                    }
+                    const opts = [ referrer, 1, grade, {}, 1, standard_v0, standard_v1, standard_v2, standard_v3, standard_v4, 1, 'now()', 1, 1, 1 ];
+                    optsMap.set(referrer, opts);
+                }
                 // 如果推荐人数大于 100，升级为达标用户
                 if (snapshotInfo.effective_member + 1 === 100) {
-                    v = 1;
-                    // 修改推荐人的用户等级
-                    const { rows: [ refSnapshotInfo ] } = await pool.query(selectSnapshotSql, [ referrerAccountList[ i - 1 ] ]);     
-                    logger.debug("refSnapshotInfo: ", refSnapshotInfo);
-                    if (refSnapshotInfo.standard_v + v === 3) {
-                        v1 = 1
-                    }
-                    if (refSnapshotInfo.standard_v1 + v1 === 3) {
-                        v2 = 1
-                    }
-    
-                    if (refSnapshotInfo.standard_v2 + v2 === 3) {
-                        v3 = 1
-                    }
-    
-                    if (refSnapshotInfo.standard_v3 + v3 === 3) {
-                        v4 = 1
-                    }
-    
-                    if (refSnapshotInfo.standard_v4 + v4 === 3) {
-                        v5 = 1
-                    }
-                    const opts = [ referrerAccountList[ i - 1 ], 1, {}, 1, 0, 0, 0, 0, 0, 0, 1, 'now()', 1, 1, v, v1, v2, v3, v4, v5, 1 ];
-                    optsMap.set(referrerAccountList[ i - 1 ], opts);
+                    grade = "v0"
+                    v0 = 1;
                 }
             }
 
-            const opts = [ accountName, 1, {}, 1, 0, 0, 0, 0, 0, 0, 1, 'now()', 1, 1, v, 0, 0, 0, 0, 0, 1 ];
-            
-            optsMap.set(accountName, opts);
+            const opts = [ referrer, grade, 1, {}, 1, v0, 0, 0, 0, 0, 1, 'now()', 1, 1, 1 ];
+            optsMap.set(referrer, opts);
         }
 
         // 新增数据
         const upsertSnapshotSql = `
-            INSERT INTO snapshot(account_name, invite_count_week, tree_level, invite_member_count, standard_v, 
-                    standard_v1, standard_v2, standard_v3, standard_v4, standard_v5, effective_member, create_time)
+            INSERT INTO snapshot(account_name, account_grade, invite_count_week, tree_level, invite_member_count, standard_v0, 
+                    standard_v1, standard_v2, standard_v3, standard_v4, effective_member, create_time)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
                 ON CONFLICT (account_name)
                 DO UPDATE SET 
+                    account_grade = EXCLUDED.account_grade, 
                     invite_count_week = EXCLUDED.invite_count_week + $13, 
                     invite_member_count = EXCLUDED.invite_member_count + $14, 
-                    standard_v = EXCLUDED.standard_v + $15, 
-                    standard_v1 = EXCLUDED.standard_v1 + $16, 
-                    standard_v2 = EXCLUDED.standard_v2 + $17, 
-                    standard_v3 = EXCLUDED.standard_v3 + $18, 
-                    standard_v4 = EXCLUDED.standard_v4 + $19, 
-                    standard_v5 = EXCLUDED.standard_v5 + $20,
-                    effective_member = EXCLUDED.effective_member + $21
+                    standard_v0 = EXCLUDED.standard_v0, 
+                    standard_v1 = EXCLUDED.standard_v1, 
+                    standard_v2 = EXCLUDED.standard_v2, 
+                    standard_v3 = EXCLUDED.standard_v3, 
+                    standard_v4 = EXCLUDED.standard_v4,
+                    effective_member = EXCLUDED.effective_member + $15
         `
         for (const [ key, val ] of optsMap) {
             sqlList.push({ sql: upsertSnapshotSql, values: val });

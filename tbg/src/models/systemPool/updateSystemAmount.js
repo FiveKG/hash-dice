@@ -12,9 +12,7 @@ const { Decimal } = require("decimal.js");
 async function updateSystemAmount(client, changeType, changeAmount, preAmount, symbolType) {
     try {
         let currentBalance = new Decimal(changeAmount).add(preAmount).toFixed(8);
-        let sql = `
-            update system_pools set pool_amount = $1 where pool_type = $2 AND pool_symbol = $3;
-        `
+        let sql = `update system_pools set pool_amount = $1 where pool_type = $2 AND pool_symbol = $3;`
         const opts = [ currentBalance, changeType, symbolType ]
         await client.query(sql, opts);
     } catch (err) {

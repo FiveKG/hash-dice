@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}\\game\\hash_dice\\src\\test\\test\\test.js"
+            "program": "${workspaceFolder}/tbg/src/businessLogic/account/allocateInvestAsset.js"
         }
     ]
 }

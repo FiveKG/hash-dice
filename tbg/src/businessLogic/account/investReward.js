@@ -4,6 +4,7 @@ const { Decimal } = require("decimal.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
+const { TSH_INCOME } = require("../../common/constant/accountConstant");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
@@ -13,14 +14,12 @@ const { getAccountMemberLevel } = require("../../models/account");
 
 /**
  * 直接推荐奖励
- * @param { any } client
  * @param { number } amount 投资额度， decimal 类型
  * @param { String } accountName 用户的帐号
  * @param { String[] } referrerAccountList 子账号
- * @param { DB.SystemPools[] } systemAccount 
  * @param { String } userInvestmentRemark remark
  */
-async function investReward(client, amount, accountName, referrerAccountList, systemAccount, userInvestmentRemark) {
+async function investReward(amount, accountName, referrerAccountList, userInvestmentRemark) {
     let investAmount = new Decimal(amount);
     // 直接推荐奖励
     let referIncome = investAmount.mul(INVEST_CONSTANT.REFER_INCOME_RATE / INVEST_CONSTANT.BASE_RATE);
@@ -30,13 +29,17 @@ async function investReward(client, amount, accountName, referrerAccountList, sy
         // 全球合伙人推荐全球合伙人，推荐者均可获得被推荐的全球合伙人伞下直接推荐奖励，是接续非断开的
         let count = 1;
         let distributed = new Decimal(0);
-        for (const referrer of referrerAccountList) {
+        const len = referrerAccountList.length;
+        for (let i =  len - 1; i > 0; i--) {
+            const referrer = referrerAccountList[i];
+            logger.debug("referrer: ", referrer);
             if (referrer === '' || referrer === accountName) {
                 continue;
             }
             const rate = setRate(count);
             const income = referIncome.mul(rate);
             const { count: inviteCount } = await getAccountMemberLevel(referrer);
+            logger.debug("inviteCount: ", inviteCount, count);
             // 如果用户推荐的有效人数大于等于可分配的层级，用户即可获得层级奖励
             if (inviteCount >= count) {
                 distributed.add(income);
@@ -63,9 +66,15 @@ async function investReward(client, amount, accountName, referrerAccountList, sy
             }
         }
 
+        logger.debug("referIncome: ", referIncome);
+        logger.debug("distributed: ", distributed);
+
         // 分配剩余的收益
-        if (!referIncome.div(distributed).lessThanOrEqualTo(0)) {
-            await allocateSurplusAssets(client, systemAccount, referIncome, distributed, OPT_CONSTANTS.INVITE);
+        let last = referIncome.minus(distributed).toNumber();
+        return {
+            last: last,
+            memo: `user ${ accountName } at ${ df.format(new Date(), "YYYY-MM-DD HH:mm:ssZ") } ${ OPT_CONSTANTS.INVESTMENT }, allocating surplus assets to ${ TSH_INCOME }`,
+            account_name: TSH_INCOME
         }
     } catch (err) {
         logger.error("allocate user investment assets error, the error stock is %O", err);

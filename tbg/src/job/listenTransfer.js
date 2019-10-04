@@ -57,12 +57,17 @@ async function handlerTransferActions() {
             } else {
                 userInvestmentRemark = `${ result.from } investment ${ result.amount } UE`;
             }
-            await userInvestment(Number(result.amount), result.from, userInvestmentRemark);
+            try {
+                await userInvestment(Number(result.amount), result.from, userInvestmentRemark);
+            } catch (err) {
+                logger.error("user investment error: ", err);
+            }
             await redis.set(`tbg:invest:trx:${ result.account_action_seq }`, result.trx_id);
             await setLastPos(result.account_action_seq);
         }
         await redis.del(INVEST_LOCK);
     } catch (err) {
+        logger.error("error: ", err);
         throw err;
     }
 }

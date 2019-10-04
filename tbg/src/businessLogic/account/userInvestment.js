@@ -3,7 +3,9 @@ const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "
 const { getUserSubAccount } = require("../../models/subAccount");
 const { getAccountInfo, getAllParentLevel } = require("../../models/account");
 const allocateInvestAsset = require("./allocateInvestAsset.js");
-const calIncome = require("./calIncome.js");
+const { getStaticSort } = require("../../models/account");
+const staticModeIncome = require("./staticModeIncome.js");
+const staticSortIncome = require("./staticSortIncome.js");
 const { redis } = require("../../common/index.js");
 const genSnapshot = require("./genSnapshot");
 const ACCOUNT_CONSTANT = require("../../common/constant/accountConstant.js");
@@ -44,7 +46,22 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
         // 分配用户投资额
         await allocateInvestAsset(amount, accountName, newSubAccount, userInvestmentRemark, referrerAccountList, accountInfo);
         // 开始计算收益
-        await calIncome(amount, newSubAccount);
+        // 分配三三静态收益
+        await staticModeIncome(amount, newSubAccount)
+        // 一行公排的查出所有子帐号
+        const rows = await getStaticSort();
+        if (rows.length === 0) {
+            return;
+        }
+        // 查找收益不过线的键
+        const keysList = await redis.keys("tbg:subAccountSort:*");
+        // 从 redis 键中过滤出所有子账号
+        const subAccountList = keysList.map(item => item.split(":")[2]);
+        // 筛选后分配收益
+        const allSubAccountList = rows.map(item => item.sub_account_name);
+        const staticSortList = allSubAccountList.filter(item => subAccountList.includes(item));
+        // 分配一行公排静态收益
+        await staticSortIncome(amount, staticSortList);
         
         // 用户投资生成快照
         if (accountInfo.state !== ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2 || accountInfo.state !== ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2) {
