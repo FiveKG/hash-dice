@@ -32,7 +32,7 @@ async function globalPartnerIncome(accountInfo, globalAccount, userInvestmentRem
         const { rows: [ globalSnapshotInfo ] } = await pool.query(selectSnapshotSql, [ globalAccount ]);
         logger.debug("globalSnapshotInfo: ", globalSnapshotInfo);
         if (!!globalSnapshotInfo) {
-            globalAccount = globalSnapshotInfo.effective_member;
+            globalCount = globalSnapshotInfo.effective_member;
         }
 
         let globalRate = 0.001;

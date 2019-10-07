@@ -13,16 +13,13 @@ GET http://localhost:9527/trade/buy_assets_history?account_name=yujinsheng11
 ### 买入交易列表
 GET http://localhost:9527/trade/buy_list
 
-### 资产包买入记录
-GET http://localhost:9527/trade/buy_assets_history?account_name=yujinsheng11
-
 ### raise
 POST http://localhost:9527/trade/global_raise_buy
 Content-Type: application/json
 
 {
     "account_name": "yujinsheng11",
-    "price": "0.507",
+    "price": "0.5411",
     "assets_package_id": 4
 }
 

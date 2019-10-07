@@ -134,3 +134,5 @@ unlock
 # cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","1000.0000 UE","recharger"]' -p yujinsheng11
 # cleos -u http://45.251.109.187:8888 push action tbgtokencoin transfer '["tbgtokencoin","tbgfreepool","100.0000 TBG","recharger"]' -p tbgtokencoin
 cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["gametestuser","tbgjoin","2000.0000 UE","tbg_invest:gametestuser"]' -p gametestuser
+
+cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","10822.0000 UE","yujinsheng11:0.5411:raise:4"]' -p yujinsheng11

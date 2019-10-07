@@ -84,6 +84,7 @@ async function collect(req, res, next) {
             }
         }
 
+        logger.debug(`trxList: `, trxList);
         const client = await pool.connect();
         await client.query("BEGIN");
         try {

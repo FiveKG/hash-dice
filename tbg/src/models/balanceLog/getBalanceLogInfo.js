@@ -34,8 +34,8 @@ async function getBalanceLogInfo(params) {
         } 
 
         if (!!extraType) {
-            opts.push(extraType.split(","));
-            values.push(`extra ->> 'op_type' = any($${ extraType })`)
+            opts.push(extraType);
+            values.push(`extra ->> 'op_type' = $${ opts.length }`)
         } 
 
         if (!!symbol) {
