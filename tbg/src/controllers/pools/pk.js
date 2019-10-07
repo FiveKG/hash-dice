@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/pools/bingo.js": "bingo pool" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "bingo pool" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
 const { PK_POOL } = require("../../common/constant/accountConstant.js");
@@ -33,12 +33,7 @@ async function pk(req, res, next) {
         let pkAccountList = await getPkAccountList();
         let detail = pkAccountList.map((item, idx) => {
             let rate = setRate(idx);
-            // let obj = {}
-            // if (idx < 4) {
-            const obj = {
-                    percentage: `${ rate }%`
-                }
-            // }
+            const obj = { percentage: `${ rate }%` }
             return {
                 "account_name": item.referrer_name,
                 "sub_account": item.invite_count,
@@ -74,8 +69,18 @@ function setRate(rank) {
         rate = INCOME_CONSTANT.PK_INCOME_THIRD / INCOME_CONSTANT.BASE_RATE;
     } else if (rank === 3) {
         rate = INCOME_CONSTANT.PK_INCOME_FOURTH / INCOME_CONSTANT.BASE_RATE;
-    } else {
+    } else if (rank === 4) {
         rate = INCOME_CONSTANT.PK_INCOME_FIFTH / INCOME_CONSTANT.BASE_RATE;
+    } else if (rank === 5) {
+        rate = INCOME_CONSTANT.PK_INCOME_SIXTH / INCOME_CONSTANT.BASE_RATE;
+    } else if (rank === 6) {
+        rate = INCOME_CONSTANT.PK_INCOME_SEVENTH / INCOME_CONSTANT.BASE_RATE;
+    } else if (rank === 7) {
+        rate = INCOME_CONSTANT.PK_INCOME_EIGHTH / INCOME_CONSTANT.BASE_RATE;
+    } else if (rank === 8) {
+        rate = INCOME_CONSTANT.PK_INCOME_NINTH / INCOME_CONSTANT.BASE_RATE;
+    } else {
+        rate = INCOME_CONSTANT.PK_INCOME_TENTH / INCOME_CONSTANT.BASE_RATE;
     }
 
     return rate;

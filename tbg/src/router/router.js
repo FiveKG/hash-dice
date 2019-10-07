@@ -166,5 +166,7 @@ router.get("/tbg/destroy", tbg.destroy);
 // 系统公告
 router.get("/tbg/system_notification", tbg.notification);
 
+// 创建系统公告
+router.post("/tbg/add_notification", tbg.addNotification);
 
 module.exports = router

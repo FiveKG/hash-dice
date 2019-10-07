@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/account/getAccountMember.js": "get account member" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "get account member" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountMemberLevel } = require("../../models/account");
 const { userMember } = require("../../common/userMember.js");

@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/tbg/checkIn.js": "签到" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "签到" });
 const { get_status, inspect_req_data, redis } = require("../../common/index.js");
 const { CHECK_IN_AIRDROP_ID, AIRDROP, CHECK_IN_AIRDROP_1, CHECK_IN_AIRDROP_7 } = require("../../common/constant/tbgAllocateRate");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");

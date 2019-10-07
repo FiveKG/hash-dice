@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/income/dividend.js": "dividend income" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "分红收益详情" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getDividendIncome } = require("../../models/balance");
 

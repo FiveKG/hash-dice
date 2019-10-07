@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../../db");
-const logger = require("../../common/logger.js").child({ "@controllers/account/show_account_name_by_code.js": "显示邀请邀请码对应帐号" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "显示邀请邀请码对应帐号" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { ACCOUNT_TYPE, INVITE_CODE, INVITE_CODE_KEY } = require("../../common/constant/accountConstant.js");
 

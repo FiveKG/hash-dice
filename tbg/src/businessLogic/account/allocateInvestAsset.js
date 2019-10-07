@@ -118,23 +118,23 @@ async function allocateInvestAsset(amount, accountName, newSubAccount, userInves
         await insertAccountOp(client, accountName, accountOpType, userInvestmentRemark);
         await client.query("COMMIT");
 
-        // // 发送绑定和参与 tbg2 的消息
-        // if (!!psTbg2Data) {
-        //     await psTbg2.pub(psTbg2Data);
-        //     logger.debug(`publish tbg2 message, psTbg1Data: %j`, psTbg2Data);
-        // }
+        // 发送绑定和参与 tbg2 的消息
+        if (!!psTbg2Data) {
+            await psTbg2.pub(psTbg2Data);
+            logger.debug(`publish tbg2 message, psTbg1Data: %j`, psTbg2Data);
+        }
         
-        // // 超过 48h 未投资，不空投
-        // if (!!psBindData) {
-        //     await psBind.pub(psBindData);
-        //     logger.debug(`publish bind message, psBindData: %j`, psBindData);
-        // }
+        // 超过 48h 未投资，不空投
+        if (!!psBindData) {
+            await psBind.pub(psBindData);
+            logger.debug(`publish bind message, psBindData: %j`, psBindData);
+        }
 
-        // // 分配剩余的资产，发送到 tshincome 处理
-        // if (!!psTshIncomeData) {
-        //     await psTshIncome.pub(psTshIncomeData);
-        //     logger.debug(`publish tshincome message, psTshIncomeData: %j`, psTshIncomeData);
-        // }
+        // 分配剩余的资产，发送到 tshincome 处理
+        if (!!psTshIncomeData) {
+            await psTshIncome.pub(psTshIncomeData);
+            logger.debug(`publish tshincome message, psTshIncomeData: %j`, psTshIncomeData);
+        }
     } catch (err) {
         logger.error("allocate user investment assets error, the error stock is %O", err);
         await client.query("ROLLBACK");

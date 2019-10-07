@@ -73,7 +73,7 @@ async function createTable() {
             account_name TEXT NOT NULL DEFAULT '',
             change_amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
             current_balance NUMERIC (20, 8) NOT NULL DEFAULT 0,
-            extra JSON NOT NUll DEFAULT '{}'::JSONB,
+            extra JSON NOT  NULL DEFAULT '{}'::JSONB,
             op_type TEXT NOT NULL DEFAULT '',
             remark TEXT NOT NULL DEFAULT '',
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
@@ -104,7 +104,7 @@ async function createTable() {
             current_balance NUMERIC (20, 8) NOT NULL DEFAULT 0,
             op_type TEXT NOT NULL DEFAULT '',
             remark TEXT NOT NULL DEFAULT '',
-            extra JSON NOT NUll DEFAULT '{}'::JSONB,
+            extra JSON NOT  NULL DEFAULT '{}'::JSONB,
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         comment on table system_op_log is '系统总账变动日志表';
@@ -132,7 +132,7 @@ async function createTable() {
             id TEXT PRIMARY KEY UNIQUE NOT NULL,
             account_name TEXT NOT NULL DEFAULT '',
             trade_type TEXT NOT NULL DEFAULT '',
-            extra JSON NOT NUll DEFAULT '{}'::JSONB,
+            extra JSON NOT  NULL DEFAULT '{}'::JSONB,
             amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
             trx_amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
             price NUMERIC (20, 8) NOT NULL DEFAULT 0,
@@ -189,7 +189,7 @@ async function createTable() {
             amount NUMERIC (20, 8) NOT NULL DEFAULT 0,
             saleable_multiple NUMERIC (3, 2) NOT NULL DEFAULT 0,
             mining_multiple NUMERIC (3, 2) NOT NULL DEFAULT 0,
-            preset_days INTEGER NOT NUll DEFAULT 0,
+            preset_days INTEGER NOT  NULL DEFAULT 0,
             release_multiple NUMERIC (3, 2) NOT NULL DEFAULT 0,
             amount_type TEXT NOT NULL DEFAULT ''
         );
@@ -230,6 +230,19 @@ async function createTable() {
         comment on column snapshot.standard_v4 is 'v4';
         comment on column snapshot.effective_member is '推荐的有效的人数';
         comment on column snapshot.create_time is '创建时间';
+        CREATE TABLE IF NOT EXISTS system_notification (
+            id serial PRIMARY KEY UNIQUE NOT NULL,
+            creator TEXT NOT NULL DEFAULT '',
+            title TEXT NOT NULL DEFAULT '',
+            description TEXT NOT NULL DEFAULT '',
+            create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+        );
+        comment on table system_notification is '系统通知';
+        comment on column system_notification.id is '系统通知 id';
+        comment on column system_notification.creator is '创建人';
+        comment on column system_notification.title is '标题';
+        comment on column system_notification.description is '内容';;
+        comment on column system_notification.create_time is '创建时间';
     `
 
     try {

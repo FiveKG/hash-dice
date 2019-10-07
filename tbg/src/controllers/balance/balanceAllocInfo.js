@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/balance/balanceAllocInfo.js": "收益分配" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "收益分配" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getUserBalance } = require("../../models/balance");
 const { WITHDRAW_ENABLE, REPEAT_CURRENCY, BASE_RATE, LOTTO_CURRENCY, GAME_CURRENCY } = require("../../common/constant/balanceConstants");

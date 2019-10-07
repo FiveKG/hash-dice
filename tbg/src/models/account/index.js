@@ -14,5 +14,6 @@ module.exports = {
     "insertAccount": require("./insertAccount.js"),
     "updateAccountState": require("./updateAccountState.js"),
     "getAccountMemberLevel": require("./getAccountMemberLevel.js"),
-    "getGlobalAccount": require("./getGlobalAccount.js")
+    "getGlobalAccount": require("./getGlobalAccount.js"),
+    "insertAccountSnapshot": require("./insertAccountSnapshot")
 }

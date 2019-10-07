@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/trade/raiseBuy.js": "全球合伙人私募" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "全球合伙人私募" });
 const { get_status, inspect_req_data, generate_primary_key } = require("../../common/index.js");
 const { getAccountInfo } = require("../../models/account");
 const { getAssetsInfoById } = require("../../models/asset");

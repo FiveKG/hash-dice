@@ -36,4 +36,5 @@ module.exports = [
 
     { "code": 1024, "desc": "request key is empty" },
     { "code": 1025, "desc": "invalid key" },
+    { "code": 1026, "desc": "你还未获取到分红" },
 ];

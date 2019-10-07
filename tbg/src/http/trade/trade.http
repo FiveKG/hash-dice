@@ -2,7 +2,7 @@
 GET http://localhost:9527/trade/raise_buy
 
 ### 获取普通买入交易信息
-GET http://localhost:9527/trade/buy_assets
+GET http://localhost:9527/trade/buy_assets?account_name=yujinsheng11
 
 ### 买入交易列表
 GET http://localhost:9527/trade/raise_list

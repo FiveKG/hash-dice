@@ -39,13 +39,13 @@ async function staticSort(amount, staticSortList) {
             const { distributed } = await handleStaticSort(sortEnable, lastList, 5);
             await handleStaticSort(sortEnable, preList, 50);
             totalDis = totalDis.add(distributed);
-        } else if (len <= 70) {
+        } else if (len <= 60) {
             // todo: 除去上两个条件的帐号可均分 amount 的 25%， 其余分给社区，开发
             let lastList = staticSortList.splice(-5);
             let preList = staticSortList.splice(-50);
             let frontList = staticSortList;
             const { distributed } = await handleStaticSort(sortEnable, lastList, 5);
-            await handleStaticSort(sortEnable, preList, 50);
+            await handleStaticSort(sortEnable, preList, 5);
             await handleStaticSort(sortEnable, frontList, 5);
             totalDis = totalDis.add(distributed);
         } else {

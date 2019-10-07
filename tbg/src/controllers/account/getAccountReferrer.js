@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/account/getAccountReferrer.js": "获取用户的推荐人" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "获取用户的推荐人" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAllInviteAccount, getReferrer } = require("../../models/account");
 

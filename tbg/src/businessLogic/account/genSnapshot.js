@@ -70,7 +70,7 @@ async function genSnapshot(accountName) {
                     if (standard_v4 >= 3) {
                         grade = "v5";
                     }
-                    const opts = [ referrer, 1, grade, {}, 1, standard_v0, standard_v1, standard_v2, standard_v3, standard_v4, 1, 'now()', 1, 1, 1 ];
+                    const opts = [ grade, 1, 1, standard_v0, standard_v1, standard_v2, standard_v3, standard_v4, 1, referrer ];
                     optsMap.set(referrer, opts);
                 }
                 // 如果推荐人数大于 100，升级为达标用户
@@ -80,32 +80,28 @@ async function genSnapshot(accountName) {
                 }
             }
 
-            const opts = [ referrer, grade, 1, {}, 1, v0, 0, 0, 0, 0, 1, 'now()', 1, 1, 1 ];
+            const opts = [ grade, 1, 1, v0, 0, 0, 0, 0, 1, referrer ];
             optsMap.set(referrer, opts);
         }
 
         // 新增数据
-        const upsertSnapshotSql = `
-            INSERT INTO snapshot(account_name, account_grade, invite_count_week, tree_level, invite_member_count, standard_v0, 
-                    standard_v1, standard_v2, standard_v3, standard_v4, effective_member, create_time)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-                ON CONFLICT (account_name)
-                DO UPDATE SET 
-                    account_grade = EXCLUDED.account_grade, 
-                    invite_count_week = EXCLUDED.invite_count_week + $13, 
-                    invite_member_count = EXCLUDED.invite_member_count + $14, 
-                    standard_v0 = EXCLUDED.standard_v0, 
-                    standard_v1 = EXCLUDED.standard_v1, 
-                    standard_v2 = EXCLUDED.standard_v2, 
-                    standard_v3 = EXCLUDED.standard_v3, 
-                    standard_v4 = EXCLUDED.standard_v4,
-                    effective_member = EXCLUDED.effective_member + $15
+        const updateSnapshotSql = `
+            UPDATE snapshot SET account_grade = $1, 
+                    invite_count_week = invite_count_week + $2, 
+                    invite_member_count = invite_member_count + $3, 
+                    standard_v0 = $4, 
+                    standard_v1 = $5, 
+                    standard_v2 = $6, 
+                    standard_v3 = $7, 
+                    standard_v4 = $8,
+                    effective_member = effective_member + $9
+                WHERE account_name = $10
         `
         for (const [ key, val ] of optsMap) {
-            sqlList.push({ sql: upsertSnapshotSql, values: val });
+            sqlList.push({ sql: updateSnapshotSql, values: val });
         }
 
-        logger.debug("sqlList: ", sqlList);
+        // logger.debug("sqlList: ", sqlList);
         const client = await pool.connect();
         await client.query("BEGIN");
         try {

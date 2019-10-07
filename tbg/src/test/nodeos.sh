@@ -7,6 +7,7 @@ LOCAL_NET_POINT="http://localhost:8888"
 alias unlock='docker exec -it nodeos /usr/bin/cleos wallet unlock --password=PW5J6pxhZNj2GZMLc77eMkYpEWxp6ReZwQmPrS7g7ty7nLiiup2Vn'
 alias cleos='docker exec -it nodeos /usr/bin/cleos --url=${POG_NET_POINT} --wallet-url unix:///root/eosio-wallet/keosd.sock'
 UE_TOKEN_ACCOUNT=uetokencoin
+WALLET_RECEIVER=tbgjoin
 
 # 生成 EOS 账号
 function genEosAccountName() {
@@ -78,32 +79,58 @@ function blukImportKey() {
     done
 }
 
-# 给测试账户充值
-function recharger() {
+# 创建帐号，给测试账户充值
+function createAccount() {
     quantity='10000.0000 UE'
-    for account in `grep -o '[0-5a-z\.]\{12,\}' testkey`
+    while read line
     do
-        printf "$account\t"
-        cleos push action ${UE_TOKEN_ACCOUNT} transfer "[\"${UE_TOKEN_ACCOUNT}\",\"${account}\",\"${quantity}\",\"recharger\"]" -p ${UE_TOKEN_ACCOUNT}
+        privateKey=$(echo -n $line | awk '{print $2}')
+        publicKey=$(echo -n $line | awk '{print $4}')
+        accountName=$(echo -n $line | awk '{print $6}')
+        # (exec < /dev/tty; cleos create account yujinsheng11 ${accountName} ${publicKey} ${publicKey})
+        # (exec < /dev/tty; cleos push action ${UE_TOKEN_ACCOUNT} transfer "[\"${UE_TOKEN_ACCOUNT}\",\"${accountName}\",\"${quantity}\",\"recharger\"]" -p ${UE_TOKEN_ACCOUNT})
+    done < ./testkey
+}
+
+# 转账给收款人，自己投资
+function transfer() {
+    unset quantity
+    unset symbol
+    unset amount
+    amount="2000.0000"
+    symbol="UE"
+    quantity="${amount} ${symbol}"
+    accountList=$(grep -o '[0-5a-z\.]\{12,\}' ./keyPairs)
+    for ac in $accountList
+    do
+        echo $count
+        echo "account: " ${ac}
+        unset memo
+        memo=tbg_invest:${ac}
+        cleos push action $UE_TOKEN_ACCOUNT transfer "[\"${ac}\",\"${WALLET_RECEIVER}\",\"${quantity}\",\"${memo}\"]" -p ${ac}
     done
 }
 
 # 先解锁钱包
 unlock
 # 生成一批测试账号，同时导入私钥
-blukImportKey
+# blukImportKey
 
-# recharger
+# createAccount
 
-cleos -u http://45.251.109.187:8888 push action tbgtokencoin transfer '["tbgtokencoin","yujinsheng11","1000000.0000 TBG","recharger"]' -p tbgtokencoin
-cleos -u http://45.251.109.187:8888  push action tbgtokencoin transfer '["tbgtokencoin","gametestuser","1000000.0000 TBG","recharger"]' -p tbgtokencoin
+# 转账给收款人，参与 TBG-II
+# transfer
 
-cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["uetokencoin","yujinsheng11","1000000.0000 UE","recharger"]' -p uetokencoin
-cleos -u http://45.251.109.187:8888  push action uetokencoin transfer '["uetokencoin","gametestuser","1000000.0000 UE","recharger"]' -p uetokencoin
+# cleos -u http://45.251.109.187:8888 push action tbgtokencoin transfer '["tbgtokencoin","yujinsheng11","1000000.0000 TBG","recharger"]' -p tbgtokencoin
+# cleos -u http://45.251.109.187:8888  push action tbgtokencoin transfer '["tbgtokencoin","gametestuser","1000000.0000 TBG","recharger"]' -p tbgtokencoin
+
+# cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["uetokencoin","yujinsheng11","1000000.0000 UE","recharger"]' -p uetokencoin
+# cleos -u http://45.251.109.187:8888  push action uetokencoin transfer '["uetokencoin","gametestuser","1000000.0000 UE","recharger"]' -p uetokencoin
 
 
 
-cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgjoin","10.0000 UE","recharger"]' -p yujinsheng11
-cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","10.0000 UE","recharger"]' -p yujinsheng11
-cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","1000.0000 UE","recharger"]' -p yujinsheng11
-cleos -u http://45.251.109.187:8888 push action tbgtokencoin transfer '["tbgtokencoin","tbgfreepool","100.0000 TBG","recharger"]' -p tbgtokencoin
+# cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgjoin","10.0000 UE","recharger"]' -p yujinsheng11
+# cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","10.0000 UE","recharger"]' -p yujinsheng11
+# cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","1000.0000 UE","recharger"]' -p yujinsheng11
+# cleos -u http://45.251.109.187:8888 push action tbgtokencoin transfer '["tbgtokencoin","tbgfreepool","100.0000 TBG","recharger"]' -p tbgtokencoin
+cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["gametestuser","tbgjoin","2000.0000 UE","tbg_invest:gametestuser"]' -p gametestuser

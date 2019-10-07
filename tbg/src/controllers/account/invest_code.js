@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/account/invest_code.js": "获取用户的邀请码" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "获取用户的邀请码" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getInviteCode } = require("../../models/account");
 

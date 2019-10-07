@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/account/self_invest.js": "investment by self" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "investment by self" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const INVEST_CONSTANT = require("../../common/constant/investConstant.js");
 const userInvestment = require("../../businessLogic/account/userInvestment.js");

@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/pools/bingo.js": "bingo pool" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "bingo pool" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
 const { getBingoAmount, getBingoHistory } = require("../../models/systemPool");
