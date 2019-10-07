@@ -27,6 +27,11 @@
         <span>{{$t('me.settings')}}</span>
         <img class="next" src="@/assets/img/mine_next.png" alt="">
       </div>
+      <div class="item" @click="clickItem('announcement')">
+        <img class="icon" src="@/assets/img/mine_setting.png">
+        <span>{{$t('me.announcement')}}</span>
+        <img class="next" src="@/assets/img/mine_next.png" alt="">
+      </div>
       <!-- <div class="item" @click="clickItem('invitation')">
         <img class="icon" src="@/assets/img/mine_setting.png">
         <span>推荐给好友</span>
@@ -81,6 +86,12 @@ export default {
           // 系统设置
           this.$router.push({
             name: 'Invitation'
+          })
+          break;
+        case 'announcement':
+          // 公告
+          this.$router.push({
+            name: 'Announcement'
           })
           break;
       

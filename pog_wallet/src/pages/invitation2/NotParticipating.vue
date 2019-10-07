@@ -119,17 +119,17 @@
               </div>
               <div class="exchange-right">
                 <div class="select-wrap">
-                  <div @click='switchData(2)' class="ipt_layout">
+                  <div class="ipt_layout">
                       <div>
-                      <span style="font-size: .45rem;color: rgb(236,90,91);">买入TBG</span>
+                      <span style="font-size: .45rem;color: rgb(236,90,91);" v-if="isGlobal" @click="jumpglobal">买入TBG</span>   <!--全球合伙人-->
+                      <span style="font-size: .45rem;color: rgb(236,90,91);" v-if="!isGlobal" @click="jumpnormal">买入TBG</span>  <!-- 普通用户-->
                       </div>
-                      <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;"> 
                   </div>
                   <!-- 下拉部分 -->
-                  <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
+                  <!-- <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
                       <div class="select-item" @click="jumpnormal">普通用户</div>
                       <div v-if="isGlobal" class="select-item" @click="jumpglobal">全球合作伙伴</div>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="select-wrap">
                   <div @click='jumpTwoSell' class="ipt_layout">
@@ -649,7 +649,7 @@ export default {
             this.Amount = res.data.saleable_balance.split('.');
             this.Amount[1] = this.addSpace(this.Amount[1]);
             this.Amount[1] = this.Amount[1].split(' ');
-          }}).then(() =>{
+          }}).then(() =>{  
             if (this.Balance.length && this.Amount) {
               (this.Balance[0]+'.'+this.Balance[1][0]+this.Balance[1][1])>(this.Amount[0]+'.'+this.Amount[1][0]+this.Amount[1][1])?this.Quantity=this.Amount:this.Quantity=this.Balance;
             }
@@ -785,7 +785,7 @@ export default {
         is_active () {
           api.isActive({
             account_name: this.account_name
-          }).then(res => {console.log(7777777777777)
+          }).then(res => {
             switch(res.data.is_activated){
               case 0:
                 this.atv_text = '未激活';this.subAccountQuantity=false;this.account_activation=false;break;

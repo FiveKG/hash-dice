@@ -276,6 +276,9 @@ export default {
             // this.selectTab='Binding'
             this.$ons.notification.toast('请您先绑定',{timeout:1000})
             this.$store.commit('wallet/setSelectedTab', 'Binding')
+            setTimeout(function() {
+              modal.hide();
+            }, 800);
             return
           }
         }else{

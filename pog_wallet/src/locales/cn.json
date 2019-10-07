@@ -204,7 +204,8 @@
     "copy_key": "复制私钥",
     "confirm_delete": "确定删除吗？",
     "language": "语言",
-    "currency": "货币单位"
+    "currency": "货币单位",
+    "announcement":"发布公告"
   },
   "permission": {
     "owner": "拥有者",

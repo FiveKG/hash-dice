@@ -30,7 +30,7 @@
 import UnBind from './UnBind'
 import IsBind from './IsBind'
 import keyboard from '@/components/keyboard/Keyboard';
-import { isBind } from '@/servers/invitation';
+import api from '@/servers/invitation';
 
 export default {
   components: {
@@ -97,8 +97,8 @@ export default {
       this.actionSheetVisible = false
     },
     getBindState(account_name) {
-      isBind({account_name}).then(res => {
-        // console.log(res)
+      api.isBind({account_name}).then(res => {
+        console.log(res)
         if (res.code === 1 && res.data.is_bind) {
           this.isBind = true
           setTimeout(() => {

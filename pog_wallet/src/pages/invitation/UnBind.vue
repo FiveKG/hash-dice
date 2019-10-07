@@ -173,6 +173,14 @@ export default {
             this.$store.commit('wallet/setTbgBindStatus', true)
             this.loading = false
             this.$toast('绑定成功')
+            this.$router.push({     
+              name: 'TradingCenter',
+              params: {
+                buyPartner: 2,
+                Quantity:this.Quantity,
+              }
+            })
+       
             // this.$emit('bind', true)
           }
         })
