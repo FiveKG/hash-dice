@@ -15,7 +15,6 @@ const { format } = require("date-fns");
 const { allocateSurplusAssets } = require("../businessLogic/systemPool");
 const { setRate } = require("./util");
 const storeIncome = require("../common/storeIncome.js");
-const { getSystemAccountInfo } = require("../models/systemPool");
 const { pool, psTrx } = require("../db/index.js");
 
 /**
@@ -52,8 +51,8 @@ async function buyAlloc(data) {
         const now = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
         // 修改订单的状态
         const memo = `user buy ${ amount } assets, transaction ${ trxAmount.toNumber() }, get income ${ trxAmount.mul(price) }`;
-        trxList.push({ sql: insertTradeLogSql, values: [ generate_primary_key(), trId, "buy", amount, memo, price, amount * price, 'now()'] });
-        trxList.push({ sql: updateTradeSql, values: [ data.tradeOpType, 'now()', trxAmount.toNumber(), trId ] });
+        trxList.push({ sql: insertTradeLogSql, values: [ generate_primary_key(), trId, "buy", amount, memo, price, amount * price, now ] });
+        trxList.push({ sql: updateTradeSql, values: [ data.tradeOpType, now, trxAmount.toNumber(), trId ] });
 
         // 获取资产包信息
         const assetsInfo = await getAssetsInfoById([ data.extra.ap_id ]);
@@ -178,9 +177,7 @@ async function buyAlloc(data) {
 
         // 分配剩余的收益
         if (!levelBonus.div(distributed).lessThanOrEqualTo(0)) {
-            // 获取系统账户
-            const systemAccount = await getSystemAccountInfo();
-            await allocateSurplusAssets(pool, systemAccount, levelBonus, distributed, OPT_CONSTANTS.INVITE);
+            await allocateSurplusAssets(pool, levelBonus, distributed, OPT_CONSTANTS.INVITE);
         }
 
         // 如果买入订单全部成交，生成一个挖矿资产包
@@ -189,7 +186,8 @@ async function buyAlloc(data) {
                 "symbol": TBG_TOKEN_SYMBOL,
                 "op_type": OPT_CONSTANTS.MINING,
                 "tr_id": trId,
-                 ...assetsInfo[0]
+                 ...assetsInfo[0],
+                 finished_time: now
             }
             const opts = [ 
                 accountName, trxAmount.mul(0.005), trxAmount.mul(0.005).add(tbgBalance.release_amount).toNumber(), 

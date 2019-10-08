@@ -8,8 +8,6 @@ const { TSH_INCOME } = require("../../common/constant/accountConstant");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
-const { allocateSurplusAssets } = require("../systemPool");
-const { pool } = require("../../db");
 const { getAccountMemberLevel } = require("../../models/account");
 
 /**

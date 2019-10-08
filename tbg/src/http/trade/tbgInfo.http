@@ -16,3 +16,15 @@ Content-Type: application/json
     "title": "TBG全球同步上线公告",
     "description": "TBG全球同步上线公告"
 }
+
+
+
+###
+POST http://pog.tbg.isecsp.com/tbg/add_notification
+Content-Type: application/json
+
+{
+    "creator": "yujinsheng11",
+    "title": "TBG全球同步上线公告",
+    "description": "TBG全球同步上线公告"
+}

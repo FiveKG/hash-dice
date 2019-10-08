@@ -2,7 +2,7 @@
 const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "mq publish and subscribe" });
 const { 
     psUserWithdraw, psBuyAssets, psSellAssets, psBind, psGame, psTbg2, 
-    psTshIncome, psTrx, psModifyBalance
+    psTshIncome, psTrx, psModifyBalance, psSnapshot
 } = require("../db");
 const handlerWithdraw = require("./handlerWithdraw.js");
 const handlerSellAssets = require("./handlerSellAssets.js");
@@ -12,6 +12,7 @@ const tbg1Airdrop = require("./tbg1Airdrop");
 const tshIncomeAirdrop = require("./tshIncomeAirdrop");
 const trxAction = require("./trxAction.js");
 const modifyBalance = require("./modifyBalance");
+const genSnapshot = require("./genSnapshot");
 
 // 用户提现消息
 psUserWithdraw.sub(async msg => {
@@ -102,6 +103,9 @@ psTshIncome.sub(async msg => {
 psTrx.sub(async msg => {
     try {
         let result = JSON.parse(msg);
+        if (result.length === 0) {
+            return;
+        }
         logger.debug("psTrx result: %O", result);
         await trxAction(result);
     } catch (err) {
@@ -120,4 +124,18 @@ psModifyBalance.sub(async msg => {
         logger.error("psModifyBalance error: ", err);
         throw err;
     }
-})
+});
+
+// 生成快照
+psSnapshot.sub(async msg => {
+    try {
+        let result = JSON.parse(msg);
+        logger.debug("psSnapshot result: %O", result);
+        if (!!result.account_name && !!result.refList) {
+            await genSnapshot(result.account_name, result.refList);
+        }
+    } catch (err) {
+        logger.error("psSnapshot error: ", err);
+        throw err;
+    }
+});

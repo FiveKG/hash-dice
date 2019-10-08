@@ -3,23 +3,26 @@ const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "
 const INCOME_CONSTANT = require("../../common/constant/incomeConstant");
 const { DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME } = require("../../common/constant/accountConstant.js");
 const { insertSystemOpLog } = require("../../models/systemOpLog");
-const { updateSystemAmount } = require("../../models/systemPool");
+const { updateSystemAmount, getOneAccount } = require("../../models/systemPool");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants.js");
 
 /** 
  * 处理分配剩余的那部分资产，分别转入社区账号和设计、技术账号
  * @param { any } client 
- * @param { DB.SystemPools[] } systemAccount 
  * @param { any } referIncome 发放的总额
  * @param { any } distributed 剩余的额度
  * @param { String } allocateType 分配类型
  */
-async function allocateSurplusAssets(client, systemAccount, referIncome, distributed, allocateType) {
+async function allocateSurplusAssets(client, referIncome, distributed, allocateType) {
     try {
         // 找到社区账号和设计、技术账号
         // const devAccount = systemAccount.find(item => item.pool_type === DEV_OP_POOL && item.pool_symbol === UE_TOKEN_SYMBOL);
         // const communityAccount = systemAccount.find(item => item.pool_type === COMMUNITY_POOL  && item.pool_symbol === UE_TOKEN_SYMBOL);
-        const tshAccount = systemAccount.find(item => item.pool_type === TSH_INCOME && item.pool_symbol === UE_TOKEN_SYMBOL);
+        const tshAccount = await getOneAccount(TSH_INCOME);
+        if (!tshAccount) {
+            logger.warn(`system account ${ TSH_INCOME } not found`);
+            throw Error(`system account ${ TSH_INCOME } not found`);
+        }
         // if (!devAccount) {
         //     logger.debug(`system account ${ DEV_OP_POOL } not found`);
         //     throw new Error(`system account ${ DEV_OP_POOL } not found`);

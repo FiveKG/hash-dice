@@ -2,7 +2,6 @@
 const { pool, psTrx } = require("../db/index.js");
 const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "处理游戏分配过来的收益" });
 const { Decimal } = require("decimal.js");
-const { getAllTrade } = require("../models/trade");
 const { format } = require("date-fns");
 const GAME_CONSTANTS = require("../common/constant/gameConstants")
 const { getSystemAccountInfo } = require("../models/systemPool");
@@ -213,7 +212,7 @@ async function handlerGameReceiver(data) {
 
         // 分配剩余的收益
         if (!levelBonus.div(distributed).lessThanOrEqualTo(0)) {
-            await allocateSurplusAssets(pool, systemAccount, levelBonus, distributed, OPT_CONSTANTS.GAME_INVITE);
+            await allocateSurplusAssets(pool, levelBonus, distributed, OPT_CONSTANTS.GAME_INVITE);
         }
         
         // logger.debug("sqlList: ", sqlList);

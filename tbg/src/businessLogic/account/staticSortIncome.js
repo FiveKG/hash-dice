@@ -6,7 +6,6 @@ const INCOME_CONSTANT = require("../../common/constant/incomeConstant.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 const { allocateSurplusAssets } = require("../systemPool");
-const { getSystemAccountInfo } = require("../../models/systemPool");
 const { getMainAccountBySub } = require("../../models/subAccount/index.js");
 const storeIncome = require("../../common/storeIncome.js");
 const df = require("date-fns");
@@ -61,10 +60,9 @@ async function staticSort(amount, staticSortList) {
         }
     
         // 系统账户
-        let systemAccount = await getSystemAccountInfo();
         let last = sortEnable.minus(totalDis);
         if (!last.lessThanOrEqualTo(0)) {
-            await allocateSurplusAssets(pool, systemAccount, sortEnable, totalDis, OPT_CONSTANTS.SORT);
+            await allocateSurplusAssets(pool, sortEnable, totalDis, OPT_CONSTANTS.SORT);
         }
     } catch (err) {
         logger.error("allocating sort income error, the error stock is %O", err);

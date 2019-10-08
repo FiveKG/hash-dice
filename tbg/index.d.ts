@@ -60,7 +60,14 @@ declare namespace DB {
             "symbol": string,
             "tr_id": string,
             "op_type": string,
-            "periods": number
+            "periods": number,
+            "amount_type": string,
+            "release_multiple": string,
+            "preset_days": number,
+            "mining_multiple": string,
+            "saleable_multiple": string,
+            "amount": string,
+            "finished_time": Date
         },
         "op_type": string,
         "remark": string,

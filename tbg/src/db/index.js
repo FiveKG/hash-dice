@@ -13,5 +13,6 @@ module.exports = {
     "psTshIncome": require("./psTshIncome.js"),
     "psRaise": require("./psRaise.js"),
     "psTrx": require("./psTrx"),
-    "psModifyBalance": require("./psModifyBalance")
+    "psModifyBalance": require("./psModifyBalance"),
+    "psSnapshot": require("./psSnapshot")
 }

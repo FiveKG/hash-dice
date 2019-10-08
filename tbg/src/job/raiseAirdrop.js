@@ -156,13 +156,20 @@ async function raiseAirdrop(data) {
             // 按私募数量的 5 倍释放，直接转入私募的账户的线性释放池
             await updateTbgBalance(client, accountName, quantity.add(destroyAmount).toNumber(), 0, 0);
 
-            // 在日志里面记录资产包信息
-            const extra = { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE, "tr_id": trId, ...assetsInfo[0] }
+            // 记录释放日志
+            const extra = { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }
             await insertBalanceLog(client, accountName, quantity.add(destroyAmount).toNumber(), acCurrent, OPT_CONSTANTS.RAISE, extra, memo, 'now()');
 
-            // 生成挖矿包，即交易 id，挖矿时使用
+            const finishTime = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
+            // 在日志里面记录资产包信息 生成挖矿包，即交易 id，挖矿时使用 
             // 挖矿的部分可以从 extra 中计算出
-            const miningExtra = { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.MINING, "tr_id": trId, ...assetsInfo[0] }
+            const miningExtra = { 
+                "symbol": TBG_TOKEN_SYMBOL, 
+                "op_type": OPT_CONSTANTS.MINING, 
+                "tr_id": trId, 
+                ...assetsInfo[0], 
+                finished_time: finishTime 
+            }
             await insertBalanceLog(client, accountName, miningAmount.toNumber(), acCurrent, OPT_CONSTANTS.MINING, miningExtra, memo, 'now()');
 
             // 按私募数量的 5 倍释放，直接转入私募的账户, 同时销毁一部份
@@ -175,7 +182,6 @@ async function raiseAirdrop(data) {
                 await updateTbgBalance(client, userReferrer, referrerIncome.toNumber(), 0, 0);
                 await insertBalanceLog(client, userReferrer, referrerIncome.toNumber(), reCurrentBalance.toNumber(), OPT_CONSTANTS.RAISE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, memo, 'now()');
             }
-            const finishTime = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
             const trLogId = generate_primary_key();
             const remark = `user ${ accountName } at ${ finishTime } done raise`;
             await client.query(updateTradeSql, [ "finished", finishTime, amount.toNumber(), trId ]);

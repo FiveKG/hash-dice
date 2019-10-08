@@ -7,7 +7,6 @@ const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 const { UE_TOKEN_SYMBOL } = require("../../common/constant/eosConstants");
 const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "三三分配" });
 const storeIncome = require("../../common/storeIncome.js");
-const { getSystemAccountInfo } = require("../../models/systemPool");
 const { allocateSurplusAssets } = require("../systemPool");
 const { getMainAccountBySub } = require("../../models/subAccount");
 const df = require("date-fns");
@@ -70,12 +69,10 @@ async function staticMode(amount, subAccount) {
 
         // 低于 51 层，剩余的部分分配给社区、开发
         if (len < 51) {
-            // 系统账户
-            const systemAccount = await getSystemAccountInfo();
             // 减去已经发放的
             const last = modeEnable.minus(distributed);
             if (!last.lessThanOrEqualTo(0)) {
-                await allocateSurplusAssets(pool, systemAccount, modeEnable, distributed, OPT_CONSTANTS.MODE)
+                await allocateSurplusAssets(pool, modeEnable, distributed, OPT_CONSTANTS.MODE)
             }
         }
     } catch (err) {

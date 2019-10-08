@@ -10,6 +10,11 @@ const { Decimal } = require("decimal.js");
 const OPT_CONSTANTS = require("../../common/constant/optConstants.js");
 
 // 资产包挖矿详情
+/**
+ * @param {any} req
+ * @param {any} res
+ * @param {any} next
+ */
 async function detail(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);

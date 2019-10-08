@@ -3,6 +3,9 @@ const logger = require("../common/logger.js").child({"@": "publish - subscribe u
 const getAmqpChannel = require("./amqp.js");
 const { RAISE } = require("../common/constant/optConstants.js");
 
+/**
+ * @param {any} data
+ */
 async function publish(data) {
     try {
         let channel = await getAmqpChannel(RAISE);
@@ -12,6 +15,9 @@ async function publish(data) {
     }
 }
 
+/**
+ * @param {(arg0: string) => void} callback
+ */
 async function subscribe(callback) {
     try {
         let channel = await getAmqpChannel(RAISE);

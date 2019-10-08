@@ -9,17 +9,17 @@ const { pool } = require("../../db");
 async function getAllParentLevel(accountName) {
     try {
         let selectAllParentLevelSql = `
-            with etc as (
-                with recursive all_level as (
-                    select referrer_name, account_name, array[referrer_name] as account, 1 as depth from referrer 
-                    where referrer_name = '' and account_name !~ '-'
-                    union
-                    select r.referrer_name, r.account_name, l.account || l.account_name, l.depth + 1 as depth 
-                    from referrer r inner join all_level l on r.referrer_name = l.account_name
+            WITH etc AS (
+                WITH recursive all_level AS (
+                    SELECT referrer_name, account_name, array[referrer_name] AS account, 1 AS depth FROM referrer 
+                    WHERE referrer_name = '' and account_name !~ '-'
+                    UNION
+                    SELECT r.referrer_name, r.account_name, l.account || l.account_name, l.depth + 1 AS depth 
+                    FROM referrer r inner join all_level l on r.referrer_name = l.account_name
                 )
-                select referrer_name, account_name, array_append(account, account_name) as user_level, depth from all_level
+                SELECT referrer_name, account_name, array_append(account, account_name) AS user_level, depth FROM all_level
             )
-            select user_level from etc where user_level[array_length(user_level, 1)] = $1;
+            SELECT user_level FROM etc WHERE user_level[array_length(user_level, 1)] = $1;
         `
         let { rows: [ { user_level } ] } = await pool.query(selectAllParentLevelSql, [ accountName ]);
         return user_level;

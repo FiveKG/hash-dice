@@ -7,8 +7,8 @@ const { getStaticSort } = require("../../models/account");
 const staticModeIncome = require("./staticModeIncome.js");
 const staticSortIncome = require("./staticSortIncome.js");
 const { redis } = require("../../common/index.js");
-const genSnapshot = require("./genSnapshot");
 const ACCOUNT_CONSTANT = require("../../common/constant/accountConstant.js");
+const { psSnapshot } = require("../../db/index.js");
 
 /**
  * 用户投资
@@ -18,13 +18,6 @@ const ACCOUNT_CONSTANT = require("../../common/constant/accountConstant.js");
  */
 async function userInvestment(amount, accountName, userInvestmentRemark) {
     try {
-        // 先检查是否存在推荐关系
-        let referrerAccountList = await getAllParentLevel(accountName);
-        logger.debug("referrerAccountList: ", referrerAccountList);
-        if (referrerAccountList.length === 0) {
-            logger.warn("没有推荐关系，请先设置推荐关系，检查数据是否正确");
-            throw Error("没有推荐关系，请先设置推荐关系，检查数据是否正确");
-        }
         const accountInfo = await getAccountInfo(accountName);
         logger.debug("accountInfo: ", accountInfo);
         // 如果用户不存在,直接过滤掉
@@ -32,6 +25,15 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
             logger.warn("用户不存在");
             return;
         }
+
+        // 先检查是否存在推荐关系
+        let referrerAccountList = await getAllParentLevel(accountName);
+        logger.debug("referrerAccountList: ", referrerAccountList);
+        if (referrerAccountList.length === 0) {
+            logger.warn("没有推荐关系，请先设置推荐关系，检查数据是否正确");
+            throw Error("没有推荐关系，请先设置推荐关系，检查数据是否正确");
+        }
+
         // 生成子账号
         let subAccount = await getUserSubAccount(accountName);
         logger.debug("subAccount: ", subAccount);
@@ -65,7 +67,7 @@ async function userInvestment(amount, accountName, userInvestmentRemark) {
         
         // 用户投资生成快照
         if (accountInfo.state !== ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2 || accountInfo.state !== ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2) {
-            await genSnapshot(accountName);
+            await psSnapshot.pub({ account_name: accountName, refList: referrerAccountList });
         }
     } catch (err) {
         logger.error("user investment error, the error stock is %O", err);

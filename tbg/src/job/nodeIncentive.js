@@ -11,6 +11,7 @@ const { TBG_TOKEN_SYMBOL, UE_TOKEN_SYMBOL } = require("../common/constant/eosCon
 const df = require("date-fns");
 const { scheduleJob } = require("node-schedule");
 const storeIncome = require("../common/storeIncome.js");
+const { redis } = require("../common");
 
 logger.debug(`nodeIncentive running...`);
 // 截止周一00:00
@@ -28,6 +29,16 @@ async function nodeIncentive() {
     if (nodeIncentivePoolAmount.eq(0)) {
         return;
     }
+    // 找出达标大于 3 的用户
+    const selectSnapshotSql = `SELECT * FROM snapshot AS tmpSnapshot WHERE account_grade != $1 OR account_grade != $2`;
+    const { rows: snapshotList } = await pool.query(selectSnapshotSql, [ "v", "v0"]);
+    await redis.set("tbg:snapshot", snapshotList);
+    // 重置所有用户的周推荐人数量
+    const updateSnapshotSql = `UPDATE snapshot SET invite_account_week = 0`;
+    await pool.query(updateSnapshotSql);
+    if (snapshotList.length === 0) {
+        return;
+    }
     // 本次分配的金额
     let distrEnable = nodeIncentivePoolAmount.mul(INCOME_CONSTANT.NODE_INCENTIVE_RATE / INCOME_CONSTANT.BASE_RATE);
     // 用户等级可得的比例
@@ -39,10 +50,6 @@ async function nodeIncentive() {
     const client = await pool.connect();
     await client.query("BEGIN");
     try {
-        await client.query("LOCK TABLE snapshot IN ACCESS EXCLUSIVE MODE");
-        // 找出达标大于 3 的用户
-        const selectSnapshotSql = `SELECT * FROM snapshot WHERE account_grade != $1 OR account_grade != $2`;
-        const { rows: snapshotList } = await client.query(selectSnapshotSql, [ "v", "v0"]);
         const accMap = new Map();
         // 统计每个等级的人数
         for (const accInfo of snapshotList) {
@@ -89,15 +96,13 @@ async function nodeIncentive() {
             INSERT INTO system_op_log(change_amount, current_balance, extra, op_type, remark, create_time)
                 VALUES($1, $2, $3, $4, $5, $6);
         `
-        // 重置所有用户的周推荐人数量
-        const updateSnapshotSql = `UPDATE snapshot SET invite_account_week = 0`;
         const currentBalance = nodeIncentivePoolAmount.minus(issued);
         const remark = 'allocating node incentive pool bonus'
         const opts = [ issued, currentBalance, { "symbol": UE_TOKEN_SYMBOL, aid: NODE_INCENTIVE_POOL }, 'node', remark, 'now()' ];
         await client.query(updateSysPoolSql, opts);
         await client.query(insertSysOpLogSql, [ currentBalance, NODE_INCENTIVE_POOL, UE_TOKEN_SYMBOL ]);
-        await client.query(updateSnapshotSql);
         await client.query("COMMIT");
+        await redis.del("tbg:snapshot");
     } catch (err) {
         await client.query("ROLLBACK");
         logger.error(`issue ${ NODE_INCENTIVE_POOL } pool bonus error, the error stock is %O`, err);

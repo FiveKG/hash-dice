@@ -14,10 +14,10 @@ const request = require("request");
 function asyncRequest(options) {
     return new Promise((resolve, reject) => {
         request(options, (err, res, body) => {
-        if (err) {
-            return reject(err);
-        }
-        resolve(body);
+            if (err) {
+                return reject(err);
+            }
+            resolve(body);
         });
     });
 }
@@ -31,11 +31,11 @@ function asyncRequest(options) {
 async function post(api_url, options = {}) {
     try {
         const req_options = {
-        uri: api_url,
-        method: "post",
-        json: true,
-        headers: options.headers || {},
-        body: options.data || {}
+            uri: api_url,
+            method: "post",
+            json: true,
+            headers: options.headers || {},
+            body: options.data || {}
         };
 
         return await asyncRequest(req_options);
@@ -121,7 +121,7 @@ async function getCurrencyBalance(code, account, symbol) {
         const rpc = new JsonRpc(END_POINT, { fetch });
         const resp = await rpc.get_currency_balance(code, account, symbol);
         // const { [TBG_TOKEN_SYMBOL]: { max_supply: maxSupply } } = resp;
-        console.debug("resp: ", resp);
+        // console.debug("resp: ", resp);
         return resp;
     } catch (err) {
         throw err;
