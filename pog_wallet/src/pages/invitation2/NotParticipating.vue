@@ -400,6 +400,7 @@ export default {
                   account: '',
                   friendAccountName: ''
                 },
+                base_amount:'',
                 password: '',
                 actionSheetVisible: false,
                 showDialog: false,
@@ -696,9 +697,16 @@ export default {
         }
        },
       jumpSubAccount() {         //跳转 子账号
-          this.$router.push({
-          name: 'SubAccount',
-        })
+           api.isActive({account_name: this.account_name}).then(res => {
+           if(res.data.is_activated==0||res.data.is_activated==10){
+             this.jumpQuantityTbg()
+           }else{
+             this.$router.push({
+              name: 'SubAccount',
+            })
+           }
+          })
+          
        },
       jumpProfit() {         //跳转 TBG-1收益
           this.$router.push({
@@ -757,13 +765,12 @@ export default {
             this.showDialog = false
             try {
               const config = await this.getConfig();
-              console.log(3333333333333,config);
-              console.log(44444444444444,privateKey);
+              this.base_amount=config.base_amount+`.0000 UE`;
               const opts = { authorization:[`${this.account_name }@active`], keyProvider: privateKey }
               // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
               const adm = await eos.contract('uetokencoin')
               // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
-              const trx = await adm.transfer(this.account_name , config.wallet_receiver, `1000.0000 UE`, `tbg_invest:${this.account_name }`, opts)
+              const trx = await adm.transfer(this.account_name , config.wallet_receiver, this.base_amount, `tbg_invest:${this.account_name }`, opts)
               this.is_active()
               console.log(11221111,trx);
               return true
