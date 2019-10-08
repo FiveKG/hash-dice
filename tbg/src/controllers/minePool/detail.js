@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/minePool/detail.js": "资产包挖矿详情" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "资产包挖矿详情" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountInfo } = require("../../models/account");
 const { getTradeInfoById } = require("../../models/trade");

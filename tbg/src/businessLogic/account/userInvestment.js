@@ -8,7 +8,7 @@ const staticModeIncome = require("./staticModeIncome.js");
 const staticSortIncome = require("./staticSortIncome.js");
 const { redis } = require("../../common/index.js");
 const ACCOUNT_CONSTANT = require("../../common/constant/accountConstant.js");
-const { psSnapshot } = require("../../db/index.js");
+const { psSnapshot } = require("../../db");
 
 /**
  * 用户投资

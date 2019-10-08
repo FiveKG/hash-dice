@@ -21,6 +21,7 @@ function getInfo(a, b, c, d, e) {
 ;(async () => {
     const accountName = "z134invguxz5";
     const referrerAccountList = [ "", "gametestuser", "yujinsheng11", "ih.1n13llsmd", "nqs1gncnctll", "cjrpeqofemdz", "rmhllyn51gs3", "fliu41jpferv", "z134invguxz5" ]
+    const memberCount = 5;
     const refList = []
     for (const ref of referrerAccountList) {
         if (ref === '' || ref === accountName) {
@@ -28,27 +29,30 @@ function getInfo(a, b, c, d, e) {
         }
         refList.push(ref);
     }
-
     const refJoinSnapSql = `
         SELECT s.account_name, s.invite_count_week, s.invite_member_count, s.standard_v0, s.standard_v1, s.standard_v2, 
                 s.standard_v3, s.standard_v4, s.effective_member, r.referrer_name 
             FROM snapshot s JOIN referrer r ON r.account_name = s.account_name;
     `
     const { rows: snapshotListInfo } = await pool.query(refJoinSnapSql);
+    // console.debug("snapshotListInfo: ", snapshotListInfo);
     const optsMap = new Map();
-    for (const acc of refList) {
-        let v0 = 0;
-        let grade = "v"
-        const snapshotInfo = snapshotListInfo.find(it => it.account_name === acc);
+    let grade = "v"
+    for (const referrer of refList) {
+        const snapshotInfo = snapshotListInfo.find(it => it.account_name === referrer);
+        console.debug("snapshotInfo: ", snapshotInfo);
         // 用户推荐人数大于 100 时，伞下有可能有达标用户
-        if (snapshotInfo.effective_member > 100) {
+        if (snapshotInfo.effective_member >= memberCount) {
+            grade = 'v0';
             // 下级直推用户的快照
-            const subSnapshotList = snapshotListInfo.filter(it => it.referrer_name === acc);
-            const standard_v0 = subSnapshotList.filter(it => it.standard_v0 > 0).length;
-            const standard_v1 = subSnapshotList.filter(it => it.standard_v1 > 0).length;
-            const standard_v2 = subSnapshotList.filter(it => it.standard_v2 > 0).length;
-            const standard_v3 = subSnapshotList.filter(it => it.standard_v3 > 0).length;
-            const standard_v4 = subSnapshotList.filter(it => it.standard_v4 > 0).length;
+            const subSnapshotList = snapshotListInfo.filter(it => it.referrer_name === referrer);
+            // console.debug("snapshotListInfo: ", snapshotListInfo);
+            console.debug("subSnapshotList.filter(it => it.standard_v0 > 0): ", subSnapshotList.filter(it => it.account_grade ===  "v0"));
+            let standard_v0 = subSnapshotList.filter(it => it.account_grade ===  "v0").length;
+            let standard_v1 = subSnapshotList.filter(it => it.account_grade ===  "v1").length;
+            let standard_v2 = subSnapshotList.filter(it => it.account_grade ===  "v2").length;
+            let standard_v3 = subSnapshotList.filter(it => it.account_grade ===  "v3").length;
+            let standard_v4 = subSnapshotList.filter(it => it.account_grade ===  "v4").length;
             if (standard_v0 >= 3) {
                 grade = "v1";
             }
@@ -67,17 +71,11 @@ function getInfo(a, b, c, d, e) {
             if (standard_v4 >= 3) {
                 grade = "v5";
             }
-            const opts = [ grade, 1, 1, standard_v0, standard_v1, standard_v2, standard_v3, standard_v4, 1, acc ];
-            optsMap.set(acc, opts);
+            const opts = [ grade, standard_v1, standard_v2, standard_v3, standard_v4, referrer ];
+            optsMap.set(referrer, opts);
         } else {
-            // 如果推荐人数大于 100，升级为达标用户
-            if (snapshotInfo.effective_member + 1 === 100) {
-                grade = "v0"
-                v0 = 1;
-            }
-
-            const opts = [ grade, 1, 1, v0, 0, 0, 0, 0, 1, acc ];
-            optsMap.set(acc, opts);
+            const opts = [ grade, 0, 0, 0, 0, referrer ];
+            optsMap.set(referrer, opts);
         }
     }
     // console.debug("refList: ", refList);

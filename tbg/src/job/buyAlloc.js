@@ -46,7 +46,7 @@ async function buyAlloc(data) {
             INSERT INTO trade_log(id, tr_id, trade_type, amount, memo, price, volume, create_time)
                 VALUES($1, $2, $3, $4, $5, $6, $7, $8);
         `
-        let { amount, price, id: trId, account_name: accountName, trx_amount } = data;
+        let { amount, price, id: trId, account_name: accountName, trxAmount: trx_amount } = data;
         let trxAmount = new Decimal(trx_amount);
         const now = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
         // 修改订单的状态
@@ -190,7 +190,7 @@ async function buyAlloc(data) {
                  finished_time: now
             }
             const opts = [ 
-                accountName, trxAmount.mul(0.005), trxAmount.mul(0.005).add(tbgBalance.release_amount).toNumber(), 
+                accountName, trxAmount.toNumber(), trxAmount.add(tbgBalance.release_amount).toNumber(), 
                 OPT_CONSTANTS.MINING, extra, `user buy ${ amount } assets, transaction finished, generate a mining asset package`, now 
             ]
             trxList.push({ sql: insertBalanceLogSql, values: opts });

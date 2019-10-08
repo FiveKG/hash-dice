@@ -134,6 +134,7 @@ async function wringTrade() {
                     // 如果没有卖单, 由平台来插单
                     const orderCount = Math.ceil(rate.mul(buyOrder.length).toNumber());
                     const waitOrder = buyOrder.filter(it => it.state === WAIT_STATE).splice(0, orderCount);
+                    logger.debug("waitOrder: ", waitOrder);
                     const { actions, queryList } = await replenish(waitOrder);
                     actionList.push(...actions);
                     trxList.push(...queryList);
@@ -145,6 +146,7 @@ async function wringTrade() {
                     } else {
                         const orderCount = Math.ceil(rate.minus(buyToSell).mul(buyOrder.length).toNumber());
                         const waitOrder = buyOrder.filter(it => it.state === WAIT_STATE).splice(0, orderCount);
+                        logger.debug("waitOrder: ", waitOrder);
                         const { actions, queryList } = await replenish(waitOrder);
                         actionList.push(...actions);
                         trxList.push(...queryList);
@@ -153,7 +155,7 @@ async function wringTrade() {
             }            
         }
 
-        let flag = false;
+        logger.debug("trxList: ", trxList);
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
@@ -161,7 +163,6 @@ async function wringTrade() {
                 client.query(it.sql, it.values);
             }));
             await client.query("COMMIT");
-            flag = true;
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
@@ -169,9 +170,7 @@ async function wringTrade() {
             await client.release();
         }
 
-        if (flag) {
-            await psTrx.pub(actionList)
-        }
+        await psTrx.pub(actionList);
     } catch (err) {
         logger.error("wring order error, the error stock is ", err);
         throw err;
@@ -210,18 +209,7 @@ async function replenish(waitOrder) {
                 sql: insertTradeLogSql,
                 values: [ generate_primary_key(), trId, info.trade_type, info.amount, memo, info.price, info.amount * info.price, 'now()' ]
             });
-            // 修改用户的订单并记录日志
-            // queryList.push({
-            //     sql: updateTradeSql,
-            //     values: [ "finished", now, info.amount, info.id ]
-            // })
-            // queryList.push({
-            //     sql: insertTradeLogSql,
-            //     values: [ generate_primary_key(), info.id, info.trade_type, info.amount, memo, info.price, info.amount * info.price, now ]
-            // });
-            // const { queryList: trxList, actionsList } = await buyAirdrop(info);
-            // queryList.push(...trxList);
-            // tmpActions.push(...actionsList);
+
             // 待成交数量
             const trxAmount = new Decimal(info.amount).minus(info.trx_amount);
             const { queryList: trxList, actionsList } = await buyAlloc({ ...info, tradeOpType: "finished", trxAmount: trxAmount });

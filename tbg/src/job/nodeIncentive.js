@@ -31,7 +31,7 @@ async function nodeIncentive() {
     }
     // 找出达标大于 3 的用户
     const selectSnapshotSql = `SELECT * FROM snapshot AS tmpSnapshot WHERE account_grade != $1 OR account_grade != $2`;
-    const { rows: snapshotList } = await pool.query(selectSnapshotSql, [ "v", "v0"]);
+    const { rows: snapshotList } = await pool.query(selectSnapshotSql, [ "v", "v0" ]);
     await redis.set("tbg:snapshot", snapshotList);
     // 重置所有用户的周推荐人数量
     const updateSnapshotSql = `UPDATE snapshot SET invite_account_week = 0`;

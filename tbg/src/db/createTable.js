@@ -208,11 +208,6 @@ async function createTable() {
             invite_count_week INTEGER NOT NULL DEFAULT 0,
             tree_level JSON NOT NULL DEFAULT '{}'::JSONB,
             invite_member_count INTEGER NOT NULL DEFAULT 0,
-            standard_v0 INTEGER NOT NULL DEFAULT 0,
-            standard_v1 INTEGER NOT NULL DEFAULT 0,
-            standard_v2 INTEGER NOT NULL DEFAULT 0,
-            standard_v3 INTEGER NOT NULL DEFAULT 0,
-            standard_v4 INTEGER NOT NULL DEFAULT 0,
             effective_member INTEGER NOT NULL DEFAULT 0,
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
@@ -223,11 +218,6 @@ async function createTable() {
         comment on column snapshot.invite_count_week is '伞下每周新邀人数';
         comment on column snapshot.tree_level is '';
         comment on column snapshot.invite_member_count is '伞下总的人数';
-        comment on column snapshot.standard_v0 is 'v';
-        comment on column snapshot.standard_v1 is 'v1';
-        comment on column snapshot.standard_v2 is 'v2';
-        comment on column snapshot.standard_v3 is 'v3';
-        comment on column snapshot.standard_v4 is 'v4';
         comment on column snapshot.effective_member is '推荐的有效的人数';
         comment on column snapshot.create_time is '创建时间';
         CREATE TABLE IF NOT EXISTS system_notification (

@@ -2,7 +2,7 @@
 
 // 投资额度
 // 参与 TBG1 所需 UE 额度
-const BASE_AMOUNT = "2000";
+const BASE_AMOUNT = "1000";
 // TBG1 收款账户
 const WALLET_RECEIVER = "tbgjoin";
 // TBG1 出款账户

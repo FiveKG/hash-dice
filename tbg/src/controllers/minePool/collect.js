@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/minePool/collect.js": "资产包挖矿收益收取" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "资产包挖矿收益收取" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountInfo } = require("../../models/account");
 const { updateTbgBalance, getTbgBalanceInfo } = require("../../models/tbgBalance");
