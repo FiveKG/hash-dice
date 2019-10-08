@@ -173,15 +173,22 @@ export default {
             this.$store.commit('wallet/setTbgBindStatus', true)
             this.loading = false
             this.$toast('绑定成功')
-            this.$router.push({     
-              name: 'TradingCenter',
-              params: {
-                buyPartner: 2,
-                Quantity:this.Quantity,
+            api.getType({account_name:this.account}).then(res => {    // 获取账号类型
+              if (res.code === 1) {
+                  if(res.data.account_type=="global"){
+                    this.$router.push({     
+                      name: 'TradingCenter',
+                      params: {
+                        buyPartner: 2,
+                      }
+                    })
+                  }else{
+                    this.$router.push({     
+                      name: 'TradingCenter',
+                    })
+                  }
               }
             })
-       
-            // this.$emit('bind', true)
           }
         })
     },

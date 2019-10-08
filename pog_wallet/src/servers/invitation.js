@@ -210,6 +210,18 @@ const withdrawHistory = (reqData) => {
     const data = reqData;
     return getData(url, data);
 }
+// 创建系统公告
+const systemAnnouncement = (reqData) => {
+    const url = '/tbg/add_notification';
+    const data = reqData;
+    return postData(url, data);
+}
+// TBG 概况
+const overview = (reqData) => {
+    const url = '/tbg/info';
+    const data = reqData;
+    return getData(url, data);
+}
 
 
 
@@ -424,6 +436,9 @@ export default{
     withdraw,
     friendInvest,
     withdrawHistory,
+    systemAnnouncement,
+    overview,
+
 
     getType,
     partnerPlacement,

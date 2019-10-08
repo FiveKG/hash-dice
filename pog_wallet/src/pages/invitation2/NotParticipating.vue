@@ -588,7 +588,7 @@ export default {
         return str.slice(0,str.length-4) + " " +str.slice(-4)
       },
       addComma(data){  //修改已销毁数据
-        var a=data;var b='';var c=a.length+1;
+        var a=data;var b='';var c=a.length;
           for(var i=0;c/3>i;i++){
             if(a.length>3){
               b=','+a.slice(a.length-3,a.length)+b;
