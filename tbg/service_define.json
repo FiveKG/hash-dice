@@ -1623,6 +1623,61 @@
             }
         },
         {
+            "name" : "获取提交的系统公告",
+            "summary": "",
+            "remark": [],
+            "isFunctionPoint" : true,
+            "url" : "/tbg/get_notification",
+            "type" : "get",
+            "requireRole" : [ "*" ],
+            "req": {
+                "creator": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "title": { "type": "text",  "is_require": true,  "desc": "标题" },
+                "description": { "type": "text",  "is_require": true,  "desc": "详情" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
+        },
+        {
+            "name" : "审核系统公告",
+            "summary": "",
+            "remark": [],
+            "isFunctionPoint" : true,
+            "url" : "/tbg/review_notification",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "creator": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "title": { "type": "text",  "is_require": true,  "desc": "标题" },
+                "description": { "type": "text",  "is_require": true,  "desc": "详情" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
+        },
+        {
+            "name" : "审核系统公告",
+            "summary": "",
+            "remark": [],
+            "isFunctionPoint" : true,
+            "url" : "/tbg/delete_notification",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "creator": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
+            }
+        },
+        {
             "name" : "获取用户的推荐人",
             "summary": "",
             "remark": [

@@ -225,13 +225,15 @@ async function createTable() {
             creator TEXT NOT NULL DEFAULT '',
             title TEXT NOT NULL DEFAULT '',
             description TEXT NOT NULL DEFAULT '',
+            state TEXT NOT NULL DEFAULT '',
             create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
         );
         comment on table system_notification is '系统通知';
         comment on column system_notification.id is '系统通知 id';
         comment on column system_notification.creator is '创建人';
         comment on column system_notification.title is '标题';
-        comment on column system_notification.description is '内容';;
+        comment on column system_notification.state is '状态(create, waiting, pass)';
+        comment on column system_notification.description is '内容';
         comment on column system_notification.create_time is '创建时间';
     `
 

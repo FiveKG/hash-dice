@@ -8,11 +8,12 @@ async function notification(req, res, next) {
     try {
         let reqData = await inspect_req_data(req);
         logger.debug(`the param is %j: `, reqData);
-        const insertSql = `
+        
+        const updateSql = `
             INSERT INTO system_notification(creator, title, description, state, create_time)
                 VALUES($1, $2, $3, $4, $5)    
         `
-        const { rows } = await pool.query(insertSql, [ reqData.creator, reqData.title, reqData.description, "create", "now()" ]);
+        const { rows } = await pool.query(updateSql, [ reqData.creator, reqData.title, reqData.description, "create", "now()" ]);
         res.send(get_status(1));
     } catch (err) {
         logger.error("request add notification error, the error stock is %O", err);
