@@ -8,11 +8,12 @@ const { pool } = require("../../db/index.js");
 async function getPkAccount() {
     try {
         let sql = `
-            select referrer_name, count(referrer_name) as invite_count 
-                from referrer 
-                where account_name !~ '-' and referrer_name != '' 
-                group by referrer_name 
-                order by invite_count desc limit 10;
+            SELECT referrer_name, count(referrer_name) AS invite_count 
+                FROM referrer 
+                WHERE account_name !~ '-' AND referrer_name != '' AND account_name != (SELECT account_name FROM referrer WHERE referrer_name = '')
+                GROUP BY referrer_name 
+                ORDER BY invite_count DESC
+                LIMIT 10;
         `
         let { rows } = await pool.query(sql);
         return rows;

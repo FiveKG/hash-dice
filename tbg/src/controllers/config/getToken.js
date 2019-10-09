@@ -16,10 +16,10 @@ async function login(req, res, next) {
             return res.send(get_status(1024, "request key is empty"));
         }
         
-        // if (key.length !== 128) {
-        //     logger.debug("invalid key");
-        //     return res.send(get_status(1025, "invalid key"));
-        // }
+        if (key.length !== 128) {
+            logger.debug("invalid key");
+            return res.send(get_status(1025, "invalid key"));
+        }
         //生成 token , 并返回给前端
         const token = jwt.sign({ "key": key }, JWT_SECRET, { expiresIn: '6h' });
         logger.debug("get token: %s", token);
