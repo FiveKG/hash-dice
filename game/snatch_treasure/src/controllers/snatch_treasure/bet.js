@@ -40,6 +40,9 @@ async function bet(req, res, next) {
         // 获取用户彩码，游戏码，余额
         const { data: [ resp ] } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
         logger.debug("resp: ", resp);
+        if (!resp) {
+            return res.send(get_status(1011, "insufficient balance"));
+        }
         // 游戏码
         const lottoCurrency = new Decimal(resp.game_currency);
         // 可提现余额

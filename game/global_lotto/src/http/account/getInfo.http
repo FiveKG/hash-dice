@@ -22,10 +22,10 @@ GET http://localhost:13021/global_lotto/game_session_mine_detail?account_name=ga
 ### get account information
 POST http://localhost:13021/global_lotto/bet
 Content-Type: application/json
-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiIzNTg0MUY4NjUzODYxMzk0M0NGMDE1Q0MxRjYxQzA1N0YzNDcwRTY3QjQ1NjBEOEIwMTRCRTRBMEREM0UxMjZFNjBFNDNDMkVCOTk4MjQwMDcwNUY2NkQ1MkZCNkI0NjUyQUE1REMwODUzM0FBRUE0NkMyODBGMjEzQ0FFNjQwRCIsImlhdCI6MTU2OTc1Njk5MiwiZXhwIjoxNTY5Nzc4NTkyfQ.4up7UtDyi-hFYZOG_8xPA9erYfjJkiSdIfU9iFL8Trw
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJnYW1ldGVzdHVzZXIiLCJpYXQiOjE1NzA2MjAyODksImV4cCI6MTU3MDY0MTg4OX0.Qij6R9kDkCrhOMe5H3zaFOHramB30VuV-C5vBYUyHKM
 
 {
-    "periods": 6,
+    "periods": 74,
     "account_name": "tbgtestuser1",
     "bet_num": "123456789",
     "bet_key": 1,

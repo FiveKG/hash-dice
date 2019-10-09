@@ -27,7 +27,7 @@ async function insertSystemAccount(systemAccount) {
               FROM new_values
               WHERE NOT EXISTS (SELECT 1 
                                 FROM system_pools
-                                WHERE system_pools.pool_type = new_values.pool_type AND system_pools.pool_symbol = new_values.pool_symbol)
+                                WHERE system_pools.pool_type = new_values.pool_type AND system_pools.pool_symbol = new_values.pool_symbol);
         `
         // logger.info("insert test data to system_pools table, sql is %s", querySql);
         await pool.query(querySql);

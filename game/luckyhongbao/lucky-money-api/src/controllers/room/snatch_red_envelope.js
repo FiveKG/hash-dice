@@ -74,6 +74,9 @@ async function snatch_red_envelope(req, res, next) {
         // 获取用户彩码，游戏码，余额
         const { data: [ resp ] } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
         logger.debug("resp: ", resp);
+        if (!resp) {
+            return res.send(get_status(1011, "insufficient balance"));
+        }
         if (!resp.withdraw_enable) {
             return res.send(get_status(2014, "can not find this eos account"));
         }

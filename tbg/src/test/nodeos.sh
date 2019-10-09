@@ -47,7 +47,7 @@ function genEosAccountName() {
 # 批量导入密钥
 function blukImportKey() {
     unset q
-    for q in $(seq 10)
+    for q in $(seq 20)
     do
         unset count
         unset tmpStr
@@ -59,14 +59,14 @@ function blukImportKey() {
             if [ $count -eq 0 ]
             then
                 # 将账号信息重定向到文件
-                printf "private: $line\n" >> testkey
+                printf "private: $line\n" >> keyPairs
                 # 导入私钥
                 cleos wallet import --private-key=$line
                 # echo ""
             else
                 acc=$accountName
-                printf "public: $line\n" >> testkey
-                printf "accountName: $accountName\n" >> testkey
+                printf "public: $line\n" >> keyPairs
+                printf "accountName: $accountName\n" >> keyPairs
                 # 创建账号
                 cleos create account yujinsheng11 $accountName $line $line
                 # 转帐
@@ -114,7 +114,7 @@ function transfer() {
 # 先解锁钱包
 unlock
 # 生成一批测试账号，同时导入私钥
-# blukImportKey
+blukImportKey
 
 # createAccount
 
@@ -133,6 +133,6 @@ unlock
 # cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","10.0000 UE","recharger"]' -p yujinsheng11
 # cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","1000.0000 UE","recharger"]' -p yujinsheng11
 # cleos -u http://45.251.109.187:8888 push action tbgtokencoin transfer '["tbgtokencoin","tbgfreepool","100.0000 TBG","recharger"]' -p tbgtokencoin
-cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["gametestuser","tbgjoin","2000.0000 UE","tbg_invest:gametestuser"]' -p gametestuser
+# cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["gametestuser","tbgjoin","2000.0000 UE","tbg_invest:gametestuser"]' -p gametestuser
 
-cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","10822.0000 UE","yujinsheng11:0.5411:raise:4"]' -p yujinsheng11
+# cleos -u http://45.251.109.187:8888 push action uetokencoin transfer '["yujinsheng11","tbgfreepool","10822.0000 UE","yujinsheng11:0.5411:raise:4"]' -p yujinsheng11

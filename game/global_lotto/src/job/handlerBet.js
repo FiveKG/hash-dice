@@ -96,19 +96,19 @@ async function handlerBet(data) {
         });
 
         // 判断投注的类型
-        let betNum = ''
-        let extra = { agent_account: "", transaction_id: "", pay_type: data.pay_type }
-        if (data.bet_type === "random") {
-            const tmp = [];
-            // 每个 key 生成一组号码
-            for (let i = 0; i < data.bet_key; i++) {
-                tmp.push(Math.random().toString().slice(-9).split("").join(","));
-            }
-            betNum = tmp.join("|");
-        } else {
-            betNum = data.bet_num;
-        }
+        // let betNum = ''
+        // if (data.bet_type === "random") {
+        //     const tmp = [];
+        //     // 每个 key 生成一组号码
+        //     for (let i = 0; i < data.bet_key; i++) {
+        //         tmp.push(Math.random().toString().slice(-9).split("").join(","));
+        //     }
+        //     betNum = tmp.join("|");
+        // } else {
+        //     betNum = data.bet_num;
+        // }
 
+        let extra = { agent_account: "", transaction_id: "", pay_type: data.pay_type }
         let agentAccount = AGENT_ACCOUNT;
         if (data.pay_type === UE_TOKEN_SYMBOL) {
             agentAccount = BANKER

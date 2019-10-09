@@ -52,7 +52,6 @@ async function bindReferrer(req, res, next) {
             }
         } else {
             // 全球合伙人
-            // 全球合伙人的推荐人都为空，每个全球合伙人都位于最顶端，下方不能有其他全球合伙人
             accountType = ACCOUNT_TYPE.GLOBAL;
             const rows = await randomGetAccount(accountName, accountType);
             referrerName = !!rows ? rows.account_name : '';
@@ -65,10 +64,7 @@ async function bindReferrer(req, res, next) {
         if (!!result) {
             referrerName = result;
         } else {
-            const { rows: [ { count } ] } = await pool.query("SELECT count(1) FROM account");
-            if (count !== 0) {
-                return res.send(get_status(1001, "this referrer does not exists"));
-            }
+            return res.send(get_status(1001, "this referrer does not exists"));
         }
     }
 

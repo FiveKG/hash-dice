@@ -23,6 +23,7 @@ const { Decimal } = require("decimal.js");
     await insertSystemAccount(systemAccount); 
     await insertAssetsPackage();
     await initOpeningPrice();
+    process.exit(0);
 })();
 
 // async function clearRedisKeyBeforeInit() {

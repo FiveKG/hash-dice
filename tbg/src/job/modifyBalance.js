@@ -3,6 +3,7 @@ const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "修
 const { Decimal } = require("decimal.js");
 const { MAX_RISE_PRICE, MIN_RISE_PRICE, OPENING_PRICE_KEY } = require("../common/constant/tradeConstant");
 const { getUserBalance } = require("../models/balance");
+const { getAccountInfo } = require("../models/account");
 const { redis } = require("../common");
 const { pool } = require("../db");
 
@@ -12,6 +13,10 @@ const { pool } = require("../db");
  */
 async function modifyBalance(data) {
     try {
+        const accountInfo = await getAccountInfo(data.account_name);
+        if (!accountInfo) {
+            return;
+        }
         const sqlList = [];
         const insertBalanceLogSql = `
             INSERT INTO 
