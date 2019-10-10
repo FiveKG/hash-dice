@@ -24,7 +24,7 @@
         "cordova-plugin-whitelist": "^1.3.4",
         "cordova-plugin-x-toast": "^2.7.2",
         "i": "^0.3.6",
-        "nodejs-mobile-cordova": "^0.3.4"
+        "nodejs-mobile-cordova": "^0.3.3"
     },
     "cordova": {
         "plugins": {
@@ -42,8 +42,8 @@
             },
             "cordova-plugin-qrscanner": {},
             "cordova-plugin-compat": {},
-            "nodejs-mobile-cordova": {},
-            "cordova-plugin-save-image-gallery": {}
+            "cordova-plugin-save-image-gallery": {},
+            "nodejs-mobile-cordova": {}
         },
         "platforms": [
             "android"

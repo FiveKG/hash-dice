@@ -72,6 +72,7 @@ import Profit2 from './pages/invitation/Profit'
 import Profit from './pages/invitation2/Profit'
 import SubAccount from './pages/invitation/SubAccount'
 import Invitation from './pages/me/Invitation'
+import Announcement from './pages/me/Announcement'
 import TBGFAQ from './pages/invitation/FAQ'
 import TBGRules from './pages/invitation/Rules'
 import MyTeam from './pages/invitation/MyTeam'
@@ -357,6 +358,11 @@ const router = new Router({
       path: '/invitation',
       name: 'Invitation',
       component: Invitation,
+    },
+    {
+      path: '/announcement',
+      name: 'Announcement',
+      component: Announcement,
     },
     {
       path: '/tbg/faq',

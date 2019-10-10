@@ -38,13 +38,13 @@
             </div>
                 <!-- 多选框 -->
             <div style="position: relative;">
-                <div class="ipt_layout" style="box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);border: none;background: rgb(255, 255, 255);">
+                <div @click='logIpt' class="ipt_layout" style="box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);border: none;background: rgb(255, 255, 255);">
                     <div class="float_left" style="margin: .3rem 0 0 .5rem;">
                     <span style="font-size: .45rem;color: #1E1E1E;">资产包</span>
                     </div>
                     <div class="float_right" style="margin: .28rem 0 0 0;">
                     <span class="font_B" style=" font-size:.5rem;color: #1E1E1E;">{{buyPartnerData[globalSelect].amount}} TBG</span>
-                    <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;" @click='logIpt'> 
+                    <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;"> 
                     </div>
                 </div>
                 <!-- 下拉部分 -->
@@ -148,13 +148,13 @@
             </div>
                 <!-- 多选框 -->
             <div style="position: relative;">
-                <div class="ipt_layout" style="box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);border: none;background: rgb(255, 255, 255);">
+                <div @click='logIpt' class="ipt_layout" style="box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);border: none;background: rgb(255, 255, 255);">
                     <div class="float_left" style="margin: .3rem 0 0 .5rem;">
                     <span style="font-size: .45rem;color: #1E1E1E;">请选择资产包</span>
                     </div>
                     <div class="float_right" style="margin: .28rem 0 0 0;">
                     <span class="font_B" style=" font-size:.5rem;color: #1E1E1E;">{{buynormalData[normalSelect].amount}} TBG</span>
-                    <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;" @click='logIpt'> 
+                    <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;" > 
                     </div>
                 </div>
                 <!-- 下拉部分 -->
@@ -638,6 +638,7 @@ watch: {
 
        back() {
           this.$router.go(-1)
+          this.$store.commit('wallet/setSelectedTab', 'xx')
        },
        logIpt() {       //切换选中资产
           this.selected_ipt=this.selected_ipt==true?this.selected_ipt=false:this.selected_ipt=true;
@@ -717,7 +718,7 @@ watch: {
 
     api.getType({account_name:this.id}).then(res => {    // 获取账号类型
         if (res.code === 1) {
-            // res.data.account_type=="global"?this.buyPartner=true:this.buyPartner=false;
+            res.data.account_type=="global"?this.buyPartner=true:this.buyPartner=false;
         }
       })
     //全球合伙人

@@ -39,9 +39,11 @@
         <div style="border: 1px solid rgb(107, 107, 107);width: 90%;height: 1.2rem;margin: 0 auto;border-radius: 5px;">
           <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >可赢奖金</p><p class="orange font_five">{{winningBonus}}</p></div>
           <div class="display_ib vertical_top Centered p_A" style="width: 1px;height: 100%;background: rgb(107, 107, 107);"></div>
-          <!-- <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >赔率</p><p class="orange font_five">{{publicData[twenty].odds_rate}}</p></div> -->
+          <div v-if="twenty=='smaller'" class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >赔率</p><p class="orange font_five">{{publicData[fadeInDuration].odds_rate}}</p></div>
+          <div v-if="!(twenty=='smaller')" class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >赔率</p><p class="orange font_five">{{publicData[twenty].odds_rate}}</p></div>
           <div class="display_ib vertical_top Centered p_A" style="width: 1px;height: 100%;background: rgb(107, 107, 107);"></div>
-          <!-- <div class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >中奖概率</p><p class="orange font_five">{{publicData[twenty].winning_probability}}</p></div> -->
+          <div v-if="twenty=='smaller'" class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >中奖概率</p><p class="orange font_five">{{publicData[fadeInDuration].winning_probability}}</p></div>
+          <div v-if="!(twenty=='smaller')" class="display_ib vertical_top Centered p_A" style="width: 33%;height: 100%;"><p >中奖概率</p><p class="orange font_five">{{publicData[twenty].winning_probability}}</p></div>
         </div>
         <!--  -->
         <div style="width: 100%;height: 9px;"></div>
@@ -69,9 +71,9 @@
           <div class="display_ib vertical_top" style="width: 6%;"><p class="white font_five font-weight">0 </p></div>
           <div class="schedule_white vertical_top display_ib" style="width: 84%;height: .66rem;">
             <div :style="{ width:fadeInDuration*0.068+ 'rem' }" class="shadow_orange"></div>
-            <input type="range" v-model="fadeInDuration" min="0" max="99">
+            <input type="range" v-model="fadeInDuration" min="1" max="95">
           </div>
-          <div class="display_ib vertical_top" style="width: 10%;"><p class="white font_five font-weight">&nbsp;&nbsp;99</p></div>
+          <div class="display_ib vertical_top" style="width: 10%;"><p class="white font_five font-weight">&nbsp;&nbsp;95</p></div>
         </div>
         <div style="width: 100%;height: 15px;"></div>
         <!--  --> 
@@ -103,8 +105,7 @@
         <!--  -->
         <div style="width: 100%;height: 20px;"></div>
         <div v-if="!Betting" class="background_orange" style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;">
-          <!-- <p v-if="twenty>0" @click="selectBetting();betting();" class="Centered font_white font_five" style="line-height: 1.4rem;">{{publicDataButton['smaller'][1]}}<span>{{fadeInDuration}}</span>{{publicDataButton['smaller'][2]}}</p> -->
-          <!-- <p v-if="!(twenty>0)" @click="selectBetting();betting();" class="Centered font_white font_five" style="line-height: 1.4rem;">{{publicDataButton[twenty][1]}}{{publicDataButton[twenty][2]}}</p> -->
+          <p @click="selectBetting();betting();" class="Centered font_white font_five" style="line-height: 1.4rem;">{{publicDataButton[twenty][1]}}<span v-if="twenty=='smaller'">{{fadeInDuration}}</span>{{publicDataButton[twenty][2]}}</p>
         </div>
         <div v-if="Betting" style="width: 80%;height: 1.4rem;border: 1px solid rgba(255, 153, 51, 1);margin:0 auto;border-radius: 7px;"><p class="Centered font_white font_five" style="line-height: 1.4rem;">开奖中...</p></div>
         <div style="width: 100%;height: 20px;"></div>
@@ -260,8 +261,8 @@ export default {
       keyboard:false,  //下拉键盘betAmount
       betSuccess:false,        //成功显示
       betFailure:false,        //失败显示
-      fadeInDuration:0,      //滑块骰子的值
-      twenty:1,      //模式选择  
+      fadeInDuration:1,      //滑块骰子的值
+      twenty:'smaller',      //模式选择  
       Betting:false, //投注按钮显示开奖中
       CountDown:false, //开奖
       CountDownNum:7, //开奖倒计时
@@ -375,13 +376,11 @@ export default {
               }
        },
        addComma(data){
-        var a=data;var b='';var c=a.length+1;
+        var a=data;var b='';var c=a.length;
           for(var i=0;c/3>i;i++){
             if(a.length>3){
               b=','+a.slice(a.length-3,a.length)+b;
               a=a.slice(0,a.length-3);
-            }else if(a.length==3){
-              b=a;
             }else{
               b=a+b;
             }
@@ -569,12 +568,25 @@ export default {
         },
          betAmount: {   //可赢奖金
           handler(newVal, oldVal) {
-            // this.winningBonus=new Decimal(this.betAmount).mul(new Decimal(this.publicData[this.twenty].odds_rate));
+            if(this.twenty=='smaller'){
+              this.winningBonus=new Decimal(this.betAmount).mul(new Decimal(this.publicData[this.fadeInDuration].odds_rate));
+              }else{
+              this.winningBonus=new Decimal(this.betAmount).mul(new Decimal(this.publicData[this.twenty].odds_rate));
+            }
           }
         },
          twenty: {   //可赢奖金
           handler(newVal, oldVal) {
-            // this.winningBonus=new Decimal(this.betAmount).mul(new Decimal(this.publicData[this.twenty].odds_rate));
+            if(!(this.twenty=='smaller')){
+              this.winningBonus=new Decimal(this.betAmount).mul(new Decimal(this.publicData[this.twenty].odds_rate));
+            }
+          }
+        },
+         fadeInDuration: {   //可赢奖金
+          handler(newVal, oldVal) {
+            if(this.twenty=='smaller'){
+              this.winningBonus=new Decimal(this.betAmount).mul(new Decimal(this.publicData[this.fadeInDuration].odds_rate));
+            }
           }
         },
   },
@@ -585,8 +597,6 @@ export default {
     this.account_name=this.$store.state.wallet.assets.account;
     this.reqParams.account = this.account_name;   //转站
 
-    console.log(this.twenty )
-    console.log(this.publicData)
     
     //滚动区域
     this.initSocket();
@@ -606,7 +616,6 @@ export default {
     api.getCurrentUser({account_name:this.account_name}).then(res => {
         if (res.code === 1) {
             this.publicData=res.data;
-            console.log(this.publicData)
           }
       })
     //获取所有的投注

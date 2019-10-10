@@ -49,7 +49,8 @@ export default {
 
 <style scoped lang="less">
 .wrap{
-  // background-color:#f6f6f6;
+  background-color:#f6f6f6;
+  height: 100%;
   font-family: '微軟正黑體 Regular', '微軟正黑體';
 }
 .top-info{

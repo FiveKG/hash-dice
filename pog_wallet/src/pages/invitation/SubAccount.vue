@@ -82,6 +82,7 @@ export default {
         this.subList = res.data.detail
       }
     })
+    
   },
   methods: {
     back() {

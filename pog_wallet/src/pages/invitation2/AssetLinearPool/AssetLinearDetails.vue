@@ -56,13 +56,11 @@ export default {
           return str.slice(0,str.length-4) + " " +str.slice(-4)
         },
         addComma(data){
-        var a=data;var b='';var c=a.length+1;
+        var a=data;var b='';var c=a.length;
           for(var i=0;c/3>i;i++){
             if(a.length>3){
               b=','+a.slice(a.length-3,a.length)+b;
               a=a.slice(0,a.length-3);
-            }else if(a.length==3){
-              b=a;
             }else{
               b=a+b;
             }
