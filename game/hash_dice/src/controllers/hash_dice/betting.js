@@ -42,6 +42,9 @@ async function betting(req,res,next){
         const opts = { data: { account_name: account_name} };
 
         const { data: [resp] } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
+        if (!resp) {
+            return res.send(get_status(1011, "insufficient balance"));
+        }
         let eos_currency =(await getCurrencyBalance(account_name)).pop().replace(' UE','')
         
         // 可提现余额，游戏码,区块链余额
