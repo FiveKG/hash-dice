@@ -25,6 +25,7 @@
                 "data": {
                     "wallet_receiver": { "type": "text",  "is_require": true,  "desc": "tbg1 收款账户" },
                     "trade_receiver": { "type": "text",  "is_require": true,  "desc": "tbg2 收款账户" },
+                    "token_account": { "type": "text",  "is_require": true,  "desc": "发币帐号" },
                     "httpEndPoint": { "type" :"string" , "remark":"" },
                     "chainId": { "type" :"string" , "remark":"" }
                 }
@@ -313,6 +314,25 @@
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {}
+            }
+        },
+        {
+            "name" : "获取随机投注的号码",
+            "summary": "",
+            "remark": [ "随机投注时，系统给用户号码" ],
+            "isFunctionPoint" : true,
+            "url" : "/global_lotto/get_random_bet_code",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": { 
+                "bet_key": { "type": "number",  "is_require": true,  "desc": "投注 key 的的数量" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {
+                    "bet_num": { "type": "text",  "is_require": true,  "desc": "投注号码" }
+                }
             }
         }
     ]

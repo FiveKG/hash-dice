@@ -17,7 +17,7 @@ const COMMUNITY_POOL = "communityPool";
 // 开发维护的帐号
 const DEV_OP_POOL = "devOpPool";
 // 团队激励池的帐号
-const TEAM_INCENTIVE_POOL = "teamIncentivePool";
+const NODE_INCENTIVE_POOL = "nodeIncentivePool";
 
 // TBG的发币账号
 const TBG_TOKEN_COIN = "tbgtokencoin"
@@ -104,7 +104,7 @@ const CONSTANT = {
     "TBG_JOIN": TBG_JOIN,
     "TSH_INCOME": TSH_INCOME,
     "PSH_INCOME": PSH_INCOME,
-    "TEAM_INCENTIVE_POOL": TEAM_INCENTIVE_POOL
+    "NODE_INCENTIVE_POOL": NODE_INCENTIVE_POOL
 }
 
 module.exports = CONSTANT
@@ -134,5 +134,5 @@ module.exports = CONSTANT
  * @property { string } TBG_JOIN TBG参加账号(收款账号)
  * @property { string } TSH_INCOME TSH股东收入账号
  * @property { string } PSH_INCOME PSH股东收入账号
- * @property { string } TEAM_INCENTIVE_POOL 团队激励池的帐号
+ * @property { string } NODE_INCENTIVE_POOL 团队激励池的帐号
  */

@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/minePool/collect.js": "资产包挖矿收益收取" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "资产包挖矿收益收取" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountInfo } = require("../../models/account");
 const { updateTbgBalance, getTbgBalanceInfo } = require("../../models/tbgBalance");
@@ -37,23 +37,24 @@ async function collect(req, res, next) {
         // 过滤出当前所有的挖矿记录
         const miningIds = miningId.split(",");
         const trxList = [];
+        const miningSet = new Set();
         for (const info of balanceLogInfo) {
+            // 每个 id 都只处理一条, 第一条就是上次插入的最新的挖矿包
+            const extra = info.extra;
+            if (miningSet.has(extra.tr_id)) {
+                continue;
+            }
+            miningSet.add(extra.tr_id);
             logger.debug(`info: `, info);
-            const tradeInfo = await getTradeInfoById(info.extra.tr_id);
-            const assetsInfo = await getAssetsInfoById([tradeInfo[0].extra.ap_id]);
-            const diff = df.differenceInHours(now, tradeInfo[0].finished_time);
             // 计算收益, 购买资产包时，将资产包信息存入 extra
-            const extra = {
-                ...assetsInfo[0],
-                "symbol": TBG_TOKEN_SYMBOL, 
-                "tr_id": info.extra.tr_id, 
-                "op_type": OPT_CONSTANTS.RELEASE
-            };
+            // const tradeInfo = await getTradeInfoById(info.extra.tr_id);
+            // const assetsInfo = await getAssetsInfoById([tradeInfo[0].extra.ap_id]);
+            const diff = df.differenceInHours(now, extra.finished_time);
             const perHourMining = new Decimal(extra.mining_multiple).mul(extra.amount).div(extra.preset_days).div(24);
             if (miningIds.includes(info.extra.tr_id)) {
                 // miningInfo.push(info);
                 // 判断一下是否挖矿结束
-                if (diff < assetsInfo[0].preset_days * 24) {
+                if (diff < extra.preset_days * 24) {
                     // 从上一条记录的时间到现在即为挖矿时间
                     const miningTime = df.differenceInHours(now, info.create_time);
                     // 满 24h 才可以收取
@@ -66,26 +67,12 @@ async function collect(req, res, next) {
                             "insertBalanceLog": [ accountName, releaseAmount.toNumber(), currentBalance.toNumber(), OPT_CONSTANTS.MINING, extra, remark, now ]
                         }
                         trxList.push(data)
-                    } else {
-                        
                     }
-                }
-            } else {
-                if (diff >= 24) {
-                    // 如果超过 24h 未收取，则可以收取，否则不做处理
-                    // 计算收益, 购买资产包时，将资产包信息存入 extra
-                    const releaseAmount = perHourMining.mul(diff);
-                    const remark = `user ${ accountName } collect mining income, amount is ${ releaseAmount.toNumber() }`;
-                    currentBalance = releaseAmount.add(currentBalance);
-                    const data = {
-                        "updateTbgBalance": [ accountName, releaseAmount.toNumber(), 0, 0 ],
-                        "insertBalanceLog": [ accountName, releaseAmount.toNumber(), currentBalance.toNumber(), OPT_CONSTANTS.MINING, extra, remark, now ]
-                    }
-                    trxList.push(data)
                 }
             }
         }
 
+        logger.debug(`trxList: `, trxList);
         const client = await pool.connect();
         await client.query("BEGIN");
         try {

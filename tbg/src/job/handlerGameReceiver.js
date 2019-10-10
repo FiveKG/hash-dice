@@ -2,7 +2,6 @@
 const { pool, psTrx } = require("../db/index.js");
 const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "处理游戏分配过来的收益" });
 const { Decimal } = require("decimal.js");
-const { getAllTrade } = require("../models/trade");
 const { format } = require("date-fns");
 const GAME_CONSTANTS = require("../common/constant/gameConstants")
 const { getSystemAccountInfo } = require("../models/systemPool");
@@ -13,7 +12,9 @@ const OPT_CONSTANTS = require("../common/constant/optConstants.js");
 const { getTbgBalanceInfo } = require("../models/tbgBalance");
 const { getAllParentLevel, getGlobalAccount } = require("../models/account");
 const ACCOUNT_CONSTANT = require("../common/constant/accountConstant.js");
-const { allocateSurplusAssets } = require("../businessLogic/systemPool")
+const { allocateSurplusAssets } = require("../businessLogic/systemPool");
+const { setRate } = require("./util");
+const storeIncome = require("../common/storeIncome.js");
 
 /**
  * 处理游戏分配过来的收益
@@ -60,19 +61,19 @@ async function handlerGameReceiver(data) {
             { sysInfo: proAccount, income: toProtectionPool },
             { sysInfo: tshAccount, income: toTshIncome } 
         ];
+        // 分配给股东，三倍收益保障池，tsh 帐号
         for (const info of tmpSysAcc) {
             const poolAmount = new Decimal(info.sysInfo.pool_amount);
             const remark = `user play ${ data.game_name }, ${ info.sysInfo.pool_type } balance add ${ info.income }`;
             const extra = { "symbol": UE_TOKEN_SYMBOL, aid: info.sysInfo.pool_type }
             sqlList.push({
                 sql: insertSysOpLogSql,
-                values: [ poolAmount.add(info.income).toNumber(), poolAmount.toNumber(), extra, 'game', remark, format(new Date(), "YYYY-MM-DD HH:mm:sssssZ") ]
+                values: [ 
+                    poolAmount.add(info.income).toNumber(), poolAmount.toNumber(), extra, 
+                    'game', remark, format(new Date(), "YYYY-MM-DD HH:mm:sssssZ") 
+                ]
             });
-    
-            sqlList.push({
-                sql: upSysPoolSql,
-                values: [ poolAmount.add(info.income).toNumber(), info.sysInfo.pool_type, UE_TOKEN_SYMBOL ]
-            })
+            sqlList.push({ sql: upSysPoolSql, values: [ poolAmount.add(info.income).toNumber(), info.sysInfo.pool_type, UE_TOKEN_SYMBOL ]})
         }
 
         // 拨入游戏的 2% 分配给全球合伙人和全球合伙人的推荐人， 全球合伙人 75%， 全球合伙人推荐人 25%
@@ -101,37 +102,27 @@ async function handlerGameReceiver(data) {
             memoStr = `${ memoPrefix }, ${ globalAccount }'s referrer ${ userReferrer } get ${ toGlobalPartnerReferrer.toFixed(4) }`;
         }
 
-        const actions = [ 
-            {
-                account: UE_TOKEN,
-                name: "transfer",
-                authorization: [{
-                    actor: UE_TOKEN,
-                    permission: 'active',
-                }],
-                data: {
-                    from: TBG_TOKEN_COIN,
-                    to: globalAccount,
-                    quantity: `${ toGlobalPartner.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                    memo: `${ memoPrefix }, allocating ${ toGlobalPartner } to ${ globalAccount }`,
-                }
-            },
-            {
-                account: UE_TOKEN,
-                name: "transfer",
-                authorization: [{
-                    actor: TBG_TOKEN_COIN,
-                    permission: 'active',
-                }],
-                data: {
-                    from: UE_TOKEN,
-                    to: userReferrer,
-                    quantity: `${ toGlobalPartnerReferrer.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
-                    memo: memoStr,
-                }
-            }
-        ]
-        actList.push(...actions);
+        let toGlobalData = {
+            "account_name": globalAccount,
+            "change_amount": toGlobalPartner,
+            "create_time": format(now, "YYYY-MM-DD HH:mm:ssZ"),
+            "op_type": OPT_CONSTANTS.GAME_INVITE,
+            "extra": { "symbol": UE_TOKEN_SYMBOL },
+            "remark": `${ memoPrefix }, global partner get ${ toGlobalPartnerReferrer.toFixed(4) }`
+        }
+        // 存入 redis，待用户点击的时候再收取
+        await storeIncome(globalAccount, OPT_CONSTANTS.GAME_INVITE, toGlobalData);
+
+        let toGlobalReferrerData = {
+            "account_name": userReferrer,
+            "change_amount": toGlobalPartnerReferrer,
+            "create_time": format(now, "YYYY-MM-DD HH:mm:ssZ"),
+            "op_type": OPT_CONSTANTS.GAME_INVITE,
+            "extra": { "symbol": UE_TOKEN_SYMBOL },
+            "remark": `${ memoStr }`
+        }
+        // 存入 redis，待用户点击的时候再收取
+        await storeIncome(userReferrer, OPT_CONSTANTS.GAME_INVITE, toGlobalReferrerData);
 
         // 用户参加游戏空投 1 ： 0.05
         const tbgBalance = await getTbgBalanceInfo(data.account_name);
@@ -170,21 +161,22 @@ async function handlerGameReceiver(data) {
         ]
 
         // 记录 balance 日志
-        sqlList.push({
-            sql: balanceLogSql,
-            values: opts
-        });
+        sqlList.push({ sql: balanceLogSql, values: opts});
 
         // 更新用户的释放池余额
-        sqlList.push({
-            sql: updateBalanceSql,
-            values: [ airdropAmount, 0, 0, accountName ]
-        });
+        sqlList.push({ sql: updateBalanceSql, values: [ airdropAmount, 0, 0, accountName ] });
 
         // 拨入游戏的 98% 分配按用户的层级分配
         // 第一层：50%、第二层：25%、第三层：1%、第四层：1.5%、第五层：2、第六层：2.5%、第七层：3%、第八层：5%、第九层： 10%
         let count = 1;
         let distributed = new Decimal(0);
+        const selectGameAmount = `
+            SELECT sum(change_amount) 
+                FROM balance_log 
+                WHERE extract(month FROM create_time) = extract(month FROM now())
+                AND account_name = $1
+                AND op_type = $2
+        `;
         const levelBonus = toReferrer.mul(0.98)
         for (const referrer of referrerAccountList) {
             if (referrer === '' || referrer === accountName) {
@@ -192,22 +184,27 @@ async function handlerGameReceiver(data) {
             }
             const rate = setRate(count);
             const income = levelBonus.mul(rate);
-            distributed.add(income);
-            // 增加推荐人的 amount
-            let now = new Date();
-            let data = {
-                "account_name": referrer,
-                "change_amount": income,
-                "create_time": format(now, "YYYY-MM-DD HH:mm:ssZ"),
-                "op_type": OPT_CONSTANTS.INVITE,
-                "extra": { "symbol": UE_TOKEN_SYMBOL },
-                "remark": `${ memoPrefix }, `
+            const { rows: [ { sum } ] } = await pool.query(selectGameAmount, [ referrer, OPT_CONSTANTS.GAME ]);
+            // 每投注 10 UE，则可享有1层的推荐奖励，以此类推，投注 90 UE 以上，可享有 9 层推荐奖励每月初开始实时计算，实时升级，月终归零
+            if (!!sum && !new Decimal(sum).lessThan(count * 10)) {
+                distributed.add(income);
+                // 增加推荐人的 amount
+                let now = new Date();
+                let data = {
+                    "account_name": referrer,
+                    "change_amount": income,
+                    "create_time": format(now, "YYYY-MM-DD HH:mm:ssZ"),
+                    "op_type": OPT_CONSTANTS.GAME_INVITE,
+                    "extra": { "symbol": UE_TOKEN_SYMBOL },
+                    "remark": `${ memoPrefix }, `
+                }
+                // 存入 redis，待用户点击的时候再收取
+                await storeIncome(referrer, OPT_CONSTANTS.GAME_INVITE, data);
             }
-            // 存入 redis，待用户点击的时候再收取
-            // await storeIncome(referrer, OPT_CONSTANTS.INVITE, data);
+            
             // 只分配九层
             if (count >= 9) {
-                return;
+                break;
             } else {
                 count++;
             }
@@ -215,7 +212,7 @@ async function handlerGameReceiver(data) {
 
         // 分配剩余的收益
         if (!levelBonus.div(distributed).lessThanOrEqualTo(0)) {
-            await allocateSurplusAssets(pool, systemAccount, levelBonus, distributed, OPT_CONSTANTS.INVITE);
+            await allocateSurplusAssets(pool, levelBonus, distributed, OPT_CONSTANTS.GAME_INVITE);
         }
         
         // logger.debug("sqlList: ", sqlList);
@@ -228,6 +225,7 @@ async function handlerGameReceiver(data) {
             await client.query("COMMIT");
         } catch (err) {
             await client.query("ROLLBACK");
+            logger.error("handlerGameReceiver error: ", err);
             throw err;
         } finally {
             await client.release();
@@ -244,33 +242,6 @@ async function handlerGameReceiver(data) {
 }
 
 module.exports = handlerGameReceiver
-
-
-/**
- * 设置分配比例
- * @param { number } position 
- */
-function setRate(position) {
-    if (position === 1) {
-        return 50 / 100;
-    } else if (position === 2) {
-        return 20 / 100;
-    } else if (position === 3) {
-        return 1 / 100;
-    } else if (position === 4) {
-        return 1.5 / 100;
-    } else if (position === 5) {
-        return 2 / 100;
-    } else if (position === 6) {
-        return 2.5 / 100;
-    } else if (position === 7) {
-        return 3 / 100;
-    } else if (position === 8) {
-        return 5 / 100;
-    } else {
-        return 10 / 100;
-    } 
-}
 
 /**
  * 计算奖金

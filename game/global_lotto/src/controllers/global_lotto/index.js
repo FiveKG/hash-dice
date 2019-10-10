@@ -7,5 +7,6 @@ module.exports = {
     "gameSessionMine": require("./gameSessionMine.js"),
     "gameSessionMineDetail": require("./gameSessionMineDetail.js"),
     "bet": require("./bet.js"),
-    "randomBet": require("./randomBet.js")
+    "randomBet": require("./randomBet.js"),
+    "getRandomBetCode": require("./getRandomBetCode.js")
 }

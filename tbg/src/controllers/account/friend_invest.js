@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../../db");
-const logger = require("../../common/logger.js").child({ "@controllers/account/friend_invest.js": "help friends invest" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "help friends invest" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const userInvestment = require("../../businessLogic/account/userInvestment.js");
 const { getUserBalance, updateWithdrawEnable, insertBalanceLog } = require("../../models/balance");

@@ -3,6 +3,9 @@ const logger = require("../common/logger.js").child({"@": "修改账户余额"})
 const getAmqpChannel = require("./amqp.js");
 
 const opts = 'psModifyBalance';
+/**
+ * @param {any} data
+ */
 async function publish(data) {
     try {
         let channel = await getAmqpChannel(opts);
@@ -12,6 +15,9 @@ async function publish(data) {
     }
 }
 
+/**
+ * @param {(arg0: string) => void} callback
+ */
 async function subscribe(callback) {
     try {
         let channel = await getAmqpChannel(opts);

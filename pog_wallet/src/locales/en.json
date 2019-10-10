@@ -203,7 +203,8 @@
     "copy_key": "Copy private key",
     "confirm_delete": "Confirm to delete？",
     "language": "Language",
-    "currency": "Currency Unit"
+    "currency": "Currency Unit",
+    "announcement":"release announcement"
   },
   "permission": {
     "owner": "Owner",

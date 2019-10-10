@@ -1,6 +1,10 @@
 <template>
   <v-ons-page>
     <div class="layout">
+      <div class="mini-btn_wrapper" v-if="showBack">
+        <img src="../../assets/iframe/assembly_ic_option.png" alt="">
+        <img @click="back" src="../../assets/iframe/assembly_close_ic.png" alt="">
+      </div>
       <div class="enterpage" v-if="enterpageshow">
         <div class="enter_a">
           <img src="../../assets/img/02.png" alt="hongbao..." />
@@ -91,6 +95,7 @@ export default {
       enterpageshow: false,
       url: "",
       name: "",
+      type: "",
       password: "",
       success: false,
       loading: false,
@@ -99,7 +104,8 @@ export default {
       signMessage: {
         authorization: null,
         data: {}
-      }
+      },
+      showBack: false
     };
   },
   watch: {
@@ -132,6 +138,13 @@ export default {
   created() {
     this.url = this.$route.query.url;
     this.name = this.$route.query.name;
+    this.type = this.$route.query.type;
+
+    //交易所显示IFrame关闭按钮
+    if(this.type == 'exchange_market'){
+      this.showBack = true;
+    }
+
     if (this.name == '好运红包'){
       this.enterpageshow = true;
     }
@@ -354,5 +367,26 @@ iframe {
   display: flex;
   text-align: right;
   color: #999999;
+}
+.mini-btn_wrapper {
+  width: 15vw;
+  height: 7vw;
+  background: rgba(0, 0, 0, .2);
+  border-radius: 4vw;
+  position: fixed;
+  right: 4vw;
+  top: 15px;
+  padding: 1vw 2vw;
+  
+  z-index: 100000000;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+}
+.mini-btn_wrapper > img {
+  width: 5vw;
+  height: 5vw;
 }
 </style>

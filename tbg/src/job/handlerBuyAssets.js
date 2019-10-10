@@ -82,7 +82,7 @@ async function handlerBuyAssets(data) {
                 trxAmount = trxAmount.minus(buyAmount);
             }
 
-            const { queryList, actionsList } = await buyAlloc({ ...tradeInfo, tradeOpType: tradeOpType, trxAmount: trxAmount });
+            const { actionsList, queryList } = await buyAlloc({ ...tradeInfo, tradeOpType: tradeOpType, trxAmount: trxAmount });
             trxList.push(...queryList);
             tmpActions.push(...actionsList);
         }

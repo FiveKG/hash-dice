@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/team/invite.js": "look up invite account" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "look up invite account" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAllInviteAccount, getReferrer } = require("../../models/account");
 

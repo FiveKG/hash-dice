@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/tbg/checkInInfo.js": "获取签到奖励明细" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "获取签到奖励明细" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { CHECK_IN_AIRDROP_ID, AIRDROP } = require("../../common/constant/tbgAllocateRate");
 const { TBG_TOKEN_SYMBOL, TBG_TOKEN } = require("../../common/constant/eosConstants");

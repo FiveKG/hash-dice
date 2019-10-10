@@ -163,7 +163,7 @@ async function grabRedEnvelope(data) {
                     "memo": `用户使用 ${ data.balance_type } 抢红包`,
                     "opts": "agent"
                 };
-                logger.debug(`用户使用抢红包, %j`, transferInfo);
+                logger.debug(`用户使用 ${ data.balance_type } 抢红包, %j`, transferInfo);
 
                 symbolTransferList.push(transferInfo);
                 logger.debug(`symbolTransferList: ${JSON.stringify(symbolTransferList)}`);

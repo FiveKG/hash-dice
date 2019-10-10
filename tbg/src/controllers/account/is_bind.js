@@ -1,6 +1,6 @@
 // @ts-check
 const { pool } = require("../../db");
-const logger = require("../../common/logger.js").child({ "@controllers/account/is_bind.js": "帐号是否已经绑定" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "帐号是否已经绑定" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 
 // 帐号是否已经绑定

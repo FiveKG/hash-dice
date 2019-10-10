@@ -23,10 +23,11 @@
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
                 "desc": { "type": "string" ,"desc": "" },
                 "data": {
-                    "wallet_receiver": { "type": "text",  "is_require": true,  "desc": "tbg1 收款账户" },
-                    "trade_receiver": { "type": "text",  "is_require": true,  "desc": "tbg2 收款账户" },
-                    "httpEndPoint" : { "type" :"string" , "remark":"" },
-                    "chainId"      : { "type" :"string" , "remark":"" }
+                    "wallet_receiver": { "type": "text",  "is_require": true,  "desc": "tbg2 收款账户" },
+                    "trade_receiver": { "type": "text",  "is_require": true,  "desc": "tbg1 收款账户" },
+                    "httpEndPoint" : { "type" :"string" ,  "is_require": true, "remark": "区块链节点的 url" },
+                    "chainId": { "type" :"string" ,  "is_require": true, "remark": "区块链的 id" },
+                    "base_amount": { "type": "text",  "is_require": true,  "desc": "tbg2 投资额度" }
                 }
             }
         },
@@ -1022,7 +1023,7 @@
             "type" : "get",
             "requireRole" : [ "*" ],
             "req": {
-                
+                "account_name": { "type": "text",  "is_require": true,  "desc": "帐号名称" }
             },
             "res": {
                 "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
@@ -1600,6 +1601,25 @@
                         }
                     }
                 }
+            }
+        },
+        {
+            "name" : "创建系统公告",
+            "summary": "",
+            "remark": [],
+            "isFunctionPoint" : true,
+            "url" : "/tbg/add_notification",
+            "type" : "post",
+            "requireRole" : [ "*" ],
+            "req": {
+                "creator": { "type": "text",  "is_require": true,  "desc": "帐号名称" },
+                "title": { "type": "text",  "is_require": true,  "desc": "标题" },
+                "description": { "type": "text",  "is_require": true,  "desc": "详情" }
+            },
+            "res": {
+                "code": { "type": "number" , "desc": "" , "values": [ "成功" ] } ,
+                "desc": { "type": "string" ,"desc": "" },
+                "data": {}
             }
         },
         {

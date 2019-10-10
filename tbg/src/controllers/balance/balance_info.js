@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/balance/balance_info.js": "look up enable withdraw currency" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "look up enable withdraw currency" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getUserBalance } = require("../../models/balance");
 const { WITHDRAW_ENABLE } = require("../../common/constant/balanceConstants");

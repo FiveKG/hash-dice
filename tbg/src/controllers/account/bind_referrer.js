@@ -1,9 +1,9 @@
 // @ts-check
 const { pool } = require("../../db");
-const logger = require("../../common/logger.js").child({ "@controllers/account/bind_referrer.js": "bind referrer" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "bind referrer" });
 const { get_status, inspect_req_data, redis, generate_primary_key } = require("../../common/index.js");
 const { ACCOUNT_TYPE, INVITE_CODE, INVITE_CODE_KEY } = require("../../common/constant/accountConstant.js");
-const { updateReferCount, insertAccount, getAccountNameByReferCode, randomGetAccount } = require("../../models/account");
+const { updateReferCount, insertAccount, getAccountNameByReferCode, randomGetAccount, insertAccountSnapshot } = require("../../models/account");
 const { insertBalance } = require("../../models/balance");
 const { insertReferrer } = require("../../models/referrer");
 const { insertAccountOp } = require("../../models/accountOp")
@@ -52,7 +52,6 @@ async function bindReferrer(req, res, next) {
             }
         } else {
             // 全球合伙人
-            // 全球合伙人的推荐人都为空，每个全球合伙人都位于最顶端，下方不能有其他全球合伙人
             accountType = ACCOUNT_TYPE.GLOBAL;
             const rows = await randomGetAccount(accountName, accountType);
             referrerName = !!rows ? rows.account_name : '';
@@ -65,10 +64,7 @@ async function bindReferrer(req, res, next) {
         if (!!result) {
             referrerName = result;
         } else {
-            const { rows: [ { count } ] } = await pool.query("SELECT count(1) FROM account");
-            if (count !== 0) {
-                return res.send(get_status(1001, "this referrer does not exists"));
-            }
+            return res.send(get_status(1001, "this referrer does not exists"));
         }
     }
 
@@ -86,7 +82,9 @@ async function bindReferrer(req, res, next) {
         // 修改推荐人推荐数量信息
         await updateReferCount(client, referrerName);
         // 记录操作日志
-        await insertAccountOp(client, accountName, "bind", remark)
+        await insertAccountOp(client, accountName, "bind", remark);
+        // 生成默认快照信息
+        await insertAccountSnapshot(client, accountName);
         await client.query("COMMIT");
         res.send(get_status(1));
     } catch (err) {

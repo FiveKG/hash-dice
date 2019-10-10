@@ -15,7 +15,7 @@
           <ol>
             <li>帮助伙伴投资后，伙伴的账号为您直接推荐的账号；</li>
             <li>伙伴投资的账号应为未投资账号，已投资账号无效；</li>
-            <li>投资的 100 UE 将优先从您可提现账户中扣除，当可提现账户不足时，从您的钱包账户中扣除。</li>
+            <li>投资的 {{base_amount}} 将优先从您可提现账户中扣除，当可提现账户不足时，从您的钱包账户中扣除。</li>
           </ol>
         </div>
       </div>
@@ -25,7 +25,7 @@
         style="background: rgba(0,0,0,0.5);"
       >
         <div class="action_layout">
-          <div class="btn_active" @click="showDialog = true">支付 30 UE 投资</div>
+          <div class="btn_active" @click="showDialog = true">支付 2000 UE 投资</div>
         </div>
       </v-ons-action-sheet>
       <v-ons-dialog
@@ -49,6 +49,7 @@ import PasswordService from '@/services/PasswordService'
 import CryptoAES from '@/util/CryptoAES'
 import eos from '@/plugins/eos'
 import { friendInvest,getConfig } from '@/servers/invitation';
+import api from '@/servers/invitation';
 
 export default {
   components: {
@@ -65,6 +66,7 @@ export default {
       actionSheetVisible: false,
       showDialog: false,
       loading: false,
+      base_amount:''
     }
   },
   created() {
@@ -85,11 +87,12 @@ export default {
       if (privateKey) {
         this.showDialog = false
         try {
-          const config = await this.getConfig()
+          const config = await this.getConfig();
+          this.base_amount=config.base_amount+`.0000 UE`;
           const opts = { authorization:[`${this.reqParams.account}@active`], keyProvider: privateKey }
           // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
           const adm = await eos.contract('uetokencoin')
-          const trx = await adm.transfer(this.reqParams.account, config.wallet_receiver, `1000.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
+          const trx = await adm.transfer(this.reqParams.account, config.wallet_receiver, this.base_amount, `tbg_invest:${this.reqParams.account}`, opts)
           console.log(111111111111111111,trx);
           return true
         } catch (error) {

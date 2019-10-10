@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/tbg/releasePool.js": "线性释放池资料" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "线性释放池资料" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { MEMBER_LEVEL_TRX } = require("../../common/constant/assetsConstant.js");
 const { RELEASE } = require("../../common/constant/optConstants.js");

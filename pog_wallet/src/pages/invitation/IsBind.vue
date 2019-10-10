@@ -222,7 +222,8 @@ import PasswordService from '@/services/PasswordService'
 import CryptoAES from '@/util/CryptoAES'
 import eos from '@/plugins/eos'
 import {Decimal} from 'decimal.js'
-import { isActive,investmentIndex,incomeDetail,incomeGain,getConfig } from '@/servers/invitation';
+// import { isActive,investmentIndex,incomeDetail,incomeGain,getConfig } from '@/servers/invitation';
+import api from '@/servers/invitation';
 
 export default {
   components: {
@@ -357,7 +358,7 @@ export default {
     // 显示投资收益
     async getIncomeDetail() {
       try {
-        const res = await incomeDetail({account_name: this.account})
+        const res = await api.incomeDetail({account_name: this.account})
         console.log('getIncomeDetail',res)
         if (res.code === 1 && res.data.length) {
           this.showProfitTotal = false
@@ -409,7 +410,7 @@ export default {
     // 投资首页
     async getInvestmentIndex() {
       try {
-        const res = await investmentIndex({account_name: this.account})
+        const res = await api.investmentIndex({account_name: this.account})
         console.log('getInvestmentIndex',res)
         if (res.code === 1) {
           this.subAccountTotal = res.data.sub_account_count
@@ -443,7 +444,7 @@ export default {
     // 获取激活状态
     async getActiveState() {
       try {
-        const res = await isActive({account_name: this.account})
+        const res = await api.isActive({account_name: this.account})
         console.log('getActiveState',res)
         if (res.code === 1) {
           this.level = res.data.is_activated
@@ -479,7 +480,7 @@ export default {
     },
     async getIncomeGain(type) {
       try {
-        const res = await incomeGain({
+        const res = await api.incomeGain({
           account_name: this.account,
           income_type: type
         })
@@ -497,7 +498,7 @@ export default {
     },
     async getConfig() {
       try {
-        const res = await getConfig()
+        const res = await api.getConfig()
         if (res.code === 1) {
           console.log('getConfig',res)
           return res.data

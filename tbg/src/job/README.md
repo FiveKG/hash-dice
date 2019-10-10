@@ -36,3 +36,9 @@
 
 #### `mqHandler.js`
 * 消息监听，主要监听区块链转帐相关的消息
+
+#### `listenGameReceiver.js`
+* 游戏收益监听，主要监听区块链转帐相关的消息
+
+#### `nodeIncentive.js`
+* 节点激励池每周一 00:00 进行分配

@@ -1,7 +1,7 @@
 // @ts-check
 const { getAccountInfo, getGlobalAccount } = require("../../models/account");
 const { insertSubAccount } = require("../../models/subAccount");
-const logger = require("../../common/logger.js")
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "生成子帐号" });
 const { redis } = require("../../common/index.js");
 const { pool } = require("../../db");
 const { ACCOUNT_TYPE } = require("../../common/constant/accountConstant.js");
@@ -16,9 +16,10 @@ const { ACCOUNT_TYPE } = require("../../common/constant/accountConstant.js");
 async function addSubAccount(client, accountName, subAccount, referrerAccountList) {
     try {
         logger.debug("set user static mode");
-        // 直接投资,参与 tbg1, 且所有推荐人都是普通用户,这些账号都在一个三三公排
+        // 直接投资,参与 tbg2, 且所有推荐人都是普通用户,这些账号都在一个三三公排
         // 先判断推荐关系中有几个全球合伙人，如果有多个，最后一个全球合伙人就是新的三三静态最顶端的用户
-        const accountInfo = await getGlobalAccount(ACCOUNT_TYPE.GLOBAL, referrerAccountList);
+        // const accountInfo = await getGlobalAccount(ACCOUNT_TYPE.GLOBAL, referrerAccountList);
+        const accountInfo = await getAccountInfo(referrerAccountList[1]);
         const rootAccount = accountInfo.account_name;
         logger.debug("accountInfo: ", accountInfo);
         const levelKey = `tbg:level:${ accountInfo.id }`
@@ -73,7 +74,7 @@ async function createSubId(mainId) {
     const members = await redis.scard(posKey);
     // 获取当前层级
     const currentMaxLevel = await redis.get(`tbg:level:${ mainId }`);
-    let level = parseInt(currentMaxLevel);
+    let level = parseInt(!currentMaxLevel ? '1' : currentMaxLevel);
     logger.debug("members: %d, level: %d", members, level);
     // 如果排满了，下层随机一个位置，否则在当前层没有排满的位置中随机
     if (!members) {

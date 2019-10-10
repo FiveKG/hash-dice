@@ -15,7 +15,7 @@ async function insertSystemAccount(systemAccount) {
         for (let i = 0; i < systemAccount.length; i++) {
             let account = systemAccount[i];
             let amount = new Decimal(0).toFixed(8);
-            valuesStr.push(`('${ generate_primary_key() }', '${ account }', ${ amount }, '${ UE_TOKEN_SYMBOL }')`, `('${ generate_primary_key() }', '${ account }', ${ amount }, '${ TBG_TOKEN_SYMBOL }')`);
+            valuesStr.push(`('${ generate_primary_key() }', '${ account }', ${ amount }, '${ UE_TOKEN_SYMBOL }')`);
         }
 
         // 如果重复则不再插入，直接返回
@@ -27,7 +27,7 @@ async function insertSystemAccount(systemAccount) {
               FROM new_values
               WHERE NOT EXISTS (SELECT 1 
                                 FROM system_pools
-                                WHERE system_pools.pool_type = new_values.pool_type AND system_pools.pool_symbol = new_values.pool_symbol)
+                                WHERE system_pools.pool_type = new_values.pool_type AND system_pools.pool_symbol = new_values.pool_symbol);
         `
         // logger.info("insert test data to system_pools table, sql is %s", querySql);
         await pool.query(querySql);
@@ -55,6 +55,7 @@ async function dropAllTable() {
             drop table if exists trade_log;
             drop table if exists tbg_balance;
             drop table if exists assets_package;
+            drop table if exists snapshot;
         `
         logger.info("drop all table");
         await pool.query(querySql);

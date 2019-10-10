@@ -1,17 +1,17 @@
 ### 有效资产包矿机
-GET http://localhost:9527/mine_pool/mining?account_name=gametestuser
+GET http://localhost:9527/mine_pool/mining?account_name=yujinsheng11
 
 ### 已结束资产包矿机
-GET http://localhost:9527/mine_pool/mined?account_name=gametestuser
+GET http://localhost:9527/mine_pool/mined?account_name=yujinsheng11
 
 ### 资产包挖矿详情
-GET http://localhost:9527/mine_pool/detail?account_name=gametestuser&mining_id=ef1b30d5648d0f70
+GET http://localhost:9527/mine_pool/detail?account_name=yujinsheng11&mining_id=27385c4861839b1d
 
 ### raise
 POST http://localhost:9527/mine_pool/collect
 Content-Type: application/json
 
 {
-    "account_name": "gametestuser",
-    "mining_id": "f82d1672d7068ae1"
+    "account_name": "yujinsheng11",
+    "mining_id": "27385c4861839b1d"
 }

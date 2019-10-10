@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/team/staticMode.js": "static mode" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "static mode" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getUserSubAccount } = require("../../models/subAccount");
 const { getCurrentMaxLevel, getLevelCount, getInviteAccountCount } = require("../../models/subAccount")

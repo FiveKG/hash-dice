@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/pools/safe.js": "safe pool" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "safe pool" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getUserBalance } = require("../../models/balance");
 const { getSafeAmount, getSafeHistory } = require("../../models/systemPool");

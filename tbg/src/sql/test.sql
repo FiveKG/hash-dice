@@ -166,3 +166,6 @@ WITH etc AS (
     SELECT account_name, cast(withdraw_enable + repeat_currency + lotto_currency + game_currency AS numeric(12, 8)) AS total FROM balance
 )
 SELECT * FROM etc WHERE total < 300;
+
+SELECT s.account_name, s.invite_count_week, s.invite_member_count, s.standard_v0, s.standard_v1, s.standard_v2, s.standard_v3, s.standard_v4, s.effective_member, r.referrer_name 
+    FROM snapshot s JOIN referrer r ON r.account_name = s.account_name;

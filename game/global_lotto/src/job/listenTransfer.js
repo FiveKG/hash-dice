@@ -2,7 +2,7 @@
 const logger = require("../common/logger.js").child({ [`@${__filename}`]: "listening global bet transfer" });
 const { getTrxAction } = require("./getTrxAction.js");
 const { redis } = require("../common");
-const { BANKER, TBG_TOKEN, BASE_AMOUNT, UE_TOKEN, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
+const { BANKER, TBG_TOKEN, UE_TOKEN, UE_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
 const { Decimal } = require("decimal.js");
 const { scheduleJob } = require("node-schedule");
 const GLOBAL_LOTTO_KEY = "tbg:global_lotto:account_action_seq";
@@ -136,13 +136,13 @@ async function parseEosAccountAction(action) {
         }
         let [ game_name, account_name, bet_key, bet_num, bet_amount, periods, bet_type ] = memo.split(":");
         // memo 由 游戏名称, 用户名称, 投注 key 的数量，投注号码，投注总额度，期数，投注类型 用冒号分隔,
-        //  投注类型有随机投注，选号投注, 如果用户是随机投注 bet_number =
+        //  投注类型有随机投注，选号投注, 如果用户是随机投注 bet_number = 000000000
         // memo: game_name:account_name:bet_key:bet_num:bet_amount:periods:bet_type
         if (!game_name && !account_name && !bet_key && !bet_num && !bet_amount && !periods && !bet_type) {
             logger.debug("invalid memo, memo must be include game_name, account_name, bet_key, bet_num, bet_amount, periods, bet_type format like 'game_name:account_name:bet_key:bet_num:bet_amount:periods:bet_type'")
             return result;
         }   
-        if (game_name !== "global_lotto") {
+        if (game_name !== "globallotto") {
             // todo
             // memo 格式不符
             logger.debug(`invalid memo, ${ game_name } !== "globallotto"`);
@@ -152,13 +152,24 @@ async function parseEosAccountAction(action) {
         let [ amount, symbol ] = quantity.split(" ");
 
         // 用户的投注额只有 80% 转入到 BANKER 账户
-        if (!new Decimal(amount).mul(0.8).eq(bet_amount)) {
+        if (!new Decimal(amount).eq(bet_amount)) {
              // memo 格式不符
              logger.debug(`金额不匹配, transfer is ${ amount }, memo bet_amount is ${ bet_amount }`);
              return result;
         }
         
         if (symbol === UE_TOKEN_SYMBOL) {
+            const betNum = [];
+            // 如果不是随机投注，需要处理一下投注码
+            if (bet_type !== "random") {
+                for (let i = 0; i < bet_key; i++) {
+                    betNum.push(bet_num.split("").join(","))
+                }
+
+                result.bet_num = betNum.join("|")
+            } else {
+                result.bet_num = bet_num;
+            }
             result.account_name = account_name;
             result.bet_key = bet_key;
             result.bet_num = bet_num;

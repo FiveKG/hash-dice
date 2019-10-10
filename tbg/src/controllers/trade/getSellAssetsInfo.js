@@ -1,6 +1,6 @@
 // @ts-check
 
-const logger = require("../../common/logger.js").child({ "@controllers/trade/getSellAssetsInfo.js": "获取普通卖出交易信息" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "获取普通卖出交易信息" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountInfo, getAccountMemberLevel } = require("../../models/account");
 const { redis } = require("../../common");

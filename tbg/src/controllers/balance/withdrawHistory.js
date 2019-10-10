@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/balance/withdrawHistory.js": "user withdraw" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "user withdraw" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getBalanceHistory } = require("../../models/balance");
 const { Decimal } = require("decimal.js");

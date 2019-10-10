@@ -1,12 +1,12 @@
 {
     "apps": [
         {
-            "name"        : "snatchTreasure",
+            "name"        : "treasureService",
             "script"      : "./snatch_treasure.js",
             "watch"       : false,
             "cwd"         : "./",
-            "error_file"  : "../logs/snatchTreasure-err.log",
-            "out_file"    : "../logs/snatchTreasure-out.log"
+            "error_file"  : "../logs/treasureService-err.log",
+            "out_file"    : "../logs/treasureService-out.log"
         },
         {
             "name"        : "treasureListenTransfer",

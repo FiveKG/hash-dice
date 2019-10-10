@@ -42,25 +42,25 @@
           <ul>
             <li>
                 资产包挖矿
-                <span>70%，700,000,000 TBG，</span> 
+                <span>70%，{{information[4].airdrop_amount[0]}} TBG，</span> 
                 挖完即止
             </li>
             <li>
              绑定 TBG 推荐关系空投 30 TBG进入线性释放池，限前10万名激活用户，空投完即止
-            <span> <br> 共 3,000,000 TBG，占 0.3% <br></span> 
+            <span> <br> 共 {{information[0].airdrop_amount[0]}} TBG，占 0.3% <br></span> 
             <span>绑定后 48 小时未参与TBG-I即收回空投</span>   
             </li>
             <li>参与 TBG-I 即空投 150 TBG 进入线性释放池，限前30万名用户，空投完即止 
-              <span> <br>共 45,000,000 TBG，占 4.5%</span>
+              <span> <br>共 {{information[1].airdrop_amount[0]}} TBG，占 4.5%</span>
             </li>
             <li>
               参与 TBG 旗下游戏均可获得空投，空投规则
               为<span>每投注1UE即空投0.05TBG <br> </span>
-              <span>共 50,000,000 TBG，占 5%，</span>
+              <span>共 {{information[3].airdrop_amount[0]}} TBG，占 5%，</span>
             </li>
             <li>
               会员每日签到可获空投，空投完即止
-              <span> <br> 共 2,000,000 TBG，占 0.2%</span>
+              <span> <br> 共 {{information[2].airdrop_amount[0]}} TBG，占 0.2%</span>
             </li>
           </ul>
       </div>
@@ -68,18 +68,18 @@
 
       <!-- TBG基金 -->
       <div class="fund">
-          <p>TBG 总发行</p>
-          <p>占发行量<span> 5%</span>，共 <span>50,000,000 TBG</span> </p>
+          <p>TBG 基金</p>
+          <p>占发行量<span> 5%</span>，共 <span>{{information[5].airdrop_amount[0]}} TBG</span> </p>
           <p>作为长期社区建设、管理等费用</p>
           <p> <span>发行第 2 年开始 5 年线性逐步释放</span> </p>
       </div>
 
       <!-- TBG 区块链实验室 -->
       <div class="laboratory">
-          <p>TBG 总发行</p>
-          <p>占发行量<span> 15%</span>，共 <span>150,000,000 TBG</span> </p>
-          <p>作为长期社区建设、管理等费用</p>
-          <p> <span>发行第 2 年开始 5 年线性逐步释放</span> </p>
+          <p>TBG 区块链实验室</p>
+          <p>占发行量<span> 15%</span>，共 <span>{{information[6].airdrop_amount[0]}} TBG</span> </p>
+          <p>作为区块链技术、游戏、交易所及其他各种应用研发</p>
+          <p>费用， <span>发行第 2 年开始 5 年线性逐步释放</span> </p>
       </div>
 
     </div>
@@ -96,6 +96,7 @@ export default {
        return {
          destroy_amount: '',
          surplus_amount: '',
+         information:[],
        }
    },
   components: {},
@@ -107,19 +108,18 @@ export default {
         return str.slice(0,str.length-4) + " " +str.slice(-4)
       },
       addComma(data){
-        var a=data;var b='';var c=a.length+1;
+        var a=data;var b='';var c=a.length;
           for(var i=0;c/3>i;i++){
             if(a.length>3){
               b=','+a.slice(a.length-3,a.length)+b;
               a=a.slice(0,a.length-3);
-            }else if(a.length==3){
-              b=a;
             }else{
               b=a+b;
             }
           }
           return b;
       }
+      
   },
   created(){
     api.getDestory().then(res => {  //获取已销毁surplus_amount
@@ -129,6 +129,15 @@ export default {
           this.surplus_amount = res.data.surplus_amount.split('.')
           this.surplus_amount[1] = this.addSpace(this.surplus_amount[1])
           this.surplus_amount[0]=this.addComma(this.surplus_amount[0]);
+        })
+    api.overview().then(res => {  //获取TBG 概况
+          console.log(res)
+          this.information=res.data.detail
+          for(var i=0;i<res.data.detail.length;i++){
+            this.information[i].airdrop_amount=this.information[i].airdrop_amount.split('.')
+            this.information[i].airdrop_amount[0]=this.addComma(this.information[i].airdrop_amount[0]);
+          }
+          // {{information[].airdrop_amount[0]}}
         })
   }
 }

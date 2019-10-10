@@ -33,6 +33,10 @@ async function randomBet(req, res, next) {
         const opts = { data: { account_name: reqData.account_name } };
         // 获取用户彩码，游戏码，余额
         const { data: [ resp ] } = await xhr.get(url.resolve(TBG_SERVER, "/balance/game_balance"), opts);
+        if (!resp) {
+            return res.send(get_status(1011, "insufficient balance"));
+        }
+        
         if (!resp.lotto_currency) {
             return res.send(get_status(1001, "this account does not exists"));
         }

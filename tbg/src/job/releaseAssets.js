@@ -4,13 +4,14 @@ const { MEMBER_LEVEL_TRX } = require("../common/constant/assetsConstant.js");
 const { Decimal } = require("decimal.js");
 const { userMember } = require("../common/userMember.js");
 const OPT_CONSTANTS = require("../common/constant/optConstants.js");
-const { ACCOUNT_INACTIVATED, ACCOUNT_ACTIVATED_TBG_1 } = require("../common/constant/accountConstant");
+const TBG_ALLOCATE = require("../common/constant/tbgAllocateRate");
+const { ACCOUNT_INACTIVATED, ACCOUNT_ACTIVATED_TBG_1, TSH_INCOME, ACCOUNT_TYPE } = require("../common/constant/accountConstant");
 const { pool, psTrx } = require("../db");
 const { scheduleJob } = require("node-schedule");
 const { TBG_TOKEN_COIN, TBG_FREE_POOL } = require("../common/constant/accountConstant.js");
 const { TBG_TOKEN_SYMBOL } = require("../common/constant/eosConstants.js");
-const { format } = require("date-fns");
-const { getTbgBalanceInfo } = require("../models/tbgBalance");
+const df = require("date-fns");
+const { getCurrencyStats } = require("./getTrxAction.js");
 
 /**
  * 所有进入释放池的TBG，从次日 0:00 开始释放
@@ -23,7 +24,7 @@ async function releaseAssets() {
                         JOIN account a ON r.account_name = a.account_name
                         AND a.state != ${ ACCOUNT_INACTIVATED }
                         AND a.state != ${ ACCOUNT_ACTIVATED_TBG_1 }
-                    ) AS count, account_name
+                    ) AS count, account_name, account_type
                 FROM account
         `
         // 查找所有参与 tbg2 的用户
@@ -31,14 +32,14 @@ async function releaseAssets() {
         // 将用户信息存入 map 中
         const memberMap = new Map();
         for (const info of memberInfo) {
-            memberMap.set(info.account_name, info.count);
+            memberMap.set(info.account_name, info);
         }
         
         // 查找所有用户的 TBG 资产
         const trxList = [];
         const releaseList = [];
         const { rows: tbgBalanceInfo } = await pool.query("SELECT * FROM tbg_balance where release_amount > 0");
-        const now = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
+        const now = df.format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
         let sql = `
             INSERT INTO 
                 balance_log(account_name, change_amount, current_balance, op_type, extra, remark, create_time)
@@ -54,10 +55,15 @@ async function releaseAssets() {
         `
         // 遍历会员，根据等级释放
         for (const info of tbgBalanceInfo) {
-            const levelInfo = userMember(memberMap.get(info.account_name));
-            // const tbgBalance = await getTbgBalanceInfo(info.account_name);
+            const accountInfo = memberMap.get(info.account_name);
+            const levelInfo = userMember(accountInfo.count);
             // 当前会员等级的释放比例
-            const releaseRate = MEMBER_LEVEL_TRX[levelInfo.ID].RELEASE_RATE;
+            let releaseRate = MEMBER_LEVEL_TRX[levelInfo.ID].RELEASE_RATE;
+            // 判断用户是不是全球合伙人
+            // 是的话按照 全球合伙人 + 皇冠分配
+            if (accountInfo.account_type === ACCOUNT_TYPE.GLOBAL && levelInfo.ID === "CROWN") {
+                releaseRate = MEMBER_LEVEL_TRX["GLOBAL_PARTNER_CROWN"].RELEASE_RATE
+            }
             // 释放池资产额度
             const releaseAmount = new Decimal(info.release_amount);
             // 可释放的额度
@@ -88,6 +94,56 @@ async function releaseAssets() {
             releaseList.push({ account_name: info.account_name, release_amount: dayRelease.toNumber() })
         }
 
+        // TBG区块链实验室 第 3 个月开始 5 年线性释放
+        // TBG社区基金 第 3 个月开始 5 年线性释放
+        const selectReleaseTime = `SELECT create_time FROM balance_log WHERE op_type = '$1' ORDER BY create_time ASC LIMIT 1;`
+        const { rows: [ releaseTime ] } = await pool.query(selectReleaseTime, [ OPT_CONSTANTS.RELEASE ]);
+        const actList = [];
+        // 如果已经开始释放，判断第一次释放到当前的时间间隔是否为三个月
+        if (!!releaseTime)  {
+            if (df.differenceInMonths(new Date(), releaseTime) >= 3) {
+                // 释放天数
+                // 先获取 TBG 发行总量
+                const { [TBG_TOKEN_SYMBOL]: { max_supply, supply } } = await getCurrencyStats(TBG_TOKEN_COIN, TBG_TOKEN_SYMBOL);
+                // max_supply ~ 1.0000 TBG, 先拆分，拿到数量
+                const maxSupply = new Decimal(max_supply.split(" ")[0]);
+                const dayCounts = df.differenceInDays(df.addYears(new Date(), 3), new Date());
+                // 每天 tbg 基金的释放额度
+                const fundCurrency = new Decimal(TBG_ALLOCATE.FUND_CURRENCY).div(TBG_ALLOCATE.BASE_RATE).mul(maxSupply).div(dayCounts);
+                // 每天团队的释放额度
+                const laboratoryCurrency = new Decimal(TBG_ALLOCATE.LABORATORY_CURRENCY).div(TBG_ALLOCATE.BASE_RATE).mul(maxSupply).div(dayCounts);
+                // const tsh = {
+                //     account: TBG_TOKEN_COIN,
+                //     name: "transfer",
+                //     authorization: [{
+                //         actor: TBG_TOKEN_COIN,
+                //         permission: 'active',
+                //     }],
+                //     data: {
+                //         from: TBG_FREE_POOL,
+                //         to: TSH_INCOME,
+                //         quantity: `${ laboratoryCurrency.toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                //         memo: `${ now } release asset to tsh`
+                //     }
+                // }
+
+                actList.push({
+                    account: TBG_TOKEN_COIN,
+                    name: "transfer",
+                    authorization: [{
+                        actor: TBG_TOKEN_COIN,
+                        permission: 'active',
+                    }],
+                    data: {
+                        from: TBG_FREE_POOL,
+                        to: TSH_INCOME,
+                        quantity: `${ fundCurrency.add(laboratoryCurrency).toFixed(4) } ${ TBG_TOKEN_SYMBOL }`,
+                        memo: `${ now } release asset to team and tsh`
+                    }
+                })
+            }
+        }  
+
         // 此处可以直接转给用户，智能合约已经设置为用户不可私下交易，只能通过平台转出
         const actionList = releaseList.map(it => {
             return {
@@ -104,8 +160,8 @@ async function releaseAssets() {
                     memo: `${ now } release asset`
                 }
             }
-        })
-        let flag = false;
+        });
+
         const client = await pool.connect();
         await client.query("BEGIN");
         try {
@@ -113,7 +169,6 @@ async function releaseAssets() {
                 client.query(it.sql, it.values);
             }));
             await client.query("COMMIT");
-            flag = true;
         } catch (err) {
             await client.query("ROLLBACK");
             throw err;
@@ -122,9 +177,7 @@ async function releaseAssets() {
         }
 
         // 发送区块链转帐消息
-        if (flag) {
-            await psTrx.pub(actionList);
-        }
+        await psTrx.pub(actionList);
     } catch (err) {
         logger.error("release assets error, the error stock is %O", err);
         throw err;

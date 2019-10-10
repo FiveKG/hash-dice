@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/tbg/saleableBalance.js": "可售余额" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "可售余额" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getAccountInfo } = require("../../models/account");
 const { getBalanceLogInfo } = require("../../models/balanceLog");

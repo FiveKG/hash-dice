@@ -1,5 +1,5 @@
 <template>
-  <div style="height:100%;">
+  <div :class="{'topshow':!isBind}" style="height:100%;">
     <is-bind v-if="isBind" :account="account" @showWallets="actionSheetVisible = true" ref="bind"></is-bind>
     <un-bind v-else :account="account" :keyboardVal="invitationNumber" @bind="bind" @showKeyboard="showKeyboard" @showWallets="actionSheetVisible = true"></un-bind>
 
@@ -30,7 +30,7 @@
 import UnBind from './UnBind'
 import IsBind from './IsBind'
 import keyboard from '@/components/keyboard/Keyboard';
-import { isBind } from '@/servers/invitation';
+import api from '@/servers/invitation';
 
 export default {
   components: {
@@ -97,8 +97,8 @@ export default {
       this.actionSheetVisible = false
     },
     getBindState(account_name) {
-      isBind({account_name}).then(res => {
-        // console.log(res)
+      api.isBind({account_name}).then(res => {
+        console.log(res)
         if (res.code === 1 && res.data.is_bind) {
           this.isBind = true
           setTimeout(() => {
@@ -132,6 +132,14 @@ export default {
 </script>
 
 <style scoped>
+.topshow {
+  z-index:10001;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
 .action_layout {
   background-color: #fff;
   padding: 35px 50px;

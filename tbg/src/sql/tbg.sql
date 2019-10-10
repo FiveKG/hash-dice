@@ -219,3 +219,21 @@ on conflict(account_name) do nothing;
 update account set refer_count = 2 where account_name = 'yujinsheng11'; 
 update account set refer_count = 1 
 where account_name in ('5tj5ywfrjooy', 'uxjjz4fypm3.', 'jb2lgkgqfpsn', 'vmbutqnxy.sb', 'oeazmerpqye2');
+
+--- 查询某个表是否存在
+select count(1)::INTEGER from pg_class where relname = $1;
+
+----
+INSERT INTO snapshot(account_name, invite_count_week, tree_level, invite_member_count, standard_v, 
+                    standard_v1, standard_v2, standard_v3, standard_v4, standard_v5, effective_member, create_time)
+    VALUES ('yujinsheng11', 1, '{}'::JSONB, 1, 0, 0, 0, 0, 0, 0, 1, now())
+    ON CONFLICT (account_name)
+    DO UPDATE SET invite_count_week = EXCLUDED.invite_count_week + 1, 
+        invite_member_count = EXCLUDED.invite_member_count + 1, 
+        standard_v = EXCLUDED.standard_v + 0, 
+        standard_v1 = EXCLUDED.standard_v1 + 0, 
+        standard_v2 = EXCLUDED.standard_v2 + 0, 
+        standard_v3 = EXCLUDED.standard_v3 + 0, 
+        standard_v4 = EXCLUDED.standard_v4 + 0, 
+        standard_v5 = EXCLUDED.standard_v5 + 0,
+        effective_member = EXCLUDED.effective_member + 1;

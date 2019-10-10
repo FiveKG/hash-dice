@@ -23,16 +23,23 @@ const { format } = require("date-fns");
  */
 async function raiseAirdrop(data) {
     try {
-        const updateTradeSql = `
-            UPDATE trade SET state = $1, finished_time = $2, trx_amount = $3 WHERE id = $4
-        `
+        const updateTradeSql = `UPDATE trade SET state = $1, finished_time = $2, trx_amount = $3 WHERE id = $4`
         // 获取用户私募的资产信息
         const { accountName, price } = data;
         const tradeInfo = await getTradeInfoHistory({ "tradeType": OPT_CONSTANTS.RAISE, "accountName": accountName, orderBy: "ASC", state: "create" });
+        logger.debug("tradeInfo: ", tradeInfo);
         // 如果找不到私募订单, 直接返回不做后续处理
         if (tradeInfo.length === 0) {
             return;
         }
+        // 每个全球合伙人只能私募一次
+        const selectRaiseSql = `SELECT count(1)::INTEGER FROM balance_log WHERE op_type = $1 AND account_name = $2`;
+        const { rows: [ { count } ] } = await pool.query(selectRaiseSql, [ OPT_CONSTANTS.RAISE, accountName ]);
+        if (count !== 0) {
+            logger.warn("this user already raised");
+            return;
+        }
+        
         const trId = tradeInfo[0].id;
         const assetsInfo = await getAssetsInfoById([tradeInfo[0].extra.ap_id]);
         const amount = new Decimal(assetsInfo[0].amount);
@@ -44,7 +51,7 @@ async function raiseAirdrop(data) {
         // 查找推荐人
         let userReferrer = await getUserReferrer(accountName);
         let reCurrentBalance;
-        const referrerIncome = quantity.mul(TBG_ALLOCATE.RAISE_REFERRER_AIRDROP).div(TBG_ALLOCATE.BASE_RATE);
+        const referrerIncome = amount.mul(TBG_ALLOCATE.RAISE_REFERRER_AIRDROP).div(TBG_ALLOCATE.BASE_RATE);
         let tmpActions = []
         // 系统第一个账户没有推荐人，多出的部分转到股东池账户
         if (!userReferrer) {
@@ -139,8 +146,8 @@ async function raiseAirdrop(data) {
         }
 
         const accountInfo = await getAccountInfo(accountName);
-        let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2;
-        if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1) {
+        let accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1;
+        if (accountInfo.state === ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_2) {
             accountState = ACCOUNT_CONSTANT.ACCOUNT_ACTIVATED_TBG_1_AND_2
         }
         const client = await pool.connect();
@@ -148,18 +155,22 @@ async function raiseAirdrop(data) {
         try {
             // 按私募数量的 5 倍释放，直接转入私募的账户的线性释放池
             await updateTbgBalance(client, accountName, quantity.add(destroyAmount).toNumber(), 0, 0);
-            // 在日志里面记录资产包信息，即交易 id，挖矿时使用
-            // 挖矿的部分可以从 extra 中计算出
-            const extra = { 
-                "symbol": TBG_TOKEN_SYMBOL,
-                "op_type": OPT_CONSTANTS.RELEASE,
-                "tr_id": trId,
-                 ...assetsInfo[0]
-            }
+
+            // 记录释放日志
+            const extra = { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }
             await insertBalanceLog(client, accountName, quantity.add(destroyAmount).toNumber(), acCurrent, OPT_CONSTANTS.RAISE, extra, memo, 'now()');
 
-            // 私募成交后生成一个挖矿资产记录
-            // await insertBalanceLog(client, accountName, miningAmount.toNumber(), acCurrent, OPT_CONSTANTS.MINING, extra, `${ memo }, get a mining of assets package`, 'now()');
+            const finishTime = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
+            // 在日志里面记录资产包信息 生成挖矿包，即交易 id，挖矿时使用 
+            // 挖矿的部分可以从 extra 中计算出
+            const miningExtra = { 
+                "symbol": TBG_TOKEN_SYMBOL, 
+                "op_type": OPT_CONSTANTS.MINING, 
+                "tr_id": trId, 
+                ...assetsInfo[0], 
+                finished_time: finishTime 
+            }
+            await insertBalanceLog(client, accountName, miningAmount.toNumber(), acCurrent, OPT_CONSTANTS.MINING, miningExtra, memo, 'now()');
 
             // 按私募数量的 5 倍释放，直接转入私募的账户, 同时销毁一部份
             await updateTbgBalance(client, accountName, destroyAmount.toNumber(), 0, 0);
@@ -171,11 +182,8 @@ async function raiseAirdrop(data) {
                 await updateTbgBalance(client, userReferrer, referrerIncome.toNumber(), 0, 0);
                 await insertBalanceLog(client, userReferrer, referrerIncome.toNumber(), reCurrentBalance.toNumber(), OPT_CONSTANTS.RAISE, { "symbol": TBG_TOKEN_SYMBOL, "op_type": OPT_CONSTANTS.RELEASE }, memo, 'now()');
             }
-            const finishTime = format(new Date(), "YYYY-MM-DD HH:mm:ssZ");
             const trLogId = generate_primary_key();
             const remark = `user ${ accountName } at ${ finishTime } done raise`;
-            // 更新交易状态
-            // await updateTrade(client, trId, "finished", finishTime);
             await client.query(updateTradeSql, [ "finished", finishTime, amount.toNumber(), trId ]);
             await insertTradeLog(client, trLogId, trId, OPT_CONSTANTS.RAISE, amount.toNumber(), remark, price, amount.mul(price).toNumber(), finishTime);
             // 更新用户状态
@@ -196,4 +204,4 @@ async function raiseAirdrop(data) {
     }
 }
 
-module.exports = raiseAirdrop
+module.exports = raiseAirdrop;

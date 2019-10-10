@@ -16,7 +16,7 @@ const { ACCOUNT_INACTIVATED } = require("../../common/constant/accountConstant")
 async function getAccountMemberLevel(accountName) {
     try {
         let selectAccountLevelSql = `
-            SELECT (SELECT count(1) as count FROM referrer r
+            SELECT (SELECT count(1)::INTEGER as count FROM referrer r
                         JOIN account a ON r.account_name = a.account_name
                         WHERE referrer_name = $1
                         AND a.state != ${ ACCOUNT_INACTIVATED }

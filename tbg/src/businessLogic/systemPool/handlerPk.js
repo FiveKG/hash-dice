@@ -37,7 +37,7 @@ async function handlerPk() {
             return;
         }
         logger.debug("pkAccountList: ", pkAccountList);
-        for (let i = 0; i < pkAccountList.length - 5; i++){
+        for (let i = 0; i < pkAccountList.length; i++){
             let item = pkAccountList[i]
             let rate = setRate(i);
             let remark = `account ${ item.referrer_name }, income ${ distrEnable.mul(rate).toFixed(8) }`;
@@ -69,6 +69,10 @@ async function handlerPk() {
     }
 }
 
+/**
+ * 
+ * @param { number } rank 
+ */
 function setRate(rank) {
     let rate = 0;
     if (rank === 0) {

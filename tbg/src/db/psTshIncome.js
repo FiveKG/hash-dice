@@ -3,6 +3,9 @@ const logger = require("../common/logger.js").child({"@": "publish - subscribe t
 const getAmqpChannel = require("./amqp.js");
 const { TSH_INCOME } = require("../common/constant/accountConstant.js");
 
+/**
+ * @param {any} data
+ */
 async function publish(data) {
     try {
         let channel = await getAmqpChannel(TSH_INCOME);
@@ -12,6 +15,9 @@ async function publish(data) {
     }
 }
 
+/**
+ * @param {(arg0: string) => void} callback
+ */
 async function subscribe(callback) {
     try {
         let channel = await getAmqpChannel(TSH_INCOME);

@@ -35,11 +35,11 @@ const DISTRIBUTION_CENTER = 3.5;
 const TBG_WALLET_RECEIVER = 8.5;
 
 // 1% 拨入 TBG 股东分红池；
-const ALLOC_TO_TSH_POOL = 1;
+const ALLOC_TO_TSH_POOL = 2;
 // 1% 拨入 TBG 三倍收益保障池；
-const ALLOC_TO_PROTECTION_POOL = 1;
+const ALLOC_TO_PROTECTION_POOL = 2;
 // 5% 拨入 TBG 共享推荐佣金分配；
-const ALLOC_TO_REFERRER = 5;
+const ALLOC_TO_REFERRER = 3;
 // 1.5% TSH投资股东收益
 const ALLOC_TO_TSH_INCOME = 1.5;
 

@@ -1,6 +1,6 @@
 // @ts-check
 const { pool, createTable } = require("../db/index.js");
-const logger = require("../common/logger.js").child({ "@initService.js": "initService" });
+const logger = require("../common/logger.js").child({ [`@${ __filename }`]: "initService" });
 const { initCode } = require("./inviteCode/genInviteCode.js");
 const { dropAllTable, insertSystemAccount } = require("./systemPool/insertSystemAccount.js");
 const insertAssetsPackage = require("./assets/assets.js");
@@ -8,13 +8,13 @@ const { redis } = require("../common");
 const { OPENING_PRICE, OPENING_PRICE_KEY } = require("../common/constant/tradeConstant.js");
 const { 
     SAFE_POOL, SHAREHOLDERS_POOL, SORT_POOL, TBG_FREE_POOL, TBG_JOIN, TBG_MINE_POOL, TBG_TOKEN_COIN, 
-    PK_POOL, BINGO_POOL, MODE_POOL, DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME, PSH_INCOME
+    PK_POOL, BINGO_POOL, MODE_POOL, DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME, PSH_INCOME, NODE_INCENTIVE_POOL
 } = require("../common/constant/accountConstant.js")
 const { Decimal } = require("decimal.js");
 
 ;(async () => {
     let systemAccount = [ 
-        SAFE_POOL, SHAREHOLDERS_POOL, SORT_POOL, PK_POOL, BINGO_POOL, MODE_POOL, DEV_OP_POOL, COMMUNITY_POOL, TSH_INCOME    
+        SAFE_POOL, SHAREHOLDERS_POOL, PK_POOL, BINGO_POOL, TSH_INCOME, NODE_INCENTIVE_POOL
     ]
     await initCode();
     // await clearRedisKeyBeforeInit();
@@ -23,6 +23,7 @@ const { Decimal } = require("decimal.js");
     await insertSystemAccount(systemAccount); 
     await insertAssetsPackage();
     await initOpeningPrice();
+    process.exit(0);
 })();
 
 // async function clearRedisKeyBeforeInit() {

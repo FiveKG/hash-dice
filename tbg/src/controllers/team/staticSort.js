@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/team/staticSort.js": "static sort" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "static sort" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getStaticSort } = require("../../models/account");
 const { getUserSubAccount } = require("../../models/subAccount");

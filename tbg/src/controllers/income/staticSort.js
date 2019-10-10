@@ -1,5 +1,5 @@
 // @ts-check
-const logger = require("../../common/logger.js").child({ "@controllers/income/staticSort.js": "static sort income" });
+const logger = require("../../common/logger.js").child({ [`@${ __filename }`]: "一行公排收益详情" });
 const { get_status, inspect_req_data } = require("../../common/index.js");
 const { getStaticSortIncome, getGroupIncome, getUserBalance } = require("../../models/balance");
 const { Decimal } = require("decimal.js");

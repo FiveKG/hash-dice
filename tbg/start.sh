@@ -64,5 +64,8 @@ then
     npm i -g pm2
 fi
 
-pm2 start ./pm2.json
-# node tbg_service.js
+sed -i '21s/\/\/ await dropAllTable();/await dropAllTable();/' ./src/build/initDate.js
+node ./src/build/initDate.js
+sed -i '21s/await dropAllTable();/\/\/ await dropAllTable();/' ./src/build/initDate.js
+# pm2 start ./pm2.json
+node tbg_service.js
