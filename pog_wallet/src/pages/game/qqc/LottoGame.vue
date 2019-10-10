@@ -262,6 +262,7 @@ export default {
           }
           if(second == 0 && minute==0  && hour==0){
             clearInterval(timeInerval);
+            this.getOpen();
           }
           this.tiemer = hour + ':' + minute + ':' + second
           allSecond--
@@ -289,14 +290,16 @@ export default {
           account_name:this.$store.state.wallet.localFile.wallets[0].accountNames[0],
           bet_key:this.inputNumber,
           bet_amount:this.UEnumber}).then(res=> {
-            console.log("随机投注结果:",res);
-            if(res.code != 1){
-              this.$toast('随机投注失败，请检查再重试！')
-              return false;
-            }
+            console.log("手动投注结果:",res);
             if(res.code == 1){
               // this.$toast('恭喜你，随机投注成功！')
               this.betSuccessDialog = true;
+            }else if(res.code == 1011){
+              this.$toast('余额不足，请充值后重试！')
+              return false;
+            }else{
+              this.$toast('投注失败，请检查再重试！')
+              return false;
             }
         })
       } catch (error) {
@@ -318,13 +321,15 @@ export default {
       .then( 
         res => {
           console.log("手动投注结果:",res);
-          if(res.code != 1){
-            this.$toast('投注失败，请检查再重试！')
-            return false;
-          }
           if(res.code == 1){
             // this.$toast('恭喜你，随机投注成功！')
             this.betSuccessDialog = true;
+          }else if(res.code == 1011){
+            this.$toast('余额不足，请充值后重试！')
+            return false;
+          }else{
+            this.$toast('投注失败，请检查再重试！')
+            return false;
           }
         }
       )

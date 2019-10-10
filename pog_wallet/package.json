@@ -25,7 +25,7 @@
     "eosjs": "^16.0.9",
     "eosjs-ecc": "^4.0.4",
     "ethers": "^4.0.27",
-    "html2canvas": "^1.0.0-rc.4",
+    "html2canvas": "^1.0.0-rc.5",
     "lib-flexible": "^0.3.2",
     "mescroll.js": "^1.4.0",
     "onsenui": "^2.10.6",

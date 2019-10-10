@@ -119,17 +119,17 @@
               </div>
               <div class="exchange-right">
                 <div class="select-wrap">
-                  <div @click='switchData(2)' class="ipt_layout">
+                  <div class="ipt_layout">
                       <div>
-                      <span style="font-size: .45rem;color: rgb(236,90,91);">买入TBG</span>
+                      <span style="font-size: .45rem;color: rgb(236,90,91);" v-if="isGlobal" @click="jumpglobal">买入TBG</span>   <!--全球合伙人-->
+                      <span style="font-size: .45rem;color: rgb(236,90,91);" v-if="!isGlobal" @click="jumpnormal">买入TBG</span>  <!-- 普通用户-->
                       </div>
-                      <img  src="@/assets/img/u28.png" style="width: 0.5rem;height: 0.5rem;"> 
                   </div>
                   <!-- 下拉部分 -->
-                  <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
+                  <!-- <div class="select-toggle" ref="slt-2" style="position: absolute;background: rgb(255, 255, 255);border-radius: 0.08rem;width: 80%;left: 10%;box-shadow: 0px 1px 10px rgba(201, 201, 201, 0.349019607843137);z-index:99">
                       <div class="select-item" @click="jumpnormal">普通用户</div>
                       <div v-if="isGlobal" class="select-item" @click="jumpglobal">全球合作伙伴</div>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="select-wrap">
                   <div @click='jumpTwoSell' class="ipt_layout">
@@ -400,6 +400,7 @@ export default {
                   account: '',
                   friendAccountName: ''
                 },
+                base_amount:'',
                 password: '',
                 actionSheetVisible: false,
                 showDialog: false,
@@ -588,7 +589,7 @@ export default {
         return str.slice(0,str.length-4) + " " +str.slice(-4)
       },
       addComma(data){  //修改已销毁数据
-        var a=data;var b='';var c=a.length+1;
+        var a=data;var b='';var c=a.length;
           for(var i=0;c/3>i;i++){
             if(a.length>3){
               b=','+a.slice(a.length-3,a.length)+b;
@@ -649,7 +650,7 @@ export default {
             this.Amount = res.data.saleable_balance.split('.');
             this.Amount[1] = this.addSpace(this.Amount[1]);
             this.Amount[1] = this.Amount[1].split(' ');
-          }}).then(() =>{
+          }}).then(() =>{  
             if (this.Balance.length && this.Amount) {
               (this.Balance[0]+'.'+this.Balance[1][0]+this.Balance[1][1])>(this.Amount[0]+'.'+this.Amount[1][0]+this.Amount[1][1])?this.Quantity=this.Amount:this.Quantity=this.Balance;
             }
@@ -696,9 +697,16 @@ export default {
         }
        },
       jumpSubAccount() {         //跳转 子账号
-          this.$router.push({
-          name: 'SubAccount',
-        })
+           api.isActive({account_name: this.account_name}).then(res => {
+           if(res.data.is_activated==0||res.data.is_activated==10){
+             this.jumpQuantityTbg()
+           }else{
+             this.$router.push({
+              name: 'SubAccount',
+            })
+           }
+          })
+          
        },
       jumpProfit() {         //跳转 TBG-1收益
           this.$router.push({
@@ -757,13 +765,12 @@ export default {
             this.showDialog = false
             try {
               const config = await this.getConfig();
-              console.log(3333333333333,config);
-              console.log(44444444444444,privateKey);
+              this.base_amount=config.base_amount+`.0000 UE`;
               const opts = { authorization:[`${this.account_name }@active`], keyProvider: privateKey }
               // await eos.transfer(this.reqParams.account, config.wallet_receiver, `100.0000 UE`, `tbg_invest:${this.reqParams.account}`, opts)
               const adm = await eos.contract('uetokencoin')
               // account_name,price,trx_type,assets_package_id ==> fb,0.5,raise,4
-              const trx = await adm.transfer(this.account_name , config.wallet_receiver, `1000.0000 UE`, `tbg_invest:${this.account_name }`, opts)
+              const trx = await adm.transfer(this.account_name , config.wallet_receiver, this.base_amount, `tbg_invest:${this.account_name }`, opts)
               this.is_active()
               console.log(11221111,trx);
               return true
@@ -785,7 +792,7 @@ export default {
         is_active () {
           api.isActive({
             account_name: this.account_name
-          }).then(res => {console.log(7777777777777)
+          }).then(res => {
             switch(res.data.is_activated){
               case 0:
                 this.atv_text = '未激活';this.subAccountQuantity=false;this.account_activation=false;break;

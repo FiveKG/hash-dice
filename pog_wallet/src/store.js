@@ -36,7 +36,7 @@ export default new Vuex.Store({
           contacts: []
         },
         stack: [],
-        walletChain: 'EOS',
+        walletChain: 'POG',
         schemaChain: '',
         selectedTab: 'assets',
         signatureData: null,

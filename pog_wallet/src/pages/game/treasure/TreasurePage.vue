@@ -446,7 +446,7 @@ export default {
   watch: {
         '$store.state.wallet.block': {
             handler(newVal, oldVal) {
-                console.log(12311111111111,this.$store.state.wallet.block);
+                // console.log(12311111111111,this.$store.state.wallet.block);
                 this.treasureKey+=1;
                 this.items.unshift({timestamp:format(this.$store.state.wallet.block.timestamp, 'HH:mm:ss:S'),block_num:this.$store.state.wallet.block.block_num,
                 id:'...'+this.$store.state.wallet.block.id.slice(45),treasureKey:this.treasureKey});
@@ -484,12 +484,22 @@ export default {
     api.getAllData({game_id:1}).then(res => {
         if (res.code === 1) {
             this.BettinAllData=res.data.detail;
+            for(let i=0;i<this.BettinAllData.length;i++){
+              if(this.BettinAllData[i].reward_code=='000000'){
+                this.BettinAllData[i].reward_code='待开奖'
+              }
+            }
           }
       })
     //获取当前用户投注的信息
     api.getUserBettingData({game_id:1,account_name:this.account_name}).then(res => {
       if (res.code === 1) {
           this.UserBetting=res.data.detail;
+          for(let i=0;i<this.UserBetting.length;i++){
+              if(this.UserBetting[i].reward_code=='000000'){
+                this.UserBetting[i].reward_code='待开奖'
+              }
+            }
           }
       })
 

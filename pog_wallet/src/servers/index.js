@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // var baseURL = 'http://app-api.service.consul';
-var baseURL = 'http://172.81.224.11/api';
+var baseURL = 'http://wallet.tbg.isecsp.com/api';
 
 const xhr = axios.create({
   baseURL,
