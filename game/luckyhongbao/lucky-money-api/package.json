@@ -21,7 +21,7 @@
     "decimal.js": "^10.0.2",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "request-promise": "^4.2.2",
     "socket.io": "^2.3.0",
     "utility": "^1.15.0"
