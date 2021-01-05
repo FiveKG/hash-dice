@@ -41,7 +41,7 @@
     "@kazupon/vue-i18n-loader": "^0.3.0",
     "@vue/cli-plugin-babel": "^3.4.0",
     "@vue/cli-service": "^3.4.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "less": "3.9.0",
     "less-loader": "^4.1.0",
     "postcss-pxtorem": "^4.0.1",
