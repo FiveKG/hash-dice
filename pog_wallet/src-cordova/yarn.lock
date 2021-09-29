@@ -447,10 +447,10 @@ http-signature@~1.2.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
-i@^0.3.6:
-  version "0.3.6"
-  resolved "https://registry.npm.taobao.org/i/download/i-0.3.6.tgz#d96c92732076f072711b6b10fd7d4f65ad8ee23d"
-  integrity sha1-2WyScyB28HJxG2sQ/X1PZa2O4j0=
+i@^0.3.7:
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/i/-/i-0.3.7.tgz#2a7437a923d59c14b17243dc63a549af24d85799"
+  integrity sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==
 
 inflight@^1.0.4:
   version "1.0.6"
@@ -586,10 +586,10 @@ mout@^0.11.0:
   resolved "https://registry.npm.taobao.org/mout/download/mout-0.11.1.tgz#ba3611df5f0e5b1ffbfd01166b8f02d1f5fa2b99"
   integrity sha1-ujYR318OWx/7/QEWa48C0fX6K5k=
 
-nodejs-mobile-cordova@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.npm.taobao.org/nodejs-mobile-cordova/download/nodejs-mobile-cordova-0.3.4.tgz#543c2de10928670bd99b62253fc8651e3c65db45"
-  integrity sha1-VDwt4QkoZwvZm2IlP8hlHjxl20U=
+nodejs-mobile-cordova@^0.3.3:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/nodejs-mobile-cordova/-/nodejs-mobile-cordova-0.3.5.tgz#b0c7007a12eebe3500d7b64d451bcecdf1a41993"
+  integrity sha512-OBupUQTfuE8bst3mDSg7/wNIbobtEnQL1ZkPq7hYBtqUde42WHHBV7Vy8fQEF96MtTEpptB6WRpKr/rj9AMk+A==
   dependencies:
     nodejs-mobile-gyp "^0.3.1"
     tar.gz2 "^1.0.0"
