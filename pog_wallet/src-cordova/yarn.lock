@@ -586,10 +586,10 @@ mout@^0.11.0:
   resolved "https://registry.npm.taobao.org/mout/download/mout-0.11.1.tgz#ba3611df5f0e5b1ffbfd01166b8f02d1f5fa2b99"
   integrity sha1-ujYR318OWx/7/QEWa48C0fX6K5k=
 
-nodejs-mobile-cordova@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.npm.taobao.org/nodejs-mobile-cordova/download/nodejs-mobile-cordova-0.3.4.tgz#543c2de10928670bd99b62253fc8651e3c65db45"
-  integrity sha1-VDwt4QkoZwvZm2IlP8hlHjxl20U=
+nodejs-mobile-cordova@^0.3.3:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/nodejs-mobile-cordova/-/nodejs-mobile-cordova-0.3.5.tgz#b0c7007a12eebe3500d7b64d451bcecdf1a41993"
+  integrity sha512-OBupUQTfuE8bst3mDSg7/wNIbobtEnQL1ZkPq7hYBtqUde42WHHBV7Vy8fQEF96MtTEpptB6WRpKr/rj9AMk+A==
   dependencies:
     nodejs-mobile-gyp "^0.3.1"
     tar.gz2 "^1.0.0"
@@ -733,9 +733,9 @@ qrcode-reader@^1.0.4:
   integrity sha1-ldm7noEwgANhqWy1pDEkrR2eBrg=
 
 qs@~6.5.2:
-  version "6.5.2"
-  resolved "https://registry.npm.taobao.org/qs/download/qs-6.5.2.tgz?cache=0&sync_timestamp=1569207136481&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fqs%2Fdownload%2Fqs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
-  integrity sha1-yzroBuh0BERYTvFUzo7pjUA/PjY=
+  version "6.5.3"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.3.tgz#3aeeffc91967ef6e35c0e488ef46fb296ab76aad"
+  integrity sha512-qxXIEh4pCGfHICj1mAJQ2/2XVZkjCDTcEgfoSQxc/fYivUZxTkk7L3bDBJSoNrEzXI17oUO5Dp07ktqE5KzczA==
 
 readable-stream@^2.0.6:
   version "2.3.6"
